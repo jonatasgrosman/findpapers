@@ -1,0 +1,19 @@
+# IDE
+.vscode
+
+# ENV
+venv
+.env
+
+# BUILD
+__pycache__
+*.egg-info/
+
+# TEST
+tests.xml
+coverage.xml
+.pytest_cache
+.coverage
+
+# OS
+.DS_Store
