@@ -1,10 +1,4 @@
-import io
-import re
-
 from setuptools import find_packages, setup
-
-with io.open('README.md', 'rt', encoding='utf8') as f:
-    readme = f.read()
 
 setup(
   name='findpapers',
@@ -13,8 +7,8 @@ setup(
   license='MIT',
   maintainer='Jonatas Grosman',
   maintainer_email='grosman.jonatas@gmail.com',
-  description='Easy way to do your research by finding academic papers using complex queries',
-  long_description=readme,
+  description='Easy way to find academic papers by using complex queries',
+  long_description=open('README.md').read(),
   packages=find_packages(),
   include_package_data=True,
   package_data={
