@@ -1,6 +1,6 @@
 import os
 from typing import Optional, List
-from findpapers.model.paper import Paper
+from findpapers.models.paper import Paper
 
 
 def get(query: str, since: Optional[int] = None, area: Optional[str] = None, scopus_api_token: Optional[str] = None) -> List[Paper]:

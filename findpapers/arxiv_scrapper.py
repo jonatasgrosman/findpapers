@@ -5,6 +5,9 @@ from fake_useragent import UserAgent
 from lxml import html
 #from scrapper.acm_paper_page_scrapper import AcmPaperPageScrapper
 
+# switch to API... has support for parentheses :)
+# https://arxiv.org/help/api/user-manual
+
 class ArxivScrapper():
 
     @staticmethod

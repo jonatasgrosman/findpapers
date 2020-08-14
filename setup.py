@@ -7,7 +7,7 @@ setup(
   license='MIT',
   maintainer='Jonatas Grosman',
   maintainer_email='grosman.jonatas@gmail.com',
-  description='Easy way to find academic papers by using complex queries',
+  description='Easy way to find academic papers across scientific libraries using a single query',
   long_description=open('README.md').read(),
   packages=find_packages(),
   include_package_data=True,
