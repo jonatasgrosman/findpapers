@@ -7,6 +7,8 @@ class Search():
     Class that represents a search
     """
 
+    valid_areas = ['computer_science', 'economics', 'engineering', 'mathematics', 'physics', 'biology', 'chemistry', 'humanities']
+
     def __init__(self, query: str, since_year: Optional[int] = None, areas: List[str] = None):
         """
         Class constructor
@@ -20,7 +22,7 @@ class Search():
         areas : List[str]
             List of areas of interest that limited the field of search for papers.
             The available areas are: computer_science, economics, engineering, mathematics, physics, biology, chemistry and humanities
-        
+
         Raises
         ------
         ValueError
@@ -33,8 +35,9 @@ class Search():
         # checking the areas
         if areas is not None:
             for area in areas:
-                if area not in ['computer_science', 'economics', 'engineering', 'mathematics', 'physics', 'biology', 'chemistry', 'humanities']:
-                    raise ValueError(f'Invalid area "{area}". Only "computer_science", "economics", "engineering", "mathematics", "physics", "biology", "chemistry" and "humanities" are valid areas')
+                if area not in Search.valid_areas:
+                    raise ValueError(
+                        f'Invalid area "{area}". Only {"".join(Search.valid_areas)} are valid areas')
         self.areas = areas
 
         self.fetched_at = datetime.datetime.utcnow()
