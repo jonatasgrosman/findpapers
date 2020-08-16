@@ -81,3 +81,40 @@ class Paper():
             A URL that makes a reference to the paper
         """
         self.urls.add(url)
+
+    def enrich(self, paper: Paper):
+        """
+        We can enrich some paper information using a duplication of it found in another library.
+        This method do this using a provided instance of a duplicated paper
+
+        Parameters
+        ----------
+        paper : Paper
+            A duplication of the "self" paper
+        """
+
+        if len(self.abstract) < len(paper.abstract):
+            self.abstract = paper.abstract
+        
+        if self.authors is None or len(self.authors) < len(paper.authors):
+            self.authors = paper.authors
+
+        if self.doi is None:
+            self.doi = paper.doi
+
+        if self.citations is None or self.citations <= paper.citations:
+            self.citations = paper.citations
+        
+        if self.keywords is None or len(self.keywords) < len(paper.keywords):
+            self.keywords = paper.keywords
+
+        if self.doi is None:
+            self.doi = paper.doi
+        
+        for url in paper.urls:
+            self.add_url(url)
+        
+        for library in paper.libraries:
+            self.add_library(library)
+
+        self.publication.enrich(self.publication)

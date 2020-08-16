@@ -205,6 +205,8 @@ class Search():
 
             if titles_edit_distance <= max_edit_distance:
 
-                # TODO: merge paper_2 values in paper_1
+                # using the information of paper_2 to enrich paper_1
+                paper_1.enrich(paper_2)
 
+                # removing the paper_2 instance
                 self.remove_paper(paper_2)
