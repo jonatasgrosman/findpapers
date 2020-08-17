@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import List, Optional
 from datetime import date
 from findpapers.models.bibliometrics import Bibliometrics
@@ -9,7 +10,7 @@ class Publication():
     """
 
     def __init__(self, title: str, isbn: Optional[str] = None, issn: Optional[str] = None, publisher: Optional[str] = None,
-                 category: Optional[str] = None, bibliometrics_list: Optional[List[Bibliometrics]] = None):
+                 category: Optional[str] = None):
         """
         Paper class constructor
 
@@ -25,8 +26,6 @@ class Publication():
             publication publisher, by default None
         category : str, optional
             publication category (Journal, Conference Proceeding, Book, Other), by default None
-        bibliometrics_list : list[Bibliometrics], optional
-            publication bibliometrics list, by default None
         """
 
         self.title = title
@@ -34,9 +33,13 @@ class Publication():
         self.issn = issn
         self.publisher = publisher
         self.category = category
-        self.bibliometrics_list = bibliometrics_list
+        self.bibliometrics_list = []
 
-    @temperature.setter
+    @property
+    def category(self):
+        return self._category
+
+    @category.setter
     def category(self, value: str):
         """
         Category value setter, this method also try to convert a provided invalid category 
@@ -60,7 +63,7 @@ class Publication():
             else:
                 value = 'Other'
 
-            self._category = value
+        self._category = value
 
     def add_bibliometrics(self, bibliometrics: Bibliometrics):
         """

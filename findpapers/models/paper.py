@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import List, Set, Optional
 from datetime import date
 from findpapers.models.publication import Publication
@@ -108,8 +109,8 @@ class Paper():
         if self.keywords is None or len(self.keywords) < len(paper.keywords):
             self.keywords = paper.keywords
 
-        if self.doi is None:
-            self.doi = paper.doi
+        if self.comments is None:
+            self.comments = paper.comments
         
         for url in paper.urls:
             self.add_url(url)

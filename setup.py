@@ -14,7 +14,7 @@ setup(
   package_data={
     '': ['*.json']
   },
-  python_requires='>=3.6',
+  python_requires='>=3.7',
   install_requires=[
     'lxml==4.5.*',
     'requests==2.24.*',
