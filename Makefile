@@ -12,6 +12,8 @@ help:
 	@echo "       prepare environment"
 	@echo "make test"
 	@echo "       run tests"
+	@echo "make test_report"
+	@echo "       run tests and save tests and coverag reports"
 
 setup: $(VENV_NAME)/bin/activate
 $(VENV_NAME)/bin/activate: setup.py
@@ -23,5 +25,8 @@ $(VENV_NAME)/bin/activate: setup.py
 	touch $(VENV_NAME)/bin/activate
 
 test: setup
-	$(eval export FLASK_ENV=testing)
 	${PYTEST} --durations=3 -v --cov=${PWD}/findpapers 
+
+test_report: setup
+	${PYTEST} --durations=3 -v --cov=${PWD}/findpapers --cov-report xml:reports/coverage.xml --junitxml=reports/tests.xml
+

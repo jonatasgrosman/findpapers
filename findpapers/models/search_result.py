@@ -87,7 +87,7 @@ class SearchResult():
             A string that represents a unique key for each publication, that will be used to fill and retrieve values from publication_by_key
         """
 
-        return f'{publication_title.lower()}-{publication_issn.lower()}-{publication_isbn.lower()}'
+        return f'{publication_title.lower()}-{str(publication_issn).lower()}-{str(publication_isbn).lower()}'
 
     def add_paper(self, paper: Paper):
         """
@@ -106,6 +106,8 @@ class SearchResult():
         if already_collected_publication is not None:
             already_collected_publication.enrich(paper.publication)
             paper.publication = already_collected_publication
+        else:
+            self.publication_by_key[publication_key] = paper.publication
 
         paper_key = self.get_paper_key(paper.title, paper.publication_date)
         already_collected_paper = self.paper_by_key.get(paper_key, None)
@@ -139,7 +141,7 @@ class SearchResult():
 
         return self.paper_by_key.get(paper_key, None)
 
-    def get_publication(self, title: str, issn: Optional[str], isbn: Optional[str]) -> Publication:
+    def get_publication(self, title: str, issn: Optional[str] = None, isbn: Optional[str] = None) -> Publication:
         """
         Get a collected publication by publication's title, issn and isbn
 
@@ -148,9 +150,9 @@ class SearchResult():
         title : str
             The publication title
         issn : Optional[str]
-            The publication ISSN
+            The publication ISSN, by default None
         isbn : Optional[str]
-            The publication ISBN
+            The publication ISBN, by default None
 
         Returns
         -------
@@ -184,7 +186,8 @@ class SearchResult():
         In some cases, a same paper is represented with tiny differences between some libraries, 
         this method try to deal with this situation merging those instances of the paper,
         using a similarity threshold, by default 0.9 (90%), i.e., if two papers metadata is similar by 80% or more 
-        this papers are considered duplications of a same paper
+        this papers are considered duplications of a same paper.
+        The method use the paper key (see: SearchResult.get_paper_key) to calculate the similarity between the papers
 
         Parameters
         ----------
@@ -196,18 +199,21 @@ class SearchResult():
 
         for i, pair in enumerate(paper_key_pairs):
 
-            paper_1 = self.paper_by_key.get(pair[0])
-            paper_2 = self.paper_by_key.get(pair[1])
+            paper_1_key = pair[0]
+            paper_2_key = pair[1]
 
-            max_title_length = max(len(paper_1.title), len(paper_2.title))
+            max_key_length = max(len(paper_1_key), len(paper_2_key))
 
-            # creating the max valid edit distance using the max title length between the two papers and the provided similarity threshold
-            max_edit_distance = int(max_title_length * (1 - similarity_threshold))
+            # creating the max valid edit distance using the max key length between the two papers and the provided similarity threshold
+            max_edit_distance = int(max_key_length * (1 - similarity_threshold))
 
-            # calculating the edit distance between the titles
-            titles_edit_distance = edlib.align(paper_1.title, paper_2.title)['editDistance']
+            # calculating the edit distance between the keys
+            titles_edit_distance = edlib.align(paper_1_key, paper_2_key)['editDistance']
 
             if titles_edit_distance <= max_edit_distance:
+
+                paper_1 = self.paper_by_key.get(paper_1_key)
+                paper_2 = self.paper_by_key.get(paper_2_key)
 
                 # using the information of paper_2 to enrich paper_1
                 paper_1.enrich(paper_2)

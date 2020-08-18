@@ -5,41 +5,19 @@ from findpapers.models.publication import Publication
 from findpapers.models.paper import Paper
 from findpapers.models.search_result import SearchResult
 
-def test_bibliometrics():
+def test_bibliometrics(acm_bibliometrics, scopus_bibliometrics):
 
-    acm_bibliometrics = AcmBibliometrics(5.2)
-    assert acm_bibliometrics.average_citation_per_article == 5.2
-    assert acm_bibliometrics.average_downloads_per_article is None
-
-    acm_bibliometrics = AcmBibliometrics(2.2, 4.7)
     assert acm_bibliometrics.average_citation_per_article == 2.2
     assert acm_bibliometrics.average_downloads_per_article == 4.7
 
-    scopus_bibliometrics = ScopusBibliometrics(2.5)
-    assert scopus_bibliometrics.cite_score == 2.5
-    assert scopus_bibliometrics.sjr is None
-    assert scopus_bibliometrics.snip is None
-
-    scopus_bibliometrics = ScopusBibliometrics(3.5, 7.5, 1.0)
     assert scopus_bibliometrics.cite_score == 3.5
     assert scopus_bibliometrics.sjr == 7.5
     assert scopus_bibliometrics.snip == 1.0
 
 
-def test_publication():
+def test_publication(publication, acm_bibliometrics, scopus_bibliometrics):
 
-    publication = Publication('some awesome title')
-
-    assert publication.title == 'some awesome title'
-    assert publication.isbn == None
-    assert publication.issn == None
-    assert publication.publisher == None
-    assert publication.category == None
-    assert len(publication.bibliometrics_list) == 0
-
-    publication = Publication('some awesome title', 'isbn-X', 'issn-X', 'that publisher', 'Journal')
-
-    assert publication.title == 'some awesome title'
+    assert publication.title == 'awesome publication title'
     assert publication.isbn == 'isbn-X'
     assert publication.issn == 'issn-X'
     assert publication.publisher == 'that publisher'
@@ -58,23 +36,31 @@ def test_publication():
     publication.category = 'newspaper article'
     assert publication.category == 'Other'
 
-    acm_bibliometrics = AcmBibliometrics(5.2, 1.2)
     publication.add_bibliometrics(acm_bibliometrics)
     assert len(publication.bibliometrics_list) == 1
     assert acm_bibliometrics in publication.bibliometrics_list
 
-    other_acm_bibliometrics = AcmBibliometrics(7.2, 1.2)
+    other_acm_bibliometrics = AcmBibliometrics(7.2)
     publication.add_bibliometrics(other_acm_bibliometrics)
     assert len(publication.bibliometrics_list) == 1
     assert other_acm_bibliometrics not in publication.bibliometrics_list
 
     another_publication = Publication('another awesome title')
-    scopus_bibliometrics = ScopusBibliometrics(3.5, 7.5, 1.0)
     another_publication.add_bibliometrics(scopus_bibliometrics)
 
+    publication.issn = None
+    publication.isbn = None
+    publication.publisher = None
+    publication.category = None
+
     publication.enrich(another_publication)
-    assert len(publication.bibliometrics_list) == 2
+
     assert scopus_bibliometrics in publication.bibliometrics_list
+    assert len(publication.bibliometrics_list) == 2
+    assert publication.issn == another_publication.issn
+    assert publication.isbn == another_publication.isbn
+    assert publication.publisher == another_publication.publisher
+    assert publication.category == another_publication.category
 
 
 def test_paper(paper):
@@ -110,11 +96,18 @@ def test_paper(paper):
 
     paper.citations = paper_citations
     
-    another_paper = Paper('another paper awesome title', 'a long abstract', paper.authors, paper.publication, 
+    another_paper = Paper('another awesome title paper', 'a long abstract', paper.authors, paper.publication, 
                             paper.publication_date, paper.urls, another_doi, another_paper_citations, another_keywords, another_comments)
     another_paper.add_library('arXiv')
 
+    paper.abstract = None
+    paper.authors = None
+    paper.keywords = None
     paper.enrich(another_paper)
+    assert paper.abstract == another_paper.abstract
+    assert paper.authors == another_paper.authors
+    assert paper.keywords == another_paper.keywords
+    
 
     assert 'arXiv' in paper.libraries
     assert len(paper.libraries) == 3
@@ -124,8 +117,32 @@ def test_paper(paper):
     assert paper.comments == another_comments
 
 
-def test_search_result():
+def test_search_result(paper):
 
     search_result = SearchResult('this AND that', datetime.date(1969,1,30), ['humanities', 'economics'])
 
-    
+    assert len(search_result.papers) == 0
+
+    search_result.add_paper(paper)
+    assert len(search_result.papers) == 1
+    search_result.add_paper(paper)
+    assert len(search_result.papers) == 1
+
+    another_paper = Paper('awesome paper title 2', 'a long abstract', paper.authors, paper.publication,  paper.publication_date, paper.urls)
+    search_result.add_paper(another_paper)
+    assert len(search_result.papers) == 2
+
+    assert paper == search_result.get_paper(paper.title, paper.publication_date)
+    assert paper.publication == search_result.get_publication(paper.publication.title, paper.publication.issn, paper.publication.isbn)
+
+    search_result.remove_paper(another_paper)
+    assert len(search_result.papers) == 1
+    assert paper in search_result.papers
+
+    search_result.add_paper(another_paper)
+    assert len(search_result.papers) == 2
+    search_result.merge_duplications()
+    assert len(search_result.papers) == 1
+
+    with pytest.raises(ValueError):
+        SearchResult('this AND that', datetime.date(1969,1,30), ['INVALID CATEGORY'])

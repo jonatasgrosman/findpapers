@@ -94,7 +94,7 @@ class Paper():
             A duplication of the "self" paper
         """
 
-        if len(self.abstract) < len(paper.abstract):
+        if self.abstract is None or len(self.abstract) < len(paper.abstract):
             self.abstract = paper.abstract
         
         if self.authors is None or len(self.authors) < len(paper.authors):

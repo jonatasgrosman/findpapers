@@ -1,14 +1,30 @@
-import pytest, datetime
+import pytest
+import datetime
 from findpapers.models.publication import Publication
 from findpapers.models.paper import Paper
 from findpapers.models.search_result import SearchResult
+from findpapers.models.bibliometrics import AcmBibliometrics, ScopusBibliometrics
+
 
 @pytest.fixture
-def paper():
+def acm_bibliometrics():
+    return AcmBibliometrics(2.2, 4.7)
 
-    publication = Publication('awesome publication title', 'isbn-X', 'issn-X', 'that publisher', 'Journal')
+
+@pytest.fixture
+def scopus_bibliometrics():
+    return ScopusBibliometrics(3.5, 7.5, 1.0)
+
+
+@pytest.fixture
+def publication():
+    return Publication('awesome publication title', 'isbn-X', 'issn-X', 'that publisher', 'Journal')
+
+
+@pytest.fixture
+def paper(publication):
     authors = {'Dr Paul', 'Dr John', 'Dr George', 'Dr Ringo'}
-    publication_date = datetime.date(1969,1,30)
+    publication_date = datetime.date(1969, 1, 30)
     paper_url = "https://en.wikipedia.org/wiki/The_Beatles'_rooftop_concert"
     urls = {paper_url}
 
