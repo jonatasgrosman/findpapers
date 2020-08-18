@@ -3,6 +3,7 @@ from findpapers import util as Util
 from findpapers.models.bibliometrics import AcmBibliometrics, ScopusBibliometrics
 from findpapers.models.publication import Publication
 from findpapers.models.paper import Paper
+from findpapers.models.search_result import SearchResult
 
 def test_bibliometrics():
 
@@ -76,21 +77,12 @@ def test_publication():
     assert scopus_bibliometrics in publication.bibliometrics_list
 
 
-def test_paper():
+def test_paper(paper):
 
-    publication = Publication('some awesome title', 'isbn-X', 'issn-X', 'that publisher', 'Journal')
-    authors = {'Dr Paul', 'Dr John', 'Dr George', 'Dr Ringo'}
-    publication_date = datetime.date(1969,1,30)
-    paper_url = "https://en.wikipedia.org/wiki/The_Beatles'_rooftop_concert"
-    urls = {paper_url}
-
-    paper = Paper('a paper awesome title', 'a long abstract', authors, publication, publication_date, urls)
-    assert paper.title == 'a paper awesome title'
+    assert paper.title == 'awesome paper title'
     assert paper.abstract == 'a long abstract'
-    assert paper.authors == authors
-    assert paper.publication == publication
-    assert paper.publication_date == publication_date
-    assert paper.urls == urls
+    assert paper.authors == {'Dr Paul', 'Dr John', 'Dr George', 'Dr Ringo'}
+    assert len(paper.urls) == 1
     assert len(paper.libraries) == 0
 
     with pytest.raises(ValueError):
@@ -104,7 +96,7 @@ def test_paper():
     assert len(paper.libraries) == 2
 
     assert len(paper.urls) == 1
-    paper.add_url(paper_url)
+    paper.add_url(next(iter(paper.urls)))
     assert len(paper.urls) == 1
 
     paper.add_url('another://url')
@@ -118,8 +110,8 @@ def test_paper():
 
     paper.citations = paper_citations
     
-    another_paper = Paper('another paper awesome title', 'a long abstract', authors, publication, 
-                            publication_date, urls, another_doi, another_paper_citations, another_keywords, another_comments)
+    another_paper = Paper('another paper awesome title', 'a long abstract', paper.authors, paper.publication, 
+                            paper.publication_date, paper.urls, another_doi, another_paper_citations, another_keywords, another_comments)
     another_paper.add_library('arXiv')
 
     paper.enrich(another_paper)
@@ -130,3 +122,10 @@ def test_paper():
     assert paper.citations == paper_citations # 'cause another_paper_citations was lower than paper_citations
     assert paper.keywords == another_keywords
     assert paper.comments == another_comments
+
+
+def test_search_result():
+
+    search_result = SearchResult('this AND that', datetime.date(1969,1,30), ['humanities', 'economics'])
+
+    

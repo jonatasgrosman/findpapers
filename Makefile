@@ -5,8 +5,7 @@ export $(shell sed 's/=.*//' .env)
 
 VENV_NAME?=venv
 PYTHON=${VENV_NAME}/bin/python3
-COVERAGE=${VENV_NAME}/bin/coverage
-TESTING_BASE_PATH=tests/
+PYTEST=${VENV_NAME}/bin/pytest
 
 help:
 	@echo "make setup"
@@ -25,5 +24,4 @@ $(VENV_NAME)/bin/activate: setup.py
 
 test: setup
 	$(eval export FLASK_ENV=testing)
-	${COVERAGE} run -m pytest ${TESTING_BASE_PATH} --junitxml=reports/tests.xml
-	${COVERAGE} xml -o reports/coverage.xml
+	${PYTEST} --durations=3 -v --cov=${PWD}/findpapers 

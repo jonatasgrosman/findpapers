@@ -27,7 +27,8 @@ setup(
   extras_require={
     'test':[
       'pytest==6.0.*',
-      'coverage==5.2.*'
+      'pytest-cov==2.10.*',
+      'pytest-randomly==3.4.*'
     ],
     'documentation': [
       'Sphinx==3.2.*'

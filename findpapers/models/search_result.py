@@ -6,15 +6,15 @@ from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
 
 
-class Search():
+class SearchResult():
     """
-    Class that represents a search
+    Class that represents a search result
     """
 
     valid_areas = ['computer_science', 'economics', 'engineering',
                    'mathematics', 'physics', 'biology', 'chemistry', 'humanities']
 
-    def __init__(self, query: str, since_year: Optional[int] = None, areas: List[str] = None):
+    def __init__(self, query: str, since: Optional[datetime.date] = None, areas: List[str] = None):
         """
         Class constructor
 
@@ -22,8 +22,8 @@ class Search():
         ----------
         query : str
             The query used to fetch the papers
-        since_year : int
-            The lower bound (inclusive) year of the search , by default None
+        since : int
+            The lower bound (inclusive) date of search , by default None
         areas : List[str]
             List of areas of interest that limited the field of search for papers.
             The available areas are: computer_science, economics, engineering, mathematics, physics, biology, chemistry and humanities
@@ -35,14 +35,14 @@ class Search():
         """
 
         self.query = query
-        self.since_year = since_year
+        self.since = since
 
         # checking the areas
         if areas is not None:
             for area in areas:
-                if area not in Search.valid_areas:
+                if area not in SearchResult.valid_areas:
                     raise ValueError(
-                        f'Invalid area "{area}". Only {"".join(Search.valid_areas)} are valid areas')
+                        f'Invalid area "{area}". Only {"".join(SearchResult.valid_areas)} are valid areas')
         self.areas = areas
 
         self.fetched_at = datetime.datetime.utcnow()
@@ -50,8 +50,7 @@ class Search():
         self.paper_by_key = {}
         self.publication_by_key = {}
 
-    @staticmethod
-    def get_paper_key(paper_title: str, publication_date: datetime.date) -> str:
+    def get_paper_key(self, paper_title: str, publication_date: datetime.date) -> str:
         """
         We have a map called paper_by_key that is filled using the string this method returns
 
@@ -69,8 +68,7 @@ class Search():
         """
         return f'{paper_title.lower()}-{publication_date}'
 
-    @staticmethod
-    def get_publication_key(publication_title: str, publication_issn: Optional[str] = None, publication_isbn: Optional[str] = None) -> str:
+    def get_publication_key(self, publication_title: str, publication_issn: Optional[str] = None, publication_isbn: Optional[str] = None) -> str:
         """
         We have a map called publication_by_key that is filled using the string this method returns
 
@@ -112,11 +110,13 @@ class Search():
         paper_key = self.get_paper_key(paper.title, paper.publication_date)
         already_collected_paper = self.paper_by_key.get(paper_key, None)
 
-        if already_collected_paper is None:
-            self.papers.add(paper)
-            self.paper_by_key[paper_key] = paper
-        else:
-            already_collected_paper.enrich(paper)
+        if self.since is None or paper.publication_date >= self.since:
+
+            if already_collected_paper is None:
+                self.papers.add(paper)
+                self.paper_by_key[paper_key] = paper
+            else:
+                already_collected_paper.enrich(paper)
 
     def get_paper(self, paper_title: str, publication_date: str) -> Paper:
         """
