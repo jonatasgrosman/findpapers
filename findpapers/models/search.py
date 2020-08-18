@@ -102,6 +102,13 @@ class Search():
             A new collected paper instance
         """
 
+        publication_key = self.get_publication_key(paper.publication.title, paper.publication.issn, paper.publication.isbn)
+        already_collected_publication = self.publication_by_key.get(publication_key, None)
+
+        if already_collected_publication is not None:
+            already_collected_publication.enrich(paper.publication)
+            paper.publication = already_collected_publication
+
         paper_key = self.get_paper_key(paper.title, paper.publication_date)
         already_collected_paper = self.paper_by_key.get(paper_key, None)
 
@@ -109,10 +116,7 @@ class Search():
             self.papers.add(paper)
             self.paper_by_key[paper_key] = paper
         else:
-            for library in paper.libraries:
-                already_collected_paper.add_library(library)
-            for url in paper.urls:
-                already_collected_paper.add_url(url)
+            already_collected_paper.enrich(paper)
 
     def get_paper(self, paper_title: str, publication_date: str) -> Paper:
         """
