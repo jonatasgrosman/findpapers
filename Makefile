@@ -14,6 +14,9 @@ help:
 	@echo "       run tests"
 	@echo "make test_report"
 	@echo "       run tests and save tests and coverag reports"
+	@echo "make run_sample sample_file=name_of_sample.py"
+	@echo "       run a script contained in samples folder"
+	@echo "       e.g. make run_sample sample_file=some_research.py"
 
 setup: $(VENV_NAME)/bin/activate
 $(VENV_NAME)/bin/activate: setup.py
@@ -30,3 +33,5 @@ test: setup
 test_report: setup
 	${PYTEST} --durations=3 -v --cov=${PWD}/findpapers --cov-report xml:reports/coverage.xml --junitxml=reports/tests.xml
 
+run_sample: setup
+	${PYTHON} samples/${sample_file}

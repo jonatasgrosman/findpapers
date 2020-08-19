@@ -6,8 +6,10 @@ from fake_useragent import UserAgent
 #from scrapper.scopus_paper_page_scrapper import ScopusPaperPageScrapper
 #from scrapper.scopus_publication_scrapper import ScopusPublicationScrapper
 
-
+import logging
 from findpapers.models.search import Search
+
+logger = logging.getLogger(__name__)
 
 AREAS_BY_KEY = {
     'computer_science': ['COMP', 'MULT'],
@@ -78,6 +80,8 @@ def run(search: Search, api_token: str):
     query = get_query(search)
 
     url = f'https://api.elsevier.com/content/search/scopus?&sort=citedby-count,relevancy,pubyear&apiKey={api_token}&query={query}'
+
+    
 
     response = util.try_with_repetitions(
         lambda: requests.get(url, headers={'User-Agent': str(UserAgent().chrome), 'Accept': 'application/json'}).json()['search-results'], 
