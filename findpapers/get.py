@@ -1,14 +1,20 @@
 import os
+import datetime
 from typing import Optional, List
-from findpapers.models.paper import Paper
+from findpapers.models.search import Search
+import findpapers.scrapper.scopus_scrapper as scopus_scrapper
 
 
-def get(query: str, since: Optional[int] = None, area: Optional[str] = None, scopus_api_token: Optional[str] = None) -> List[Paper]:
+def get(query: str, since: Optional[datetime.date] = None, areas: Optional[List[str]] = None, scopus_api_token: Optional[str] = None) -> Search:
+
+    search = Search(query, since, areas)
 
     if scopus_api_token is None:
         scopus_api_token = os.getenv('SCOPUS_API_TOKEN')
 
     print(scopus_api_token)
+
+    scopus_scrapper.run(search, scopus_api_token)
 
     return []
 

@@ -6,13 +6,13 @@ from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
 
 
-class SearchResult():
-    """
-    Class that represents a search result
-    """
-
-    valid_areas = ['computer_science', 'economics', 'engineering',
+VALID_AREAS = ['computer_science', 'economics', 'engineering',
                    'mathematics', 'physics', 'biology', 'chemistry', 'humanities']
+
+class Search():
+    """
+    Class that represents a search
+    """
 
     def __init__(self, query: str, since: Optional[datetime.date] = None, areas: List[str] = None):
         """
@@ -22,12 +22,11 @@ class SearchResult():
         ----------
         query : str
             The query used to fetch the papers
-        since : int
-            The lower bound (inclusive) date of search , by default None
-        areas : List[str]
+        since : datetime.date, optional
+            The lower bound (inclusive) date of search, by default None
+        areas : List[str], optional
             List of areas of interest that limited the field of search for papers.
             The available areas are: computer_science, economics, engineering, mathematics, physics, biology, chemistry and humanities
-
         Raises
         ------
         ValueError
@@ -40,9 +39,9 @@ class SearchResult():
         # checking the areas
         if areas is not None:
             for area in areas:
-                if area not in SearchResult.valid_areas:
+                if area not in VALID_AREAS:
                     raise ValueError(
-                        f'Invalid area "{area}". Only {"".join(SearchResult.valid_areas)} are valid areas')
+                        f'Invalid area "{area}". Only {"".join(VALID_AREAS)} are valid areas')
         self.areas = areas
 
         self.fetched_at = datetime.datetime.utcnow()
@@ -66,7 +65,7 @@ class SearchResult():
         str
             A string that represents a unique key for each paper, that will be used to fill and retrieve values from paper_by_key
         """
-        return f'{paper_title.lower()}-{publication_date}'
+        return f'{paper_title.lower()}|{publication_date.year if publication_date is not None else ""}'
 
     def get_publication_key(self, publication_title: str, publication_issn: Optional[str] = None, publication_isbn: Optional[str] = None) -> str:
         """
@@ -87,7 +86,7 @@ class SearchResult():
             A string that represents a unique key for each publication, that will be used to fill and retrieve values from publication_by_key
         """
 
-        return f'{publication_title.lower()}-{str(publication_issn).lower()}-{str(publication_isbn).lower()}'
+        return f'{publication_title.lower()}|{str(publication_issn).lower()}|{str(publication_isbn).lower()}'
 
     def add_paper(self, paper: Paper):
         """
@@ -100,8 +99,10 @@ class SearchResult():
             A new collected paper instance
         """
 
-        publication_key = self.get_publication_key(paper.publication.title, paper.publication.issn, paper.publication.isbn)
-        already_collected_publication = self.publication_by_key.get(publication_key, None)
+        publication_key = self.get_publication_key(
+            paper.publication.title, paper.publication.issn, paper.publication.isbn)
+        already_collected_publication = self.publication_by_key.get(
+            publication_key, None)
 
         if already_collected_publication is not None:
             already_collected_publication.enrich(paper.publication)
@@ -185,9 +186,8 @@ class SearchResult():
         """
         In some cases, a same paper is represented with tiny differences between some libraries, 
         this method try to deal with this situation merging those instances of the paper,
-        using a similarity threshold, by default 0.9 (90%), i.e., if two papers metadata is similar by 80% or more 
-        this papers are considered duplications of a same paper.
-        The method use the paper key (see: SearchResult.get_paper_key) to calculate the similarity between the papers
+        using a similarity threshold, by default 0.9 (90%), i.e., if two papers keys (see: Search.get_paper_key) 
+        are similar by 90% or more this papers are considered duplications of a same paper.
 
         Parameters
         ----------
@@ -195,7 +195,8 @@ class SearchResult():
             A value between 0 and 1 that represents a threshold that says if a pair of papers is a duplication or not, by default 0.9 (90%)
         """
 
-        paper_key_pairs = list(itertools.combinations(self.paper_by_key.keys(), 2))
+        paper_key_pairs = list(
+            itertools.combinations(self.paper_by_key.keys(), 2))
 
         for i, pair in enumerate(paper_key_pairs):
 
@@ -205,10 +206,12 @@ class SearchResult():
             max_key_length = max(len(paper_1_key), len(paper_2_key))
 
             # creating the max valid edit distance using the max key length between the two papers and the provided similarity threshold
-            max_edit_distance = int(max_key_length * (1 - similarity_threshold))
+            max_edit_distance = int(
+                max_key_length * (1 - similarity_threshold))
 
             # calculating the edit distance between the keys
-            titles_edit_distance = edlib.align(paper_1_key, paper_2_key)['editDistance']
+            titles_edit_distance = edlib.align(
+                paper_1_key, paper_2_key)['editDistance']
 
             if titles_edit_distance <= max_edit_distance:
 

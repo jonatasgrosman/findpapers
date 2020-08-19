@@ -3,7 +3,7 @@ from findpapers import util as Util
 from findpapers.models.bibliometrics import AcmBibliometrics, ScopusBibliometrics
 from findpapers.models.publication import Publication
 from findpapers.models.paper import Paper
-from findpapers.models.search_result import SearchResult
+from findpapers.models.search import Search
 
 def test_bibliometrics(acm_bibliometrics, scopus_bibliometrics):
 
@@ -100,10 +100,12 @@ def test_paper(paper):
                             paper.publication_date, paper.urls, another_doi, another_paper_citations, another_keywords, another_comments)
     another_paper.add_library('arXiv')
 
+    paper.publication_date = None
     paper.abstract = None
     paper.authors = None
     paper.keywords = None
     paper.enrich(another_paper)
+    assert paper.publication_date == another_paper.publication_date
     assert paper.abstract == another_paper.abstract
     assert paper.authors == another_paper.authors
     assert paper.keywords == another_paper.keywords
@@ -117,32 +119,32 @@ def test_paper(paper):
     assert paper.comments == another_comments
 
 
-def test_search_result(paper):
+def test_search(paper):
 
-    search_result = SearchResult('this AND that', datetime.date(1969,1,30), ['humanities', 'economics'])
+    search = Search('this AND that', datetime.date(1969,1,30), ['humanities', 'economics'])
 
-    assert len(search_result.papers) == 0
+    assert len(search.papers) == 0
 
-    search_result.add_paper(paper)
-    assert len(search_result.papers) == 1
-    search_result.add_paper(paper)
-    assert len(search_result.papers) == 1
+    search.add_paper(paper)
+    assert len(search.papers) == 1
+    search.add_paper(paper)
+    assert len(search.papers) == 1
 
     another_paper = Paper('awesome paper title 2', 'a long abstract', paper.authors, paper.publication,  paper.publication_date, paper.urls)
-    search_result.add_paper(another_paper)
-    assert len(search_result.papers) == 2
+    search.add_paper(another_paper)
+    assert len(search.papers) == 2
 
-    assert paper == search_result.get_paper(paper.title, paper.publication_date)
-    assert paper.publication == search_result.get_publication(paper.publication.title, paper.publication.issn, paper.publication.isbn)
+    assert paper == search.get_paper(paper.title, paper.publication_date)
+    assert paper.publication == search.get_publication(paper.publication.title, paper.publication.issn, paper.publication.isbn)
 
-    search_result.remove_paper(another_paper)
-    assert len(search_result.papers) == 1
-    assert paper in search_result.papers
+    search.remove_paper(another_paper)
+    assert len(search.papers) == 1
+    assert paper in search.papers
 
-    search_result.add_paper(another_paper)
-    assert len(search_result.papers) == 2
-    search_result.merge_duplications()
-    assert len(search_result.papers) == 1
+    search.add_paper(another_paper)
+    assert len(search.papers) == 2
+    search.merge_duplications()
+    assert len(search.papers) == 1
 
     with pytest.raises(ValueError):
-        SearchResult('this AND that', datetime.date(1969,1,30), ['INVALID CATEGORY'])
+        Search('this AND that', datetime.date(1969,1,30), ['INVALID CATEGORY'])

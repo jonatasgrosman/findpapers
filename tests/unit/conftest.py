@@ -2,7 +2,7 @@ import pytest
 import datetime
 from findpapers.models.publication import Publication
 from findpapers.models.paper import Paper
-from findpapers.models.search_result import SearchResult
+from findpapers.models.search import Search
 from findpapers.models.bibliometrics import AcmBibliometrics, ScopusBibliometrics
 
 

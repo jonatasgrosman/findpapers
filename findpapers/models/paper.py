@@ -94,6 +94,9 @@ class Paper():
             A duplication of the "self" paper
         """
 
+        if self.publication_date is None:
+            self.publication_date = paper.publication_date
+
         if self.abstract is None or len(self.abstract) < len(paper.abstract):
             self.abstract = paper.abstract
         
