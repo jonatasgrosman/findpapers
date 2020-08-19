@@ -9,7 +9,7 @@ class Paper():
     Class that represents a paper instance
     """
 
-    def __init__(self, title: str, abstract: str, authors: Set[str], publication: Publication,
+    def __init__(self, title: str, abstract: str, authors: List[str], publication: Publication,
                  publication_date: date, urls: Set[str], doi: Optional[str] = None, citations: Optional[int] = None,
                  keywords: Optional[Set[str]] = None, comments: Optional[str] = None):
         """
@@ -21,7 +21,7 @@ class Paper():
             Paper title
         abstract : str
             Paper abstract
-        authors : Set[str]
+        authors : List[str]
             A list of paper authors
         publication: Publication
             The publication where the paper were published

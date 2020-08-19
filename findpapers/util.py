@@ -29,17 +29,17 @@ def get_numeric_month_by_string(string: str) -> str:
     return str(months.index(string[:3].lower()) + 1).zfill(2)
 
 
-def try_with_repetitions(function, repetitions: Optional[int] = 1, delay: Optional[int] = 3):
+def try_success(function, attempts: Optional[int] = 1, delay: Optional[int] = 3):
     """
     Try to execute a function and repeat this execution if it raises any exception.
-    This function will try N times to active success, given by provided number of repetitions.
+    This function will try N times to succeed, by provided number of attempts.
 
     Parameters
     ----------
     function : a common function
             A function that will be tried N times
-    repetitions : int, optional
-            number of repetitions, by default 1
+    attempts : int, optional
+            number of attempts, by default 1
     delay : int, optional
             The delay between function attempts in seconds, by default 3
 
@@ -49,10 +49,10 @@ def try_with_repetitions(function, repetitions: Optional[int] = 1, delay: Option
             This method returns the returned value of function or None if function raise Exception in all attempts
     """
     try:
-        if repetitions > 0:
-            time.sleep(delay)
+        if attempts > 0:
             return function()
         return None
     except Exception as e:
         logger.error(e)
-        return try_with_repetitions(function, repetitions-1)
+        time.sleep(delay)
+        return try_success(function, attempts-1)

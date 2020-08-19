@@ -14,7 +14,7 @@ class Search():
     Class that represents a search
     """
 
-    def __init__(self, query: str, since: Optional[datetime.date] = None, areas: List[str] = None):
+    def __init__(self, query: str, since: Optional[datetime.date] = None, areas: Optional[List[str]] = None, limit: Optional[int] = None):
         """
         Class constructor
 
@@ -27,6 +27,9 @@ class Search():
         areas : List[str], optional
             List of areas of interest that limited the field of search for papers.
             The available areas are: computer_science, economics, engineering, mathematics, physics, biology, chemistry and humanities
+        limit : int, optional
+            The max number of papers that needs to be returned in the search, 
+            when the limit is not provided the search will retrieve all the papers that it can, by default None
         Raises
         ------
         ValueError
@@ -35,6 +38,7 @@ class Search():
 
         self.query = query
         self.since = since
+        self.limit = limit
 
         # checking the areas
         if areas is not None:
@@ -97,7 +101,14 @@ class Search():
         ----------
         paper : Paper
             A new collected paper instance
+        Raises
+        ------
+        OverflowError
+            - When the papers limit is provided, you cannot exceed it
         """
+
+        if self.limit is not None and len(self.papers) >= self.limit:
+            raise OverflowError('When the papers limit is provided, you cannot exceed it')
 
         publication_key = self.get_publication_key(
             paper.publication.title, paper.publication.issn, paper.publication.isbn)
