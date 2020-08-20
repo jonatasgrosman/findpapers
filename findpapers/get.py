@@ -3,7 +3,7 @@ import datetime
 import logging
 from typing import Optional, List
 from findpapers.models.search import Search
-import findpapers.scrapper.scopus_scrapper as scopus_scrapper
+import findpapers.searcher.scopus_searcher as scopus_searcher
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ def get(query: str, since: Optional[datetime.date] = None, areas: Optional[List[
 
     if scopus_api_token is not None:
         logger.info('Fetching papers from Scopus library...')
-        scopus_scrapper.run(search, scopus_api_token)
+        scopus_searcher.run(search, scopus_api_token)
 
     return search
 

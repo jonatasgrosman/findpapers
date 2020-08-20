@@ -3,7 +3,7 @@ import requests
 from typing import Optional
 from fake_useragent import UserAgent
 from lxml import html
-#from scrapper.acm_paper_page_scrapper import AcmPaperPageScrapper
+#from searcher.acm_paper_page_searcher import AcmPaperPageScrapper
 
 # switch to API... has support for parentheses :)
 # https://arxiv.org/help/api/user-manual
@@ -88,7 +88,7 @@ class ArxivScrapper():
     @staticmethod
     def run(query: str, year_lower_bound: Optional[int], area_keys=Optional[str],only_papers_with_comments=Optional[bool]):
 
-        print('initializing arXiv scrapper')
+        print('initializing arXiv searcher')
 
         BASE_URL = 'https://arxiv.org/search/advanced?advanced=&date-to_date=&date-date_type=submitted_date&abstracts=show&size=200&order=-announced_date_first&classification-include_cross_list=include&'
         

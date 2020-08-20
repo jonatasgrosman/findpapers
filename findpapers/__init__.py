@@ -11,8 +11,4 @@ from findpapers.get import get
 #https://developer.ieee.org/
 
 logging_level = os.getenv('LOGGING_LEVEL')
-
-if logging_level is None or len(logging_level.strip()) == 0 or logging_level.strip() == 'INFO':
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s:%(message)s')
-else:
-    logging.basicConfig(level=getattr(logging, logging_level), format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logging.basicConfig(level=getattr(logging, logging_level), format='%(asctime)s %(levelname)s: %(message)s')

@@ -1,11 +1,12 @@
-import datetime, pytest
-from findpapers import util as Util
+import datetime
+import pytest
 from findpapers.models.bibliometrics import AcmBibliometrics, ScopusBibliometrics
 from findpapers.models.publication import Publication
 from findpapers.models.paper import Paper
 from findpapers.models.search import Search
 
-def test_bibliometrics(acm_bibliometrics, scopus_bibliometrics):
+
+def test_bibliometrics(acm_bibliometrics: AcmBibliometrics, scopus_bibliometrics: ScopusBibliometrics):
 
     assert acm_bibliometrics.average_citation_per_article == 2.2
     assert acm_bibliometrics.average_downloads_per_article == 4.7
@@ -15,7 +16,7 @@ def test_bibliometrics(acm_bibliometrics, scopus_bibliometrics):
     assert scopus_bibliometrics.snip == 1.0
 
 
-def test_publication(publication, acm_bibliometrics, scopus_bibliometrics):
+def test_publication(publication: Publication, acm_bibliometrics: AcmBibliometrics, scopus_bibliometrics: ScopusBibliometrics):
 
     assert publication.title == 'awesome publication title'
     assert publication.isbn == 'isbn-X'
@@ -63,7 +64,7 @@ def test_publication(publication, acm_bibliometrics, scopus_bibliometrics):
     assert publication.category == another_publication.category
 
 
-def test_paper(paper):
+def test_paper(paper: Paper):
 
     assert paper.title == 'awesome paper title'
     assert paper.abstract == 'a long abstract'
@@ -95,9 +96,9 @@ def test_paper(paper):
     another_comments = 'some comments'
 
     paper.citations = paper_citations
-    
-    another_paper = Paper('another awesome title paper', 'a long abstract', paper.authors, paper.publication, 
-                            paper.publication_date, paper.urls, another_doi, another_paper_citations, another_keywords, another_comments)
+
+    another_paper = Paper('another awesome title paper', 'a long abstract', paper.authors, paper.publication,
+                          paper.publication_date, paper.urls, another_doi, another_paper_citations, another_keywords, another_comments)
     another_paper.add_library('arXiv')
 
     paper.publication_date = None
@@ -109,19 +110,20 @@ def test_paper(paper):
     assert paper.abstract == another_paper.abstract
     assert paper.authors == another_paper.authors
     assert paper.keywords == another_paper.keywords
-    
 
     assert 'arXiv' in paper.libraries
     assert len(paper.libraries) == 3
     assert paper.doi == another_doi
-    assert paper.citations == paper_citations # 'cause another_paper_citations was lower than paper_citations
+    # 'cause another_paper_citations was lower than paper_citations
+    assert paper.citations == paper_citations
     assert paper.keywords == another_keywords
     assert paper.comments == another_comments
 
 
-def test_search(paper):
+def test_search(paper: Paper):
 
-    search = Search('this AND that', datetime.date(1969,1,30), ['humanities', 'economics'])
+    search = Search('this AND that', datetime.date(
+        1969, 1, 30), ['humanities', 'economics'], 2)
 
     assert len(search.papers) == 0
 
@@ -130,12 +132,14 @@ def test_search(paper):
     search.add_paper(paper)
     assert len(search.papers) == 1
 
-    another_paper = Paper('awesome paper title 2', 'a long abstract', paper.authors, paper.publication,  paper.publication_date, paper.urls)
+    another_paper = Paper('awesome paper title 2', 'a long abstract',
+                          paper.authors, paper.publication,  paper.publication_date, paper.urls)
     search.add_paper(another_paper)
     assert len(search.papers) == 2
 
     assert paper == search.get_paper(paper.title, paper.publication_date)
-    assert paper.publication == search.get_publication(paper.publication.title, paper.publication.issn, paper.publication.isbn)
+    assert paper.publication == search.get_publication(
+        paper.publication.title, paper.publication.issn, paper.publication.isbn)
 
     search.remove_paper(another_paper)
     assert len(search.papers) == 1
@@ -143,8 +147,15 @@ def test_search(paper):
 
     search.add_paper(another_paper)
     assert len(search.papers) == 2
+
+    another_paper_2 = Paper('awesome paper title 3', 'a long abstract',
+                            paper.authors, paper.publication,  paper.publication_date, paper.urls)
+    with pytest.raises(OverflowError):
+        search.add_paper(another_paper_2)
+
     search.merge_duplications()
     assert len(search.papers) == 1
 
     with pytest.raises(ValueError):
-        Search('this AND that', datetime.date(1969,1,30), ['INVALID CATEGORY'])
+        Search('this AND that', datetime.date(
+            1969, 1, 30), ['INVALID CATEGORY'])

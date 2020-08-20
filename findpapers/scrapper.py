@@ -1,6 +1,6 @@
-from scrapper.scopus_scrapper import ScopusScrapper
-from scrapper.acm_scrapper import AcmScrapper
-from scrapper.arxiv_scrapper import ArxivScrapper
+from searcher.scopus_searcher import ScopusScrapper
+from searcher.acm_searcher import AcmScrapper
+from searcher.arxiv_searcher import ArxivScrapper
 import json
 import datetime
 

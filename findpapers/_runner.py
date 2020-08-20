@@ -1,7 +1,7 @@
-from scrapper.scrapper import Scrapper
+from searcher.searcher import Searcher
 import configparser
 
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-Scrapper.run(config)
+Searcher.run(config)

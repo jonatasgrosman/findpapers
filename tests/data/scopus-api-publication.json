@@ -1,0 +1,105 @@
+{
+    "serial-metadata-response": {
+        "link": [
+            {
+                "@_fa": "true",
+                "@ref": "self",
+                "@href": "https://api.elsevier.com/content/serial/title/issn/15462218",
+                "@type": "application/json"
+            }
+        ],
+        "entry": [
+            {
+                "@_fa": "true",
+                "dc:title": "Computers, Materials and Continua",
+                "dc:publisher": "Tech Science Press",
+                "coverageStartYear": "2004",
+                "coverageEndYear": "2020",
+                "prism:aggregationType": "journal",
+                "source-id": "24364",
+                "prism:issn": "1546-2218",
+                "prism:eIssn": "1546-2226",
+                "openaccess": null,
+                "openaccessArticle": null,
+                "openArchiveArticle": null,
+                "openaccessType": null,
+                "openaccessStartDate": null,
+                "oaAllowsAuthorPaid": null,
+                "subject-area": [
+                    {
+                        "@_fa": "true",
+                        "@code": "2502",
+                        "@abbrev": "MATE",
+                        "$": "Biomaterials"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@code": "2611",
+                        "@abbrev": "MATH",
+                        "$": "Modeling and Simulation"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@code": "2211",
+                        "@abbrev": "ENGI",
+                        "$": "Mechanics of Materials"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@code": "1706",
+                        "@abbrev": "COMP",
+                        "$": "Computer Science Applications"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@code": "2208",
+                        "@abbrev": "ENGI",
+                        "$": "Electrical and Electronic Engineering"
+                    }
+                ],
+                "SNIPList": {
+                    "SNIP": [
+                        {
+                            "@_fa": "true",
+                            "@year": "2019",
+                            "$": "4.801"
+                        }
+                    ]
+                },
+                "SJRList": {
+                    "SJR": [
+                        {
+                            "@_fa": "true",
+                            "@year": "2019",
+                            "$": "1.534"
+                        }
+                    ]
+                },
+                "citeScoreYearInfoList": {
+                    "citeScoreCurrentMetric": "3.8",
+                    "citeScoreCurrentMetricYear": "2019",
+                    "citeScoreTracker": "4.5",
+                    "citeScoreTrackerYear": "2020"
+                },
+                "link": [
+                    {
+                        "@_fa": "true",
+                        "@ref": "scopus-source",
+                        "@href": "https://www.scopus.com/source/sourceInfo.url?sourceId=24364"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "homepage",
+                        "@href": "http://www.techscience.com/cmc/index.html"
+                    },
+                    {
+                        "@_fa": "true",
+                        "@ref": "coverimage",
+                        "@href": "https://api.elsevier.com/content/serial/title/issn/1546-2218?view=coverimage"
+                    }
+                ],
+                "prism:url": "https://api.elsevier.com/content/serial/title/issn/1546-2218"
+            }
+        ]
+    }
+}

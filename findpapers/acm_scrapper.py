@@ -4,7 +4,7 @@ import traceback
 from typing import Optional
 from fake_useragent import UserAgent
 from lxml import html
-from scrapper.acm_paper_page_scrapper import AcmPaperPageScrapper
+from searcher.acm_paper_page_searcher import AcmPaperPageScrapper
 
 class AcmScrapper():
 
@@ -26,7 +26,7 @@ class AcmScrapper():
     @staticmethod
     def run(query: str, year_lower_bound: Optional[int]):
 
-        print('initializing ACM scrapper')
+        print('initializing ACM searcher')
 
         BASE_URL = 'https://dl.acm.org'
         SEARCH_BASE_URL = BASE_URL + '/action/doSearch'
