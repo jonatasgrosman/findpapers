@@ -60,7 +60,7 @@ def get_query(search: Search) -> str:
     return query
 
 
-def get_publication_entry(publication_issn: str, api_token: str): # pragma: no cover
+def get_publication_entry(publication_issn: str, api_token: str):  # pragma: no cover
     """
     Get publication entry by publication ISSN
 
@@ -156,7 +156,7 @@ def get_publication(paper_entry: dict, api_token: str) -> Publication:
     return publication
 
 
-def get_paper_page(url: str): # pragma: no cover
+def get_paper_page(url: str):  # pragma: no cover
     """
     Get a paper page element from a provided URL
 
@@ -234,31 +234,21 @@ def get_paper(paper_entry: dict, publication: Publication) -> Paper:
 
             paper_page = get_paper_page(paper_scopus_link)
 
-            try:
-                paper_abstract = paper_page.xpath(
-                    '//section[@id="abstractSection"]//p//text()[normalize-space()]')
+            paper_abstract = paper_page.xpath(
+                '//section[@id="abstractSection"]//p//text()[normalize-space()]')
+            if len(paper_abstract) > 0:
                 paper_abstract = re.sub(
                     '\xa0', ' ', ''.join(paper_abstract)).strip()
-            except Exception as e:
-                logging.warning(
-                    'An attempt to collect the abstract has failed')
 
-            try:
-                authors = paper_page.xpath(
-                    '//*[@id="authorlist"]/ul/li/span[@class="previewTxt"]')
-                paper_authors = []
-                for author in authors:
-                    paper_authors.append(author.text.strip())
-            except Exception as e:
-                logging.warning('An attempt to collect the authors has failed')
+            authors = paper_page.xpath(
+                '//*[@id="authorlist"]/ul/li/span[@class="previewTxt"]')
+            paper_authors = []
+            for author in authors:
+                paper_authors.append(author.text.strip())
 
-            try:
-                keywords = paper_page.xpath('//*[@id="authorKeywords"]/span')
-                for keyword in keywords:
-                    paper_keywords.add(keyword.text.strip())
-            except Exception as e:
-                logging.warning(
-                    'An attempt to collect the keywords has failed')
+            keywords = paper_page.xpath('//*[@id="authorKeywords"]/span')
+            for keyword in keywords:
+                paper_keywords.add(keyword.text.strip())
 
         except Exception as e:
             logging.error(e)
@@ -269,7 +259,7 @@ def get_paper(paper_entry: dict, publication: Publication) -> Paper:
     return paper
 
 
-def get_search_results(search: Search, api_token: str, url: Optional[str] = None): # pragma: no cover
+def get_search_results(search: Search, api_token: str, url: Optional[str] = None):  # pragma: no cover
     """
     This method fetch papers from Scopus database using the provided search parameters
 
@@ -323,7 +313,8 @@ def run(search: Search, api_token: str, url: Optional[str] = None):
     search_results = get_search_results(search, url)
 
     total_papers = search_results.get('opensearch:totalResults', 0)
-    start_pagination_index = int(search_results.get('opensearch:startIndex', 0))
+    start_pagination_index = int(
+        search_results.get('opensearch:startIndex', 0))
     processed_papers = 0
 
     logging.info(f'{total_papers} papers retrived')
@@ -334,7 +325,7 @@ def run(search: Search, api_token: str, url: Optional[str] = None):
             break
 
         try:
-            logging.info(paper_entry.get("dc:title", None))
+            logging.info(paper_entry.get("dc:title"))
 
             publication = get_publication(paper_entry, api_token)
             paper = get_paper(paper_entry, publication)
@@ -357,5 +348,5 @@ def run(search: Search, api_token: str, url: Optional[str] = None):
 
     # If there is a next url, the API provided response was paginated and we need to process the next url
     # We'll make a recursive call for it
-    if next_url is not None and search.limit is None or len(search.papers) < search.limit:
+    if next_url is not None and (search.limit is None or len(search.papers) < search.limit):
         run(search, api_token, next_url)

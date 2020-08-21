@@ -23,6 +23,7 @@ def test_mocks(mock_scopus_get_publication_entry, mock_scopus_get_paper_page, mo
     assert scopus_searcher.get_paper_page() is not None
     assert scopus_searcher.get_search_results() is not None
 
+
 @pytest.mark.parametrize('paper_entry', [
     ({
         'prism:publicationName': 'fake publication title',
@@ -42,7 +43,7 @@ def test_get_publication(mock_scopus_get_publication_entry, paper_entry):
     publication = scopus_searcher.get_publication(paper_entry, None)
 
     assert publication.title == paper_entry.get('prism:publicationName')
-    
+
     if isinstance(paper_entry.get('prism:isbn'), list):
         assert publication.isbn == paper_entry.get('prism:isbn')[0].get('$')
     else:
@@ -52,7 +53,7 @@ def test_get_publication(mock_scopus_get_publication_entry, paper_entry):
         assert publication.issn == paper_entry.get('prism:issn')[0].get('$')
     else:
         assert publication.issn == paper_entry.get('prism:issn')
-        
+
     assert publication.publisher == 'Tech Science Press'
     assert publication.category == 'Journal'
 
@@ -92,13 +93,47 @@ def test_get_paper(mock_scopus_get_paper_page, publication):
     assert paper_entry.get('link')[0].get('@href') in paper.urls
 
 
+def test_get_paper_exceptions(mock_scopus_get_paper_page_error, publication):
+
+    paper_entry = {
+        'dc:title': 'fake paper title',
+        'prism:coverDate': '2020-01-01',
+        'prism:doi': 'fake-doi',
+        'citedby-count': '42',
+        'link': [
+            {'@ref': 'scopus', '@href': 'http://fake-url'}
+        ]
+    }
+
+    paper = scopus_searcher.get_paper(paper_entry, publication)
+
+    assert paper.abstract is None
+    assert len(paper.keywords) == 0
+
+
 def test_run(mock_scopus_get_publication_entry, mock_scopus_get_paper_page, mock_scopus_get_search_results, search):
 
+    search.limit = 3
     scopus_searcher.run(search, 'fake-api-token')
 
-    assert len(search.papers) == 2
+    assert len(search.papers) == 3
 
     paper_titles = [x.title for x in search.papers]
 
     assert 'MultiWoz - A large-scale multi-domain wizard-of-oz dataset for task-oriented dialogue modelling' in paper_titles
     assert 'BioBERT: A pre-trained biomedical language representation model for biomedical text mining' in paper_titles
+    assert 'FAKE PAPER TITLE 0' in paper_titles
+
+    with pytest.raises(AttributeError):
+        scopus_searcher.run(search, '')
+    
+    with pytest.raises(AttributeError):
+        scopus_searcher.run(search, None)
+
+
+def test_run_entry_error(mock_scopus_get_publication_entry, mock_scopus_get_paper_page, mock_scopus_get_search_results_entry_error, search):
+
+    search.limit = 4
+    scopus_searcher.run(search, 'fake-api-token')
+
+    assert len(search.papers) == 3
