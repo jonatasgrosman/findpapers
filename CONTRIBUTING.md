@@ -26,7 +26,7 @@ If you are subject to or witness unacceptable behavior, or have any other concer
 
 ## <a name="issue"></a> Found a Bug?
 If you find a bug in the source code, you can help us by
-[submitting an issue](#submit-issue) to our [GitLab Repository][https://gitlab.com/jonatasgrosman/findpapers]. Even better, you can
+[submitting an issue](#submit-issue) to our [GitLab Repository](https://gitlab.com/jonatasgrosman/findpapers). Even better, you can
 [submit a Merge Request](#submit-mr) with a fix.
 
 ## <a name="feature"></a> Missing a Feature?
@@ -43,7 +43,7 @@ and help you to craft the change so that it is successfully accepted into the pr
 ## <a name="submit"></a> Submission Guidelines
 
 In your development process we follow the [GitHub flow][github-flow], that is very powerful and easy to understand. 
-That process enforces continuous delivery by making **anything in the master branch deployable**.
+That process enforces continuous delivery by **making anything in the master branch deployable**.
 So everybody needs to keep the master branch as safe as possible and ready to be released at any time.
 
 ### <a name="submit-issue"></a> Submitting an Issue
@@ -174,6 +174,8 @@ docs: update changelog to 0.2
 fix: need to depend on latest rxjs and zone.js
 
 The version in our package.json gets copied to the one we publish, and users need the latest of these.
+
+Closes #10
 ```
 
 ### Type
@@ -205,9 +207,11 @@ The body should include the motivation for the change and contrast this with pre
 The footer should contain any information about **Breaking Changes** and is also the place to
 reference GitLab issues that this commit **Closes**.
 
-**Breaking Changes** should start with the word `BREAKING CHANGE:` with a space or two newlines. The rest of the commit message is then used for this.
+**Breaking Changes** should start with the words `BREAKING CHANGE:` with a space or two newlines. The rest of the commit message is then used for this.
 
 ## <a name="dev"></a> Building and Testing
+
+Let's see what needs to be done in your machine before [submit a Merge Request](#submit-mr) 
 
 ## Prerequisite Software
 
