@@ -187,7 +187,7 @@ Must be one of the following:
 * **feat**: A new feature
 * **fix**: A bug fix
 * **perf**: A code change that improves performance
-* **refact**: A code change that neither fixes a bug nor adds a feature
+* **refact**: A code change that neither fixes a bug, adds a feature nor improves code performance
 * **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
 * **test**: Adding missing tests or correcting existing tests
 * **revert**: Reverts some previous commit, in this case the reverted commit hash needs to be present in the commit message
@@ -218,9 +218,11 @@ Let's see what needs to be done in your machine before [submit a Merge Request](
 Before you can build and test, you must install and configure the
 following products on your development machine:
 
-* [Python](https://www.python.org/)
+* [Python](https://www.python.org)
 
 * [Git](http://git-scm.com)
+
+* [Poetry](https://python-poetry.org)
 
 ## Getting the Sources
 

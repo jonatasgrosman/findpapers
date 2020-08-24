@@ -1,3 +1,35 @@
+[tool.poetry]
+name = "findpapers"
+version = "1.0.0"
+description = "Easy way to find academic papers across scientific libraries using a single query."
+authors = ["Jonatas Grosman <jonatasgrosman@gmail.com>"]
+maintainers = ["Jonatas Grosman <jonatasgrosman@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://gitlab.com/jonatasgrosman/findpapers"
+repository = "https://gitlab.com/jonatasgrosman/findpapers"
+documentation = "https://gitlab.com/jonatasgrosman/findpapers"
+keywords = ["Paper", "Academic", "Scrapper", "Crawler"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+lxml = "^4.5.2"
+requests = "^2.24.0"
+fake-useragent = "^0.1.11"
+colorama = "^0.4.3"
+inquirer = "^2.7.0"
+numpy = "^1.19.1"
+edlib = "^1.3.8"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+pytest-cov = "^2.10.1"
+pytest-randomly = "^3.4.1"
+Sphinx = "^3.2.1"
+
+[tool.poetry.urls]
+issues = "https://gitlab.com/jonatasgrosman/findpapers/-/issues"
+
 [tool.pytest.ini_options]
 junit_family = "xunit2"
 minversion = "6.0"
@@ -23,3 +55,7 @@ exclude_lines = [
     "if 0:",
     "if __name__ == .__main__.:"
 ]
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+

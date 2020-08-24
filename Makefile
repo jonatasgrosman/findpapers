@@ -1,11 +1,7 @@
-.PHONY: help setup test
+.PHONY: help setup test test_report run_sample
 
 include .env
 export $(shell sed 's/=.*//' .env)
-
-VENV_NAME?=venv
-PYTHON=${VENV_NAME}/bin/python3
-PYTEST=${VENV_NAME}/bin/pytest
 
 help:
 	@echo "make setup"
@@ -18,20 +14,16 @@ help:
 	@echo "       run a script contained in samples folder"
 	@echo "       e.g. make run_sample sample_file=some_research.py"
 
-setup: $(VENV_NAME)/bin/activate
-$(VENV_NAME)/bin/activate: setup.py
-	test -d $(VENV_NAME) || python3 -m venv $(VENV_NAME)
-	${PYTHON} -m pip install -U pip
-	${PYTHON} -m pip install -e '.[test]'
-	${PYTHON} -m pip install -e '.[documentation]'
-	${PYTHON} -m pip install -e .
-	touch $(VENV_NAME)/bin/activate
+setup: poetry.lock
+poetry.lock: pyproject.toml
+	poetry install
+	touch poetry.lock
 
 test: setup
-	${PYTEST} --durations=3 -v --cov=${PWD}/findpapers 
+	poetry run pytest --durations=3 -v --cov=${PWD}/findpapers 
 
 test_report: setup
-	${PYTEST} --durations=3 -v --cov=${PWD}/findpapers --cov-report xml:reports/coverage.xml --junitxml=reports/tests.xml
+	poetry run pytest --durations=3 -v --cov=${PWD}/findpapers --cov-report xml:reports/coverage.xml --junitxml=reports/tests.xml
 
 run_sample: setup
-	${PYTHON} samples/${sample_file}
+	poetry run python samples/${sample_file}
