@@ -187,7 +187,7 @@ Must be one of the following:
 * **feat**: A new feature
 * **fix**: A bug fix
 * **perf**: A code change that improves performance
-* **refactor**: A code change that neither fixes a bug, adds a feature nor improves code performance
+* **refact**: A code change that neither fixes a bug, adds a feature nor improves code performance
 * **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
 * **test**: Adding missing tests or correcting existing tests
 * **revert**: Reverts some previous commit, in this case the reverted commit hash needs to be present in the commit message
