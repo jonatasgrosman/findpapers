@@ -42,9 +42,9 @@ and help you to craft the change so that it is successfully accepted into the pr
 
 ## <a name="submit"></a> Submission Guidelines
 
-In your development process we follow the [GitHub flow][github-flow], that is very powerful and easy to understand. 
+In our development process we follow the [GitHub flow][github-flow], that is very powerful and easy to understand. 
 That process enforces continuous delivery by **making anything in the master branch deployable**.
-So everybody needs to keep the master branch as safe as possible and ready to be released at any time.
+So everybody needs to keep the master branch as safe as possible and ready to be deployed at any time.
 
 ### <a name="submit-issue"></a> Submitting an Issue
 
@@ -56,7 +56,7 @@ A minimal reproduce scenario allows us to quickly confirm a bug (or point out co
 
 We will be insisting on a minimal reproduce scenario in order to save maintainers time and ultimately be able to fix more bugs. Interestingly, from our experience users often find coding problems themselves while preparing a minimal reproduction scenario. We understand that sometimes it might be hard to extract essentials bits of code from a larger code-base but we really need to isolate the problem before we can fix it.
 
-Unfortunately, we are not able to investigate / fix bugs without a minimal reproduction, so if we don't hear back from you we are going to close an issue that doesn't have enough info to be reproduced.
+Unfortunately, we are not able to investigate/fix bugs without a minimal reproduction, so if we don't hear back from you we are going to close an issue that doesn't have enough info to be reproduced.
 
 You can file new issues by filling out our [new issue form](https://gitlab.com/jonatasgrosman/findpapers/-/issues/new).
 
