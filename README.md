@@ -13,7 +13,7 @@ if you'd like to contribute to Findpapers project.
 
 If this project has been useful for you, please share it with your friends, this project could be helpful for them too.
 
-And, if you like this project and wanna motivate the maintainers, give us a :star:, it will make us very happy :smiley:
+And, if you like this project and wanna motivate the maintainers, give us a :star:, it will make us very happy :heart:
 
 ---
 
