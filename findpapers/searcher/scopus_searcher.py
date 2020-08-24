@@ -310,7 +310,7 @@ def run(search: Search, api_token: str, url: Optional[str] = None):
     if api_token is None or len(api_token.strip()) == 0:
         raise AttributeError('The API token cannot be null')
 
-    search_results = get_search_results(search, url)
+    search_results = get_search_results(search, api_token, url)
 
     total_papers = search_results.get('opensearch:totalResults', 0)
     start_pagination_index = int(
