@@ -2,6 +2,7 @@ import datetime
 import pytest
 import findpapers.searcher.scopus_searcher as scopus_searcher
 from findpapers.models.search import Search
+from findpapers.models.publication import Publication
 
 
 def test_get_query(search: Search):
@@ -17,7 +18,7 @@ def test_get_query(search: Search):
     assert scopus_searcher.get_query(search) == query
 
 
-def test_mocks(mock_scopus_get_publication_entry, mock_scopus_get_paper_page, mock_scopus_get_search_results):
+def test_mocks():
 
     assert scopus_searcher.get_publication_entry() is not None
     assert scopus_searcher.get_paper_page() is not None
@@ -38,7 +39,7 @@ def test_mocks(mock_scopus_get_publication_entry, mock_scopus_get_paper_page, mo
         'prism:aggregationType': 'journal',
     })
 ])
-def test_get_publication(mock_scopus_get_publication_entry, paper_entry):
+def test_get_publication(paper_entry: dict):
 
     publication = scopus_searcher.get_publication(paper_entry, None)
 
@@ -64,7 +65,7 @@ def test_get_publication(mock_scopus_get_publication_entry, paper_entry):
     assert publication.bibliometrics_list[0].source_name == 'Scopus'
 
 
-def test_get_paper(mock_scopus_get_paper_page, publication):
+def test_get_paper(publication: Publication):
 
     paper_entry = {
         'dc:title': 'fake paper title',
@@ -93,7 +94,7 @@ def test_get_paper(mock_scopus_get_paper_page, publication):
     assert paper_entry.get('link')[0].get('@href') in paper.urls
 
 
-def test_get_paper_exceptions(mock_scopus_get_paper_page_error, publication):
+def test_get_paper_exceptions(publication: Publication, mock_scopus_get_paper_page_error):
 
     paper_entry = {
         'dc:title': 'fake paper title',
@@ -111,7 +112,7 @@ def test_get_paper_exceptions(mock_scopus_get_paper_page_error, publication):
     assert len(paper.keywords) == 0
 
 
-def test_run(mock_scopus_get_publication_entry, mock_scopus_get_paper_page, mock_scopus_get_search_results, search):
+def test_run(search: Search):
 
     search.limit = 3
     scopus_searcher.run(search, 'fake-api-token')
@@ -126,12 +127,12 @@ def test_run(mock_scopus_get_publication_entry, mock_scopus_get_paper_page, mock
 
     with pytest.raises(AttributeError):
         scopus_searcher.run(search, '')
-    
+
     with pytest.raises(AttributeError):
         scopus_searcher.run(search, None)
 
 
-def test_run_entry_error(mock_scopus_get_publication_entry, mock_scopus_get_paper_page, mock_scopus_get_search_results_entry_error, search):
+def test_run_entry_error(search: Search, mock_scopus_get_search_results_entry_error):
 
     search.limit = 4
     scopus_searcher.run(search, 'fake-api-token')
