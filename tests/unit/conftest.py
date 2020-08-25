@@ -34,7 +34,7 @@ def paper(publication):
 
 @pytest.fixture
 def search():
-    return Search('this AND that', datetime.date(1969, 1, 30), 2)
+    return Search('this AND that', datetime.date(1969, 1, 30), datetime.date(2020, 12, 31), 2)
 
 
 @pytest.fixture(autouse=True)

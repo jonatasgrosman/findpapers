@@ -11,7 +11,8 @@ class Search():
     Class that represents a search
     """
 
-    def __init__(self, query: str, since: Optional[datetime.date] = None, limit: Optional[int] = None):
+    def __init__(self, query: str, since: Optional[datetime.date] = None, until: Optional[datetime.date] = None,
+                 limit: Optional[int] = None):
         """
         Class constructor
 
@@ -21,6 +22,8 @@ class Search():
             The query used to fetch the papers
         since : datetime.date, optional
             The lower bound (inclusive) date of search, by default None
+        until : datetime.date, optional
+            The upper bound (inclusive) date of search, by default None
         limit : int, optional
             The max number of papers that needs to be returned in the search, 
             when the limit is not provided the search will retrieve all the papers that it can, by default None
@@ -28,6 +31,7 @@ class Search():
 
         self.query = query
         self.since = since
+        self.until = until
         self.limit = limit
 
         self.fetched_at = datetime.datetime.utcnow()
@@ -90,7 +94,8 @@ class Search():
         """
 
         if self.limit is not None and len(self.papers) >= self.limit:
-            raise OverflowError('When the papers limit is provided, you cannot exceed it')
+            raise OverflowError(
+                'When the papers limit is provided, you cannot exceed it')
 
         publication_key = self.get_publication_key(
             paper.publication.title, paper.publication.issn, paper.publication.isbn)
@@ -106,7 +111,8 @@ class Search():
         paper_key = self.get_paper_key(paper.title, paper.publication_date)
         already_collected_paper = self.paper_by_key.get(paper_key, None)
 
-        if self.since is None or paper.publication_date >= self.since:
+        if (self.since is None or paper.publication_date >= self.since) \
+                and (self.until is None or paper.publication_date <= self.until):
 
             if already_collected_paper is None:
                 self.papers.add(paper)

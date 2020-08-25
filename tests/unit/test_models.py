@@ -122,7 +122,7 @@ def test_paper(paper: Paper):
 
 def test_search(paper: Paper):
 
-    search = Search('this AND that', datetime.date(1969, 1, 30), 2)
+    search = Search('this AND that', datetime.date(1969, 1, 30), datetime.date(1970, 4, 8), 2)
 
     assert len(search.papers) == 0
 

@@ -34,6 +34,8 @@ def get_query(search: Search) -> str:
 
     if search.since is not None:
         query += f' AND PUBYEAR > {search.since.year - 1}'
+    if search.until is not None:
+        query += f' AND PUBYEAR < {search.until.year + 1}'
 
     return query
 

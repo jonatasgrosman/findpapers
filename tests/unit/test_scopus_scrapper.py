@@ -9,6 +9,7 @@ def test_get_query(search: Search):
 
     query = f'TITLE-ABS-KEY({search.query})'
     query += f' AND PUBYEAR > {search.since.year - 1}'
+    query += f' AND PUBYEAR < {search.until.year + 1}'
 
     assert scopus_searcher.get_query(search) == query
 
