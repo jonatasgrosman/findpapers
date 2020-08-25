@@ -11,14 +11,14 @@ def test_get_query(search: Search):
     query += f' AND PUBYEAR > {search.since.year - 1}'
     query += f' AND PUBYEAR < {search.until.year + 1}'
 
-    assert scopus_searcher.get_query(search) == query
+    assert scopus_searcher._get_query(search) == query
 
 
 def test_mocks():
 
-    assert scopus_searcher.get_publication_entry() is not None
-    assert scopus_searcher.get_paper_page() is not None
-    assert scopus_searcher.get_search_results() is not None
+    assert scopus_searcher._get_publication_entry() is not None
+    assert scopus_searcher._get_paper_page() is not None
+    assert scopus_searcher._get_search_results() is not None
 
 
 @pytest.mark.parametrize('paper_entry', [
@@ -37,7 +37,7 @@ def test_mocks():
 ])
 def test_get_publication(paper_entry: dict):
 
-    publication = scopus_searcher.get_publication(paper_entry, None)
+    publication = scopus_searcher._get_publication(paper_entry, None)
 
     assert publication.title == paper_entry.get('prism:publicationName')
 
@@ -73,7 +73,7 @@ def test_get_paper(publication: Publication):
         ]
     }
 
-    paper = scopus_searcher.get_paper(paper_entry, publication)
+    paper = scopus_searcher._get_paper(paper_entry, publication)
 
     assert paper.publication == publication
     assert paper.title == paper_entry.get('dc:title')
@@ -102,7 +102,7 @@ def test_get_paper_exceptions(publication: Publication, mock_scopus_get_paper_pa
         ]
     }
 
-    paper = scopus_searcher.get_paper(paper_entry, publication)
+    paper = scopus_searcher._get_paper(paper_entry, publication)
 
     assert paper.abstract is None
     assert len(paper.keywords) == 0

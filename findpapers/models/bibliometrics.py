@@ -21,7 +21,7 @@ class Bibliometrics():
 
 class AcmBibliometrics(Bibliometrics):
     """
-    Class that represents a paper instance
+    AcmBibliometrics class
     """
 
     def __init__(self, average_citation_per_article: Optional[float] = None, average_downloads_per_article: Optional[float] = None):
@@ -44,7 +44,7 @@ class AcmBibliometrics(Bibliometrics):
 
 class ScopusBibliometrics(Bibliometrics):
     """
-    Class that represents a paper instance
+    ScopusBibliometrics class
     """
 
     def __init__(self, cite_score: Optional[float] = None, sjr: Optional[float] = None, snip: Optional[float] = None):

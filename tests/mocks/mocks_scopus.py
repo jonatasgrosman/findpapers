@@ -28,7 +28,7 @@ def mock_scopus_get_search_results(monkeypatch):
         return search_results
 
     monkeypatch.setattr(
-        scopus_searcher, 'get_search_results', mocked_search_results)
+        scopus_searcher, '_get_search_results', mocked_search_results)
 
 
 @pytest.fixture(autouse=True)
@@ -40,7 +40,7 @@ def mock_scopus_get_publication_entry(monkeypatch):
         return json.load(open(filename))['serial-metadata-response']['entry'][0]
 
     monkeypatch.setattr(
-        scopus_searcher, 'get_publication_entry', mocked_publication_entry)
+        scopus_searcher, '_get_publication_entry', mocked_publication_entry)
 
 
 @pytest.fixture(autouse=True)
@@ -53,7 +53,7 @@ def mock_scopus_get_paper_page(monkeypatch):
             page = f.read()
         return html.fromstring(page)
 
-    monkeypatch.setattr(scopus_searcher, 'get_paper_page', mocked_paper_page)
+    monkeypatch.setattr(scopus_searcher, '_get_paper_page', mocked_paper_page)
 
 
 @pytest.fixture
@@ -74,7 +74,7 @@ def mock_scopus_get_search_results_entry_error(monkeypatch):
         return search_results
 
     monkeypatch.setattr(
-        scopus_searcher, 'get_search_results', mocked_search_results)
+        scopus_searcher, '_get_search_results', mocked_search_results)
 
 
 @pytest.fixture
@@ -83,4 +83,4 @@ def mock_scopus_get_paper_page_error(monkeypatch):
     def mocked_paper_page(*args, **kwargs):
         raise RuntimeError()
 
-    monkeypatch.setattr(scopus_searcher, 'get_paper_page', mocked_paper_page)
+    monkeypatch.setattr(scopus_searcher, '_get_paper_page', mocked_paper_page)

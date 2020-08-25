@@ -1,0 +1,1595 @@
+{
+    "total_records": 4518,
+    "total_searched": 5168113,
+    "articles": [{
+        "doi": "10.1109/ICSCEE.2018.8538416",
+        "title": "Inflectional Review of Deep Learning on Natural Language Processing",
+        "publisher": "IEEE",
+        "isbn": "978-1-5386-4839-1",
+        "rank": 1,
+        "authors": {
+            "authors": [{
+                "affiliation": "Faculty of Computer and Information Technology, Al-Madinah International University, Shah Alam, Malaysia",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086518034",
+                "id": 37086518034,
+                "full_name": "S.K. Ahammad Fahad",
+                "author_order": 1
+            }, {
+                "affiliation": "Faculty of Computing and Information Technology, Northern Border University, Rafha, KSA",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086518128",
+                "id": 37086518128,
+                "full_name": "Abdulsamad Ebrahim Yahya",
+                "author_order": 2
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "In the age of knowledge, Natural Language Processing (NLP) express its demand by a huge range of utilization. Previously NLP was dealing with statically data. Contemporary time NLP is doing considerably with the corpus, lexicon database, pattern reorganization. Considering Deep Learning (DL) method recognize artificial Neural Network (NN) to nonlinear process, NLP tools become increasingly accurate and efficient that begin a debacle. Multi-Layer Neural Network obtaining the importance of the NLP for its capability including standard speed and resolute output. Hierarchical designs of data operate recurring processing layers to learn and with this arrangement of DL methods manage several practices. In this paper, this resumed striving to reach a review of the tools and the necessary methodology to present a clear understanding of the association of NLP and DL for truly understand in the training. Efficiency and execution both are improved in NLP by Part of speech tagging (POST), Morphological Analysis, Named Entity Recognition (NER), Semantic Role Labeling (SRL), Syntactic Parsing, and Coreference resolution. Artificial Neural Networks (ANN), Time Delay Neural Networks (TDNN), Recurrent Neural Network (RNN), Convolution Neural Networks (CNN), and Long-Short-Term-Memory (LSTM) dealings among Dense Vector (DV), Windows Approach (WA), and Multitask learning (MTL) as a characteristic of Deep Learning. After statically methods, when DL communicate the influence of NLP, the individual form of the NLP process and DL rule collaboration was started a fundamental connection.",
+        "article_number": "8538416",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8538416",
+        "html_url": "https://ieeexplore.ieee.org/document/8538416/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/8538416/",
+        "publication_title": "2018 International Conference on Smart Computing and Electronic Enterprise (ICSCEE)",
+        "conference_location": "Shah Alam",
+        "conference_dates": "11-12 July 2018",
+        "publication_number": 8511012,
+        "is_number": 8538358,
+        "publication_year": 2018,
+        "publication_date": "11-12 July 2018",
+        "start_page": "1",
+        "end_page": "4",
+        "citing_paper_count": 1,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Natural language processing", "Artificial neural networks", "Tagging", "Semantics", "Task analysis"]
+            },
+            "author_terms": {
+                "terms": ["-Deep Learning", "Natural language processing", "Deep nural Network", "Multitask Learning"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-5386-4839-1",
+                "isbnType": "New-2005"
+            }, {
+                "format": "USB ISBN",
+                "value": "978-1-5386-4837-7",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Print ISBN",
+                "value": "978-1-5386-4836-0",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-5386-4838-4",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/SoutheastCon42311.2019.9020561",
+        "title": "Using Natural Language Processing to Accelerate Deep Analysis of Open-Ended Survey Data",
+        "publisher": "IEEE",
+        "isbn": "978-1-7281-0138-5",
+        "issn": "1091-0050",
+        "rank": 2,
+        "authors": {
+            "authors": [{
+                "affiliation": "Clemson University,Computer Engineering,Clemson,USA",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37088228565",
+                "id": 37088228565,
+                "full_name": "Tianyi Zhang",
+                "author_order": 1
+            }, {
+                "affiliation": "Clemson University,Economics and Management,Clemson,USA",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37088232341",
+                "id": 37088232341,
+                "full_name": "Monica Moody",
+                "author_order": 2
+            }, {
+                "affiliation": "Clemson University,Elementary Education,Clemson,USA",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37088231068",
+                "id": 37088231068,
+                "full_name": "Julia P. Nelon",
+                "author_order": 3
+            }, {
+                "affiliation": "Clemson University,Learning Sciences,Clemson,USA",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086926232",
+                "id": 37086926232,
+                "full_name": "D. Matthew Boyer",
+                "author_order": 4
+            }, {
+                "affiliation": "Clemson University,Watt Family Innovation Center,Clemson,USA",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37088230485",
+                "id": 37088230485,
+                "full_name": "D. Hudson Smith",
+                "author_order": 5
+            }, {
+                "affiliation": "Clemson University,Education & Human Development,Clemson,USA",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37088233355",
+                "id": 37088233355,
+                "full_name": "Ryan D. Visser",
+                "author_order": 6
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "In this poster session, we share our work exploring the use of natural language processing (NLP) to assist in the thematic analysis of qualitative data. With the affordances currently provided by artificial intelligence and machine learning to process textual data for meaning, our interdisciplinary team of computer and social science researchers is using a data set of open-ended text responses to test procedures for creating thematic categories to organize participant responses by content. By comparing parallel analyses of our text corpus using traditional and NLP thematic-analysis techniques, we identify key areas of congruity and incongruity between human analysts and NLP algorithms. While the areas of congruity point to the potential usefulness of NLP systems in qualitative research, the areas of incongruity suggest the need for a “human in the loop” NLP platform which iteratively refines the content analysis outputs based on feedback from an expert researcher until a satisfactorily coherent thematic description is achieved.",
+        "article_number": "9020561",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9020561",
+        "html_url": "https://ieeexplore.ieee.org/document/9020561/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/9020561/",
+        "publication_title": "2019 SoutheastCon",
+        "conference_location": "Huntsville, AL, USA",
+        "conference_dates": "11-14 April 2019",
+        "publication_number": 8999010,
+        "is_number": 9020282,
+        "publication_year": 2019,
+        "publication_date": "11-14 April 2019",
+        "start_page": "1",
+        "end_page": "3",
+        "citing_paper_count": 0,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Machine learning", "Natural language processing", "Encoding", "Acceleration", "Digital divide", "Semantics"]
+            },
+            "author_terms": {
+                "terms": ["artificial intelligence", "machine learning", "natural language processing", "qualitative methods", "thematic analysis"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-7281-0138-5",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-7281-0137-8",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/INFOCT.2019.8710921",
+        "title": "Assertion Detection in Clinical Natural Language Processing: A Knowledge-Poor Machine Learning Approach",
+        "publisher": "IEEE",
+        "isbn": "978-1-7281-3324-9",
+        "rank": 3,
+        "authors": {
+            "authors": [{
+                "affiliation": "Med Data Quest Inc., La Jolla, CA, USA",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086831349",
+                "id": 37086831349,
+                "full_name": "Long Chen",
+                "author_order": 1
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "Natural language processing (NLP) have been recently used to extract clinical information from free text in Electronic Health Record (EHR). In clinical NLP one challenge is that the meaning of clinical entities is heavily affected by assertion modifiers such as negation, uncertain, hypothetical, experiencer and so on. Incorrect assertion assignment could cause inaccurate diagnosis of patients' condition or negatively influence following study like disease modeling. Thus, clinical NLP systems which can detect assertion status of given target medical findings (e.g. disease, symptom) in clinical context are highly demanded. Here in this work, we propose a deep-learning system based on word embedding, RNN and attention mechanism (more specifically: Attention-based Bidirectional Long Short-Term Memory networks) for assertion detection in clinical notes. Unlike previous state-of-art methods which require knowledge input or feature engineering, our system is a knowledge poor machine learning system and can be easily extended or transferred to other domains. The evaluation of our system on public benchmarking corpora demonstrates that a knowledge poor deep-learning system can also achieve high performance for detecting negation and assertions comparing to state-of-the-art systems.",
+        "article_number": "8710921",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8710921",
+        "html_url": "https://ieeexplore.ieee.org/document/8710921/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/8710921/",
+        "publication_title": "2019 IEEE 2nd International Conference on Information and Computer Technologies (ICICT)",
+        "conference_location": "Kahului, HI, USA",
+        "conference_dates": "14-17 March 2019",
+        "publication_number": 8703750,
+        "is_number": 8710850,
+        "publication_year": 2019,
+        "publication_date": "14-17 March 2019",
+        "start_page": "37",
+        "end_page": "40",
+        "citing_paper_count": 0,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Task analysis", "Measurement", "Medical diagnostic imaging", "Knowledge engineering", "Pain", "Training", "Machine learning"]
+            },
+            "author_terms": {
+                "terms": ["natural language processing", "clinical assertion", "deep learning", "LSTM", "attention mechanism"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-7281-3324-9",
+                "isbnType": "New-2005"
+            }, {
+                "format": "USB ISBN",
+                "value": "978-1-7281-3322-5",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-7281-3323-2",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/BigData47090.2019.9005961",
+        "title": "Anuj@IEEE BigData 2019: A Novel Code-Switching Behavior Analysis in Social Media Discussions Natural Language Processing",
+        "publisher": "IEEE",
+        "isbn": "978-1-7281-0859-9",
+        "rank": 4,
+        "authors": {
+            "authors": [{
+                "affiliation": "Publicis Sapient,Los Angeles,CA,USA",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37088199739",
+                "id": 37088199739,
+                "full_name": "Anuj Saini",
+                "author_order": 1
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "With internet and social media breaking the ice, more and more people across the globe have started to use social media platforms like Facebook, Twitter, Instagram etc. Most people follow Multilingualism as a mode of communication to convey information across the globe. They share topics over the common forum to converse, with the use of multiple languages being spoken either by individual speaker or group of speakers. This essentially makes the context more complex to understand and it makes even more harder for processing various Natural Language Processing (NLP) tasks. Such user behavior of mixing multiple languages in one single discussion topic, having multiple community inclusion is referred as code-switching. At IEEE 2019 Big data conference, a Shared Task (Understanding Multilingual Communities through Analysis of code-switching Behaviors in Social Media Discussions) is conducted as a track of Big Data Cup. Firstly, Tasks is to detect the language of each post given in the discussion forum with the help of multiple languages. Secondly, to detect relevance score of a post by determining how much the content is closely connected or appropriate in the discussion. This paper proposes a novel approach to detect the language of each word in the post using Natural Language Processing (NLP) techniques involving linguistics, Python package(langdetect) and various other approaches. It also explains how Machine Learning is applied to figure out relevance of a post and other metrics required for prediction. Code-Mixing detection is an important step for any NLP application to determine the language of a post at first place in order to perform any NLP task over social media.",
+        "article_number": "9005961",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9005961",
+        "html_url": "https://ieeexplore.ieee.org/document/9005961/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/9005961/",
+        "publication_title": "2019 IEEE International Conference on Big Data (Big Data)",
+        "conference_location": "Los Angeles, CA, USA",
+        "conference_dates": "9-12 Dec. 2019",
+        "publication_number": 8986695,
+        "is_number": 9005444,
+        "publication_year": 2019,
+        "publication_date": "9-12 Dec. 2019",
+        "start_page": "5957",
+        "end_page": "5961",
+        "citing_paper_count": 0,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Social network services", "Natural language processing", "Task analysis", "Python", "Libraries", "Big Data", "Machine learning"]
+            },
+            "author_terms": {
+                "terms": ["Code-mixing", "Machine Learning", "Natural Language Processing", "langdetect", "GradientBoostingRegressor"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-7281-0859-9",
+                "isbnType": "New-2005"
+            }, {
+                "format": "USB ISBN",
+                "value": "978-1-7281-0857-5",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-7281-0858-2",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/EnT47717.2019.9030535",
+        "title": "NLP methods for automatic candidate’s CV segmentation",
+        "publisher": "IEEE",
+        "isbn": "978-1-7281-3565-6",
+        "rank": 5,
+        "authors": {
+            "authors": [{
+                "affiliation": "Doctoral School of Computer Science Sberbank, Higher School of Economic,Moscow,Russia",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37088335935",
+                "id": 37088335935,
+                "full_name": "Maria Tikhonova",
+                "author_order": 1
+            }, {
+                "affiliation": "Faculty of Communications, Media, and Design Sberbank, Higher School of Economics,Moscow,Russia",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37088338049",
+                "id": 37088338049,
+                "full_name": "Anastasia Gavrishchuk",
+                "author_order": 2
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "The problem of CV (or resume) segmentation and automatic extraction becomes increasingly relevant nowadays as long as it could simplify candidate selection process. The paper proposes a new method of automatic CV segmentation and parsing. The described algorithm is based on Natural Language Processing and Machine Learning methods. The proposed procedure allows to extract information related to the candidates' work experience and education from their CVs which come in pdf or docx format. In particular, CV segmentation into 3 blocks (Basic Information, Education and Work Experience) is performed.",
+        "article_number": "9030535",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9030535",
+        "html_url": "https://ieeexplore.ieee.org/document/9030535/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/9030535/",
+        "publication_title": "2019 International Conference on Engineering and Telecommunication (EnT)",
+        "conference_location": "Dolgoprudny, Russia",
+        "conference_dates": "20-21 Nov. 2019",
+        "publication_number": 9022683,
+        "is_number": 9030526,
+        "publication_year": 2019,
+        "publication_date": "20-21 Nov. 2019",
+        "start_page": "1",
+        "end_page": "5",
+        "citing_paper_count": 0,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Education", "Microsoft Windows", "Windows", "Indexes", "Natural language processing", "Machine learning algorithms", "Data mining"]
+            },
+            "author_terms": {
+                "terms": ["NLP methods", "Machine Learning", "topic modeling", "Natural Language Processing", "text segmentation", "word embedding"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-7281-3565-6",
+                "isbnType": "New-2005"
+            }, {
+                "format": "CD",
+                "value": "978-1-7281-3563-2",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-7281-3564-9",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/CCAA.2017.8229841",
+        "title": "Literature survey of statistical, deep and reinforcement learning in natural language processing",
+        "publisher": "IEEE",
+        "isbn": "978-1-5090-6472-4",
+        "rank": 6,
+        "authors": {
+            "authors": [{
+                "affiliation": "Electronics and Communication Dept., Maharaja Surajmal Institute of Techology, Delhi, India",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086291523",
+                "id": 37086291523,
+                "full_name": "Akanksha Rai Sharma",
+                "author_order": 1
+            }, {
+                "affiliation": "Information Technology Dept., Amity School of Engineering and Technology, Delhi, India",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086292051",
+                "id": 37086292051,
+                "full_name": "Pranav Kaushik",
+                "author_order": 2
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "This paper underlines the necessity to incorporate Deep learning and Neural networking in language models under scrutiny for Natural Language Processing. The paper describes various statistical models proposed and the limitations incurred in the same due to limited intelligence of a machine. We have discussed different neural networks highlighting the importance of Convolutional Neural Networking. We have discussed about open source software TensorFlow that works on Deep learning and the edge it has over the conventional models. Also we have recommended Reinforcement learning as an extension to neural networking which is widely used in gaming for the purpose of Natural Language Processing. We can utilize the reward-driven algorithm for better results.",
+        "article_number": "8229841",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8229841",
+        "html_url": "https://ieeexplore.ieee.org/document/8229841/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/8229841/",
+        "publication_title": "2017 International Conference on Computing, Communication and Automation (ICCCA)",
+        "conference_location": "Greater Noida",
+        "conference_dates": "5-6 May 2017",
+        "publication_number": 8168800,
+        "is_number": 8229760,
+        "publication_year": 2017,
+        "publication_date": "5-6 May 2017",
+        "start_page": "350",
+        "end_page": "354",
+        "citing_paper_count": 7,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Hidden Markov models", "Natural language processing", "Neural networks", "Machine learning", "Information retrieval", "Learning (artificial intelligence)", "Data mining"]
+            },
+            "author_terms": {
+                "terms": ["Natural Language Processing", "Information Extraction", "Statistical models", "Neural Networks", "Deep Learning", "TensorFlow", "Reinforcement Learning"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-5090-6472-4",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-5090-6471-7",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/ICSC.2018.00056",
+        "title": "Detecting Phishing Attacks Using Natural Language Processing and Machine Learning",
+        "publisher": "IEEE",
+        "isbn": "978-1-5386-4409-6",
+        "rank": 7,
+        "authors": {
+            "authors": [{
+                "affiliation": "Columbia Univ., New York, NY, USA",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086364056",
+                "id": 37086364056,
+                "full_name": "Tianrui Peng",
+                "author_order": 1
+            }, {
+                "affiliation": "Univ. of California Irvine, Irvine, CA, USA",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37295535200",
+                "id": 37295535200,
+                "full_name": "Ian Harris",
+                "author_order": 2
+            }, {
+                "affiliation": "Univ. of California Irvine, Irvine, CA, USA",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37085785177",
+                "id": 37085785177,
+                "full_name": "Yuki Sawa",
+                "author_order": 3
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "Phishing attacks are one of the most common and least defended security threats today. We present an approach which uses natural language processing techniques to analyze text and detect inappropriate statements which are indicative of phishing attacks. Our approach is novel compared to previous work because it focuses on the natural language text contained in the attack, performing semantic analysis of the text to detect malicious intent. To demonstrate the effectiveness of our approach, we have evaluated it using a large benchmark set of phishing emails.",
+        "article_number": "8334479",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8334479",
+        "html_url": "https://ieeexplore.ieee.org/document/8334479/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/8334479/",
+        "publication_title": "2018 IEEE 12th International Conference on Semantic Computing (ICSC)",
+        "conference_location": "Laguna Hills, CA",
+        "conference_dates": "31 Jan.-2 Feb. 2018",
+        "publication_number": 8332210,
+        "is_number": 8334423,
+        "publication_year": 2018,
+        "publication_date": "31 Jan.-2 Feb. 2018",
+        "start_page": "300",
+        "end_page": "301",
+        "citing_paper_count": 9,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Electronic mail", "Phishing", "Semantics", "Natural language processing", "Blacklisting", "Uniform resource locators"]
+            },
+            "author_terms": {
+                "terms": ["social engineering", "phishing", "natural language processing"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-5386-4409-6",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-5386-4408-9",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/ICASC48083.2019.8946281",
+        "title": "Representing Character Sequences as Sets : A simple and intuitive string encoding algorithm for NLP data cleaning",
+        "publisher": "IEEE",
+        "isbn": "978-1-7281-4455-9",
+        "rank": 8,
+        "authors": {
+            "authors": [{
+                "affiliation": "Technical University of Sofia,Faculty of Automation,Sofia city,Bulgaria",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37087225339",
+                "id": 37087225339,
+                "full_name": "Martin Marinov",
+                "author_order": 1
+            }, {
+                "affiliation": "Technical University of Sofia,Faculty of Automation,Sofia city,Bulgaria",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37087225595",
+                "id": 37087225595,
+                "full_name": "Alexander Efremov",
+                "author_order": 2
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "Data preparation is vital in the field of machine learning, especially in natural language processing. This paper briefly describes a method of encoding character sequences, which is inspired by biological memory systems. The algorithm can be thought of as a type of artificial neural network, which is only used to store text data in a specific way, not generate predictions. To test the viability of the approach, the task of searching for words in a dictionary was used, utilizing two simple heuristic rules. The goal is to produce tools capable of cleaning texts written in any language, which uses a phonemic writing system. Texts written in two specific languages are being processed during development and experimentation, they are English and Bulgarian. User-friendliness and minimization of data obfuscation are the driving requirements. Another requirement is compatibility with other machine learning methods, since the algorithm is not intended for solving an entire NLP case from start to finish. It is to be used only during the data preparation phase.",
+        "article_number": "8946281",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8946281",
+        "html_url": "https://ieeexplore.ieee.org/document/8946281/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/8946281/",
+        "publication_title": "2019 IEEE International Conference on Advanced Scientific Computing (ICASC)",
+        "conference_location": "Romania",
+        "conference_dates": "12-14 Sept. 2019",
+        "publication_number": 8944230,
+        "is_number": 8946278,
+        "publication_year": 2019,
+        "publication_date": "12-14 Sept. 2019",
+        "start_page": "1",
+        "end_page": "6",
+        "citing_paper_count": 0,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Encoding", "Dictionaries", "Natural language processing", "Neurons", "Machine learning algorithms", "Cleaning", "Biological information theory"]
+            },
+            "author_terms": {
+                "terms": ["Natural Language Processing", "NLP", "Sparse Distributed Memory", "Data Cleaning", "Simple"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-7281-4455-9",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-7281-4454-2",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/EIConRus49466.2020.9039303",
+        "title": "Knowledge Base Collecting Using Natural Language Processing Algorithms",
+        "publisher": "IEEE",
+        "isbn": "978-1-7281-5762-7",
+        "issn": "2376-6557",
+        "rank": 9,
+        "authors": {
+            "authors": [{
+                "affiliation": "National Research Nuclear University \"MEPhI\",Department of Computer Systems and Technology,Moscow,Russian Federation",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086012192",
+                "id": 37086012192,
+                "full_name": "Artem A. Maksutov",
+                "author_order": 1
+            }, {
+                "affiliation": "National Research Nuclear University \"MEPhI\",Department of Computer Systems and Technology,Moscow,Russian Federation",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37088343714",
+                "id": 37088343714,
+                "full_name": "Vladimir I. Zamyatovskiy",
+                "author_order": 2
+            }, {
+                "affiliation": "National Research Nuclear University \"MEPhI\",Department of Computer Systems and Technology,Moscow,Russian Federation",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086347306",
+                "id": 37086347306,
+                "full_name": "Viktor N. Vyunnikov",
+                "author_order": 3
+            }, {
+                "affiliation": "National Research Nuclear University \"MEPhI\",Department of Computer Systems and Technology,Moscow,Russian Federation",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37088347268",
+                "id": 37088347268,
+                "full_name": "Artem V. Kutuzov",
+                "author_order": 4
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "Natural language processing (NLP) is one of the most complicated and fast developing area in Computer Science. There are solutions in this area for special cases, but developing one general solution is impossible due to variety of grammatical, syntactic and semantic forms in different languages. The NLP algorithms and methods are used in speech recognition, text analyzing and understanding, speech generation. This paper is focused on application of NLP approaches to understand quasi-structured or unstructured data with subsequent inclusion in a knowledge base. The article covers the usage of a graph database as a knowledge base, that allows to show and visualize relationships between different pieces of text according to specified data patterns.",
+        "article_number": "9039303",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9039303",
+        "html_url": "https://ieeexplore.ieee.org/document/9039303/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/9039303/",
+        "publication_title": "2020 IEEE Conference of Russian Young Researchers in Electrical and Electronic Engineering (EIConRus)",
+        "conference_location": "St. Petersburg and Moscow, Russia",
+        "conference_dates": "27-30 Jan. 2020",
+        "publication_number": 9031668,
+        "is_number": 9038909,
+        "publication_year": 2020,
+        "publication_date": "27-30 Jan. 2020",
+        "start_page": "405",
+        "end_page": "407",
+        "citing_paper_count": 0,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Natural language processing", "Databases", "Grammar", "Task analysis", "Knowledge based systems", "Semantics", "Machine learning algorithms"]
+            },
+            "author_terms": {
+                "terms": ["natural language processing", "graph database", "knowledge base", "text understanding"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-7281-5762-7",
+                "isbnType": "New-2005"
+            }, {
+                "format": "CD",
+                "value": "978-1-7281-5760-3",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-7281-5761-0",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/IC3I44769.2018.9007300",
+        "title": "Natural Language Processing and Deep Learning Towards Security Requirements Classification",
+        "publisher": "IEEE",
+        "isbn": "978-1-5386-6895-5",
+        "rank": 10,
+        "authors": {
+            "authors": [{
+                "affiliation": "Amity University Gurgaon,ASET,Pachgaon, Manesar,Haryana 122413,India",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37085884108",
+                "id": 37085884108,
+                "full_name": "Prudence Kadebu",
+                "author_order": 1
+            }, {
+                "affiliation": "Amity University Gurgaon,ASET,Pachgaon, Manesar,Haryana 122413,India",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37088199037",
+                "id": 37088199037,
+                "full_name": "Vikas Thada",
+                "author_order": 2
+            }, {
+                "affiliation": "Zimbabwe Centre for High Performance Computing,Mount Pleasant,Harare",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37088198539",
+                "id": 37088198539,
+                "full_name": "Panashe Chiurunge",
+                "author_order": 3
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "Security Requirements classification is an important area to the Software Engineering community in order to build software that is secure, robust and able to withstand attacks. This classification facilitates proper analysis of security requirements so that adequate security mechanisms are incorporated in the development process. Machine Learning techniques have been used in Security Requirements classification to aid in the process that lead to ensuring that correct security mechanisms are designed corresponding to the Security Requirements classifications made to eliminate the risk of security being incorporated in the late stages of development. However, these Machine Learning techniques have been found to have problems including, handcrafting of features, overfitting and failure to perform well with high dimensional data. In this paper we explore Natural Language Processing and Deep Learning to determine if this can be applied to Security Requirements classification.",
+        "article_number": "9007300",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9007300",
+        "html_url": "https://ieeexplore.ieee.org/document/9007300/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/9007300/",
+        "publication_title": "2018 3rd International Conference on Contemporary Computing and Informatics (IC3I)",
+        "conference_location": "Gurgaon, India",
+        "conference_dates": "10-12 Oct. 2018",
+        "publication_number": 8988141,
+        "is_number": 9007242,
+        "publication_year": 2018,
+        "publication_date": "10-12 Oct. 2018",
+        "start_page": "135",
+        "end_page": "140",
+        "citing_paper_count": 0,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Machine learning", "Security", "Natural language processing", "Recurrent neural networks", "Task analysis", "Software"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-5386-6895-5",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-5386-6894-8",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/TNNLS.2020.2979670",
+        "title": "A Survey of the Usages of Deep Learning for Natural Language Processing",
+        "publisher": "IEEE",
+        "issue": "99",
+        "issn": "2162-2388",
+        "rank": 11,
+        "volume": "PP",
+        "authors": {
+            "authors": [{
+                "affiliation": "Department of Computer Science, University of Colorado at Colorado Springs, Colorado Springs, CO 80918 USA.",
+                "full_name": "Daniel W. Otter",
+                "author_order": 1
+            }, {
+                "affiliation": "Department of Computer Science, University of Colorado at Colorado Springs, Colorado Springs, CO 80918 USA.",
+                "full_name": "Julian R. Medina",
+                "author_order": 2
+            }, {
+                "affiliation": "Department of Computer Science, University of Colorado at Colorado Springs, Colorado Springs, CO 80918 USA (e-mail: jkalita@uccs.edu)",
+                "full_name": "Jugal K. Kalita",
+                "author_order": 3
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Early Access Articles",
+        "abstract": "Over the last several years, the field of natural language processing has been propelled forward by an explosion in the use of deep learning models. This article provides a brief introduction to the field and a quick overview of deep learning architectures and methods. It then sifts through the plethora of recent studies and summarizes a large assortment of relevant contributions. Analyzed research areas include several core linguistic processing issues in addition to many applications of computational linguistics. A discussion of the current state of the art is then provided along with recommendations for future research in the field.",
+        "article_number": "9075398",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9075398",
+        "abstract_url": "https://ieeexplore.ieee.org/document/9075398/",
+        "publication_title": "IEEE Transactions on Neural Networks and Learning Systems",
+        "publication_number": 5962385,
+        "is_number": 6104215,
+        "publication_year": 2020,
+        "start_page": "1",
+        "end_page": "21",
+        "citing_paper_count": 0,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Machine learning", "Natural language processing", "Decoding", "Neural networks", "Computer architecture", "Computational linguistics", "Training"]
+            },
+            "author_terms": {
+                "terms": ["Computational linguistics", "deep learning", "machine learning", "natural language processing (NLP)", "neural networks."]
+            }
+        }
+    }, {
+        "doi": "10.1109/NLPKE.2007.4367998",
+        "title": "Towards Shallow Semantics: The OntoNotes Project",
+        "publisher": "IEEE",
+        "isbn": "978-1-4244-1611-0",
+        "partnum": "07EX2027",
+        "rank": 12,
+        "authors": {
+            "authors": [{
+                "affiliation": "Information Sciences Institute, University of Southern California, hovy@isi.edu",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37564060300",
+                "id": 37564060300,
+                "full_name": "Eduard Hovy",
+                "author_order": 1
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "Summary form only given. Many natural language processing (NLP) applications could benefit from a richer model of text meaning than the bag-of-words and n-gram models that currently predominate. Despite theoretical interest since the 1960s, however, no large-scale model exists; in fact, it is not even clear what such a model should minimally include. However, the introduction of large-scale public resources such as the Penn TreeBank and WordNet have generated a great deal of progress in the NLP community, and so it seems increasingly important to create some kind of meaning-oriented model and build a corresponding corpus that is large enough to support adequate machine learning. This talk argues for the necessity of (even shallow) semantics-based NLP, describes the contents and operation of the OntoNotes project, and in so doing introduces and explains the general issues facing annotation projects. Our hope is that other people not only try to use the OntoNotes corpus in their own work, but also create their own annotations on the same material, so that more layers of shallow semantics can be included into OntoNotes.",
+        "article_number": "4367998",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=4367998",
+        "abstract_url": "https://ieeexplore.ieee.org/document/4367998/",
+        "publication_title": "2007 International Conference on Natural Language Processing and Knowledge Engineering",
+        "conference_location": "Beijing",
+        "conference_dates": "30 Aug.-1 Sept. 2007",
+        "publication_number": 4367991,
+        "is_number": 4367992,
+        "publication_year": 2007,
+        "publication_date": "30 Aug.-1 Sept. 2007",
+        "start_page": "2",
+        "end_page": "3",
+        "citing_paper_count": 0,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Large-scale systems", "Machine learning", "Natural language processing", "Intersymbol interference", "Broadcasting", "Ontologies"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "CD",
+                "value": "978-1-4244-1611-0",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Print ISBN",
+                "value": "978-1-4244-1610-3",
+                "isbnType": "Historical"
+            }]
+        }
+    }, {
+        "doi": "10.1109/ICMCCE.2018.00112",
+        "title": "On Application of Natural Language Processing in Machine Translation",
+        "publisher": "IEEE",
+        "isbn": "978-1-5386-8482-5",
+        "rank": 13,
+        "authors": {
+            "authors": [{
+                "affiliation": "Sch. of Foreign Languages, Huangshan Univ., Huangshan, China",
+                "full_name": "Zhaorong Zong",
+                "author_order": 1
+            }, {
+                "affiliation": "Sch. of Foreign Languages, Huangshan Univ., Huangshan, China",
+                "full_name": "Changchun Hong",
+                "author_order": 2
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "Natural language processing is the core of machine translation. In the history, its development process is almost the same as machine translation, and the two complement each other. This article compares the natural language processing of statistical corpora with neural machine translation and concludes the natural language processing: Neural machine translation has the advantage of deep learning, which is very suitable for dealing with the high dimension, label-free and big data of natural language, therefore, its application is more general and reflects the power of big data and big data thinking.",
+        "article_number": "8537610",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8537610",
+        "abstract_url": "https://ieeexplore.ieee.org/document/8537610/",
+        "publication_title": "2018 3rd International Conference on Mechanical, Control and Computer Engineering (ICMCCE)",
+        "conference_location": "Huhhot",
+        "conference_dates": "14-16 Sept. 2018",
+        "publication_number": 8536818,
+        "is_number": 8537498,
+        "publication_year": 2018,
+        "publication_date": "14-16 Sept. 2018",
+        "start_page": "506",
+        "end_page": "510",
+        "citing_paper_count": 0,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Natural language processing", "Decoding", "Google", "Mathematical model", "Big Data", "Neural networks", "History"]
+            },
+            "author_terms": {
+                "terms": ["natural language processing", "machine translation", "decoding"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-5386-8482-5",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-5386-8481-8",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/ICIMIA48430.2020.9074941",
+        "title": "Deep Learning Techniques for Part of Speech Tagging by Natural Language Processing",
+        "publisher": "IEEE",
+        "isbn": "978-1-7281-4168-8",
+        "rank": 14,
+        "authors": {
+            "authors": [{
+                "affiliation": "Dr. Babasaheb Ambedkar Technological University,Department of Computer Engineering,Lonere, Raigad,M. S.,India,402103",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37088380036",
+                "id": 37088380036,
+                "full_name": "Rushali Dhumal Deshmukh",
+                "author_order": 1
+            }, {
+                "affiliation": "Dr. Babasaheb Ambedkar Technological University,Department of Computer Engineering,Lonere, Raigad,M. S.,India,402103",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37088382312",
+                "id": 37088382312,
+                "full_name": "Arvind Kiwelekar",
+                "author_order": 2
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "For many natural language processing applications, part of speech (POS) tagging remains as a preliminary task. Marathi, is observed as a popular language in India but it only has limited tools and corpus for NLP applications. An accurate POS tagger is essential for many NLP tasks like sentiment analysis, named entity recognition, dependency parsing, etc. This research work proposes a deep learning model and bidirectional long short-term memory (Bi-LSTM) model to perform POS tagging for Marathi text. We achieved an accuracy of 85% for the deep learning model and 97% for the Bi-LSTM model. Our contribution here is based on three folds - building a deep learning model, building the Bi-LSTM model, comparison with machine learning techniques for the same dataset.",
+        "article_number": "9074941",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9074941",
+        "html_url": "https://ieeexplore.ieee.org/document/9074941/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/9074941/",
+        "publication_title": "2020 2nd International Conference on Innovative Mechanisms for Industry Applications (ICIMIA)",
+        "conference_location": "Bangalore, India",
+        "conference_dates": "5-7 March 2020",
+        "publication_number": 9057352,
+        "is_number": 9074834,
+        "publication_year": 2020,
+        "publication_date": "5-7 March 2020",
+        "start_page": "76",
+        "end_page": "81",
+        "citing_paper_count": 0,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Machine learning", "Tagging", "Hidden Markov models", "Artificial neural networks", "Computational modeling", "Logic gates", "Data models"]
+            },
+            "author_terms": {
+                "terms": ["POS tagset", "deep learning", "LSTM cell", "Bi-LSTM", "comparison"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-7281-4168-8",
+                "isbnType": "New-2005"
+            }, {
+                "format": "DVD ISBN",
+                "value": "978-1-7281-4166-4",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-7281-4167-1",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/ICAIIC.2019.8668996",
+        "title": "Stock Prices Prediction using the Title of Newspaper Articles with Korean Natural Language Processing",
+        "publisher": "IEEE",
+        "isbn": "978-1-5386-7823-7",
+        "rank": 15,
+        "authors": {
+            "authors": [{
+                "affiliation": "The school of Electrical Engineering, Korea University, Seoul, Korea",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086424493",
+                "id": 37086424493,
+                "full_name": "Hyungbin Yun",
+                "author_order": 1
+            }, {
+                "affiliation": "The school of Electrical Engineering, Korea University, Seoul, Korea",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086431532",
+                "id": 37086431532,
+                "full_name": "Ghudae Sim",
+                "author_order": 2
+            }, {
+                "affiliation": "The school of Electrical Engineering, Korea University, Seoul, Korea",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37085846689",
+                "id": 37085846689,
+                "full_name": "Junhee Seok",
+                "author_order": 3
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "Non-quantitative data have a significant impact on the financial market as well as quantitative data. In this paper, we propose CNN model of stock price prediction using Korean natural language processing. In the case of Korean natural language processing research was not actively performed compared to English language. We converted Korean sentences into nouns and vectorized them using skip-grams to extract the characteristics of the words. Then, the vectorized word sentence was used as input data of the CNN model to predict the stock price after 5 days of trading day. Most models have more than 50% prediction accuracy for stock price up and down. The highest accuracy of the model was about 53%. Since the result is not considerable but meaningful, it shows the possibility of developing the stock price prediction model through Korean natural language processing in the future.",
+        "article_number": "8668996",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8668996",
+        "html_url": "https://ieeexplore.ieee.org/document/8668996/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/8668996/",
+        "publication_title": "2019 International Conference on Artificial Intelligence in Information and Communication (ICAIIC)",
+        "conference_location": "Okinawa, Japan",
+        "conference_dates": "11-13 Feb. 2019",
+        "publication_number": 8665865,
+        "is_number": 8668840,
+        "publication_year": 2019,
+        "publication_date": "11-13 Feb. 2019",
+        "start_page": "019",
+        "end_page": "021",
+        "citing_paper_count": 1,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Natural language processing", "Neural networks", "Deep learning", "Predictive models", "Convolution", "Forecasting", "Data models"]
+            },
+            "author_terms": {
+                "terms": ["artificial neural network", "Korean natural language processing", "skip-gram", "convolution neural network", "stock price prediction"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-5386-7823-7",
+                "isbnType": "New-2005"
+            }, {
+                "format": "USB ISBN",
+                "value": "978-1-5386-7821-3",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-5386-7822-0",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/MICAI.2008.50",
+        "title": "Natural Language Processing Techniques for the Extraction of Semantic Information in Web Services",
+        "publisher": "IEEE",
+        "isbn": "978-0-7695-3441-1",
+        "partnum": "08PR3441",
+        "rank": 16,
+        "authors": {
+            "authors": [{
+                "affiliation": "Morelos State Polytech. Univ., Morelos",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37841806000",
+                "id": 37841806000,
+                "full_name": "Maricela Bravo",
+                "author_order": 1
+            }, {
+                "affiliation": "Nat. Center of Res. & Technol. Dev.",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37838579400",
+                "id": 37838579400,
+                "full_name": "Azucena Montes",
+                "author_order": 2
+            }, {
+                "affiliation": "Nat. Center of Res. & Technol. Dev.",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37875288500",
+                "id": 37875288500,
+                "full_name": "Alejandro Reyes",
+                "author_order": 3
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "With the increase in the number of Web services and the value they are taking, discovery of services that meet the criteria of users becomes a major challenge. Currently the discovery process lacks of well-defined semantics, therefore it is difficult to obtain the non explicit meaning of services, such as functionality. In order to provide an accurate solution to the problem described above, in this paper we evaluate two natural language processing (NLP) techniques to extract semantic information from textual descriptions of Web services: linguistic patterns and extraction rules. Both techniques are implemented and compared in order to select the best alternative to our problem. This information will be useful for enhancing semantically the discovery process of services. We implemented a simulation environment for experimentation, and designed a set of experiments to show the applicability of our solution approach. Results of the tests show that the linguistic patterns are better than extraction rules.",
+        "article_number": "4682443",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=4682443",
+        "html_url": "https://ieeexplore.ieee.org/document/4682443/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/4682443/",
+        "publication_title": "2008 Seventh Mexican International Conference on Artificial Intelligence",
+        "conference_location": "Atizapan de Zaragoza",
+        "conference_dates": "27-31 Oct. 2008",
+        "publication_number": 4682423,
+        "is_number": 4682424,
+        "publication_year": 2008,
+        "publication_date": "27-31 Oct. 2008",
+        "start_page": "53",
+        "end_page": "57",
+        "citing_paper_count": 1,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Natural language processing", "Data mining", "Web services", "Testing", "Context-aware services", "Artificial intelligence", "Humans", "Machine learning", "Machine learning algorithms", "Terrorism"]
+            },
+            "author_terms": {
+                "terms": ["Web services", "natural language processing techniques", "information extraction"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print ISBN",
+                "value": "978-0-7695-3441-1",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/CSEI47661.2019.8939031",
+        "title": "Design and Research of Intelligent Tutor System Based on Natural Language Processing",
+        "publisher": "IEEE",
+        "isbn": "978-1-7281-2309-7",
+        "rank": 17,
+        "authors": {
+            "authors": [{
+                "affiliation": "School of Information Science and Technology, Yunnan Normal University,Kunming,China",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37087131756",
+                "id": 37087131756,
+                "full_name": "Yantao Wang",
+                "author_order": 1
+            }, {
+                "affiliation": "School of Information Science and Technology, Yunnan Normal University,Kunming,China",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37536864700",
+                "id": 37536864700,
+                "full_name": "Yu Sun",
+                "author_order": 2
+            }, {
+                "affiliation": "School of Information Science and Technology, Yunnan Normal University,Kunming,China",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37087130807",
+                "id": 37087130807,
+                "full_name": "Yuanfei Chen",
+                "author_order": 3
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "Through the investigation and study of on-line learning platform in China, it was found that the on-line question answering system between learners and teachers on the on-line learning platform which was almost paralyzed, because it cannot give timely feedback to the questions raised by learners. In this paper, we summarize and classify some common the system of service, explain their principles, differentiate their advantages and disadvantages, summarize their need and the framework. On this basis, we design an intelligent assistant teaching system which uses natural language processing technology as developing-designing tool. Based on deep learning and natural language processing (NLP) technology, this intelligent assistant teaching system is built for on-line learning platforms, which is the first application of intelligent customer service on on-line learning platforms. It can provide timely feedback for learners and improve their enthusiasm for learning.",
+        "article_number": "8939031",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8939031",
+        "html_url": "https://ieeexplore.ieee.org/document/8939031/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/8939031/",
+        "publication_title": "2019 IEEE International Conference on Computer Science and Educational Informatization (CSEI)",
+        "conference_location": "Kunming, China",
+        "conference_dates": "16-19 Aug. 2019",
+        "publication_number": 8931148,
+        "is_number": 8938831,
+        "publication_year": 2019,
+        "publication_date": "16-19 Aug. 2019",
+        "start_page": "33",
+        "end_page": "36",
+        "citing_paper_count": 0,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Databases", "Natural language processing", "Engines", "Semantics", "Electronic learning", "Information science"]
+            },
+            "author_terms": {
+                "terms": ["on-line learning platform", "natural language processing", "feedback"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-7281-2309-7",
+                "isbnType": "New-2005"
+            }, {
+                "format": "DVD ISBN",
+                "value": "978-1-7281-2307-3",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-7281-2308-0",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/ICMLA.2018.00217",
+        "title": "What are they Researching? Examining Industry-Based Doctoral Dissertation Research through the Lens of Machine Learning",
+        "publisher": "IEEE",
+        "isbn": "978-1-5386-6806-1",
+        "rank": 18,
+        "authors": {
+            "authors": [{
+                "affiliation": "Seidenberg Sch. of Comput. Sci. & Inf. Syst., Pace Univ., New York, NY, USA",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086607489",
+                "id": 37086607489,
+                "full_name": "Ion C. Freeman",
+                "author_order": 1
+            }, {
+                "affiliation": "Seidenberg Sch. of Comput. Sci. & Inf. Syst., Pace Univ., New York, NY, USA",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086608035",
+                "id": 37086608035,
+                "full_name": "Ashley J. Haigler",
+                "author_order": 2
+            }, {
+                "affiliation": "Seidenberg Sch. of Comput. Sci. & Inf. Syst., Pace Univ., New York, NY, USA",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37312985800",
+                "id": 37312985800,
+                "full_name": "Suzanna E. Schmeelk",
+                "author_order": 3
+            }, {
+                "affiliation": "Seidenberg Sch. of Comput. Sci. & Inf. Syst., Pace Univ., New York, NY, USA",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086701532",
+                "id": 37086701532,
+                "full_name": "Lisa R. Ellrodt",
+                "author_order": 4
+            }, {
+                "affiliation": "Seidenberg Sch. of Comput. Sci. & Inf. Syst., Pace Univ., New York, NY, USA",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086608610",
+                "id": 37086608610,
+                "full_name": "Tonya L. Fields",
+                "author_order": 5
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "This paper examines industry-based doctoral dissertation research in a professional computing doctoral program for full time working professionals through the lens of different machine learning algorithms to understand topics explored by full time working industry professionals. This research paper examines machine learning algorithms and the IBM Watson Discovery machine learning tool to categorize dissertation research topics defended at Pace University. The research provides insights into differences in machine learning algorithm categorization using natural language processing.",
+        "article_number": "8614242",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8614242",
+        "html_url": "https://ieeexplore.ieee.org/document/8614242/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/8614242/",
+        "publication_title": "2018 17th IEEE International Conference on Machine Learning and Applications (ICMLA)",
+        "conference_location": "Orlando, FL",
+        "conference_dates": "17-20 Dec. 2018",
+        "publication_number": 8613701,
+        "is_number": 8614025,
+        "publication_year": 2018,
+        "publication_date": "17-20 Dec. 2018",
+        "start_page": "1338",
+        "end_page": "1340",
+        "citing_paper_count": 1,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Machine learning", "Machine learning algorithms", "Classification algorithms", "Clustering algorithms", "Medical services", "Tools", "Software algorithms"]
+            },
+            "author_terms": {
+                "terms": ["machine learning, natural language processing (NLP), industry-based, dissertation research classification, IBM Watson Discovery"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-5386-6806-1",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-5386-6805-4",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/ICCTCT.2018.8550972",
+        "title": "A Voice Controlled Smart Home Solution With a Centralized Management Framework Implemented Using AI and NLP",
+        "publisher": "IEEE",
+        "isbn": "978-1-5386-3703-6",
+        "rank": 19,
+        "authors": {
+            "authors": [{
+                "affiliation": "Information Technology, Sardar Patel Institute of Tech.",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086530205",
+                "id": 37086530205,
+                "full_name": "Farzeem D. Jivani",
+                "author_order": 1
+            }, {
+                "affiliation": "Information Technology, Sardar Patel Institute of Tech.",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086530730",
+                "id": 37086530730,
+                "full_name": "Manohar Malvankar",
+                "author_order": 2
+            }, {
+                "affiliation": "Information Technology, Sardar Patel Institute of Tech.",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37548047300",
+                "id": 37548047300,
+                "full_name": "Radha Shankarmani",
+                "author_order": 3
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "The aim of home automation is to make our lives easier and to improve the quality of life. The concept of Smart Homes builds on the progressing maturity of areas such as Artificial Intelligence and Natural Language Processing. This combined with the rise of IoT applications have increased the growth of remote home control systems. This paper proposes a centralized management that will allow user to control domestic appliances and services with voice and also make electronic decisions on the end user's behalf such as monitoring, improving comfort, convenience, controlling surrounding conditions, and delivering required information whenever needed. The primary objective is to construct a plenarily useful voice-based system that utilizes AI and NLP to control all domestic applications and services and also learn the user preferences over time using machine learning algorithms.",
+        "article_number": "8550972",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8550972",
+        "html_url": "https://ieeexplore.ieee.org/document/8550972/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/8550972/",
+        "publication_title": "2018 International Conference on Current Trends towards Converging Technologies (ICCTCT)",
+        "conference_location": "Coimbatore",
+        "conference_dates": "1-3 March 2018",
+        "publication_number": 8536362,
+        "is_number": 8550825,
+        "publication_year": 2018,
+        "publication_date": "1-3 March 2018",
+        "start_page": "1",
+        "end_page": "5",
+        "citing_paper_count": 0,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Servers", "Smart homes", "Natural language processing", "Face", "Conferences", "Brain modeling", "Training"]
+            },
+            "author_terms": {
+                "terms": ["smart home", "automation", "centralized-system", "machine learning", "natural language processing"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-5386-3703-6",
+                "isbnType": "New-2005"
+            }, {
+                "format": "DVD ISBN",
+                "value": "978-1-5386-3700-5",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-5386-3702-9",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/ICMLA.2019.00095",
+        "title": "Mood Classification with Lyrics and ConvNets",
+        "publisher": "IEEE",
+        "isbn": "978-1-7281-4551-8",
+        "rank": 20,
+        "authors": {
+            "authors": [{
+                "affiliation": "Rocket Software",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37087995196",
+                "id": 37087995196,
+                "full_name": "Revanth Akella",
+                "author_order": 1
+            }, {
+                "affiliation": "San Jose State University",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37297296800",
+                "id": 37297296800,
+                "full_name": "Teng-Sheng Moh",
+                "author_order": 2
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "The paper presents research outcomes of classifying music into moods and provides an end-to-end, open source pipeline for mood classification using lyrics. It explores techniques that classify music using audio features and lyrics using various natural language processing methods and machine learning. The paper performs a comparative study across different classification models and mood frameworks. The linguistic aspects of lyrics are explored and are used as features for classification methods to understand what model classifies mood in the most adequate manner. The results show how lyrics are a valuable information source for classification of music. Term-frequency/inverse-document frequency and word embeddings are explored to connect words to mood classes. Various machine learning and deep learning classifiers are tested across different arrangements of the mood labels. The paper demonstrates that models which learn from lyrics using current methods of natural language processing using deep learning demonstrate higher levels of accuracy. Our final model achieves an accuracy of 71%.",
+        "article_number": "8999294",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8999294",
+        "html_url": "https://ieeexplore.ieee.org/document/8999294/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/8999294/",
+        "publication_title": "2019 18th IEEE International Conference On Machine Learning And Applications (ICMLA)",
+        "conference_location": "Boca Raton, FL, USA",
+        "conference_dates": "16-19 Dec. 2019",
+        "publication_number": 8974348,
+        "is_number": 8998966,
+        "publication_year": 2019,
+        "publication_date": "16-19 Dec. 2019",
+        "start_page": "511",
+        "end_page": "514",
+        "citing_paper_count": 0,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Mood", "Feature extraction", "Machine learning", "Pipelines", "Natural language processing", "Task analysis", "Computational modeling"]
+            },
+            "author_terms": {
+                "terms": ["deep learning, natural language processing, mood classification, music classification, tag extraction, lyric extraction."]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-7281-4551-8",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-7281-4550-1",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/TELFOR.2017.8249486",
+        "title": "nutIE — A modern open source natural language processing toolkit",
+        "publisher": "IEEE",
+        "isbn": "978-1-5386-3074-7",
+        "rank": 21,
+        "authors": {
+            "authors": [{
+                "affiliation": "Faculty for Computer and Information Science, University of Ljubljana, Večna pot 113, SI-1000 Ljubljana, Slovenia",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37085543457",
+                "id": 37085543457,
+                "full_name": "Slavko Žitnik",
+                "author_order": 1
+            }, {
+                "affiliation": "School of Electrical Engineering, University of Belgrade, Bul. kralja Aleksandra 73, 11120 Belgrade, Serbia",
+                "authorUrl": "https://ieeexplore.ieee.org/author/38246848100",
+                "id": 38246848100,
+                "full_name": "Dražen Draskovic",
+                "author_order": 2
+            }, {
+                "affiliation": "School of Electrical Engineering, University of Belgrade, Bul. kralja Aleksandra 73, 11120 Belgrade, Serbia",
+                "authorUrl": "https://ieeexplore.ieee.org/author/38255625700",
+                "id": 38255625700,
+                "full_name": "Boško Nikolić",
+                "author_order": 3
+            }, {
+                "affiliation": "Faculty for Computer and Information Science, University of Ljubljana, Večna pot 113, SI-1000 Ljubljana, Slovenia",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37831075300",
+                "id": 37831075300,
+                "full_name": "Marko Bajec",
+                "author_order": 4
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "Nowadays, there are many tools and applications available that use novel machine learning algorithms, but only few tools exist that bridge the gap between the computer scientists and general public. The latter especially holds for the field of natural language processing. Therefore in this paper we present a new information extraction toolkit, called nutIE, that offers a frontend for end-to-end text analysis using a modern javascript-based web application. The core of the toolkit includes all the high-level information extraction techniques with supporting preprocessing and evaluation methods. All these can be accessed by a Scala programmatic API or an arbitrary third-party application via REST interface. It has already been shown that the integrated toolkit's algorithms achieve state-of-the art results. The toolkit is currently applied at international text processing projects and courses.",
+        "article_number": "8249486",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8249486",
+        "html_url": "https://ieeexplore.ieee.org/document/8249486/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/8249486/",
+        "publication_title": "2017 25th Telecommunication Forum (TELFOR)",
+        "conference_location": "Belgrade",
+        "conference_dates": "21-22 Nov. 2017",
+        "publication_number": 8234842,
+        "is_number": 8249266,
+        "publication_year": 2017,
+        "publication_date": "21-22 Nov. 2017",
+        "start_page": "1",
+        "end_page": "4",
+        "citing_paper_count": 0,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Natural language processing", "Libraries", "Information retrieval", "Logic gates", "Data models", "Data structures"]
+            },
+            "author_terms": {
+                "terms": ["Libraries", "Natural Language Processing", "Scala", "Toolkits", "Web application"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-5386-3074-7",
+                "isbnType": "New-2005"
+            }, {
+                "format": "CD",
+                "value": "978-1-5386-3072-3",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-5386-3073-0",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/IACC.2017.0100",
+        "title": "Text Mining Approach for Product Quality Enhancement: (Improving Product Quality through Machine Learning)",
+        "publisher": "IEEE",
+        "isbn": "978-1-5090-1561-0",
+        "issn": "2473-3571",
+        "rank": 22,
+        "authors": {
+            "authors": [{
+                "affiliation": "HCL Technol. Ltd., Hyderabad, India",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086167914",
+                "id": 37086167914,
+                "full_name": "Chandrasekhar Rangu",
+                "author_order": 1
+            }, {
+                "affiliation": "HCL Technol. Ltd., Hyderabad, India",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086170292",
+                "id": 37086170292,
+                "full_name": "Shuvojit Chatterjee",
+                "author_order": 2
+            }, {
+                "affiliation": "HCL Technol. Ltd., Hyderabad, India",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086171671",
+                "id": 37086171671,
+                "full_name": "Srinivasa Rao Valluru",
+                "author_order": 3
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "Text mining, also referred to as text data mining, is the process of extracting interesting and non-trivial patterns or knowledge from text documents. It uses algorithms to transform free flow text (unstructured) into data that can be analyzed (structured) by applying Statistical, Machine Learning and Natural Language Processing (NLP) techniques. Text mining is an evolving technology that allows enterprises to understand their customers well, and help them in redefining customer needs. As e-commerce is becoming more and more established, the number of customer reviews and feedback that a product receives has grown rapidly over a period of time. For a popular asset, the number of review comments can be in thousands or even more. This makes it difficult for the manufacturer to read all of them to make an informed decision in improving product quality and support. Again it is difficult for the manufacturer to keep track and to manage all customer opinions. This article attempts to derive some meaningful information from asset reviews which will be used in enhancing asset features from engineering point of view and helps in improving the support quality and customer experience.",
+        "article_number": "7976834",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7976834",
+        "html_url": "https://ieeexplore.ieee.org/document/7976834/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/7976834/",
+        "publication_title": "2017 IEEE 7th International Advance Computing Conference (IACC)",
+        "conference_location": "Hyderabad",
+        "conference_dates": "5-7 Jan. 2017",
+        "publication_number": 7974917,
+        "is_number": 7976734,
+        "publication_year": 2017,
+        "publication_date": "5-7 Jan. 2017",
+        "start_page": "456",
+        "end_page": "460",
+        "citing_paper_count": 1,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Support vector machines", "Text mining", "Market research", "Quality assessment", "Product design", "Natural language processing"]
+            },
+            "author_terms": {
+                "terms": ["Text mining", "Natural Language Processing (NLP)", "crawling", "Support Vector Machine (SVM)", "Associate Rule Mining (ARM)", "Term Frequency (TF)", "Document Term Matrix (DTM)", "Stemming", "Lemmatization"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-5090-1561-0",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-5090-1560-3",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/CONFLUENCE.2019.8776935",
+        "title": "Automated Genre Classification of Books Using Machine Learning and Natural Language Processing",
+        "publisher": "IEEE",
+        "isbn": "978-1-5386-5934-2",
+        "rank": 23,
+        "authors": {
+            "authors": [{
+                "affiliation": "Computer Engineering Department NSIT, Delhi University, Delhi, India",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086441120",
+                "id": 37086441120,
+                "full_name": "Shikha Gupta",
+                "author_order": 1
+            }, {
+                "affiliation": "Department of Information Technology, KIET, Ghaziabad, India",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086136000",
+                "id": 37086136000,
+                "full_name": "Mohit Agarwal",
+                "author_order": 2
+            }, {
+                "affiliation": "Computer Engineering Department NSIT, Delhi University, Delhi, India",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37851564000",
+                "id": 37851564000,
+                "full_name": "Satbir Jain",
+                "author_order": 3
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "In today's world due to ever increasing demand to make computers perform tasks of humans, machine learning is used. It is a tedious task to manually read the entire book and classify it based on its genre. Novice writers find it troublesome to figure out the genre of their book, which can affect its reach to the right audience. The proposed method gains knowledge from a large number of words from the books and transforms them into a feature matrix. During transformation, the size of the initial matrix is reduced using Wordnet and Principle Component Analysis. Then, AdaBoost classifier is applied to predict the genres of the books.",
+        "article_number": "8776935",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8776935",
+        "html_url": "https://ieeexplore.ieee.org/document/8776935/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/8776935/",
+        "publication_title": "2019 9th International Conference on Cloud Computing, Data Science & Engineering (Confluence)",
+        "conference_location": "Noida, India",
+        "conference_dates": "10-11 Jan. 2019",
+        "publication_number": 8767138,
+        "is_number": 8776606,
+        "publication_year": 2019,
+        "publication_date": "10-11 Jan. 2019",
+        "start_page": "269",
+        "end_page": "272",
+        "citing_paper_count": 0,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Text categorization", "Training", "Decision trees", "Data models", "Principal component analysis", "Dimensionality reduction"]
+            },
+            "author_terms": {
+                "terms": ["Natural Language Processing", "Machine Learning", "Genre Classification", "WordNet", "TF-IDF", "Decision Tree", "AdaBoost", "Principle Component Analysis (PCA)"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-5386-5934-2",
+                "isbnType": "New-2005"
+            }, {
+                "format": "CD",
+                "value": "978-1-5386-5932-8",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-5386-5933-5",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/ICEAST.2018.8434447",
+        "title": "Thai Clickbait Detection Algorithms Using Natural Language Processing with Machine Learning Techniques",
+        "publisher": "IEEE",
+        "isbn": "978-1-5386-4957-2",
+        "rank": 24,
+        "authors": {
+            "authors": [{
+                "affiliation": "The Sirindhorn International Thai-German Graduate School of Engineering, King Mongkut's University of Technology North Bangkok, Department of Electrical and Software Systems Engineering, Bangkok, Thailand",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37086423266",
+                "id": 37086423266,
+                "full_name": "Praphan Klairith",
+                "author_order": 1
+            }, {
+                "affiliation": "The Sirindhorn International Thai-German Graduate School of Engineering, King Mongkut's University of Technology North Bangkok, Department of Electrical and Software Systems Engineering, Bangkok, Thailand",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37541540000",
+                "id": 37541540000,
+                "full_name": "Sansiri Tanachutiwat",
+                "author_order": 2
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "This paper proposes the approach based on machine learning for detection of Thai clickbait. The clickbait messages often adopt eye-catching on wording, lagging of information on a content to attract visitors. We contribute the clickbait corpus by crowdsourcing, 30,000 of headlines are selected to draw up the dataset. In this work attempt to develop clickbait detection model using two type of features in the embedding layer and three different of networks in the hidden layer. BiLSTM with word level embedding performs very well achieving accuracy rate of 0.98, fl-score of 0.98.",
+        "article_number": "8434447",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8434447",
+        "html_url": "https://ieeexplore.ieee.org/document/8434447/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/8434447/",
+        "publication_title": "2018 International Conference on Engineering, Applied Sciences, and Technology (ICEAST)",
+        "conference_location": "Phuket",
+        "conference_dates": "4-7 July 2018",
+        "publication_number": 8423603,
+        "is_number": 8434393,
+        "publication_year": 2018,
+        "publication_date": "4-7 July 2018",
+        "start_page": "1",
+        "end_page": "4",
+        "citing_paper_count": 1,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Machine learning", "Logic gates", "Natural language processing", "Recurrent neural networks", "Text categorization", "Social network services"]
+            },
+            "author_terms": {
+                "terms": ["clickbait detection", "Thai text classifier", "Recurrent Neural Network"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-5386-4957-2",
+                "isbnType": "New-2005"
+            }, {
+                "format": "CD",
+                "value": "978-1-5386-4955-8",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-5386-4956-5",
+                "isbnType": "New-2005"
+            }]
+        }
+    }, {
+        "doi": "10.1109/ICOEI48184.2020.9142886",
+        "title": "Analysis of Intelligent Machines using Deep learning and Natural Language Processing",
+        "publisher": "IEEE",
+        "isbn": "978-1-7281-5519-7",
+        "rank": 25,
+        "authors": {
+            "authors": [{
+                "affiliation": "School of ECE, REVA University,Bengaluru,India",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37077324200",
+                "id": 37077324200,
+                "full_name": "Manjunath R. Kounte",
+                "author_order": 1
+            }, {
+                "affiliation": "School of ECE, REVA University,Bengaluru,India",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37088444596",
+                "id": 37088444596,
+                "full_name": "Pratyush Kumar Tripathy",
+                "author_order": 2
+            }, {
+                "affiliation": "School of ECE, REVA University,Bengaluru,India",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37088444866",
+                "id": 37088444866,
+                "full_name": "Pramod P.",
+                "author_order": 3
+            }, {
+                "affiliation": "School of ECE, REVA University,Bengaluru,India",
+                "authorUrl": "https://ieeexplore.ieee.org/author/37088445579",
+                "id": 37088445579,
+                "full_name": "Harshit Bajpai",
+                "author_order": 4
+            }]
+        },
+        "access_type": "LOCKED",
+        "content_type": "Conferences",
+        "abstract": "Intelligent Machines are playing an important role in performing various activities in the industry thereby reducing the human efforts, error rate and increase the efficiency and accuracy. Artificial Intelligence is the backbone for development of intelligent machines which use natural language processing and deep learning as fundamental tools. In this paper, we present the new perspective of intelligent machines in everyday usage, along with the importance of understanding the natural language and generating machine level natural language for intelligent machines. Further, we summarize an overview of deep learning concurrent neural network and recurrent neural network models. Also, we review the significance of sentimental analysis using natural language processing and the ability of machines to take decisions and solve problems.",
+        "article_number": "9142886",
+        "pdf_url": "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9142886",
+        "html_url": "https://ieeexplore.ieee.org/document/9142886/",
+        "abstract_url": "https://ieeexplore.ieee.org/document/9142886/",
+        "publication_title": "2020 4th International Conference on Trends in Electronics and Informatics (ICOEI)(48184)",
+        "conference_location": "Tirunelveli, India",
+        "conference_dates": "15-17 June 2020",
+        "publication_number": 9138108,
+        "is_number": 9142867,
+        "publication_year": 2020,
+        "publication_date": "15-17 June 2020",
+        "start_page": "956",
+        "end_page": "960",
+        "citing_paper_count": 0,
+        "citing_patent_count": 0,
+        "index_terms": {
+            "ieee_terms": {
+                "terms": ["Natural language processing", "Machine learning", "Neurons", "Feature extraction", "Data mining", "Market research"]
+            },
+            "author_terms": {
+                "terms": ["Natural Language Understanding(NLU)", "Natural Language Processing(NLP)", "Natural Language Generation(NLG)", "Deep Learning(DL)", "Intelligent Machine(IM)", "Convolution Neural Network(CNN)", "Recurrent Neural Network(RNN) and Machine learning(ML)"]
+            }
+        },
+        "isbn_formats": {
+            "isbns": [{
+                "format": "Print on Demand(PoD) ISBN",
+                "value": "978-1-7281-5519-7",
+                "isbnType": "New-2005"
+            }, {
+                "format": "DVD ISBN",
+                "value": "978-1-7281-5517-3",
+                "isbnType": "New-2005"
+            }, {
+                "format": "Electronic ISBN",
+                "value": "978-1-7281-5518-0",
+                "isbnType": "New-2005"
+            }]
+        }
+    }]
+}

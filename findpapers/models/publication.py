@@ -103,7 +103,7 @@ class Publication():
         if self.publisher is None:
             self.publisher = publication.publisher
 
-        if self.category is None:
+        if self.category is None or (self.category == 'Other' and publication.category is not None):
             self.category = publication.category
 
         for bibliometrics in publication.bibliometrics_list:

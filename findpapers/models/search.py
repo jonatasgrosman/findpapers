@@ -222,3 +222,16 @@ class Search():
 
                 # removing the paper_2 instance
                 self.remove_paper(paper_2)
+
+
+    def has_reached_its_limit(self) -> bool:
+        """
+        Returns a flag that says if the search has reached its limit
+
+        Returns
+        -------
+        bool
+            a flag that says if the search has reached its limit
+        """
+
+        return self.limit is not None and len(self.papers) >= self.limit

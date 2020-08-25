@@ -63,12 +63,12 @@ class Paper():
         Raises
         ------
         ValueError
-            - Nowadays only ACM, arXiv or Scopus are valid library names
+            - Nowadays only ACM, arXiv, IEEE or Scopus are valid library names
         """
 
-        if library_name not in ['ACM', 'arXiv', 'Scopus']:
+        if library_name not in ['ACM', 'arXiv', 'IEEE', 'Scopus']:
             raise ValueError(
-                f'Invalid library name "{library_name}". Nowadays only ACM, arXiv or Scopus are valid library names')
+                f'Invalid library name "{library_name}". Nowadays only ACM, arXiv, IEEE or Scopus are valid library names')
 
         self.libraries.add(library_name)
 

@@ -14,7 +14,7 @@ from findpapers.models.bibliometrics import ScopusBibliometrics
 logger = logging.getLogger(__name__)
 
 
-def get_query(search: Search) -> str:
+def _get_query(search: Search) -> str:
     """
     Get the translated query from search instance to fetch data from Scopus database
     See https://dev.elsevier.com/tips/ScopusSearchTips.htm for query tips
@@ -40,7 +40,7 @@ def get_query(search: Search) -> str:
     return query
 
 
-def get_publication_entry(publication_issn: str, api_token: str):  # pragma: no cover
+def _get_publication_entry(publication_issn: str, api_token: str):  # pragma: no cover
     """
     Get publication entry by publication ISSN
 
@@ -67,7 +67,7 @@ def get_publication_entry(publication_issn: str, api_token: str):  # pragma: no 
         return response['entry'][0]
 
 
-def get_publication(paper_entry: dict, api_token: str) -> Publication:
+def _get_publication(paper_entry: dict, api_token: str) -> Publication:
     """
     Using a paper entry provided, this method builds a publication instance
 
@@ -107,7 +107,7 @@ def get_publication(paper_entry: dict, api_token: str) -> Publication:
 
     if publication_issn is not None:
 
-        publication_entry = get_publication_entry(publication_issn, api_token)
+        publication_entry = _get_publication_entry(publication_issn, api_token)
 
         if publication_entry is not None:
 
@@ -136,7 +136,7 @@ def get_publication(paper_entry: dict, api_token: str) -> Publication:
     return publication
 
 
-def get_paper_page(url: str):  # pragma: no cover
+def _get_paper_page(url: str):  # pragma: no cover
     """
     Get a paper page element from a provided URL
 
@@ -156,7 +156,7 @@ def get_paper_page(url: str):  # pragma: no cover
     return html.fromstring(response.content.decode('UTF-8'))
 
 
-def get_paper(paper_entry: dict, publication: Publication) -> Paper:
+def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
     """
     Using a paper entry provided, this method builds a paper instance
 
@@ -212,7 +212,7 @@ def get_paper(paper_entry: dict, publication: Publication) -> Paper:
 
         try:
 
-            paper_page = get_paper_page(paper_scopus_link)
+            paper_page = _get_paper_page(paper_scopus_link)
 
             paper_abstract = paper_page.xpath(
                 '//section[@id="abstractSection"]//p//text()[normalize-space()]')
@@ -239,7 +239,7 @@ def get_paper(paper_entry: dict, publication: Publication) -> Paper:
     return paper
 
 
-def get_search_results(search: Search, api_token: str, url: Optional[str] = None):  # pragma: no cover
+def _get_search_results(search: Search, api_token: str, url: Optional[str] = None):  # pragma: no cover
     """
     This method fetch papers from Scopus database using the provided search parameters
 
@@ -256,7 +256,7 @@ def get_search_results(search: Search, api_token: str, url: Optional[str] = None
 
     # is url is not None probably this is a recursive call to the next url of a pagination
     if url is None:
-        query = get_query(search)
+        query = _get_query(search)
         url = f'https://api.elsevier.com/content/search/scopus?&sort=citedby-count,relevancy,pubyear&apiKey={api_token}&query={query}'
 
     headers = {'User-Agent': str(UserAgent().chrome),
@@ -290,25 +290,25 @@ def run(search: Search, api_token: str, url: Optional[str] = None):
     if api_token is None or len(api_token.strip()) == 0:
         raise AttributeError('The API token cannot be null')
 
-    search_results = get_search_results(search, api_token, url)
+    search_results = _get_search_results(search, api_token, url)
 
     total_papers = search_results.get('opensearch:totalResults', 0)
     start_pagination_index = int(
         search_results.get('opensearch:startIndex', 0))
     processed_papers = 0
 
-    logging.info(f'{total_papers} papers retrived')
+    logging.info(f'{total_papers} papers to fetch')
 
     for paper_entry in search_results.get('entry', []):
 
-        if search.limit is not None and len(search.papers) >= search.limit:
+        if search.has_reached_its_limit():
             break
 
         try:
             logging.info(paper_entry.get("dc:title"))
 
-            publication = get_publication(paper_entry, api_token)
-            paper = get_paper(paper_entry, publication)
+            publication = _get_publication(paper_entry, api_token)
+            paper = _get_paper(paper_entry, publication)
             paper.add_library('Scopus')
 
             search.add_paper(paper)
@@ -328,5 +328,5 @@ def run(search: Search, api_token: str, url: Optional[str] = None):
 
     # If there is a next url, the API provided response was paginated and we need to process the next url
     # We'll make a recursive call for it
-    if next_url is not None and (search.limit is None or len(search.papers) < search.limit):
+    if next_url is not None and not search.has_reached_its_limit():
         run(search, api_token, next_url)
