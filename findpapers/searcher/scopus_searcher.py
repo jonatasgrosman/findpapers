@@ -13,17 +13,6 @@ from findpapers.models.bibliometrics import ScopusBibliometrics
 
 logger = logging.getLogger(__name__)
 
-AREAS_BY_KEY = {
-    'computer_science': ['COMP', 'MULT'],
-    'economics': ['ECON', 'BUSI', 'MULT'],
-    'engineering': ['AGRI', 'CENG', 'ENER', 'ENGI', 'ENVI', 'MATE', 'MULT'],
-    'mathematics': ['MATH', 'MULT'],
-    'physics': ['EART', 'PHYS', 'MULT'],
-    'biology': ['AGRI', 'BIOC', 'DENT', 'ENVI', 'HEAL', 'IMMU', 'MEDI', 'NEUR', "NURS", 'PHAR', 'VETE', 'MULT'],
-    'chemistry': ['CENG', 'CHEM', 'PHAR', 'MULT'],
-    'humanities': ['ARTS', 'DECI', 'ENVI', 'PSYC', 'SOCI', 'MULT']
-}
-
 
 def get_query(search: Search) -> str:
     """
@@ -45,17 +34,6 @@ def get_query(search: Search) -> str:
 
     if search.since is not None:
         query += f' AND PUBYEAR > {search.since.year - 1}'
-
-    if search.areas != None:
-        selected_areas = set()
-        for area in search.areas:
-            scopus_areas = AREAS_BY_KEY.get(area, [])
-            for scopus_area in scopus_areas:
-                selected_areas.add(scopus_area)
-        selected_areas = list(selected_areas)
-        selected_areas.sort()
-        if len(selected_areas) > 0:
-            query += f' AND SUBJAREA({" OR ".join(selected_areas)})'
 
     return query
 

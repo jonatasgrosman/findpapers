@@ -6,15 +6,12 @@ from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
 
 
-VALID_AREAS = ['computer_science', 'economics', 'engineering',
-                   'mathematics', 'physics', 'biology', 'chemistry', 'humanities']
-
 class Search():
     """
     Class that represents a search
     """
 
-    def __init__(self, query: str, since: Optional[datetime.date] = None, areas: Optional[List[str]] = None, limit: Optional[int] = None):
+    def __init__(self, query: str, since: Optional[datetime.date] = None, limit: Optional[int] = None):
         """
         Class constructor
 
@@ -24,29 +21,14 @@ class Search():
             The query used to fetch the papers
         since : datetime.date, optional
             The lower bound (inclusive) date of search, by default None
-        areas : List[str], optional
-            List of areas of interest that limited the field of search for papers.
-            The available areas are: computer_science, economics, engineering, mathematics, physics, biology, chemistry and humanities
         limit : int, optional
             The max number of papers that needs to be returned in the search, 
             when the limit is not provided the search will retrieve all the papers that it can, by default None
-        Raises
-        ------
-        ValueError
-            - Only "computer_science", "economics", "engineering", "mathematics", "physics", "biology", "chemistry" and "humanities" are valid areas' 
         """
 
         self.query = query
         self.since = since
         self.limit = limit
-
-        # checking the areas
-        if areas is not None:
-            for area in areas:
-                if area not in VALID_AREAS:
-                    raise ValueError(
-                        f'Invalid area "{area}". Only {"".join(VALID_AREAS)} are valid areas')
-        self.areas = areas
 
         self.fetched_at = datetime.datetime.utcnow()
         self.papers = set()

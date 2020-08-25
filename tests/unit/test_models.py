@@ -122,8 +122,7 @@ def test_paper(paper: Paper):
 
 def test_search(paper: Paper):
 
-    search = Search('this AND that', datetime.date(
-        1969, 1, 30), ['humanities', 'economics'], 2)
+    search = Search('this AND that', datetime.date(1969, 1, 30), 2)
 
     assert len(search.papers) == 0
 
@@ -155,7 +154,3 @@ def test_search(paper: Paper):
 
     search.merge_duplications()
     assert len(search.papers) == 1
-
-    with pytest.raises(ValueError):
-        Search('this AND that', datetime.date(
-            1969, 1, 30), ['INVALID CATEGORY'])

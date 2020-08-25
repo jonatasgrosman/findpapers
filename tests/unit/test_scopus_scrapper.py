@@ -10,11 +10,6 @@ def test_get_query(search: Search):
     query = f'TITLE-ABS-KEY({search.query})'
     query += f' AND PUBYEAR > {search.since.year - 1}'
 
-    selected_areas = ['ECON', 'BUSI', 'ARTS',
-                      'DECI', 'ENVI', 'PSYC', 'SOCI', 'MULT']
-    selected_areas.sort()
-    query += f' AND SUBJAREA({" OR ".join(selected_areas)})'
-
     assert scopus_searcher.get_query(search) == query
 
 

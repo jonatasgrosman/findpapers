@@ -8,10 +8,10 @@ import findpapers.searcher.scopus_searcher as scopus_searcher
 logger = logging.getLogger(__name__)
 
 
-def get(query: str, since: Optional[datetime.date] = None, areas: Optional[List[str]] = None,
+def get(query: str, since: Optional[datetime.date] = None,
         limit: Optional[int] = None, scopus_api_token: Optional[str] = None) -> Search:
 
-    search = Search(query, since, areas, limit)
+    search = Search(query, since, limit)
 
     if scopus_api_token is None:
         scopus_api_token = os.getenv('SCOPUS_API_TOKEN')
