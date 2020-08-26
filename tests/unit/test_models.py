@@ -1,22 +1,19 @@
 import datetime
 import pytest
-from findpapers.models.bibliometrics import AcmBibliometrics, ScopusBibliometrics
+from findpapers.models.bibliometrics import ScopusBibliometrics
 from findpapers.models.publication import Publication
 from findpapers.models.paper import Paper
 from findpapers.models.search import Search
 
 
-def test_bibliometrics(acm_bibliometrics: AcmBibliometrics, scopus_bibliometrics: ScopusBibliometrics):
-
-    assert acm_bibliometrics.average_citation_per_article == 2.2
-    assert acm_bibliometrics.average_downloads_per_article == 4.7
+def test_bibliometrics(scopus_bibliometrics: ScopusBibliometrics):
 
     assert scopus_bibliometrics.cite_score == 3.5
     assert scopus_bibliometrics.sjr == 7.5
     assert scopus_bibliometrics.snip == 1.0
 
 
-def test_publication(publication: Publication, acm_bibliometrics: AcmBibliometrics, scopus_bibliometrics: ScopusBibliometrics):
+def test_publication(publication: Publication, scopus_bibliometrics: ScopusBibliometrics):
 
     assert publication.title == 'awesome publication title'
     assert publication.isbn == 'isbn-X'
@@ -37,17 +34,11 @@ def test_publication(publication: Publication, acm_bibliometrics: AcmBibliometri
     publication.category = 'newspaper article'
     assert publication.category == 'Other'
 
-    publication.add_bibliometrics(acm_bibliometrics)
-    assert len(publication.bibliometrics_list) == 1
-    assert acm_bibliometrics in publication.bibliometrics_list
-
-    other_acm_bibliometrics = AcmBibliometrics(7.2)
-    publication.add_bibliometrics(other_acm_bibliometrics)
-    assert len(publication.bibliometrics_list) == 1
-    assert other_acm_bibliometrics not in publication.bibliometrics_list
-
     another_publication = Publication('another awesome title')
     another_publication.add_bibliometrics(scopus_bibliometrics)
+    
+    # the bibliometrics of a source will only added once
+    another_publication.add_bibliometrics(scopus_bibliometrics) 
 
     publication.issn = None
     publication.isbn = None
@@ -57,7 +48,7 @@ def test_publication(publication: Publication, acm_bibliometrics: AcmBibliometri
     publication.enrich(another_publication)
 
     assert scopus_bibliometrics in publication.bibliometrics_list
-    assert len(publication.bibliometrics_list) == 2
+    assert len(publication.bibliometrics_list) == 1
     assert publication.issn == another_publication.issn
     assert publication.isbn == another_publication.isbn
     assert publication.publisher == another_publication.publisher

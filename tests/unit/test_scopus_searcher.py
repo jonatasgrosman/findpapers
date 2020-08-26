@@ -51,14 +51,7 @@ def test_get_publication(paper_entry: dict):
     else:
         assert publication.issn == paper_entry.get('prism:issn')
 
-    assert publication.publisher == 'Tech Science Press'
     assert publication.category == 'Journal'
-
-    assert len(publication.bibliometrics_list) == 1
-    assert publication.bibliometrics_list[0].cite_score == 3.8
-    assert publication.bibliometrics_list[0].sjr == 1.534
-    assert publication.bibliometrics_list[0].snip == 4.801
-    assert publication.bibliometrics_list[0].source_name == 'Scopus'
 
 
 def test_get_paper(publication: Publication):
@@ -134,3 +127,24 @@ def test_run_entry_error(search: Search, mock_scopus_get_search_results_entry_er
     scopus_searcher.run(search, 'fake-api-token')
 
     assert len(search.papers) == 3
+
+
+def test_enrich_publication_data(search: Search):
+
+    with pytest.raises(AttributeError):
+        scopus_searcher.enrich_publication_data(search, '')
+
+    with pytest.raises(AttributeError):
+        scopus_searcher.enrich_publication_data(search, None)
+
+    scopus_searcher.enrich_publication_data(search, 'fake-api-token')
+
+    for publication_key, publication in search.publication_by_key.items():
+        assert publication.publisher is not None
+        assert len(publication.bibliometrics_list) == 1
+        assert publication.bibliometrics_list[0].source_name == 'Scopus'
+
+    scopus_searcher.enrich_publication_data(search, 'fake-api-token')
+    for publication_key, publication in search.publication_by_key.items():
+        assert len(publication.bibliometrics_list) == 1
+    

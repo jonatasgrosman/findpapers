@@ -4,12 +4,7 @@ import requests
 from findpapers.models.publication import Publication
 from findpapers.models.paper import Paper
 from findpapers.models.search import Search
-from findpapers.models.bibliometrics import AcmBibliometrics, ScopusBibliometrics
-
-
-@pytest.fixture
-def acm_bibliometrics():
-    return AcmBibliometrics(2.2, 4.7)
+from findpapers.models.bibliometrics import ScopusBibliometrics
 
 
 @pytest.fixture

@@ -90,12 +90,6 @@ def _get_publication(paper_entry: dict, api_token: str) -> Publication:
     publication_isbn = paper_entry.get('prism:isbn', None)
     publication_issn = paper_entry.get('prism:issn', None)
     publication_category = paper_entry.get('prism:aggregationType', None)
-    publication_publisher = None
-    publication_cite_score = None
-    publication_sjr = None
-    publication_snip = None
-
-    # post processing data
 
     if isinstance(publication_isbn, list):
         publication_isbn = publication_isbn[0].get('$')
@@ -103,35 +97,8 @@ def _get_publication(paper_entry: dict, api_token: str) -> Publication:
     if isinstance(publication_issn, list):
         publication_issn = publication_issn[0].get('$')
 
-    # enriching data
-
-    if publication_issn is not None:
-
-        publication_entry = _get_publication_entry(publication_issn, api_token)
-
-        if publication_entry is not None:
-
-            publication_publisher = publication_entry.get('dc:publisher', None)
-
-            publication_cite_score = util.try_success(lambda: float(
-                publication_entry['citeScoreYearInfoList']['citeScoreCurrentMetric']))
-
-            if 'SJRList' in publication_entry and len(publication_entry['SJRList']['SJR']) > 0:
-                publication_sjr = util.try_success(lambda: float(
-                    publication_entry['SJRList']['SJR'][0]['$']))
-
-            if 'SNIPList' in publication_entry and len(publication_entry['SNIPList']['SNIP']) > 0:
-                publication_snip = util.try_success(lambda: float(
-                    publication_entry['SNIPList']['SNIP'][0]['$']))
-
     publication = Publication(publication_title, publication_isbn,
-                              publication_issn, publication_publisher, publication_category)
-
-    if publication_cite_score is not None or publication_sjr is not None or publication_snip is not None:
-
-        scopus_bibliometrics = ScopusBibliometrics(
-            publication_cite_score, publication_sjr, publication_snip)
-        publication.add_bibliometrics(scopus_bibliometrics)
+                              publication_issn, None, publication_category)
 
     return publication
 
@@ -264,6 +231,60 @@ def _get_search_results(search: Search, api_token: str, url: Optional[str] = Non
 
     return util.try_success(lambda: requests.get(
         url, headers=headers).json()['search-results'])
+
+
+def enrich_publication_data(search: Search, api_token: str):
+    """
+    This method fetch papers from Scopus database to enrich publication data
+
+    Parameters
+    ----------
+    search : Search
+        A search instance
+    api_token : str
+        The API key used to fetch data from Scopus database,
+
+    Raises
+    ------
+    AttributeError
+        - The API token cannot be null
+    """
+
+    if api_token is None or len(api_token.strip()) == 0:
+        raise AttributeError('The API token cannot be null')
+
+    for publication_key, publication in search.publication_by_key.items():
+
+        if publication.issn is not None:
+
+            publication_entry = _get_publication_entry(
+                publication.issn, api_token)
+
+            if publication_entry is not None:
+
+                publication_publisher = publication_entry.get(
+                    'dc:publisher', None)
+
+                if publication_publisher is not None:
+                    publication.publisher = publication_publisher
+
+                publication_cite_score = util.try_success(lambda x=publication_entry: float(
+                    x.get('citeScoreYearInfoList').get('citeScoreCurrentMetric')))
+
+                if 'SJRList' in publication_entry and len(publication_entry.get('SJRList').get('SJR')) > 0:
+                    publication_sjr = util.try_success(lambda x=publication_entry: float(
+                        x.get('SJRList').get('SJR')[0].get('$')))
+
+                if 'SNIPList' in publication_entry and len(publication_entry.get('SNIPList').get('SNIP')) > 0:
+                    publication_snip = util.try_success(lambda x=publication_entry: float(
+                        x.get('SNIPList').get('SNIP')[0].get('$')))
+
+                if publication_cite_score is not None or publication_sjr is not None or publication_snip is not None:
+
+                    scopus_bibliometrics = ScopusBibliometrics(
+                        publication_cite_score, publication_sjr, publication_snip)
+
+                    publication.add_bibliometrics(scopus_bibliometrics)
 
 
 def run(search: Search, api_token: str, url: Optional[str] = None):

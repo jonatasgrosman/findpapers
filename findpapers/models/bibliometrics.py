@@ -19,29 +19,6 @@ class Bibliometrics():
         self.source_name = source_name
 
 
-class AcmBibliometrics(Bibliometrics):
-    """
-    AcmBibliometrics class
-    """
-
-    def __init__(self, average_citation_per_article: Optional[float] = None, average_downloads_per_article: Optional[float] = None):
-        """
-        AcmBibliometrics class constructor
-
-        Parameters
-        ----------
-        average_citation_per_article : float
-            Average citation per article, by default None
-        average_downloads_per_article : float
-            Average downloads per article, by default None
-        """
-
-        super().__init__('ACM')
-
-        self.average_citation_per_article = average_citation_per_article
-        self.average_downloads_per_article = average_downloads_per_article
-
-
 class ScopusBibliometrics(Bibliometrics):
     """
     ScopusBibliometrics class

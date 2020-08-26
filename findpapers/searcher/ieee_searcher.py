@@ -10,7 +10,6 @@ import findpapers.util as util
 from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
-from findpapers.models.bibliometrics import ScopusBibliometrics
 
 logger = logging.getLogger(__name__)
 
