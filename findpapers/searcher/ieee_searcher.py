@@ -70,7 +70,7 @@ def _get_api_result(search: Search, api_token: str, start_record: Optional[int] 
 
     url = _get_url(search, api_token, start_record)
 
-    return util.try_success(lambda: requests.get(url).json(), 5)
+    return util.try_success(lambda: requests.get(url).json())
 
 
 def _get_publication(paper_entry: dict) -> Publication:

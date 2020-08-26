@@ -29,10 +29,13 @@ def get_numeric_month_by_string(string: str) -> str:
     return str(months.index(string[:3].lower()) + 1).zfill(2)
 
 
-def try_success(function, attempts: Optional[int] = 1, delay: Optional[int] = 3):
+def try_success(function, attempts: Optional[int] = 1, pre_delay: Optional[int] = 0, next_try_delay: Optional[int] = 3):
     """
     Try to execute a function and repeat this execution if it raises any exception.
     This function will try N times to succeed, by provided number of attempts.
+
+    Note: you can provide a delay time for pre and post function call, 
+    so the total delayed time between calls is pre_delay + next_try_delay
 
     Parameters
     ----------
@@ -40,7 +43,9 @@ def try_success(function, attempts: Optional[int] = 1, delay: Optional[int] = 3)
             A function that will be tried N times
     attempts : int, optional
             number of attempts, by default 1
-    delay : int, optional
+    pre_delay : int, optional
+            The delay before each function attempts in seconds, by default 0
+    next_try_delay : int, optional
             The delay between function attempts in seconds, by default 3
 
     Returns
@@ -50,9 +55,10 @@ def try_success(function, attempts: Optional[int] = 1, delay: Optional[int] = 3)
     """
     try:
         if attempts > 0:
+            time.sleep(pre_delay)
             return function()
         return None
     except Exception as e:
         logger.error(e)
-        time.sleep(delay)
+        time.sleep(next_try_delay)
         return try_success(function, attempts-1)

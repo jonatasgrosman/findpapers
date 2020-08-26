@@ -61,7 +61,7 @@ def _get_publication_entry(publication_issn: str, api_token: str):  # pragma: no
     headers = {'User-Agent': str(UserAgent().chrome),
                'Accept': 'application/json'}
     response = util.try_success(lambda: requests.get(
-        url, headers=headers).json()['serial-metadata-response'], 5)
+        url, headers=headers).json()['serial-metadata-response'])
 
     if response is not None and 'entry' in response and len(response['entry']) > 0:
         return response['entry'][0]
@@ -152,7 +152,7 @@ def _get_paper_page(url: str):  # pragma: no cover
     """
 
     response = util.try_success(lambda: requests.get(
-        url, headers={'User-Agent': str(UserAgent().chrome)}), 5)
+        url, headers={'User-Agent': str(UserAgent().chrome)}))
     return html.fromstring(response.content.decode('UTF-8'))
 
 
@@ -263,7 +263,7 @@ def _get_search_results(search: Search, api_token: str, url: Optional[str] = Non
                'Accept': 'application/json'}
 
     return util.try_success(lambda: requests.get(
-        url, headers=headers).json()['search-results'], 5)
+        url, headers=headers).json()['search-results'])
 
 
 def run(search: Search, api_token: str, url: Optional[str] = None):
