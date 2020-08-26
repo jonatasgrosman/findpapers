@@ -9,7 +9,6 @@ import findpapers.util as util
 from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
-from findpapers.models.bibliometrics import ScopusBibliometrics
 
 logger = logging.getLogger(__name__)
 
@@ -270,21 +269,23 @@ def enrich_publication_data(search: Search, api_token: str):
 
                 publication_cite_score = util.try_success(lambda x=publication_entry: float(
                     x.get('citeScoreYearInfoList').get('citeScoreCurrentMetric')))
+                
+                if publication_cite_score is not None:
+                    publication.cite_score = publication_cite_score
 
                 if 'SJRList' in publication_entry and len(publication_entry.get('SJRList').get('SJR')) > 0:
                     publication_sjr = util.try_success(lambda x=publication_entry: float(
                         x.get('SJRList').get('SJR')[0].get('$')))
 
+                if publication_sjr is not None:
+                    publication.sjr = publication_sjr
+
                 if 'SNIPList' in publication_entry and len(publication_entry.get('SNIPList').get('SNIP')) > 0:
                     publication_snip = util.try_success(lambda x=publication_entry: float(
                         x.get('SNIPList').get('SNIP')[0].get('$')))
 
-                if publication_cite_score is not None or publication_sjr is not None or publication_snip is not None:
-
-                    scopus_bibliometrics = ScopusBibliometrics(
-                        publication_cite_score, publication_sjr, publication_snip)
-
-                    publication.add_bibliometrics(scopus_bibliometrics)
+                if publication_snip is not None:
+                    publication.snip = publication_snip
 
 
 def run(search: Search, api_token: str, url: Optional[str] = None):

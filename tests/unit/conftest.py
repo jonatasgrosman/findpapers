@@ -4,12 +4,6 @@ import requests
 from findpapers.models.publication import Publication
 from findpapers.models.paper import Paper
 from findpapers.models.search import Search
-from findpapers.models.bibliometrics import ScopusBibliometrics
-
-
-@pytest.fixture
-def scopus_bibliometrics():
-    return ScopusBibliometrics(3.5, 7.5, 1.0)
 
 
 @pytest.fixture

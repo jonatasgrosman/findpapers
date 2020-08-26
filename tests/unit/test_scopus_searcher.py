@@ -140,11 +140,7 @@ def test_enrich_publication_data(search: Search):
     scopus_searcher.enrich_publication_data(search, 'fake-api-token')
 
     for publication_key, publication in search.publication_by_key.items():
-        assert publication.publisher is not None
-        assert len(publication.bibliometrics_list) == 1
-        assert publication.bibliometrics_list[0].source_name == 'Scopus'
-
-    scopus_searcher.enrich_publication_data(search, 'fake-api-token')
-    for publication_key, publication in search.publication_by_key.items():
-        assert len(publication.bibliometrics_list) == 1
+        assert publication.cite_score is not None
+        assert publication.sjr is not None
+        assert publication.snip is not None
     

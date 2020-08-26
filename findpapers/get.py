@@ -19,17 +19,20 @@ def get(query: str, since: Optional[datetime.date] = None, until: Optional[datet
     
     if not search.has_reached_its_limit() and ieee_api_token is not None:
         logger.info('Fetching papers from IEEE library...')
-        ieee_searcher.run(search, ieee_api_token)
+        try:
+            ieee_searcher.run(search, ieee_api_token)
+        except Exception: # pragma: no cover
+            logger.error('Error while fetching papers from IEEE library')
 
     if scopus_api_token is None:
         scopus_api_token = os.getenv('SCOPUS_API_TOKEN')
     
     if scopus_api_token is not None:
         logger.info('Fetching papers from Scopus library...')
-        scopus_searcher.run(search, scopus_api_token)
-        scopus_searcher.enrich_publication_data(search, scopus_api_token)
+        try:
+            scopus_searcher.run(search, scopus_api_token)
+            scopus_searcher.enrich_publication_data(search, scopus_api_token)
+        except Exception: # pragma: no cover
+            logger.error('Error while fetching papers from Scopus library')
 
     return search
-
-# remember to get bibliometrics from ACM too, e.g., https://dl.acm.org/journal/csur
-# and show those values (from ACM and SCOPUS) in a segmented way while selecting papers

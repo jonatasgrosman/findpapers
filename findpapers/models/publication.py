@@ -1,7 +1,6 @@
 from __future__ import annotations
 from typing import List, Optional
 from datetime import date
-from findpapers.models.bibliometrics import Bibliometrics
 
 
 class Publication():
@@ -10,7 +9,8 @@ class Publication():
     """
 
     def __init__(self, title: str, isbn: Optional[str] = None, issn: Optional[str] = None, publisher: Optional[str] = None,
-                 category: Optional[str] = None):
+                 category: Optional[str] = None, cite_score: Optional[float] = None, sjr: Optional[float] = None,
+                 snip: Optional[float] = None):
         """
         Paper class constructor
 
@@ -26,6 +26,14 @@ class Publication():
             publication publisher, by default None
         category : str, optional
             publication category (Journal, Conference Proceeding, Book, Other), by default None
+        cite_score : float, optional
+            CiteScore measures average citations received per document published in the serial, by default None
+        sjr : float, optional
+            SCImago Journal Rank measures weighted citations received by the serial. 
+            Citation weighting depends on subject field and prestige (SJR) of the citing serial, by default None
+        snip : float, optional
+            Source Normalized Impact per Paper measures actual citations received relative to citations 
+            expected for the serial’s subject field, by default None
         """
 
         self.title = title
@@ -33,7 +41,9 @@ class Publication():
         self.issn = issn
         self.publisher = publisher
         self.category = category
-        self.bibliometrics_list = []
+        self.cite_score = cite_score
+        self.sjr = sjr
+        self.snip = snip
 
     @property
     def category(self):
@@ -65,24 +75,6 @@ class Publication():
 
         self._category = value
 
-    def add_bibliometrics(self, bibliometrics: Bibliometrics):
-        """
-        Adding a new unique bibliometrics to the publication, a uniqueness of a bibliometrics is given by its source_name
-        If duplication of bibliometrics is provided, the addition will be skipped.
-
-        Parameters
-        ----------
-        bibliometrics : Bibliometrics
-            A bibliometrics instance to be added to the publication bibliometrics list
-        """
-
-        # checking if the provided bibliometrics will break the uniqueness constraint given by its source_name
-        for a_bibliometrics in self.bibliometrics_list:
-            if a_bibliometrics.source_name == bibliometrics.source_name:
-                return
-
-        self.bibliometrics_list.append(bibliometrics)
-
     def enrich(self, publication: Publication):
         """
         e can enrich some publication information using a duplication of it found in another library.
@@ -106,5 +98,11 @@ class Publication():
         if self.category is None or (self.category == 'Other' and publication.category is not None):
             self.category = publication.category
 
-        for bibliometrics in publication.bibliometrics_list:
-            self.add_bibliometrics(bibliometrics)
+        if self.cite_score is None:
+            self.cite_score = publication.cite_score
+        
+        if self.sjr is None:
+            self.sjr = publication.sjr
+
+        if self.snip is None:
+            self.snip = publication.snip

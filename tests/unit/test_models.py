@@ -1,26 +1,17 @@
 import datetime
 import pytest
-from findpapers.models.bibliometrics import ScopusBibliometrics
 from findpapers.models.publication import Publication
 from findpapers.models.paper import Paper
 from findpapers.models.search import Search
 
 
-def test_bibliometrics(scopus_bibliometrics: ScopusBibliometrics):
-
-    assert scopus_bibliometrics.cite_score == 3.5
-    assert scopus_bibliometrics.sjr == 7.5
-    assert scopus_bibliometrics.snip == 1.0
-
-
-def test_publication(publication: Publication, scopus_bibliometrics: ScopusBibliometrics):
+def test_publication(publication: Publication):
 
     assert publication.title == 'awesome publication title'
     assert publication.isbn == 'isbn-X'
     assert publication.issn == 'issn-X'
     assert publication.publisher == 'that publisher'
     assert publication.category == 'Journal'
-    assert len(publication.bibliometrics_list) == 0
 
     publication.category = 'book series'
     assert publication.category == 'Book'
@@ -35,10 +26,9 @@ def test_publication(publication: Publication, scopus_bibliometrics: ScopusBibli
     assert publication.category == 'Other'
 
     another_publication = Publication('another awesome title')
-    another_publication.add_bibliometrics(scopus_bibliometrics)
-    
-    # the bibliometrics of a source will only added once
-    another_publication.add_bibliometrics(scopus_bibliometrics) 
+    another_publication.cite_score = 1.0
+    another_publication.sjr = 2.0
+    another_publication.snip = 3.0
 
     publication.issn = None
     publication.isbn = None
@@ -47,8 +37,9 @@ def test_publication(publication: Publication, scopus_bibliometrics: ScopusBibli
 
     publication.enrich(another_publication)
 
-    assert scopus_bibliometrics in publication.bibliometrics_list
-    assert len(publication.bibliometrics_list) == 1
+    assert publication.cite_score == another_publication.cite_score
+    assert publication.sjr == another_publication.sjr
+    assert publication.snip == another_publication.snip
     assert publication.issn == another_publication.issn
     assert publication.isbn == another_publication.isbn
     assert publication.publisher == another_publication.publisher
