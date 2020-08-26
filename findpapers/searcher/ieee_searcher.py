@@ -15,7 +15,40 @@ from findpapers.models.bibliometrics import ScopusBibliometrics
 logger = logging.getLogger(__name__)
 
 
-def _get_api_result(search: Search, api_token: str, start_record: Optional[int] = 1):
+def _get_url(search: Search, api_token: str, start_record: Optional[int] = 1):
+    """
+    This method return the URL to be used to retrieve data from IEEE database
+
+    Parameters
+    ----------
+    search : Search
+        A search instance
+    api_token : str
+        The API key used to fetch data from IEEE database,
+    start_record : str
+        Sequence number of first record to fetch, by default 1
+
+    Returns
+    -------
+    str
+        a URL to be used to retrieve data from IEEE database
+    """
+
+    url = f'http://ieeexploreapi.ieee.org/api/v1/search/articles?querytext={search.query}&format=json&apikey={api_token}&max_records=200'
+
+    if search.since is not None:
+        url += f'&start_year={search.since.year}'
+    
+    if search.until is not None:
+        url += f'&end_year={search.until.year}'
+
+    if start_record is not None:
+        url += f'&start_record={start_record}'
+
+    return url
+
+
+def _get_api_result(search: Search, api_token: str, start_record: Optional[int] = 1): # pragma: no cover
 
     """
     This method return results from IEEE database using the provided search parameters
@@ -28,19 +61,14 @@ def _get_api_result(search: Search, api_token: str, start_record: Optional[int] 
         The API key used to fetch data from IEEE database,
     start_record : str
         Sequence number of first record to fetch, by default 1
+
+    Returns
+    -------
+    dict
+        a result from IEEE database
     """
 
-    #http://ieeexploreapi.ieee.org/api/v1/search/articles?querytext=%28%22machine+learning%22+OR+%22deep+learning%22%29+AND+%28%22nlp%22+OR+%22natural+language+processing%22%29&format=json&apikey=4gvmfjenk6h2djkf9veew74e&start_record=4520
-    url = f'http://ieeexploreapi.ieee.org/api/v1/search/articles?querytext={search.query}&format=json&apikey={api_token}&max_records=200'
-
-    if search.since is not None:
-        url += f'&start_year={search.since.year}'
-    
-    if search.until is not None:
-        url += f'&end_year={search.until.year}'
-
-    if start_record is not None:
-        url += f'&start_record={start_record}'
+    url = _get_url(search, api_token, start_record)
 
     return util.try_success(lambda: requests.get(url).json(), 5)
 
@@ -94,8 +122,12 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
     paper_doi = paper_entry.get('doi', None)
     paper_citations = paper_entry.get('citing_paper_count', None)
     paper_abstract = paper_entry.get('abstract', None)
-    paper_keywords = set(paper_entry.get('index_terms').get('author_terms').get('terms'))
     paper_urls = {paper_entry.get('pdf_url')}
+    
+    try:
+        paper_keywords = set(paper_entry.get('index_terms').get('author_terms').get('terms'))
+    except Exception as e:
+        paper_keywords = set()
     
     if paper_publication_date is not None:
         try:
@@ -163,14 +195,11 @@ def run(search: Search, api_token: str):
 
             start_record = paper_entry.get('rank') + 1
 
-            try:
-                publication = _get_publication(paper_entry)
-                paper = _get_paper(paper_entry, publication)
-                paper.add_library('IEEE')
+            publication = _get_publication(paper_entry)
+            paper = _get_paper(paper_entry, publication)
+            paper.add_library('IEEE')
 
-                search.add_paper(paper)
-            except Exception as e:
-                logging.error(e)
+            search.add_paper(paper)
 
             logging.info(f'{start_record-1}/{total_papers} papers fetched')
         
