@@ -28,7 +28,7 @@ paper_entry = {
 }
 
 
-def test_get_url(search: Search):
+def test_get_search_url(search: Search):
 
     api_token = 'fake-token'
     start_record = 200
@@ -38,7 +38,7 @@ def test_get_url(search: Search):
     url += f'&end_year={search.until.year}'
     url += f'&start_record={start_record}'
 
-    assert ieee_searcher._get_url(search, api_token, start_record) == url
+    assert ieee_searcher._get_search_url(search, api_token, start_record) == url
 
 
 def test_mocks():

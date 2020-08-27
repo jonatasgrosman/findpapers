@@ -10,8 +10,6 @@ from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
 
-logger = logging.getLogger(__name__)
-
 
 def _get_query(search: Search) -> str:
     """

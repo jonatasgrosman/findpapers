@@ -1,0 +1,131 @@
+<?xml version="1.0" ?>
+<!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2019//EN" "https://dtd.nlm.nih.gov/ncbi/pubmed/out/pubmed_190101.dtd">
+<PubmedArticleSet>
+<PubmedArticle>
+    <MedlineCitation Status="PubMed-not-MEDLINE" Owner="NLM">
+        <PMID Version="1">32835308</PMID>
+        <DateRevised>
+            <Year>2020</Year>
+            <Month>08</Month>
+            <Day>24</Day>
+        </DateRevised>
+        <Article PubModel="Print-Electronic">
+            <Journal>
+                <ISSN IssnType="Electronic">2666-3899</ISSN>
+                <JournalIssue CitedMedium="Internet">
+                    <Volume>1</Volume>
+                    <Issue>4</Issue>
+                    <PubDate>
+                        <Year>2020</Year>
+                        <Month>Jul</Month>
+                        <Day>10</Day>
+                    </PubDate>
+                </JournalIssue>
+                <Title>Patterns (New York, N.Y.)</Title>
+                <ISOAbbreviation>Patterns (N Y)</ISOAbbreviation>
+            </Journal>
+            <ArticleTitle>Harvesting Patterns from Textual Web Sources with Tolerance Rough Sets.</ArticleTitle>
+            <Pagination>
+                <MedlinePgn>100053</MedlinePgn>
+            </Pagination>
+            <ELocationID EIdType="doi" ValidYN="Y">10.1016/j.patter.2020.100053</ELocationID>
+            <Abstract>
+                <AbstractText>Construction of knowledge repositories from web corpora by harvesting linguistic patterns is of benefit for many natural language-processing applications that rely on question-answering schemes. These methods require minimal or no human intervention and can recursively learn new relational facts-instances in a fully automated and scalable manner. This paper explores the performance of tolerance rough set-based learner with respect to two important issues: scalability and its effect on concept drift, by (1) designing a new version of the semi-supervised tolerance rough set-based pattern learner (TPL 2.0), (2) adapting a tolerance form of rough set methodology to categorize linguistic patterns, and (3) extracting categorical information from a large noisy dataset of crawled web pages. This work demonstrates that the TPL 2.0 learner is promising in terms of precision@30 metric when compared with three benchmark algorithms: Tolerant Pattern Learner 1.0, Fuzzy-Rough Set Pattern Learner, and Coupled Bayesian Sets-based learner.</AbstractText>
+                <CopyrightInformation>© 2020 The Authors.</CopyrightInformation>
+            </Abstract>
+            <AuthorList CompleteYN="Y">
+                <Author ValidYN="Y">
+                    <LastName>Moghaddam</LastName>
+                    <ForeName>Hoora Rezaei</ForeName>
+                    <Initials>HR</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Sightline Innovation Inc., 136 Market Avenue, Unit 300, Winnipeg, MB, R3B 0P4, Canada.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+                <Author ValidYN="Y">
+                    <LastName>Ramanna</LastName>
+                    <ForeName>Sheela</ForeName>
+                    <Initials>S</Initials>
+                    <AffiliationInfo>
+                        <Affiliation>Department of Applied Computer Science, University of Winnipeg, Winnipeg, Manitoba R3B 2E9, Canada.</Affiliation>
+                    </AffiliationInfo>
+                </Author>
+            </AuthorList>
+            <Language>eng</Language>
+            <PublicationTypeList>
+                <PublicationType UI="D016428">Journal Article</PublicationType>
+            </PublicationTypeList>
+            <ArticleDate DateType="Electronic">
+                <Year>2020</Year>
+                <Month>06</Month>
+                <Day>26</Day>
+            </ArticleDate>
+        </Article>
+        <MedlineJournalInfo>
+            <Country>United States</Country>
+            <MedlineTA>Patterns (N Y)</MedlineTA>
+            <NlmUniqueID>101767765</NlmUniqueID>
+            <ISSNLinking>2666-3899</ISSNLinking>
+        </MedlineJournalInfo>
+        <KeywordList Owner="NOTNLM">
+            <Keyword MajorTopicYN="N">granular computing</Keyword>
+            <Keyword MajorTopicYN="N">machine learning</Keyword>
+            <Keyword MajorTopicYN="N">named entity recognition</Keyword>
+            <Keyword MajorTopicYN="N">natural language processing</Keyword>
+            <Keyword MajorTopicYN="N">semi-supervised learning</Keyword>
+            <Keyword MajorTopicYN="N">tolerance rough sets</Keyword>
+        </KeywordList>
+        <CoiStatement>The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.</CoiStatement>
+    </MedlineCitation>
+    <PubmedData>
+        <History>
+            <PubMedPubDate PubStatus="received">
+                <Year>2020</Year>
+                <Month>03</Month>
+                <Day>02</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="revised">
+                <Year>2020</Year>
+                <Month>05</Month>
+                <Day>12</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="accepted">
+                <Year>2020</Year>
+                <Month>05</Month>
+                <Day>26</Day>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="entrez">
+                <Year>2020</Year>
+                <Month>8</Month>
+                <Day>25</Day>
+                <Hour>6</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="pubmed">
+                <Year>2020</Year>
+                <Month>8</Month>
+                <Day>25</Day>
+                <Hour>6</Hour>
+                <Minute>0</Minute>
+            </PubMedPubDate>
+            <PubMedPubDate PubStatus="medline">
+                <Year>2020</Year>
+                <Month>8</Month>
+                <Day>25</Day>
+                <Hour>6</Hour>
+                <Minute>1</Minute>
+            </PubMedPubDate>
+        </History>
+        <PublicationStatus>ppublish</PublicationStatus>
+        <ArticleIdList>
+            <ArticleId IdType="pubmed">32835308</ArticleId>
+            <ArticleId IdType="doi">10.1016/j.patter.2020.100053</ArticleId>
+            <ArticleId IdType="pii">S2666-3899(20)30064-7</ArticleId>
+            <ArticleId IdType="pii">100053</ArticleId>
+            <ArticleId IdType="pmc">PMC7318947</ArticleId>
+        </ArticleIdList>
+        <?pmcsd?>
+    </PubmedData>
+</PubmedArticle>
+
+</PubmedArticleSet>

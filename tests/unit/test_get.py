@@ -11,5 +11,6 @@ def test_get():
     
     scopus_papers_test_count = 4
     ieee_papers_test_count = 25
+    pubmed_papers_test_count = 1
 
-    assert len(search.papers) == scopus_papers_test_count + ieee_papers_test_count
+    assert len(search.papers) == scopus_papers_test_count + ieee_papers_test_count + pubmed_papers_test_count

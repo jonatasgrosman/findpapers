@@ -5,8 +5,6 @@ import traceback
 import logging
 from typing import Optional
 
-logger = logging.getLogger(__name__)
-
 
 def get_numeric_month_by_string(string: str) -> str:
     """
@@ -59,6 +57,6 @@ def try_success(function, attempts: Optional[int] = 1, pre_delay: Optional[int] 
             return function()
         return None
     except Exception as e:
-        logger.error(e)
+        logging.error(e)
         time.sleep(next_try_delay)
         return try_success(function, attempts-1)

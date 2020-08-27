@@ -6,7 +6,7 @@ import findpapers.searcher.ieee_searcher as ieee_searcher
 
 
 @pytest.fixture(autouse=True)
-def mock_get_api_result(monkeypatch):
+def mock_ieee_get_api_result(monkeypatch):
 
     def mocked_search_results(*args, **kwargs):
         dirname = os.path.dirname(__file__)
@@ -16,13 +16,3 @@ def mock_get_api_result(monkeypatch):
         return search_results
 
     monkeypatch.setattr(ieee_searcher, '_get_api_result', mocked_search_results)
-
-
-@pytest.fixture
-def mock_get_api_result_error(monkeypatch):
-
-    def mocked_search_results(*args, **kwargs):
-        raise RuntimeError()
-
-    monkeypatch.setattr(ieee_searcher, '_get_api_result', mocked_search_results)
-

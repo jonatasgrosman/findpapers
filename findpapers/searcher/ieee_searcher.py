@@ -11,10 +11,8 @@ from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
 
-logger = logging.getLogger(__name__)
 
-
-def _get_url(search: Search, api_token: str, start_record: Optional[int] = 1):
+def _get_search_url(search: Search, api_token: str, start_record: Optional[int] = 1):
     """
     This method return the URL to be used to retrieve data from IEEE database
 
@@ -67,7 +65,7 @@ def _get_api_result(search: Search, api_token: str, start_record: Optional[int] 
         a result from IEEE database
     """
 
-    url = _get_url(search, api_token, start_record)
+    url = _get_search_url(search, api_token, start_record)
 
     return util.try_success(lambda: requests.get(url).json())
 
@@ -79,7 +77,7 @@ def _get_publication(paper_entry: dict) -> Publication:
     Parameters
     ----------
     paper_entry : dict
-        A paper entry retrived from scopus API
+        A paper entry retrived from IEEE API
 
     Returns
     -------

@@ -3,6 +3,7 @@ import datetime
 import logging
 import re
 import math
+import xmltodict
 from lxml import html
 from typing import Optional
 from fake_useragent import UserAgent
@@ -11,67 +12,83 @@ from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
 
-logger = logging.getLogger(__name__)
 
-
-def _get_url(search: Search, api_token: str, start_record: Optional[int] = 1):
+def _get_search_url(search: Search, start_record: Optional[int] = 0):
     """
-    This method return the URL to be used to retrieve data from IEEE database
+    This method return the URL to be used to retrieve data from PubMed database
 
     Parameters
     ----------
     search : Search
         A search instance
-    api_token : str
-        The API key used to fetch data from IEEE database,
-    start_record : str
-        Sequence number of first record to fetch, by default 1
+    start_record : str, optional
+        Sequence number of first record to fetch, by default 0
 
     Returns
     -------
     str
-        a URL to be used to retrieve data from IEEE database
+        a URL to be used to retrieve data from PubMed database
     """
 
-    #https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=("machine learning" OR "deep learning") AND ("nlp" OR "natural language processing") AND 2014[PDAT] AND 2015[PDAT] AND has abstract [FILT]&retstart=10
+    # https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=("machine learning" OR "deep learning") AND ("nlp" OR "natural language processing") AND 1/01/01:2018/12/31[Date - Publication] AND has abstract [FILT] AND "journal article"[Publication Type]&retstart=10&retmax=50
 
-    url = f'http://ieeexploreapi.ieee.org/api/v1/search/articles?querytext={search.query}&format=json&apikey={api_token}&max_records=200'
+    url = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term={search.query} AND has abstract [FILT] AND "journal article"[Publication Type]'
 
-    if search.since is not None:
-        url += f'&start_year={search.since.year}'
-    
-    if search.until is not None:
-        url += f'&end_year={search.until.year}'
+    if search.since is not None or search.until is not None:
+        since = datetime.date(
+            1, 1, 1) if search.since is None else search.since
+        until = datetime.date.today() if search.until is None else search.until
+
+        url += f' AND {since.strftime("%Y/%m/%d")}:{until.strftime("%Y/%m/%d")}[Date - Publication]'
 
     if start_record is not None:
-        url += f'&start_record={start_record}'
+        url += f'&retstart={start_record}'
+
+    url += f'&retmax=50'
 
     return url
 
 
-def _get_api_result(search: Search, api_token: str, start_record: Optional[int] = 1): # pragma: no cover
-
+def _get_api_result(search: Search, start_record: Optional[int] = 0) -> dict:  # pragma: no cover
     """
-    This method return results from IEEE database using the provided search parameters
+    This method return results from PubMed database using the provided search parameters
 
     Parameters
     ----------
     search : Search
         A search instance
-    api_token : str
-        The API key used to fetch data from IEEE database,
-    start_record : str
-        Sequence number of first record to fetch, by default 1
+    start_record : str, optional
+        Sequence number of first record to fetch, by default 0
 
     Returns
     -------
     dict
-        a result from IEEE database
+        a result from PubMed database
     """
 
-    url = _get_url(search, api_token, start_record)
+    url = _get_search_url(search, start_record)
 
-    return util.try_success(lambda: requests.get(url).json())
+    return util.try_success(lambda: xmltodict.parse(requests.get(url).content), pre_delay=1)
+
+
+def _get_paper_entry(pubmed_id: str) -> dict:  # pragma: no cover
+    """
+    This method return paper data from PubMed database using the provided PubMed ID
+
+    Parameters
+    ----------
+    pubmed_id : str
+        A PubMed ID
+
+    Returns
+    -------
+    dict
+        a paper entry from PubMed database
+    """
+
+    url = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id={pubmed_id}&rettype=abstract'
+
+    return util.try_success(lambda: xmltodict.parse(requests.get(url).content), pre_delay=1)
 
 
 def _get_publication(paper_entry: dict) -> Publication:
@@ -81,7 +98,7 @@ def _get_publication(paper_entry: dict) -> Publication:
     Parameters
     ----------
     paper_entry : dict
-        A paper entry retrived from scopus API
+        A paper entry retrived from PubMed API
 
     Returns
     -------
@@ -89,14 +106,14 @@ def _get_publication(paper_entry: dict) -> Publication:
         A publication instance
     """
 
-    publication_title = paper_entry.get('publication_title', None)
-    publication_isbn = paper_entry.get('isbn', None)
-    publication_issn = paper_entry.get('issn', None)
-    publication_publisher = paper_entry.get('publisher', None)
-    publication_category = paper_entry.get('content_type', None)
+    article = paper_entry.get('PubmedArticleSet').get(
+        'PubmedArticle').get('MedlineCitation').get('Article')
 
-    publication = Publication(publication_title, publication_isbn,
-                              publication_issn, publication_publisher, publication_category)
+    publication_title = article.get('Journal').get('Title')
+    publication_issn = article.get('Journal').get('ISSN').get('#text')
+
+    publication = Publication(publication_title, None,
+                              publication_issn, None, 'Journal')
 
     return publication
 
@@ -118,43 +135,62 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
         A paper instance
     """
 
-    paper_title = paper_entry.get('title', None)
-    paper_publication_date = paper_entry.get('publication_date', None)
-    paper_doi = paper_entry.get('doi', None)
-    paper_citations = paper_entry.get('citing_paper_count', None)
-    paper_abstract = paper_entry.get('abstract', None)
-    paper_urls = {paper_entry.get('pdf_url')}
-    
-    try:
-        paper_keywords = set(paper_entry.get('index_terms').get('author_terms').get('terms'))
-    except Exception as e:
-        paper_keywords = set()
-    
-    if paper_publication_date is not None:
-        try:
-            paper_publication_date_split = paper_publication_date.split(' ')
-            day = int(paper_publication_date_split[0].split('-')[0])
-            month = int(util.get_numeric_month_by_string(paper_publication_date_split[1]))
-            year = int(paper_publication_date_split[2])
+    article = paper_entry.get('PubmedArticleSet').get(
+        'PubmedArticle').get('MedlineCitation').get('Article')
 
-            paper_publication_date = datetime.date(year, month, day)
-        except Exception as e:
-            pass
-    
-    if not isinstance(paper_publication_date, datetime.date):
-        paper_publication_date = datetime.date(paper_entry.get('publication_year'), 1, 1)
+    paper_title = article.get('ArticleTitle')
+
+    if 'ArticleDate' in article:
+        paper_publication_date_day = article.get('ArticleDate').get('Day')
+        paper_publication_date_month = article.get('ArticleDate').get('Month')
+        paper_publication_date_year = article.get('ArticleDate').get('Year')
+    else:
+        paper_publication_date_day = 1
+        paper_publication_date_month = util.get_numeric_month_by_string(
+            article.get('Journal').get('JournalIssue').get('PubDate').get('Month'))
+        paper_publication_date_year = article.get('Journal').get(
+            'JournalIssue').get('PubDate').get('Year')
+
+    paper_doi = None
+    paper_ids = paper_entry.get('PubmedArticleSet').get('PubmedArticle').get(
+        'PubmedData').get('ArticleIdList').get('ArticleId')
+    for paper_id in paper_ids:
+        if paper_id.get('@IdType') == 'doi':
+            paper_doi = paper_id.get('#text')
+            break
+
+    paper_abstract = None
+    if isinstance(article.get('Abstract').get('AbstractText'), list):
+        paper_abstract = '\n'.join(
+            [x.get('#text') for x in article.get('Abstract').get('AbstractText') if x.get('#text') is not None])
+    else:
+        paper_abstract = article.get('Abstract').get('AbstractText')
+
+    try:
+        paper_keywords = set([x.get('#text') for x in paper_entry.get('PubmedArticleSet').get(
+            'PubmedArticle').get('MedlineCitation').get('KeywordList').get('Keyword')])
+    except Exception:
+        paper_keywords = set()
+
+    try:
+        paper_publication_date = datetime.date(int(paper_publication_date_year), int(
+            paper_publication_date_month), int(paper_publication_date_day))
+    except Exception:
+        paper_publication_date = datetime.date(
+            int(paper_publication_date_year), 1, 1)
 
     paper_authors = []
-    for author in paper_entry.get('authors').get('authors'):
-        paper_authors.append(author.get('full_name'))
+    for author in article.get('AuthorList').get('Author'):
+        paper_authors.append(
+            f"{author.get('ForeName')} {author.get('LastName')}")
 
     paper = Paper(paper_title, paper_abstract, paper_authors, publication,
-                  paper_publication_date, paper_urls, paper_doi, paper_citations, paper_keywords)
+                  paper_publication_date, [], paper_doi, None, paper_keywords)
 
     return paper
 
 
-def run(search: Search, api_token: str):
+def run(search: Search):
     """
     This method fetch papers from IEEE database using the provided search parameters
     After fetch the data from IEEE, the collected papers are added to the provided search instance
@@ -172,13 +208,11 @@ def run(search: Search, api_token: str):
         - The API token cannot be null
     """
 
-    if api_token is None or len(api_token.strip()) == 0:
-        raise AttributeError('The API token cannot be null')
-    
-    start_record = 1
-    result = _get_api_result(search, api_token, start_record)
-    total_papers = result.get('total_records')
-    total_pages = int(math.ceil(total_papers / 200))
+    start_record = 0
+    result = _get_api_result(search, start_record)
+
+    total_papers = int(result.get('eSearchResult').get('Count'))
+    total_pages = int(math.ceil(total_papers / 50))
 
     logging.info(f'{total_papers} papers to fetch')
 
@@ -187,23 +221,30 @@ def run(search: Search, api_token: str):
         if search.has_reached_its_limit():
             break
 
-        for paper_entry in result.get('articles'):
+        for pubmed_id in result.get('eSearchResult').get('IdList').get('Id'):
 
             if search.has_reached_its_limit():
                 break
+            try:
 
-            logging.info(paper_entry.get('title'))
+                paper_entry = _get_paper_entry(pubmed_id)
+                title = paper_entry.get('PubmedArticleSet').get('PubmedArticle').get(
+                    'MedlineCitation').get('Article').get('ArticleTitle')
 
-            start_record = paper_entry.get('rank') + 1
+                logging.info(title)
 
-            publication = _get_publication(paper_entry)
-            paper = _get_paper(paper_entry, publication)
-            paper.add_library('IEEE')
+                publication = _get_publication(paper_entry)
+                paper = _get_paper(paper_entry, publication)
 
-            search.add_paper(paper)
+                paper.add_library('PubMed')
 
-            logging.info(f'{start_record-1}/{total_papers} papers fetched')
-        
-        if start_record < total_papers and not search.has_reached_its_limit(): 
-            result = _get_api_result(search, api_token, start_record)
-    
+                search.add_paper(paper)
+            
+            except Exception as e: # pragma: no cover
+                logging.error(e)
+
+            start_record += 1
+            logging.info(f'{start_record}/{total_papers} papers fetched')
+
+        if start_record < total_papers and not search.has_reached_its_limit():
+            result = _get_api_result(search, start_record)
