@@ -12,10 +12,13 @@ from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
 
+MAX_ENTRIES_PER_PAGE = 50
+
 
 def _get_search_url(search: Search, start_record: Optional[int] = 0):
     """
     This method return the URL to be used to retrieve data from PubMed database
+    See https://www.ncbi.nlm.nih.gov/books/NBK25500/ for query tips
 
     Parameters
     ----------
@@ -30,8 +33,6 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0):
         a URL to be used to retrieve data from PubMed database
     """
 
-    # https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=("machine learning" OR "deep learning") AND ("nlp" OR "natural language processing") AND 1/01/01:2018/12/31[Date - Publication] AND has abstract [FILT] AND "journal article"[Publication Type]&retstart=10&retmax=50
-
     url = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term={search.query} AND has abstract [FILT] AND "journal article"[Publication Type]'
 
     if search.since is not None or search.until is not None:
@@ -44,7 +45,7 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0):
     if start_record is not None:
         url += f'&retstart={start_record}'
 
-    url += f'&retmax=50'
+    url += f'&retmax={MAX_ENTRIES_PER_PAGE}'
 
     return url
 
@@ -212,7 +213,7 @@ def run(search: Search):
     result = _get_api_result(search, start_record)
 
     total_papers = int(result.get('eSearchResult').get('Count'))
-    total_pages = int(math.ceil(total_papers / 50))
+    total_pages = int(math.ceil(total_papers / MAX_ENTRIES_PER_PAGE))
 
     logging.info(f'{total_papers} papers to fetch')
 
@@ -236,12 +237,12 @@ def run(search: Search):
                 publication = _get_publication(paper_entry)
                 paper = _get_paper(paper_entry, publication)
 
-                paper.add_library('PubMed')
+                paper.add_database('PubMed')
 
                 search.add_paper(paper)
-            
-            except Exception as e: # pragma: no cover
-                logging.error(e)
+
+            except Exception as e:  # pragma: no cover
+                logging.error(e, exc_info=True)
 
             start_record += 1
             logging.info(f'{start_record}/{total_papers} papers fetched')

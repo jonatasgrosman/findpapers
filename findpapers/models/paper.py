@@ -28,11 +28,11 @@ class Paper():
         publication_date : date
             Paper publication date
         urls : Set[str]
-            Paper urls (one from each scientific library)
+            Paper urls (one from each scientific database)
         doi : str, optional
             Paper DOI, by default None
         citations : int, optional
-            Paper citation count given by scientific libraries, by default None
+            Paper citation count given by scientific databases, by default None
         keywords : Set[str], optional
             Paper keywords, by default None
         comments : str, optional
@@ -49,28 +49,28 @@ class Paper():
         self.citations = citations
         self.keywords = keywords
         self.comments = comments
-        self.libraries = set()
+        self.databases = set()
 
-    def add_library(self, library_name: str):
+    def add_database(self, database_name: str):
         """
-        Adds library name where the paper was found
+        Adds database name where the paper was found
 
         Parameters
         ----------
-        library_name : str
-            The library name where the paper was found
+        database_name : str
+            The database name where the paper was found
 
         Raises
         ------
         ValueError
-            - Nowadays only ACM, arXiv, IEEE, PubMed or Scopus are valid library names
+            - Nowadays only ACM, arXiv, IEEE, PubMed or Scopus are valid database names
         """
 
-        if library_name not in ['ACM', 'arXiv', 'IEEE', 'PubMed', 'Scopus']:
+        if database_name not in ['ACM', 'arXiv', 'IEEE', 'PubMed', 'Scopus']:
             raise ValueError(
-                f'Invalid library name "{library_name}". Nowadays only ACM, arXiv, IEEE, PubMed, or Scopus are valid library names')
+                f'Invalid database name "{database_name}". Nowadays only ACM, arXiv, IEEE, PubMed, or Scopus are valid database names')
 
-        self.libraries.add(library_name)
+        self.databases.add(database_name)
 
     def add_url(self, url: str):
         """
@@ -85,7 +85,7 @@ class Paper():
 
     def enrich(self, paper: Paper):
         """
-        We can enrich some paper information using a duplication of it found in another library.
+        We can enrich some paper information using a duplication of it found in another database.
         This method do this using a provided instance of a duplicated paper
 
         Parameters
@@ -118,7 +118,7 @@ class Paper():
         for url in paper.urls:
             self.add_url(url)
         
-        for library in paper.libraries:
-            self.add_library(library)
+        for database in paper.databases:
+            self.add_database(database)
 
         self.publication.enrich(self.publication)

@@ -6,9 +6,5 @@ from findpapers.get import get
 #from findpapers.save import save
 #from findpapers.load import load
 
-#evaluate the inclusion of
-#https://dev.springernature.com/
-#https://developer.ieee.org/
-
 logging_level = os.getenv('LOGGING_LEVEL')
 logging.basicConfig(level=getattr(logging, logging_level), format='%(asctime)s %(levelname)s: %(message)s')

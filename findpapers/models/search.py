@@ -97,16 +97,18 @@ class Search():
             raise OverflowError(
                 'When the papers limit is provided, you cannot exceed it')
 
-        publication_key = self.get_publication_key(
-            paper.publication.title, paper.publication.issn, paper.publication.isbn)
-        already_collected_publication = self.publication_by_key.get(
-            publication_key, None)
+        if paper.publication is not None:
 
-        if already_collected_publication is not None:
-            already_collected_publication.enrich(paper.publication)
-            paper.publication = already_collected_publication
-        else:
-            self.publication_by_key[publication_key] = paper.publication
+            publication_key = self.get_publication_key(
+                paper.publication.title, paper.publication.issn, paper.publication.isbn)
+            already_collected_publication = self.publication_by_key.get(
+                publication_key, None)
+
+            if already_collected_publication is not None:
+                already_collected_publication.enrich(paper.publication)
+                paper.publication = already_collected_publication
+            else:
+                self.publication_by_key[publication_key] = paper.publication
 
         paper_key = self.get_paper_key(paper.title, paper.publication_date)
         already_collected_paper = self.paper_by_key.get(paper_key, None)
@@ -183,7 +185,7 @@ class Search():
 
     def merge_duplications(self, similarity_threshold: float = 0.9):
         """
-        In some cases, a same paper is represented with tiny differences between some libraries, 
+        In some cases, a same paper is represented with tiny differences between some databases, 
         this method try to deal with this situation merging those instances of the paper,
         using a similarity threshold, by default 0.9 (90%), i.e., if two papers keys (see: Search.get_paper_key) 
         are similar by 90% or more this papers are considered duplications of a same paper.
@@ -222,7 +224,6 @@ class Search():
 
                 # removing the paper_2 instance
                 self.remove_paper(paper_2)
-
 
     def has_reached_its_limit(self) -> bool:
         """

@@ -80,7 +80,7 @@ class Publication():
 
     def enrich(self, publication: Publication):
         """
-        e can enrich some publication information using a duplication of it found in another library.
+        e can enrich some publication information using a duplication of it found in another database.
         This method do this using a provided instance of a duplicated publication
 
         Parameters

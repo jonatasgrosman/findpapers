@@ -55,17 +55,17 @@ def test_paper(paper: Paper):
     assert paper.abstract == 'a long abstract'
     assert paper.authors == {'Dr Paul', 'Dr John', 'Dr George', 'Dr Ringo'}
     assert len(paper.urls) == 1
-    assert len(paper.libraries) == 0
+    assert len(paper.databases) == 0
 
     with pytest.raises(ValueError):
-        paper.add_library('INVALID LIBRARY')
+        paper.add_database('INVALID DATABASE')
 
-    paper.add_library('Scopus')
-    paper.add_library('Scopus')
-    assert len(paper.libraries) == 1
+    paper.add_database('Scopus')
+    paper.add_database('Scopus')
+    assert len(paper.databases) == 1
 
-    paper.add_library('ACM')
-    assert len(paper.libraries) == 2
+    paper.add_database('ACM')
+    assert len(paper.databases) == 2
 
     assert len(paper.urls) == 1
     paper.add_url(next(iter(paper.urls)))
@@ -84,7 +84,7 @@ def test_paper(paper: Paper):
 
     another_paper = Paper('another awesome title paper', 'a long abstract', paper.authors, paper.publication,
                           paper.publication_date, paper.urls, another_doi, another_paper_citations, another_keywords, another_comments)
-    another_paper.add_library('arXiv')
+    another_paper.add_database('arXiv')
 
     paper.publication_date = None
     paper.abstract = None
@@ -96,8 +96,8 @@ def test_paper(paper: Paper):
     assert paper.authors == another_paper.authors
     assert paper.keywords == another_paper.keywords
 
-    assert 'arXiv' in paper.libraries
-    assert len(paper.libraries) == 3
+    assert 'arXiv' in paper.databases
+    assert len(paper.databases) == 3
     assert paper.doi == another_doi
     # 'cause another_paper_citations was lower than paper_citations
     assert paper.citations == paper_citations

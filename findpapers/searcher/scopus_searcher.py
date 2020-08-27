@@ -195,7 +195,7 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
                 paper_keywords.add(keyword.text.strip())
 
         except Exception as e:
-            logging.error(e)
+            logging.error(e, exc_info=True)
 
     paper = Paper(paper_title, paper_abstract, paper_authors, publication,
                   paper_publication_date, paper_urls, paper_doi, paper_citations, paper_keywords)
@@ -332,12 +332,12 @@ def run(search: Search, api_token: str, url: Optional[str] = None):
 
             publication = _get_publication(paper_entry, api_token)
             paper = _get_paper(paper_entry, publication)
-            paper.add_library('Scopus')
+            paper.add_database('Scopus')
 
             search.add_paper(paper)
 
         except Exception as e:
-            logging.error(e)
+            logging.error(e, exc_info=True)
 
         processed_papers += 1
         logging.info(

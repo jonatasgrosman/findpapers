@@ -11,10 +11,13 @@ from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
 
+MAX_ENTRIES_PER_PAGE = 200
+
 
 def _get_search_url(search: Search, api_token: str, start_record: Optional[int] = 1):
     """
     This method return the URL to be used to retrieve data from IEEE database
+    See https://developer.ieee.org/docs/read/Metadata_API_details for query tips
 
     Parameters
     ----------
@@ -31,11 +34,11 @@ def _get_search_url(search: Search, api_token: str, start_record: Optional[int] 
         a URL to be used to retrieve data from IEEE database
     """
 
-    url = f'http://ieeexploreapi.ieee.org/api/v1/search/articles?querytext={search.query}&format=json&apikey={api_token}&max_records=200'
+    url = f'http://ieeexploreapi.ieee.org/api/v1/search/articles?querytext={search.query}&format=json&apikey={api_token}&max_records={MAX_ENTRIES_PER_PAGE}'
 
     if search.since is not None:
         url += f'&start_year={search.since.year}'
-    
+
     if search.until is not None:
         url += f'&end_year={search.until.year}'
 
@@ -45,8 +48,7 @@ def _get_search_url(search: Search, api_token: str, start_record: Optional[int] 
     return url
 
 
-def _get_api_result(search: Search, api_token: str, start_record: Optional[int] = 1): # pragma: no cover
-
+def _get_api_result(search: Search, api_token: str, start_record: Optional[int] = 1):  # pragma: no cover
     """
     This method return results from IEEE database using the provided search parameters
 
@@ -120,25 +122,28 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
     paper_citations = paper_entry.get('citing_paper_count', None)
     paper_abstract = paper_entry.get('abstract', None)
     paper_urls = {paper_entry.get('pdf_url')}
-    
+
     try:
-        paper_keywords = set(paper_entry.get('index_terms').get('author_terms').get('terms'))
+        paper_keywords = set(paper_entry.get(
+            'index_terms').get('author_terms').get('terms'))
     except Exception as e:
         paper_keywords = set()
-    
+
     if paper_publication_date is not None:
         try:
             paper_publication_date_split = paper_publication_date.split(' ')
             day = int(paper_publication_date_split[0].split('-')[0])
-            month = int(util.get_numeric_month_by_string(paper_publication_date_split[1]))
+            month = int(util.get_numeric_month_by_string(
+                paper_publication_date_split[1]))
             year = int(paper_publication_date_split[2])
 
             paper_publication_date = datetime.date(year, month, day)
         except Exception as e:
             pass
-    
+
     if not isinstance(paper_publication_date, datetime.date):
-        paper_publication_date = datetime.date(paper_entry.get('publication_year'), 1, 1)
+        paper_publication_date = datetime.date(
+            paper_entry.get('publication_year'), 1, 1)
 
     paper_authors = []
     for author in paper_entry.get('authors').get('authors'):
@@ -170,11 +175,11 @@ def run(search: Search, api_token: str):
 
     if api_token is None or len(api_token.strip()) == 0:
         raise AttributeError('The API token cannot be null')
-    
+
     start_record = 1
     result = _get_api_result(search, api_token, start_record)
     total_papers = result.get('total_records')
-    total_pages = int(math.ceil(total_papers / 200))
+    total_pages = int(math.ceil(total_papers / MAX_ENTRIES_PER_PAGE))
 
     logging.info(f'{total_papers} papers to fetch')
 
@@ -194,12 +199,11 @@ def run(search: Search, api_token: str):
 
             publication = _get_publication(paper_entry)
             paper = _get_paper(paper_entry, publication)
-            paper.add_library('IEEE')
+            paper.add_database('IEEE')
 
             search.add_paper(paper)
 
             logging.info(f'{start_record-1}/{total_papers} papers fetched')
-        
-        if start_record < total_papers and not search.has_reached_its_limit(): 
+
+        if start_record < total_papers and not search.has_reached_its_limit():
             result = _get_api_result(search, api_token, start_record)
-    
