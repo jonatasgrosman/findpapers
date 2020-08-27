@@ -143,4 +143,5 @@ def test_enrich_publication_data(search: Search):
         assert publication.cite_score is not None
         assert publication.sjr is not None
         assert publication.snip is not None
+        assert len(publication.subject_areas) > 0
     

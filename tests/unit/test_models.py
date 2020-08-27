@@ -29,11 +29,13 @@ def test_publication(publication: Publication):
     another_publication.cite_score = 1.0
     another_publication.sjr = 2.0
     another_publication.snip = 3.0
+    another_publication.subject_areas = {'area A'}
 
     publication.issn = None
     publication.isbn = None
     publication.publisher = None
     publication.category = None
+    publication.subject_areas = set()
 
     publication.enrich(another_publication)
 
@@ -44,6 +46,7 @@ def test_publication(publication: Publication):
     assert publication.isbn == another_publication.isbn
     assert publication.publisher == another_publication.publisher
     assert publication.category == another_publication.category
+    assert 'area A' in publication.subject_areas
 
 
 def test_paper(paper: Paper):

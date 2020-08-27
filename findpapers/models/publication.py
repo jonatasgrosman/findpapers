@@ -10,7 +10,7 @@ class Publication():
 
     def __init__(self, title: str, isbn: Optional[str] = None, issn: Optional[str] = None, publisher: Optional[str] = None,
                  category: Optional[str] = None, cite_score: Optional[float] = None, sjr: Optional[float] = None,
-                 snip: Optional[float] = None):
+                 snip: Optional[float] = None, subject_areas: Optional[set] = None):
         """
         Paper class constructor
 
@@ -34,6 +34,8 @@ class Publication():
         snip : float, optional
             Source Normalized Impact per Paper measures actual citations received relative to citations 
             expected for the serial’s subject field, by default None
+        subject_areas : float, optional
+            Publication subjects areas, by default None
         """
 
         self.title = title
@@ -44,6 +46,7 @@ class Publication():
         self.cite_score = cite_score
         self.sjr = sjr
         self.snip = snip
+        self.subject_areas = subject_areas if subject_areas is not None else set()
 
     @property
     def category(self):
@@ -106,3 +109,6 @@ class Publication():
 
         if self.snip is None:
             self.snip = publication.snip
+
+        for subject_area in publication.subject_areas:
+            self.subject_areas.add(subject_area)
