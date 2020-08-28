@@ -42,6 +42,7 @@ class Search():
         self.papers = set()
         self.paper_by_key = {}
         self.publication_by_key = {}
+        self.paper_by_doi = {}
         self.papers_by_database = {}
 
     def get_paper_key(self, paper_title: str, publication_date: datetime.date) -> str:
@@ -123,7 +124,11 @@ class Search():
                 self.publication_by_key[publication_key] = paper.publication
 
         paper_key = self.get_paper_key(paper.title, paper.publication_date)
-        already_collected_paper = self.paper_by_key.get(paper_key, None)
+
+        if paper.doi is not None and paper.doi in self.paper_by_doi:
+            already_collected_paper = self.paper_by_doi.get(paper.doi)
+        else:
+            already_collected_paper = self.paper_by_key.get(paper_key, None)
 
         if (self.since is None or paper.publication_date >= self.since) \
                 and (self.until is None or paper.publication_date <= self.until):
@@ -131,6 +136,10 @@ class Search():
             if already_collected_paper is None:
                 self.papers.add(paper)
                 self.paper_by_key[paper_key] = paper
+                
+                if paper.doi is not None:
+                    self.paper_by_doi[paper.doi] = paper
+
                 for database in paper.databases:
                     if database not in self.papers_by_database:
                         self.papers_by_database[database] = set()
@@ -223,6 +232,8 @@ class Search():
 
             paper_1_key = pair[0]
             paper_2_key = pair[1]
+            paper_1 = self.paper_by_key.get(paper_1_key)
+            paper_2 = self.paper_by_key.get(paper_2_key)
 
             max_key_length = max(len(paper_1_key), len(paper_2_key))
 
@@ -234,10 +245,7 @@ class Search():
             titles_edit_distance = edlib.align(
                 paper_1_key, paper_2_key)['editDistance']
 
-            if titles_edit_distance <= max_edit_distance:
-
-                paper_1 = self.paper_by_key.get(paper_1_key)
-                paper_2 = self.paper_by_key.get(paper_2_key)
+            if (paper_1.doi is not None and paper_1.doi == paper_2.doi) or (titles_edit_distance <= max_edit_distance):
 
                 # using the information of paper_2 to enrich paper_1
                 paper_1.enrich(paper_2)

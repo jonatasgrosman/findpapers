@@ -6,9 +6,10 @@ import findpapers.searcher.scopus_searcher as scopus_searcher
 
 
 def prevent_search_results_infinite_loop(search_results):
-    # creating fake paper titles for next recursion
+    # creating fake paper titles and removing DOI for next recursion
     for i, entry in enumerate(search_results.get('entry')):
         entry['dc:title'] = f'FAKE PAPER TITLE {i}'
+        entry['prism:doi'] = None
 
     search_results['link'] = []  # preventing infinite recursion
 
