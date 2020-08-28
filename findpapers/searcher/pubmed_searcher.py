@@ -13,7 +13,10 @@ from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
 
 DATABASE_LABEL = 'PubMed'
+BASE_URL = 'https://eutils.ncbi.nlm.nih.gov'
 MAX_ENTRIES_PER_PAGE = 50
+
+SESSION = requests.Session()
 
 
 def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
@@ -34,7 +37,7 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
         a URL to be used to retrieve data from PubMed database
     """
 
-    url = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term={search.query} AND has abstract [FILT] AND "journal article"[Publication Type]'
+    url = f'{BASE_URL}/entrez/eutils/esearch.fcgi?db=pubmed&term={search.query} AND has abstract [FILT] AND "journal article"[Publication Type]'
 
     if search.since is not None or search.until is not None:
         since = datetime.date(
@@ -72,7 +75,7 @@ def _get_api_result(search: Search, start_record: Optional[int] = 0) -> dict:  #
 
     headers = {'User-Agent': str(UserAgent().chrome)}
 
-    return util.try_success(lambda: xmltodict.parse(requests.get(url, headers=headers).content), pre_delay=1)
+    return util.try_success(lambda: xmltodict.parse(SESSION.get(url, headers=headers).content), pre_delay=1)
 
 
 def _get_paper_entry(pubmed_id: str) -> dict:  # pragma: no cover
@@ -90,10 +93,10 @@ def _get_paper_entry(pubmed_id: str) -> dict:  # pragma: no cover
         a paper entry from PubMed database
     """
 
-    url = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id={pubmed_id}&rettype=abstract'
+    url = f'{BASE_URL}/entrez/eutils/efetch.fcgi?db=pubmed&id={pubmed_id}&rettype=abstract'
     headers = {'User-Agent': str(UserAgent().chrome)}
 
-    return util.try_success(lambda: xmltodict.parse(requests.get(url, headers=headers).content), pre_delay=1)
+    return util.try_success(lambda: xmltodict.parse(SESSION.get(url, headers=headers).content), pre_delay=1)
 
 
 def _get_publication(paper_entry: dict) -> Publication:
@@ -233,11 +236,11 @@ def run(search: Search):
 
     logging.info(f'{total_papers} papers to fetch')
 
-    while(papers_count < total_papers):
+    while(papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL)):
 
         for pubmed_id in result.get('eSearchResult').get('IdList').get('Id'):
 
-            if papers_count >= total_papers and search.reached_its_limit(DATABASE_LABEL):
+            if papers_count >= total_papers or search.reached_its_limit(DATABASE_LABEL):
                 break
             try:
 

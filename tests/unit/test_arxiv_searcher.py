@@ -101,11 +101,11 @@ def test_get_paper(publication: Publication):
 
 def test_run(search: Search):
 
-    search.limit = 19
+    search.limit = 20
     search.limit_per_database = None
     search.since = datetime.date(2020,8,26)
     search.until = datetime.date(2020,8,26)
 
     arxiv_searcher.run(search)
 
-    assert len(search.papers) == 19
+    assert len(search.papers) == 18

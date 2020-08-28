@@ -13,7 +13,10 @@ from findpapers.models.publication import Publication
 
 
 DATABASE_LABEL = 'IEEE'
+BASE_URL = 'http://ieeexploreapi.ieee.org'
 MAX_ENTRIES_PER_PAGE = 200
+
+SESSION = requests.Session()
 
 
 def _get_search_url(search: Search, api_token: str, start_record: Optional[int] = 1) -> str:
@@ -36,7 +39,7 @@ def _get_search_url(search: Search, api_token: str, start_record: Optional[int] 
         a URL to be used to retrieve data from IEEE database
     """
 
-    url = f'http://ieeexploreapi.ieee.org/api/v1/search/articles?querytext={search.query}&format=json&apikey={api_token}&max_records={MAX_ENTRIES_PER_PAGE}'
+    url = f'{BASE_URL}/api/v1/search/articles?querytext={search.query}&format=json&apikey={api_token}&max_records={MAX_ENTRIES_PER_PAGE}'
 
     if search.since is not None:
         url += f'&start_year={search.since.year}'
@@ -72,7 +75,7 @@ def _get_api_result(search: Search, api_token: str, start_record: Optional[int] 
     url = _get_search_url(search, api_token, start_record)
     headers = {'User-Agent': str(UserAgent().chrome)}
 
-    return util.try_success(lambda: requests.get(url, headers=headers).json())
+    return util.try_success(lambda: SESSION.get(url, headers=headers).json())
 
 
 def _get_publication(paper_entry: dict) -> Publication:
@@ -200,11 +203,11 @@ def run(search: Search, api_token: str):
 
     logging.info(f'{total_papers} papers to fetch')
 
-    while(papers_count < total_papers):
+    while(papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL)):
 
         for paper_entry in result.get('articles'):
 
-            if papers_count >= total_papers and search.reached_its_limit(DATABASE_LABEL):
+            if papers_count >= total_papers or search.reached_its_limit(DATABASE_LABEL):
                 break
 
             try:

@@ -13,6 +13,7 @@ from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
 
 DATABASE_LABEL = 'arXiv'
+BASE_URL = 'http://export.arxiv.org'
 MAX_ENTRIES_PER_PAGE = 200
 SUBJECT_AREA_BY_KEY = {
     'astro-ph': 'Astrophysics',
@@ -170,6 +171,7 @@ SUBJECT_AREA_BY_KEY = {
     'stat.TH': 'Statistics Theory'
 }
 
+SESSION = requests.Session()
 
 def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     """
@@ -197,7 +199,7 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     transformed_query = transformed_query.replace('"', '')
     transformed_query = transformed_query.strip()
 
-    url = f'http://export.arxiv.org/api/query?search_query={transformed_query}&start={start_record}&sortBy=submittedDate&sortOrder=descending&max_results={MAX_ENTRIES_PER_PAGE}'
+    url = f'{BASE_URL}/api/query?search_query={transformed_query}&start={start_record}&sortBy=submittedDate&sortOrder=descending&max_results={MAX_ENTRIES_PER_PAGE}'
 
     return url
 
@@ -222,7 +224,7 @@ def _get_api_result(search: Search, start_record: Optional[int] = 0) -> dict: # 
     url = _get_search_url(search, start_record)
     headers = {'User-Agent': str(UserAgent().chrome)}
 
-    return util.try_success(lambda: xmltodict.parse(requests.get(url, headers=headers).content), pre_delay=1)
+    return util.try_success(lambda: xmltodict.parse(SESSION.get(url, headers=headers).content), pre_delay=1)
 
 
 def _get_publication(paper_entry: dict) -> Publication:
@@ -332,11 +334,11 @@ def run(search: Search):
 
     logging.info(f'{total_papers} papers to fetch')
 
-    while(papers_count < total_papers):
+    while(papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL)):
 
         for paper_entry in result.get('feed').get('entry'):
 
-            if papers_count >= total_papers and search.reached_its_limit(DATABASE_LABEL):
+            if papers_count >= total_papers or search.reached_its_limit(DATABASE_LABEL):
                 break
 
             try:

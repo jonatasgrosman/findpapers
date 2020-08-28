@@ -11,6 +11,9 @@ from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
 
 DATABASE_LABEL = 'Scopus'
+BASE_URL = 'https://api.elsevier.com'
+
+SESSION = requests.Session()
 
 
 def _get_query(search: Search) -> str:
@@ -56,10 +59,10 @@ def _get_publication_entry(publication_issn: str, api_token: str) -> dict:  # pr
         publication entry in dict format, or None if the API doesn't return a valid entry
     """
 
-    url = f'https://api.elsevier.com/content/serial/title/issn/{publication_issn}?apiKey={api_token}'
+    url = f'{BASE_URL}/content/serial/title/issn/{publication_issn}?apiKey={api_token}'
     headers = {'User-Agent': str(UserAgent().chrome),
                'Accept': 'application/json'}
-    response = util.try_success(lambda: requests.get(
+    response = util.try_success(lambda: SESSION.get(
         url, headers=headers).json()).get('serial-metadata-response', None)
 
     if response is not None and 'entry' in response and len(response.get('entry')) > 0:
@@ -117,7 +120,7 @@ def _get_paper_page(url: str) -> object:  # pragma: no cover
         A HTML element representing the paper given by the provided URL
     """
 
-    response = util.try_success(lambda: requests.get(
+    response = util.try_success(lambda: SESSION.get(
         url, headers={'User-Agent': str(UserAgent().chrome)}))
     return html.fromstring(response.content.decode('UTF-8'))
 
@@ -201,7 +204,7 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
             try:
                 paper_pages = paper_page.xpath(
                     '//span[@id="journalInfo"]')[0].text.split('Pages')[1].strip()
-                if paper_pages.isdigit(): # pragma: no cover
+                if paper_pages.isdigit():  # pragma: no cover
                     paper_number_of_pages = 1
                 else:
                     pages_split = paper_pages.split('-')
@@ -214,7 +217,7 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
             logging.error(e, exc_info=True)
 
     paper = Paper(paper_title, paper_abstract, paper_authors, publication,
-                  paper_publication_date, paper_urls, paper_doi, paper_citations, paper_keywords, 
+                  paper_publication_date, paper_urls, paper_doi, paper_citations, paper_keywords,
                   None, paper_number_of_pages, paper_pages)
 
     return paper
@@ -238,12 +241,12 @@ def _get_search_results(search: Search, api_token: str, url: Optional[str] = Non
     # is url is not None probably this is a recursive call to the next url of a pagination
     if url is None:
         query = _get_query(search)
-        url = f'https://api.elsevier.com/content/search/scopus?&sort=citedby-count,relevancy,pubyear&apiKey={api_token}&query={query}'
+        url = f'{BASE_URL}/content/search/scopus?&sort=citedby-count,relevancy,pubyear&apiKey={api_token}&query={query}'
 
     headers = {'User-Agent': str(UserAgent().chrome),
                'Accept': 'application/json'}
 
-    return util.try_success(lambda: requests.get(
+    return util.try_success(lambda: SESSION.get(
         url, headers=headers).json()['search-results'])
 
 
@@ -340,7 +343,7 @@ def run(search: Search, api_token: str, url: Optional[str] = None, papers_count:
 
     for paper_entry in search_results.get('entry', []):
 
-        if papers_count >= total_papers and search.reached_its_limit(DATABASE_LABEL):
+        if papers_count >= total_papers or search.reached_its_limit(DATABASE_LABEL):
             break
 
         try:

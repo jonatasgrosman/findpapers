@@ -13,8 +13,10 @@ from findpapers.models.publication import Publication
 
 
 DATABASE_LABEL = 'ACM'
-MAX_ENTRIES_PER_PAGE = 100
 BASE_URL = 'https://dl.acm.org'
+MAX_ENTRIES_PER_PAGE = 100
+
+SESSION = requests.Session()
 
 
 def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
@@ -60,7 +62,7 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     return url
 
 
-def _get_result(search: Search, start_record: Optional[int] = 0) -> dict: # pragma: no cover
+def _get_result(search: Search, start_record: Optional[int] = 0) -> dict:  # pragma: no cover
     """
     This method return results from ACM database using the provided search parameters
 
@@ -80,11 +82,11 @@ def _get_result(search: Search, start_record: Optional[int] = 0) -> dict: # prag
     url = _get_search_url(search, start_record)
     headers = {'User-Agent': str(UserAgent().chrome)}
 
-    response = util.try_success(lambda: requests.get(url, headers=headers), 3)
+    response = util.try_success(lambda: SESSION.get(url, headers=headers), 3)
     return html.fromstring(response.content.decode('UTF-8'))
 
 
-def _get_paper_page(url: str) -> html.HtmlElement: # pragma: no cover
+def _get_paper_page(url: str) -> html.HtmlElement:  # pragma: no cover
     """
     Get a paper page element from a provided URL
 
@@ -99,12 +101,12 @@ def _get_paper_page(url: str) -> html.HtmlElement: # pragma: no cover
         A HTML element representing the paper given by the provided URL
     """
 
-    response = util.try_success(lambda: requests.get(
+    response = util.try_success(lambda: SESSION.get(
         url, headers={'User-Agent': str(UserAgent().chrome)}))
     return html.fromstring(response.content.decode('UTF-8'))
 
 
-def _get_paper_metadata(doi: str) -> dict: # pragma: no cover
+def _get_paper_metadata(doi: str) -> dict:  # pragma: no cover
     """
     Get a paper metadata from a provided DOI
 
@@ -126,8 +128,8 @@ def _get_paper_metadata(doi: str) -> dict: # pragma: no cover
     }
 
     headers = {'User-Agent': str(UserAgent().chrome)}
-    response = util.try_success(lambda: requests.post(
-        'https://dl.acm.org/action/exportCiteProcCitation', headers=headers, data=form).json())
+    response = util.try_success(lambda: SESSION.post(
+        f'{BASE_URL}/action/exportCiteProcCitation', headers=headers, data=form).json())
 
     return response['items'][0][doi]
 
@@ -161,7 +163,7 @@ def _get_paper(paper_page: html.HtmlElement, paper_doi: str, paper_url: str) -> 
         paper_citations = int(citation_elements[0].text)
 
     paper_metadata = _get_paper_metadata(paper_doi)
-    
+
     publication_title = paper_metadata.get('container-title', None)
     publication_isbn = paper_metadata.get('ISBN', None)
     publication_issn = paper_metadata.get('ISSN', None)
@@ -221,20 +223,20 @@ def run(search: Search):
     try:
         total_papers = int(result.xpath(
             '//*[@class="hitsLength"]')[0].text.strip())
-    except Exception: # pragma: no cover
+    except Exception:  # pragma: no cover
         total_papers = 0
 
     logging.info(f'{total_papers} papers to fetch')
 
     page_index = 0
-    while(papers_count < total_papers):
+    while(papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL)):
 
         papers_urls = [BASE_URL+x.attrib['href']
                        for x in result.xpath('//*[@class="hlFld-Title"]/a')]
 
         for paper_url in papers_urls:
 
-            if papers_count >= total_papers and search.reached_its_limit(DATABASE_LABEL):
+            if papers_count >= total_papers or search.reached_its_limit(DATABASE_LABEL):
                 break
 
             try:
