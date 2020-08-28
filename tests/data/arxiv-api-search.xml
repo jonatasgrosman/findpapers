@@ -1,0 +1,908 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <link href="http://arxiv.org/api/query?search_query%3D%28all%3Amachine%20learning%20OR%20all%3Adeep%20learning%29%20AND%20%28all%3Anlp%20OR%20all%3Anatural%20language%20processing%29%26id_list%3D%26start%3D0%26max_results%3D20" rel="self" type="application/atom+xml"/>
+  <title type="html">ArXiv Query: search_query=(all:machine learning OR all:deep learning) AND (all:nlp OR all:natural language processing)&amp;id_list=&amp;start=0&amp;max_results=20</title>
+  <id>http://arxiv.org/api/bTow164AEgWBbEtif2YqI6xtOIE</id>
+  <updated>2020-08-27T00:00:00-04:00</updated>
+  <opensearch:totalResults xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">60900</opensearch:totalResults>
+  <opensearch:startIndex xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">0</opensearch:startIndex>
+  <opensearch:itemsPerPage xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">20</opensearch:itemsPerPage>
+  <entry>
+    <id>http://arxiv.org/abs/2008.11708v1</id>
+    <updated>2020-08-26T17:53:17Z</updated>
+    <!--<published>2020-08-26T17:53:17Z</published>-->
+    <published>2020-08-25T17:53:17Z</published>
+    <title>A Multitask Deep Learning Approach for User Depression Detection on Sina
+  Weibo</title>
+    <summary>  In recent years, due to the mental burden of depression, the number of people
+who endanger their lives has been increasing rapidly. The online social network
+(OSN) provides researchers with another perspective for detecting individuals
+suffering from depression. However, existing studies of depression detection
+based on machine learning still leave relatively low classification
+performance, suggesting that there is significant improvement potential for
+improvement in their feature engineering. In this paper, we manually build a
+large dataset on Sina Weibo (a leading OSN with the largest number of active
+users in the Chinese community), namely Weibo User Depression Detection Dataset
+(WU3D). It includes more than 20,000 normal users and more than 10,000
+depressed users, both of which are manually labeled and rechecked by
+professionals. By analyzing the user's text, social behavior, and posted
+pictures, ten statistical features are concluded and proposed. In the meantime,
+text-based word features are extracted using the popular pretrained model
+XLNet. Moreover, a novel deep neural network classification model, i.e.
+FusionNet (FN), is proposed and simultaneously trained with the above-extracted
+features, which are seen as multiple classification tasks. The experimental
+results show that FusionNet achieves the highest F1-Score of 0.9772 on the test
+dataset. Compared to existing studies, our proposed method has better
+classification performance and robustness for unbalanced training samples. Our
+work also provides a new way to detect depression on other OSN platforms.
+</summary>
+    <author>
+      <name>Yiding Wang</name>
+    </author>
+    <author>
+      <name>Zhenyi Wang</name>
+    </author>
+    <author>
+      <name>Chenghao Li</name>
+    </author>
+    <author>
+      <name>Yilin Zhang</name>
+    </author>
+    <author>
+      <name>Haizhou Wang</name>
+    </author>
+    <arxiv:comment xmlns:arxiv="http://arxiv.org/schemas/atom">23 pages, 32 figures</arxiv:comment>
+    <link href="http://arxiv.org/abs/2008.11708v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2008.11708v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="cs.SI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.SI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2008.11707v1</id>
+    <updated>2020-08-26T17:50:49Z</updated>
+    <!-- <published>2020-08-26T17:50:49Z</published> -->
+    <published>2021-08-26T17:50:49Z</published>
+    <title>Bandit Data-driven Optimization: AI for Social Good and Beyond</title>
+    <summary>  The use of machine learning (ML) systems in real-world applications entails
+more than just a prediction algorithm. AI for social good applications, and
+many real-world ML tasks in general, feature an iterative process which joins
+prediction, optimization, and data acquisition happen in a loop. We introduce
+bandit data-driven optimization, the first iterative prediction-prescription
+framework to formally analyze this practical routine. Bandit data-driven
+optimization combines the advantages of online bandit learning and offline
+predictive analytics in an integrated framework. It offers a flexible setup to
+reason about unmodeled policy objectives and unforeseen consequences. We
+propose PROOF, the first algorithm for this framework and show that it achieves
+no-regret. Using numerical simulations, we show that PROOF achieves superior
+performance over existing baseline.
+</summary>
+    <author>
+      <name>Zheyuan Ryan Shi</name>
+    </author>
+    <author>
+      <name>Zhiwei Steven Wu</name>
+    </author>
+    <author>
+      <name>Rayid Ghani</name>
+    </author>
+    <author>
+      <name>Fei Fang</name>
+    </author>
+    <link href="http://arxiv.org/abs/2008.11707v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2008.11707v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CY" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.ML" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2008.11700v1</id>
+    <updated>2020-08-26T17:39:58Z</updated>
+    <published>2020-08-26T17:39:58Z</published>
+    <title>Safe Model-Based Meta-Reinforcement Learning: A Sequential
+  Exploration-Exploitation Framework</title>
+    <summary>  Safe deployment of autonomous robots in diverse environments requires agents
+that are capable of safe and efficient adaptation to new scenarios. Indeed,
+achieving both data efficiency and well-calibrated safety has been a central
+problem in robotic learning and adaptive control due in part to the tension
+between these objectives. In this work, we develop a framework for
+probabilistically safe operation with uncertain dynamics. This framework relies
+on Bayesian meta-learning for efficient inference of system dynamics with
+calibrated uncertainty. We leverage the model structure to construct confidence
+bounds which hold throughout the learning process, and factor this uncertainty
+into a model-based planning framework. By decomposing the problem of control
+under uncertainty into discrete exploration and exploitation phases, our
+framework extends to problems with high initial uncertainty while maintaining
+probabilistic safety and persistent feasibility guarantees during every phase
+of operation. We validate our approach on the problem of a nonlinear free
+flying space robot manipulating a payload in cluttered environments, and show
+it can safely learn and reach a goal.
+</summary>
+    <author>
+      <name>Thomas Lew</name>
+    </author>
+    <author>
+      <name>Apoorva Sharma</name>
+    </author>
+    <author>
+      <name>James Harrison</name>
+    </author>
+    <author>
+      <name>Marco Pavone</name>
+    </author>
+    <link href="http://arxiv.org/abs/2008.11700v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2008.11700v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.SY" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.SY" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2008.11689v1</id>
+    <updated>2020-08-26T17:27:52Z</updated>
+    <published>2020-08-26T17:27:52Z</published>
+    <title>5G Utility Pole Planner Using Google Street View and Mask R-CNN</title>
+    <summary>  With the advances of fifth-generation (5G) cellular networks technology, many
+studies and work have been carried out on how to build 5G networks for smart
+cities. In the previous research, street lighting poles and smart light poles
+are capable of being a 5G access point. In order to determine the position of
+the points, this paper discusses a new way to identify poles based on Mask
+R-CNN, which extends Fast R-CNNs by making it employ recursive Bayesian
+filtering and perform proposal propagation and reuse. The dataset contains
+3,000 high-resolution images from google map. To make training faster, we used
+a very efficient GPU implementation of the convolution operation. We achieved a
+train error rate of 7.86% and a test error rate of 32.03%. At last, we used the
+immune algorithm to set 5G poles in the smart cities.
+</summary>
+    <author>
+      <name>Yanyu Zhang</name>
+    </author>
+    <author>
+      <name>Osama Alshaykh</name>
+    </author>
+    <arxiv:comment xmlns:arxiv="http://arxiv.org/schemas/atom">4 pages, 7 figures</arxiv:comment>
+    <link href="http://arxiv.org/abs/2008.11689v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2008.11689v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.IV" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2008.11673v1</id>
+    <updated>2020-08-26T16:57:45Z</updated>
+    <published>2020-08-26T16:57:45Z</published>
+    <title>Orientation-Disentangled Unsupervised Representation Learning for
+  Computational Pathology</title>
+    <summary>  Unsupervised learning enables modeling complex images without the need for
+annotations. The representation learned by such models can facilitate any
+subsequent analysis of large image datasets.
+  However, some generative factors that cause irrelevant variations in images
+can potentially get entangled in such a learned representation causing the risk
+of negatively affecting any subsequent use. The orientation of imaged objects,
+for instance, is often arbitrary/irrelevant, thus it can be desired to learn a
+representation in which the orientation information is disentangled from all
+other factors.
+  Here, we propose to extend the Variational Auto-Encoder framework by
+leveraging the group structure of rotation-equivariant convolutional networks
+to learn orientation-wise disentangled generative factors of histopathology
+images. This way, we enforce a novel partitioning of the latent space, such
+that oriented and isotropic components get separated.
+  We evaluated this structured representation on a dataset that consists of
+tissue regions for which nuclear pleomorphism and mitotic activity was assessed
+by expert pathologists. We show that the trained models efficiently disentangle
+the inherent orientation information of single-cell images. In comparison to
+classical approaches, the resulting aggregated representation of
+sub-populations of cells produces higher performances in subsequent tasks.
+</summary>
+    <author>
+      <name>Maxime W. Lafarge</name>
+    </author>
+    <author>
+      <name>Josien P. W. Pluim</name>
+    </author>
+    <author>
+      <name>Mitko Veta</name>
+    </author>
+    <link href="http://arxiv.org/abs/2008.11673v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2008.11673v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="eess.IV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.IV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2008.11672v1</id>
+    <updated>2020-08-26T16:56:57Z</updated>
+    <published>2020-08-26T16:56:57Z</published>
+    <title>DeepSOCIAL: Social Distancing Monitoring and Infection Risk Assessment
+  in COVID-19 Pandemic</title>
+    <summary>  Social distancing is a recommended solution by the World Health Organisation
+(WHO) to minimise the spread of COVID-19 in public places. The majority of
+governments and national health authorities have set the 2-meter physical
+distancing as a mandatory safety measure in shopping centres, schools and other
+covered areas. In this research, we develop a generic Deep Neural Network-Based
+model for automated people detection, tracking, and inter-people distances
+estimation in the crowd, using common CCTV security cameras. The proposed model
+includes a YOLOv4-based framework and inverse perspective mapping for accurate
+people detection and social distancing monitoring in challenging conditions,
+including people occlusion, partial visibility, and lighting variations. We
+also provide an online risk assessment scheme by statistical analysis of the
+Spatio-temporal data from the moving trajectories and the rate of social
+distancing violations. We identify high-risk zones with the highest possibility
+of virus spread and infections. This may help authorities to redesign the
+layout of a public place or to take precaution actions to mitigate high-risk
+zones. The efficiency of the proposed methodology is evaluated on the Oxford
+Town Centre dataset, with superior performance in terms of accuracy and speed
+compared to three state-of-the-art methods.
+</summary>
+    <author>
+      <name>Mahdi Rezaei</name>
+    </author>
+    <author>
+      <name>Mohsen Azarmi</name>
+    </author>
+    <link href="http://arxiv.org/abs/2008.11672v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2008.11672v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.IV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="physics.med-ph" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2008.11668v1</id>
+    <updated>2020-08-26T16:50:26Z</updated>
+    <published>2020-08-26T16:50:26Z</published>
+    <title>DeepVOX: Discovering Features from Raw Audio for Speaker Recognition in
+  Degraded Audio Signals</title>
+    <summary>  Automatic speaker recognition algorithms typically use pre-defined
+filterbanks, such as Mel-Frequency and Gammatone filterbanks, for
+characterizing speech audio. The design of these filterbanks is based on
+domain-knowledge and limited empirical observations. The resultant features,
+therefore, may not generalize well to different types of audio degradation. In
+this work, we propose a deep learning-based technique to induce the filterbank
+design from vast amounts of speech audio. The purpose of such a filterbank is
+to extract features robust to degradations in the input audio. To this effect,
+a 1D convolutional neural network is designed to learn a time-domain filterbank
+called DeepVOX directly from raw speech audio. Secondly, an adaptive triplet
+mining technique is developed to efficiently mine the data samples best suited
+to train the filterbank. Thirdly, a detailed ablation study of the DeepVOX
+filterbanks reveals the presence of both vocal source and vocal tract
+characteristics in the extracted features. Experimental results on VOXCeleb2,
+NIST SRE 2008 and 2010, and Fisher speech datasets demonstrate the efficacy of
+the DeepVOX features across a variety of audio degradations, multi-lingual
+speech data, and varying-duration speech audio. The DeepVOX features also
+improve the performance of existing speaker recognition algorithms, such as the
+xVector-PLDA and the iVector-PLDA.
+</summary>
+    <author>
+      <name>Anurag Chowdhury</name>
+    </author>
+    <author>
+      <name>Arun Ross</name>
+    </author>
+    <link href="http://arxiv.org/abs/2008.11668v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2008.11668v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="eess.AS" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.AS" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2008.11659v1</id>
+    <updated>2020-08-26T16:34:58Z</updated>
+    <published>2020-08-26T16:34:58Z</published>
+    <title>Large-scale neuromorphic optoelectronic computing with a reconfigurable
+  diffractive processing unit</title>
+    <summary>  Application-specific optical processors have been considered disruptive
+technologies for modern computing that can fundamentally accelerate the
+development of artificial intelligence (AI) by offering substantially improved
+computing performance. Recent advancements in optical neural network
+architectures for neural information processing have been applied to perform
+various machine learning tasks. However, the existing architectures have
+limited complexity and performance; and each of them requires its own dedicated
+design that cannot be reconfigured to switch between different neural network
+models for different applications after deployment. Here, we propose an
+optoelectronic reconfigurable computing paradigm by constructing a diffractive
+processing unit (DPU) that can efficiently support different neural networks
+and achieve a high model complexity with millions of neurons. It allocates
+almost all of its computational operations optically and achieves extremely
+high speed of data modulation and large-scale network parameter updating by
+dynamically programming optical modulators and photodetectors. We demonstrated
+the reconfiguration of the DPU to implement various diffractive feedforward and
+recurrent neural networks and developed a novel adaptive training approach to
+circumvent the system imperfections. We applied the trained networks for
+high-speed classifying of handwritten digit images and human action videos over
+benchmark datasets, and the experimental results revealed a comparable
+classification accuracy to the electronic computing approaches. Furthermore,
+our prototype system built with off-the-shelf optoelectronic components
+surpasses the performance of state-of-the-art graphics processing units (GPUs)
+by several times on computing speed and more than an order of magnitude on
+system energy efficiency.
+</summary>
+    <author>
+      <name>Tiankuang Zhou</name>
+    </author>
+    <author>
+      <name>Xing Lin</name>
+    </author>
+    <author>
+      <name>Jiamin Wu</name>
+    </author>
+    <author>
+      <name>Yitong Chen</name>
+    </author>
+    <author>
+      <name>Hao Xie</name>
+    </author>
+    <author>
+      <name>Yipeng Li</name>
+    </author>
+    <author>
+      <name>Jintao Fan</name>
+    </author>
+    <author>
+      <name>Huaqiang Wu</name>
+    </author>
+    <author>
+      <name>Lu Fang</name>
+    </author>
+    <author>
+      <name>Qionghai Dai</name>
+    </author>
+    <link href="http://arxiv.org/abs/2008.11659v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2008.11659v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="eess.IV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.IV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.NE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="physics.optics" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2008.11649v1</id>
+    <updated>2020-08-26T16:15:18Z</updated>
+    <published>2020-08-26T16:15:18Z</published>
+    <title>Discrete Word Embedding for Logical Natural Language Understanding</title>
+    <summary>  In this paper, we propose an unsupervised neural model for learning a
+discrete embedding of words. While being discrete, our embedding supports
+vector arithmetic operations similar to continuous embeddings by interpreting
+each word as a set of propositional statements describing a rule. The
+formulation of our vector arithmetic closely reflects the logical structure
+originating from the symbolic sequential decision making formalism
+(classical/STRIPS planning). Contrary to the conventional wisdom that discrete
+representation cannot perform well due to the lack of ability to capture the
+uncertainty, our representation is competitive against the continuous
+representations in several downstream tasks. We demonstrate that our embedding
+is directly compatible with the symbolic, classical planning solvers by
+performing a "paraphrasing" task. Due to the discrete/logical decision making
+in classical algorithms with deterministic (non-probabilistic) completeness,
+and also because it does not require additional training on the paraphrasing
+dataset, our system can negatively answer a paraphrasing query (inexistence of
+solutions), and can answer that only some approximate solutions exist -- A
+feature that is missing in the recent, huge, purely neural language models such
+as GPT-3.
+</summary>
+    <author>
+      <name>Masataro Asai</name>
+    </author>
+    <author>
+      <name>Zilu Tang</name>
+    </author>
+    <arxiv:comment xmlns:arxiv="http://arxiv.org/schemas/atom">equal contribution</arxiv:comment>
+    <link href="http://arxiv.org/abs/2008.11649v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2008.11649v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2008.11643v1</id>
+    <updated>2020-08-26T16:04:02Z</updated>
+    <published>2020-08-26T16:04:02Z</published>
+    <title>HydaLearn: Highly Dynamic Task Weighting for Multi-task Learning with
+  Auxiliary Tasks</title>
+    <summary>  Multi-task learning (MTL) can improve performance on a task by sharing
+representations with one or more related auxiliary-tasks. Usually, MTL-networks
+are trained on a composite loss function formed by a constant weighted
+combination of the separate task losses. In practice, constant loss weights
+lead to poor results for two reasons: (i) the relevance of the auxiliary tasks
+can gradually drift throughout the learning process; (ii) for mini-batch based
+optimisation, the optimal task weights vary significantly from one update to
+the next depending on mini-batch sample composition. We introduce HydaLearn, an
+intelligent weighting algorithm that connects main-task gain to the individual
+task gradients, in order to inform dynamic loss weighting at the mini-batch
+level, addressing i and ii. Using HydaLearn, we report performance increases on
+synthetic data, as well as on two supervised learning domains.
+</summary>
+    <author>
+      <name>Sam Verboven</name>
+    </author>
+    <author>
+      <name>Muhammad Hafeez Chaudhary</name>
+    </author>
+    <author>
+      <name>Jeroen Berrevoets</name>
+    </author>
+    <author>
+      <name>Wouter Verbeke</name>
+    </author>
+    <link href="http://arxiv.org/abs/2008.11643v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2008.11643v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.ML" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2008.11618v1</id>
+    <updated>2020-08-26T15:15:32Z</updated>
+    <published>2020-08-26T15:15:32Z</published>
+    <title>Adversarially Training for Audio Classifiers</title>
+    <summary>  In this paper, we investigate the potential effect of the adversarially
+training on the robustness of six advanced deep neural networks against a
+variety of targeted and non-targeted adversarial attacks. We firstly show that,
+the ResNet-56 model trained on the 2D representation of the discrete wavelet
+transform appended with the tonnetz chromagram outperforms other models in
+terms of recognition accuracy. Then we demonstrate the positive impact of
+adversarially training on this model as well as other deep architectures
+against six types of attack algorithms (white and black-box) with the cost of
+the reduced recognition accuracy and limited adversarial perturbation. We run
+our experiments on two benchmarking environmental sound datasets and show that
+without any imposed limitations on the budget allocations for the adversary,
+the fooling rate of the adversarially trained models can exceed 90\%. In other
+words, adversarial attacks exist in any scales, but they might require higher
+adversarial perturbations compared to non-adversarially trained models.
+</summary>
+    <author>
+      <name>Raymel Alfonso Sallo</name>
+    </author>
+    <author>
+      <name>Mohammad Esmaeilpour</name>
+    </author>
+    <author>
+      <name>Patrick Cardinal</name>
+    </author>
+    <arxiv:comment xmlns:arxiv="http://arxiv.org/schemas/atom">8 Pages</arxiv:comment>
+    <link href="http://arxiv.org/abs/2008.11618v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2008.11618v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="eess.AS" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.AS" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.SD" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.ML" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2008.11584v2</id>
+    <updated>2020-08-27T09:01:38Z</updated>
+    <published>2020-08-26T14:42:14Z</published>
+    <title>Inno at SemEval-2020 Task 11: Leveraging Pure Transformer for
+  Multi-Class Propaganda Detection</title>
+    <summary>  The paper presents the solution of team "Inno" to a SEMEVAL 2020 task 11
+"Detection of propaganda techniques in news articles". The goal of the second
+subtask is to classify textual segments that correspond to one of the 18 given
+propaganda techniques in news articles dataset. We tested a pure
+Transformer-based model with an optimized learning scheme on the ability to
+distinguish propaganda techniques between each other. Our model showed 0.6 and
+0.58 overall F1 score on validation set and test set accordingly and non-zero
+F1 score on each class on both sets.
+</summary>
+    <author>
+      <name>Dmitry Grigorev</name>
+    </author>
+    <author>
+      <name>Vladimir Ivanov</name>
+    </author>
+    <arxiv:comment xmlns:arxiv="http://arxiv.org/schemas/atom">7 pages, SEMEVAL TASK 11, COLING 2020</arxiv:comment>
+    <link href="http://arxiv.org/abs/2008.11584v2" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2008.11584v2" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2008.11573v1</id>
+    <updated>2020-08-26T14:16:02Z</updated>
+    <published>2020-08-26T14:16:02Z</published>
+    <title>Multi-Label Sentiment Analysis on 100 Languages with Dynamic Weighting
+  for Label Imbalance</title>
+    <summary>  We investigate cross-lingual sentiment analysis, which has attracted
+significant attention due to its applications in various areas including market
+research, politics and social sciences. In particular, we introduce a sentiment
+analysis framework in multi-label setting as it obeys Plutchik wheel of
+emotions. We introduce a novel dynamic weighting method that balances the
+contribution from each class during training, unlike previous static weighting
+methods that assign non-changing weights based on their class frequency.
+Moreover, we adapt the focal loss that favors harder instances from
+single-label object recognition literature to our multi-label setting.
+Furthermore, we derive a method to choose optimal class-specific thresholds
+that maximize the macro-f1 score in linear time complexity. Through an
+extensive set of experiments, we show that our method obtains the
+state-of-the-art performance in 7 of 9 metrics in 3 different languages using a
+single model compared to the common baselines and the best-performing methods
+in the SemEval competition. We publicly share our code for our model, which can
+perform sentiment analysis in 100 languages, to facilitate further research.
+</summary>
+    <author>
+      <name>Selim F. Yilmaz</name>
+    </author>
+    <author>
+      <name>E. Batuhan Kaynak</name>
+    </author>
+    <author>
+      <name>Aykut Koç</name>
+    </author>
+    <author>
+      <name>Hamdi Dibeklioğlu</name>
+    </author>
+    <author>
+      <name>Suleyman S. Kozat</name>
+    </author>
+    <arxiv:comment xmlns:arxiv="http://arxiv.org/schemas/atom">11 pages, 6 figures</arxiv:comment>
+    <link href="http://arxiv.org/abs/2008.11573v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2008.11573v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.ML" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2008.11572v1</id>
+    <updated>2020-08-26T14:16:01Z</updated>
+    <published>2020-08-26T14:16:01Z</published>
+    <title>On the Composition and Limitations of Publicly Available COVID-19 X-Ray
+  Imaging Datasets</title>
+    <summary>  Machine learning based methods for diagnosis and progression prediction of
+COVID-19 from imaging data have gained significant attention in the last
+months, in particular by the use of deep learning models. In this context
+hundreds of models where proposed with the majority of them trained on public
+datasets. Data scarcity, mismatch between training and target population, group
+imbalance, and lack of documentation are important sources of bias, hindering
+the applicability of these models to real-world clinical practice. Considering
+that datasets are an essential part of model building and evaluation, a deeper
+understanding of the current landscape is needed. This paper presents an
+overview of the currently public available COVID-19 chest X-ray datasets. Each
+dataset is briefly described and potential strength, limitations and
+interactions between datasets are identified. In particular, some key
+properties of current datasets that could be potential sources of bias,
+impairing models trained on them are pointed out. These descriptions are useful
+for model building on those datasets, to choose the best dataset according the
+model goal, to take into account the specific limitations to avoid reporting
+overconfident benchmark results, and to discuss their impact on the
+generalisation capabilities in a specific clinical setting
+</summary>
+    <author>
+      <name>Beatriz Garcia Santa Cruz</name>
+    </author>
+    <author>
+      <name>Jan Sölter</name>
+    </author>
+    <author>
+      <name>Matias Nicolas Bossa</name>
+    </author>
+    <author>
+      <name>Andreas Dominik Husch</name>
+    </author>
+    <arxiv:comment xmlns:arxiv="http://arxiv.org/schemas/atom">12 pages, 3 figures</arxiv:comment>
+    <link href="http://arxiv.org/abs/2008.11572v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2008.11572v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="eess.IV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.IV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2008.11567v1</id>
+    <updated>2020-08-26T13:58:19Z</updated>
+    <published>2020-08-26T13:58:19Z</published>
+    <title>Item Tagging for Information Retrieval: A Tripartite Graph Neural
+  Network based Approach</title>
+    <summary>  Tagging has been recognized as a successful practice to boost relevance
+matching for information retrieval (IR), especially when items lack rich
+textual descriptions. A lot of research has been done for either multi-label
+text categorization or image annotation. However, there is a lack of published
+work that targets at item tagging specifically for IR. Directly applying a
+traditional multi-label classification model for item tagging is sub-optimal,
+due to the ignorance of unique characteristics in IR. In this work, we propose
+to formulate item tagging as a link prediction problem between item nodes and
+tag nodes. To enrich the representation of items, we leverage the query logs
+available in IR tasks, and construct a query-item-tag tripartite graph. This
+formulation results in a TagGNN model that utilizes heterogeneous graph neural
+networks with multiple types of nodes and edges. Different from previous
+research, we also optimize both full tag prediction and partial tag completion
+cases in a unified framework via a primary-dual loss mechanism. Experimental
+results on both open and industrial datasets show that our TagGNN approach
+outperforms the state-of-the-art multi-label classification approaches.
+</summary>
+    <author>
+      <name>Kelong Mao</name>
+    </author>
+    <author>
+      <name>Xi Xiao</name>
+    </author>
+    <author>
+      <name>Jieming Zhu</name>
+    </author>
+    <author>
+      <name>Biao Lu</name>
+    </author>
+    <author>
+      <name>Ruiming Tang</name>
+    </author>
+    <author>
+      <name>Xiuqiang He</name>
+    </author>
+    <arxiv:comment xmlns:arxiv="http://arxiv.org/schemas/atom">Accepted by SIGIR 2020</arxiv:comment>
+    <link href="http://arxiv.org/abs/2008.11567v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2008.11567v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="cs.IR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.IR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2008.11540v1</id>
+    <updated>2020-08-26T13:07:01Z</updated>
+    <published>2020-08-26T13:07:01Z</published>
+    <title>Application of artificial intelligence in the determination of impact
+  parameter in heavy-ion collisions at intermediate energies</title>
+    <summary>  The impact parameter is one of the crucial physical quantities of heavy-ion
+collisions (HICs), and can affect obviously many observables at the final
+state, such as the multifragmentation and the collective flow. Usually, it
+cannot be measured directly in experiments but might be inferred from
+observables at the final state. Artificial intelligence has had great success
+in learning complex representations of data, which enables novel modeling and
+data processing approaches in physical sciences. In this article, we employ two
+of commonly used algorithms in the field of artificial intelligence, the
+Convolutional Neural Networks (CNN) and Light Gradient Boosting Machine
+(LightBGM), to improve the accuracy of determining impact parameter by
+analyzing the proton spectra in transverse momentum and rapidity on the
+event-by-event basis. Au+Au collisions with the impact parameter of
+0$\leq$$b$$\leq$10 fm at intermediate energies ($E_{\rm lab}$=$0.2$-$1.0$
+GeV$/$nucleon) are simulated with the ultrarelativistic quantum molecular
+dynamics (UrQMD) model to generate the proton spectra data. It is found that
+the average difference between the true impact parameter and the estimated one
+can be smaller than 0.1 fm. The LightBGM algorithm shows an improved
+performance with respect to the CNN on the task in this work. By using the
+LightBGM's visualization algorithm, one can obtain the important feature map of
+the distribution of transverse momentum and rapidity, which may be helpful in
+inferring the impact parameter or centrality in heavy-ion experiments.
+</summary>
+    <author>
+      <name>Fupeng Li</name>
+    </author>
+    <author>
+      <name>Yongjia Wang</name>
+    </author>
+    <author>
+      <name>Hongliang Lü</name>
+    </author>
+    <author>
+      <name>Pengcheng Li</name>
+    </author>
+    <author>
+      <name>Qingfeng Li</name>
+    </author>
+    <author>
+      <name>Fanxin Liu</name>
+    </author>
+    <arxiv:comment xmlns:arxiv="http://arxiv.org/schemas/atom">9 pages, 6 figures, accepted for publication in Journal of Physics G:
+  Nuclear and Particle Physics</arxiv:comment>
+    <link href="http://arxiv.org/abs/2008.11540v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2008.11540v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="nucl-th" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="nucl-th" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="nucl-ex" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2008.11533v1</id>
+    <updated>2020-08-26T12:52:34Z</updated>
+    <published>2020-08-26T12:52:34Z</published>
+    <title>SIGL: Securing Software Installations Through Deep Graph Learning</title>
+    <summary>  Many users implicitly assume that software can only be exploited after it is
+installed. However, recent supply-chain attacks demonstrate that application
+integrity must be ensured during installation itself. We introduce SIGL, a new
+tool for detecting malicious behavior during software installation. SIGL
+collects traces of system call activity, building a data provenance graph that
+it analyzes using a novel autoencoder architecture with a graph long short-term
+memory network (graph LSTM) for the encoder and a standard multilayer
+perceptron for the decoder. SIGL flags suspicious installations as well as the
+specific installation-time processes that are likely to be malicious. Using a
+test corpus of 625 malicious installers containing real-world malware, we
+demonstrate that SIGL has a detection accuracy of 96%, outperforming similar
+systems from industry and academia by up to 87% in precision and recall and 45%
+in accuracy. We also demonstrate that SIGL can pinpoint the processes most
+likely to have triggered malicious behavior, works on different audit platforms
+and operating systems, and is robust to training data contamination and
+adversarial attack. It can be used with application-specific models, even in
+the presence of new software versions, as well as application-agnostic
+meta-models that encompass a wide range of applications and installers.
+</summary>
+    <author>
+      <name>Xueyuan Han</name>
+    </author>
+    <author>
+      <name>Xiao Yu</name>
+    </author>
+    <author>
+      <name>Thomas Pasquier</name>
+    </author>
+    <author>
+      <name>Ding Li</name>
+    </author>
+    <author>
+      <name>Junghwan Rhee</name>
+    </author>
+    <author>
+      <name>James Mickens</name>
+    </author>
+    <author>
+      <name>Margo Seltzer</name>
+    </author>
+    <author>
+      <name>Haifeng Chen</name>
+    </author>
+    <arxiv:comment xmlns:arxiv="http://arxiv.org/schemas/atom">18 pages, to appear in the 30th USENIX Security Symposium (USENIX
+  Security '21)</arxiv:comment>
+    <link href="http://arxiv.org/abs/2008.11533v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2008.11533v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2008.11516v1</id>
+    <updated>2020-08-26T12:24:23Z</updated>
+    <published>2020-08-26T12:24:23Z</published>
+    <title>Making a Case for 3D Convolutions for Object Segmentation in Videos</title>
+    <summary>  The task of object segmentation in videos is usually accomplished by
+processing appearance and motion information separately using standard 2D
+convolutional networks, followed by a learned fusion of the two sources of
+information. On the other hand, 3D convolutional networks have been
+successfully applied for video classification tasks, but have not been
+leveraged as effectively to problems involving dense per-pixel interpretation
+of videos compared to their 2D convolutional counterparts and lag behind the
+aforementioned networks in terms of performance. In this work, we show that 3D
+CNNs can be effectively applied to dense video prediction tasks such as salient
+object segmentation. We propose a simple yet effective encoder-decoder network
+architecture consisting entirely of 3D convolutions that can be trained
+end-to-end using a standard cross-entropy loss. To this end, we leverage an
+efficient 3D encoder, and propose a 3D decoder architecture, that comprises
+novel 3D Global Convolution layers and 3D Refinement modules. Our approach
+outperforms existing state-of-the-arts by a large margin on the DAVIS'16
+Unsupervised, FBMS and ViSal dataset benchmarks in addition to being faster,
+thus showing that our architecture can efficiently learn expressive
+spatio-temporal features and produce high quality video segmentation masks. Our
+code and models will be made publicly available.
+</summary>
+    <author>
+      <name>Sabarinath Mahadevan</name>
+    </author>
+    <author>
+      <name>Ali Athar</name>
+    </author>
+    <author>
+      <name>Aljoša Ošep</name>
+    </author>
+    <author>
+      <name>Sebastian Hennen</name>
+    </author>
+    <author>
+      <name>Laura Leal-Taixé</name>
+    </author>
+    <author>
+      <name>Bastian Leibe</name>
+    </author>
+    <arxiv:comment xmlns:arxiv="http://arxiv.org/schemas/atom">BMVC '20</arxiv:comment>
+    <link href="http://arxiv.org/abs/2008.11516v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2008.11516v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2008.11514v1</id>
+    <updated>2020-08-26T12:20:09Z</updated>
+    <published>2020-08-26T12:20:09Z</published>
+    <title>Disentangled Representations for Domain-generalized Cardiac Segmentation</title>
+    <summary>  Robust cardiac image segmentation is still an open challenge due to the
+inability of the existing methods to achieve satisfactory performance on unseen
+data of different domains. Since the acquisition and annotation of medical data
+are costly and time-consuming, recent work focuses on domain adaptation and
+generalization to bridge the gap between data from different populations and
+scanners. In this paper, we propose two data augmentation methods that focus on
+improving the domain adaptation and generalization abilities of
+state-to-the-art cardiac segmentation models. In particular, our "Resolution
+Augmentation" method generates more diverse data by rescaling images to
+different resolutions within a range spanning different scanner protocols.
+Subsequently, our "Factor-based Augmentation" method generates more diverse
+data by projecting the original samples onto disentangled latent spaces, and
+combining the learned anatomy and modality factors from different domains. Our
+extensive experiments demonstrate the importance of efficient adaptation
+between seen and unseen domains, as well as model generalization ability, to
+robust cardiac image segmentation.
+</summary>
+    <author>
+      <name>Xiao Liu</name>
+    </author>
+    <author>
+      <name>Spyridon Thermos</name>
+    </author>
+    <author>
+      <name>Agisilaos Chartsias</name>
+    </author>
+    <author>
+      <name>Alison O'Neil</name>
+    </author>
+    <author>
+      <name>Sotirios A. Tsaftaris</name>
+    </author>
+    <arxiv:comment xmlns:arxiv="http://arxiv.org/schemas/atom">Accepted by STACOM 2020</arxiv:comment>
+    <link href="http://arxiv.org/abs/2008.11514v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2008.11514v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="eess.IV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.IV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2008.11505v1</id>
+    <updated>2020-08-27T12:02:44Z</updated>
+    <published>2020-08-26T12:02:44Z</published>
+    <title>Cross-regional oil palm tree counting and detection via multi-level
+  attention domain adaptation network</title>
+    <summary>  Providing an accurate evaluation of palm tree plantation in a large region
+can bring meaningful impacts in both economic and ecological aspects. However,
+the enormous spatial scale and the variety of geological features across
+regions has made it a grand challenge with limited solutions based on manual
+human monitoring efforts. Although deep learning based algorithms have
+demonstrated potential in forming an automated approach in recent years, the
+labelling efforts needed for covering different features in different regions
+largely constrain its effectiveness in large-scale problems. In this paper, we
+propose a novel domain adaptive oil palm tree detection method, i.e., a
+Multi-level Attention Domain Adaptation Network (MADAN) to reap cross-regional
+oil palm tree counting and detection. MADAN consists of 4 procedures: First, we
+adopted a batch-instance normalization network (BIN) based feature extractor
+for improving the generalization ability of the model, integrating batch
+normalization and instance normalization. Second, we embedded a multi-level
+attention mechanism (MLA) into our architecture for enhancing the
+transferability, including a feature level attention and an entropy level
+attention. Then we designed a minimum entropy regularization (MER) to increase
+the confidence of the classifier predictions through assigning the entropy
+level attention value to the entropy penalty. Finally, we employed a sliding
+window-based prediction and an IOU based post-processing approach to attain the
+final detection results. We conducted comprehensive ablation experiments using
+three different satellite images of large-scale oil palm plantation area with
+six transfer tasks. MADAN improves the detection accuracy by 14.98% in terms of
+average F1-score compared with the Baseline method (without DA), and performs
+3.55%-14.49% better than existing domain adaptation methods.
+</summary>
+    <author>
+      <name>Juepeng Zheng</name>
+    </author>
+    <author>
+      <name>Haohuan Fu</name>
+    </author>
+    <author>
+      <name>Weijia Li</name>
+    </author>
+    <author>
+      <name>Wenzhao Wu</name>
+    </author>
+    <author>
+      <name>Yi Zhao</name>
+    </author>
+    <author>
+      <name>Runmin Dong</name>
+    </author>
+    <author>
+      <name>Le Yu</name>
+    </author>
+    <arxiv:doi xmlns:arxiv="http://arxiv.org/schemas/atom">10.1016/j.isprsjprs.2020.07.002</arxiv:doi>
+    <link title="doi" href="http://dx.doi.org/10.1016/j.isprsjprs.2020.07.002" rel="related"/>
+    <arxiv:comment xmlns:arxiv="http://arxiv.org/schemas/atom">39 pages, 13 figures, accepted by ISPRS PG&amp;RS</arxiv:comment>
+    <arxiv:journal_ref xmlns:arxiv="http://arxiv.org/schemas/atom">ISPRS Journal of Photogrammetry and Remote Sensing 2020</arxiv:journal_ref>
+    <link href="http://arxiv.org/abs/2008.11505v1" rel="alternate" type="text/html"/>
+    <link title="pdf" href="http://arxiv.org/pdf/2008.11505v1" rel="related" type="application/pdf"/>
+    <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+  </entry>
+</feed>

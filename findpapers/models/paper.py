@@ -47,7 +47,7 @@ class Paper():
         self.urls = urls
         self.doi = doi
         self.citations = citations
-        self.keywords = keywords
+        self.keywords = keywords if keywords is not None else set()
         self.comments = comments
         self.databases = set()
 

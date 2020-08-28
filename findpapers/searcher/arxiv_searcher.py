@@ -195,6 +195,7 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0):
     transformed_query = transformed_query.replace(' "', ' all:"')
     transformed_query = transformed_query.replace('("', '(all:"')
     transformed_query = transformed_query.replace('"', '')
+    transformed_query = transformed_query.strip()
 
     url = f'http://export.arxiv.org/api/query?search_query={transformed_query}&start={start_record}&sortBy=submittedDate&sortOrder=descending&max_results={MAX_ENTRIES_PER_PAGE}'
 
@@ -278,7 +279,10 @@ def _get_paper(paper_entry: dict, paper_publication_date: datetime.date, publica
         A paper instance
     """
 
-    paper_title = paper_entry.get('title', None)
+    paper_title = paper_entry.get('title')
+    paper_title = paper_title.replace('\n','') 
+    paper_title = re.sub(' +', ' ', paper_title)
+
     paper_doi = paper_entry.get('arxiv:doi').get(
         '#text') if 'arxiv:doi' in paper_entry else None
     paper_abstract = paper_entry.get('summary', None)
