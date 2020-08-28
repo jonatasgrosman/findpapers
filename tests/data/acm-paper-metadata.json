@@ -1,0 +1,58 @@
+{
+    "id": "10.1145/3371158.3371232",
+    "type": "PAPER_CONFERENCE",
+    "author": [
+        {
+            "family": "Vashishth",
+            "given": "Shikhar"
+        },
+        {
+            "family": "Yadati",
+            "given": "Naganand"
+        },
+        {
+            "family": "Talukdar",
+            "given": "Partha"
+        }
+    ],
+    "accessed": {
+        "date-parts": [
+            [
+                2020,
+                8,
+                28
+            ]
+        ]
+    },
+    "issued": {
+        "date-parts": [
+            [
+                2020,
+                1,
+                5
+            ]
+        ]
+    },
+    "original-date": {
+        "date-parts": [
+            [
+                2020,
+                1,
+                5
+            ]
+        ]
+    },
+    "abstract": "This tutorial aims to introduce recent advances in graph-based deep learning techniques such as Graph Convolutional Networks (GCNs) for Natural Language Processing (NLP). It provides a brief introduction to deep learning methods on non-Euclidean domains such as graphs and justifies their relevance in NLP. It then covers recent advances in applying graph-based deep learning methods for various NLP tasks, such as semantic role labeling, machine translation, relationship extraction, and many more.",
+    "call-number": "10.1145/3371158.3371232",
+    "collection-title": "CoDS COMAD 2020",
+    "container-title": "Proceedings of the 7th ACM IKDD CoDS and 25th COMAD",
+    "DOI": "10.1145/3371158.3371232",
+    "event-place": "Hyderabad, India",
+    "ISBN": "9781450377386",
+    "number-of-pages": "2",
+    "page": "371\\u2013372",
+    "publisher": "Association for Computing Machinery",
+    "publisher-place": "New York, NY, USA",
+    "title": "Graph-based Deep Learning in Natural Language Processing",
+    "URL": "https://doi.org/10.1145/3371158.3371232"
+}

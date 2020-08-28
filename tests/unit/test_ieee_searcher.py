@@ -78,16 +78,10 @@ def test_get_paper(publication: Publication):
 
 def test_run(search: Search):
 
-    search.limit = 3
+    search.limit = 26
     ieee_searcher.run(search, 'fake-api-token')
 
-    assert len(search.papers) == 3
-
-    paper_titles = [x.title for x in search.papers]
-
-    assert 'Inflectional Review of Deep Learning on Natural Language Processing' in paper_titles
-    assert 'Using Natural Language Processing to Accelerate Deep Analysis of Open-Ended Survey Data' in paper_titles
-    assert 'Assertion Detection in Clinical Natural Language Processing: A Knowledge-Poor Machine Learning Approach' in paper_titles
+    assert len(search.papers) == 26
 
     with pytest.raises(AttributeError):
         ieee_searcher.run(search, '')

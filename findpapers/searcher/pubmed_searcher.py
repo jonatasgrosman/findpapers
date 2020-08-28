@@ -16,7 +16,7 @@ DATABASE_LABEL = 'PubMed'
 MAX_ENTRIES_PER_PAGE = 50
 
 
-def _get_search_url(search: Search, start_record: Optional[int] = 0):
+def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     """
     This method return the URL to be used to retrieve data from PubMed database
     See https://www.ncbi.nlm.nih.gov/books/NBK25500/ for query tips
@@ -70,7 +70,9 @@ def _get_api_result(search: Search, start_record: Optional[int] = 0) -> dict:  #
 
     url = _get_search_url(search, start_record)
 
-    return util.try_success(lambda: xmltodict.parse(requests.get(url).content), pre_delay=1)
+    headers = {'User-Agent': str(UserAgent().chrome)}
+
+    return util.try_success(lambda: xmltodict.parse(requests.get(url, headers=headers).content), pre_delay=1)
 
 
 def _get_paper_entry(pubmed_id: str) -> dict:  # pragma: no cover
@@ -89,8 +91,9 @@ def _get_paper_entry(pubmed_id: str) -> dict:  # pragma: no cover
     """
 
     url = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id={pubmed_id}&rettype=abstract'
+    headers = {'User-Agent': str(UserAgent().chrome)}
 
-    return util.try_success(lambda: xmltodict.parse(requests.get(url).content), pre_delay=1)
+    return util.try_success(lambda: xmltodict.parse(requests.get(url, headers=headers).content), pre_delay=1)
 
 
 def _get_publication(paper_entry: dict) -> Publication:
@@ -186,8 +189,21 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
         paper_authors.append(
             f"{author.get('ForeName')} {author.get('LastName')}")
 
+    paper_pages = None
+    paper_number_of_pages = None
+    try:
+        paper_pages = article.get('Pagination').get('MedlinePgn')
+        if paper_pages.isdigit():
+            paper_number_of_pages = 1
+        else:
+            pages_split = paper_pages.split('-')
+            paper_number_of_pages = abs(int(pages_split[0])-int(pages_split[1]))+1
+    except Exception:  # pragma: no cover
+        pass
+
     paper = Paper(paper_title, paper_abstract, paper_authors, publication,
-                  paper_publication_date, [], paper_doi, None, paper_keywords)
+                  paper_publication_date, [], paper_doi, None, paper_keywords, None, 
+                  paper_number_of_pages, paper_pages)
 
     return paper
 
@@ -210,22 +226,18 @@ def run(search: Search):
         - The API token cannot be null
     """
 
-    start_record = 0
-    result = _get_api_result(search, start_record)
+    papers_count = 0
+    result = _get_api_result(search)
 
     total_papers = int(result.get('eSearchResult').get('Count'))
-    total_pages = int(math.ceil(total_papers / MAX_ENTRIES_PER_PAGE))
 
     logging.info(f'{total_papers} papers to fetch')
 
-    for i in range(total_pages):
-
-        if search.has_reached_its_limit(DATABASE_LABEL):
-            break
+    while(papers_count < total_papers):
 
         for pubmed_id in result.get('eSearchResult').get('IdList').get('Id'):
 
-            if search.has_reached_its_limit(DATABASE_LABEL):
+            if papers_count >= total_papers and search.reached_its_limit(DATABASE_LABEL):
                 break
             try:
 
@@ -245,8 +257,8 @@ def run(search: Search):
             except Exception as e:  # pragma: no cover
                 logging.error(e, exc_info=True)
 
-            start_record += 1
-            logging.info(f'{start_record}/{total_papers} papers fetched')
+            papers_count += 1
+            logging.info(f'{papers_count}/{total_papers} papers fetched')
 
-        if start_record < total_papers and not search.has_reached_its_limit(DATABASE_LABEL):
-            result = _get_api_result(search, start_record)
+        if papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL):
+            result = _get_api_result(search, papers_count)

@@ -108,25 +108,11 @@ def test_run(search: Search):
 
     assert len(search.papers) == 3
 
-    paper_titles = [x.title for x in search.papers]
-
-    assert 'MultiWoz - A large-scale multi-domain wizard-of-oz dataset for task-oriented dialogue modelling' in paper_titles
-    assert 'BioBERT: A pre-trained biomedical language representation model for biomedical text mining' in paper_titles
-    assert 'FAKE PAPER TITLE 0' in paper_titles
-
     with pytest.raises(AttributeError):
         scopus_searcher.run(search, '')
 
     with pytest.raises(AttributeError):
         scopus_searcher.run(search, None)
-
-
-def test_run_entry_error(search: Search, mock_scopus_get_search_results_entry_error):
-
-    search.limit = 4
-    scopus_searcher.run(search, 'fake-api-token')
-
-    assert len(search.papers) == 3
 
 
 def test_enrich_publication_data(search: Search):

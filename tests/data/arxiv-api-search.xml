@@ -4,7 +4,7 @@
   <title type="html">ArXiv Query: search_query=(all:machine learning OR all:deep learning) AND (all:nlp OR all:natural language processing)&amp;id_list=&amp;start=0&amp;max_results=20</title>
   <id>http://arxiv.org/api/bTow164AEgWBbEtif2YqI6xtOIE</id>
   <updated>2020-08-27T00:00:00-04:00</updated>
-  <opensearch:totalResults xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">60900</opensearch:totalResults>
+  <opensearch:totalResults xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">21</opensearch:totalResults>
   <opensearch:startIndex xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">0</opensearch:startIndex>
   <opensearch:itemsPerPage xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">20</opensearch:itemsPerPage>
   <entry>

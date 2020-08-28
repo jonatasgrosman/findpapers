@@ -89,6 +89,9 @@ class Publication():
             A duplication of the "self" publication
         """
 
+        if len(self.title) < len(publication.title):
+            self.title = publication.title
+
         if self.isbn is None:
             self.isbn = publication.isbn
 

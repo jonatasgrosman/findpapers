@@ -121,11 +121,7 @@ def test_get_paper(publication: Publication):
 
 def test_run(search: Search):
 
-    search.limit = 1
+    search.limit = 51
     pubmed_searcher.run(search)
 
-    assert len(search.papers) == 1
-
-    paper_titles = [x.title for x in search.papers]
-
-    assert 'Harvesting Patterns from Textual Web Sources with Tolerance Rough Sets.' in paper_titles
+    assert len(search.papers) == 51

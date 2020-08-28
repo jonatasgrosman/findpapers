@@ -16,7 +16,7 @@ DATABASE_LABEL = 'IEEE'
 MAX_ENTRIES_PER_PAGE = 200
 
 
-def _get_search_url(search: Search, api_token: str, start_record: Optional[int] = 1):
+def _get_search_url(search: Search, api_token: str, start_record: Optional[int] = 1) -> str:
     """
     This method return the URL to be used to retrieve data from IEEE database
     See https://developer.ieee.org/docs/read/Metadata_API_details for query tips
@@ -50,7 +50,7 @@ def _get_search_url(search: Search, api_token: str, start_record: Optional[int] 
     return url
 
 
-def _get_api_result(search: Search, api_token: str, start_record: Optional[int] = 1):  # pragma: no cover
+def _get_api_result(search: Search, api_token: str, start_record: Optional[int] = 1) -> dict:  # pragma: no cover
     """
     This method return results from IEEE database using the provided search parameters
 
@@ -70,8 +70,9 @@ def _get_api_result(search: Search, api_token: str, start_record: Optional[int] 
     """
 
     url = _get_search_url(search, api_token, start_record)
+    headers = {'User-Agent': str(UserAgent().chrome)}
 
-    return util.try_success(lambda: requests.get(url).json())
+    return util.try_success(lambda: requests.get(url, headers=headers).json())
 
 
 def _get_publication(paper_entry: dict) -> Publication:
@@ -124,6 +125,8 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
     paper_citations = paper_entry.get('citing_paper_count', None)
     paper_abstract = paper_entry.get('abstract', None)
     paper_urls = {paper_entry.get('pdf_url')}
+    paper_pages = None
+    paper_number_of_pages = None
 
     try:
         paper_keywords = set(paper_entry.get(
@@ -151,8 +154,21 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
     for author in paper_entry.get('authors').get('authors'):
         paper_authors.append(author.get('full_name'))
 
+    start_page = paper_entry.get('start_page', None)
+    end_page = paper_entry.get('end_page', None)
+    
+
+    if start_page is not None and end_page is not None:
+        try:
+            paper_pages = f"{paper_entry.get('start_page')}-{paper_entry.get('end_page')}"
+            paper_number_of_pages = abs(
+                int(paper_entry.get('start_page'))-int(paper_entry.get('end_page')))+1
+        except Exception:  # pragma: no cover
+            pass
+
     paper = Paper(paper_title, paper_abstract, paper_authors, publication,
-                  paper_publication_date, paper_urls, paper_doi, paper_citations, paper_keywords)
+                  paper_publication_date, paper_urls, paper_doi, paper_citations, 
+                  paper_keywords, None, paper_number_of_pages, paper_pages)
 
     return paper
 
@@ -178,34 +194,34 @@ def run(search: Search, api_token: str):
     if api_token is None or len(api_token.strip()) == 0:
         raise AttributeError('The API token cannot be null')
 
-    start_record = 1
-    result = _get_api_result(search, api_token, start_record)
+    papers_count = 0
+    result = _get_api_result(search, api_token)
     total_papers = result.get('total_records')
-    total_pages = int(math.ceil(total_papers / MAX_ENTRIES_PER_PAGE))
 
     logging.info(f'{total_papers} papers to fetch')
 
-    for i in range(total_pages):
-
-        if search.has_reached_its_limit(DATABASE_LABEL):
-            break
+    while(papers_count < total_papers):
 
         for paper_entry in result.get('articles'):
 
-            if search.has_reached_its_limit(DATABASE_LABEL):
+            if papers_count >= total_papers and search.reached_its_limit(DATABASE_LABEL):
                 break
 
-            logging.info(paper_entry.get('title'))
+            try:
 
-            start_record = paper_entry.get('rank') + 1
+                logging.info(paper_entry.get('title'))
 
-            publication = _get_publication(paper_entry)
-            paper = _get_paper(paper_entry, publication)
-            paper.add_database(DATABASE_LABEL)
+                publication = _get_publication(paper_entry)
+                paper = _get_paper(paper_entry, publication)
+                paper.add_database(DATABASE_LABEL)
 
-            search.add_paper(paper)
+                search.add_paper(paper)
 
-            logging.info(f'{start_record-1}/{total_papers} papers fetched')
+            except Exception as e:  # pragma: no cover
+                logging.error(e, exc_info=True)
 
-        if start_record < total_papers and not search.has_reached_its_limit(DATABASE_LABEL):
-            result = _get_api_result(search, api_token, start_record)
+            papers_count += 1
+            logging.info(f'{papers_count}/{total_papers} papers fetched')
+
+        if papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL):
+            result = _get_api_result(search, api_token, papers_count+1)

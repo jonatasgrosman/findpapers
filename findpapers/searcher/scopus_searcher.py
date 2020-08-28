@@ -12,6 +12,7 @@ from findpapers.models.publication import Publication
 
 DATABASE_LABEL = 'Scopus'
 
+
 def _get_query(search: Search) -> str:
     """
     Get the translated query from search instance to fetch data from Scopus database
@@ -38,7 +39,7 @@ def _get_query(search: Search) -> str:
     return query
 
 
-def _get_publication_entry(publication_issn: str, api_token: str):  # pragma: no cover
+def _get_publication_entry(publication_issn: str, api_token: str) -> dict:  # pragma: no cover
     """
     Get publication entry by publication ISSN
 
@@ -59,10 +60,10 @@ def _get_publication_entry(publication_issn: str, api_token: str):  # pragma: no
     headers = {'User-Agent': str(UserAgent().chrome),
                'Accept': 'application/json'}
     response = util.try_success(lambda: requests.get(
-        url, headers=headers).json()['serial-metadata-response'])
+        url, headers=headers).json()).get('serial-metadata-response', None)
 
-    if response is not None and 'entry' in response and len(response['entry']) > 0:
-        return response['entry'][0]
+    if response is not None and 'entry' in response and len(response.get('entry')) > 0:
+        return response.get('entry')[0]
 
 
 def _get_publication(paper_entry: dict, api_token: str) -> Publication:
@@ -101,7 +102,7 @@ def _get_publication(paper_entry: dict, api_token: str) -> Publication:
     return publication
 
 
-def _get_paper_page(url: str):  # pragma: no cover
+def _get_paper_page(url: str) -> object:  # pragma: no cover
     """
     Get a paper page element from a provided URL
 
@@ -149,6 +150,8 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
     paper_authors = []
     paper_urls = set()
     paper_keywords = set()
+    paper_pages = None
+    paper_number_of_pages = None
 
     # post processing data
 
@@ -195,16 +198,29 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
             for keyword in keywords:
                 paper_keywords.add(keyword.text.strip())
 
+            try:
+                paper_pages = paper_page.xpath(
+                    '//span[@id="journalInfo"]')[0].text.split('Pages')[1].strip()
+                if paper_pages.isdigit(): # pragma: no cover
+                    paper_number_of_pages = 1
+                else:
+                    pages_split = paper_pages.split('-')
+                    paper_number_of_pages = abs(
+                        int(pages_split[0])-int(pages_split[1]))+1
+            except Exception:  # pragma: no cover
+                pass
+
         except Exception as e:
             logging.error(e, exc_info=True)
 
     paper = Paper(paper_title, paper_abstract, paper_authors, publication,
-                  paper_publication_date, paper_urls, paper_doi, paper_citations, paper_keywords)
+                  paper_publication_date, paper_urls, paper_doi, paper_citations, paper_keywords, 
+                  None, paper_number_of_pages, paper_pages)
 
     return paper
 
 
-def _get_search_results(search: Search, api_token: str, url: Optional[str] = None):  # pragma: no cover
+def _get_search_results(search: Search, api_token: str, url: Optional[str] = None) -> dict:  # pragma: no cover
     """
     This method fetch papers from Scopus database using the provided search parameters
 
@@ -271,7 +287,7 @@ def enrich_publication_data(search: Search, api_token: str):
 
                 publication_cite_score = util.try_success(lambda x=publication_entry: float(
                     x.get('citeScoreYearInfoList').get('citeScoreCurrentMetric')))
-                
+
                 if publication_cite_score is not None:
                     publication.cite_score = publication_cite_score
 
@@ -290,7 +306,7 @@ def enrich_publication_data(search: Search, api_token: str):
                     publication.snip = publication_snip
 
 
-def run(search: Search, api_token: str, url: Optional[str] = None):
+def run(search: Search, api_token: str, url: Optional[str] = None, papers_count: Optional[int] = 0):
     """
     This method fetch papers from Scopus database using the provided search parameters
     After fetch the data from Scopus, the collected papers are added to the provided search instance
@@ -304,6 +320,8 @@ def run(search: Search, api_token: str, url: Optional[str] = None):
     url : Optional[str]
         A predefined URL to be used for the search execution, 
         this is usually used for make the next recursive call on a result pagination
+    papers_count : Optional[int]
+        Papers count used on recursion calls
 
     Raises
     ------
@@ -316,16 +334,13 @@ def run(search: Search, api_token: str, url: Optional[str] = None):
 
     search_results = _get_search_results(search, api_token, url)
 
-    total_papers = search_results.get('opensearch:totalResults', 0)
-    start_pagination_index = int(
-        search_results.get('opensearch:startIndex', 0))
-    processed_papers = 0
+    total_papers = int(search_results.get('opensearch:totalResults', 0))
 
     logging.info(f'{total_papers} papers to fetch')
 
     for paper_entry in search_results.get('entry', []):
 
-        if search.has_reached_its_limit(DATABASE_LABEL):
+        if papers_count >= total_papers and search.reached_its_limit(DATABASE_LABEL):
             break
 
         try:
@@ -337,12 +352,11 @@ def run(search: Search, api_token: str, url: Optional[str] = None):
 
             search.add_paper(paper)
 
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             logging.error(e, exc_info=True)
 
-        processed_papers += 1
-        logging.info(
-            f'{processed_papers+start_pagination_index}/{total_papers} papers fetched')
+        papers_count += 1
+        logging.info(f'{papers_count}/{total_papers} papers fetched')
 
     next_url = None
     for link in search_results['link']:
@@ -352,5 +366,5 @@ def run(search: Search, api_token: str, url: Optional[str] = None):
 
     # If there is a next url, the API provided response was paginated and we need to process the next url
     # We'll make a recursive call for it
-    if next_url is not None and not search.has_reached_its_limit(DATABASE_LABEL):
-        run(search, api_token, next_url)
+    if papers_count < total_papers and next_url is not None and not search.reached_its_limit(DATABASE_LABEL):
+        run(search, api_token, next_url, papers_count)

@@ -11,7 +11,8 @@ class Paper():
 
     def __init__(self, title: str, abstract: str, authors: List[str], publication: Publication,
                  publication_date: date, urls: Set[str], doi: Optional[str] = None, citations: Optional[int] = None,
-                 keywords: Optional[Set[str]] = None, comments: Optional[str] = None):
+                 keywords: Optional[Set[str]] = None, comments: Optional[str] = None, number_of_pages: Optional[int] = None, 
+                 pages: Optional[str] = None):
         """
         Paper class constructor
 
@@ -37,6 +38,10 @@ class Paper():
             Paper keywords, by default None
         comments : str, optional
             Paper comments, by default None
+        number_of_pages : int, optional
+            Paper number of pages, by default None
+        pages : str, optional
+            Paper page number or range, by default None
         """
 
         self.title = title
@@ -49,7 +54,11 @@ class Paper():
         self.citations = citations
         self.keywords = keywords if keywords is not None else set()
         self.comments = comments
+        self.number_of_pages = number_of_pages
+        self.pages = pages
         self.databases = set()
+        self.selected = None
+        self.category = None
 
     def add_database(self, database_name: str):
         """
@@ -116,6 +125,12 @@ class Paper():
 
         if self.comments is None:
             self.comments = paper.comments
+        
+        if self.number_of_pages is None:
+            self.number_of_pages = paper.number_of_pages
+
+        if self.pages is None:
+            self.pages = paper.pages
 
         for url in paper.urls:
             self.add_url(url)
@@ -123,4 +138,8 @@ class Paper():
         for database in paper.databases:
             self.add_database(database)
 
-        self.publication.enrich(self.publication)
+        if self.publication is None:
+            self.publication = paper.publication
+
+        if self.publication is not None and paper.publication is not None:
+            self.publication.enrich(paper.publication)

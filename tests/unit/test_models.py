@@ -25,7 +25,7 @@ def test_publication(publication: Publication):
     publication.category = 'newspaper article'
     assert publication.category == 'Other'
 
-    another_publication = Publication('another awesome title')
+    another_publication = Publication('awesome publication title 2')
     another_publication.cite_score = 1.0
     another_publication.sjr = 2.0
     another_publication.snip = 3.0
@@ -90,6 +90,7 @@ def test_paper(paper: Paper):
     paper.abstract = None
     paper.authors = None
     paper.keywords = None
+    paper.publication = None
     paper.enrich(another_paper)
     assert paper.publication_date == another_paper.publication_date
     assert paper.abstract == another_paper.abstract
@@ -154,3 +155,10 @@ def test_search(paper: Paper):
 
     search.merge_duplications()
     assert len(search.papers) == 1
+
+    publication_title = 'FAKE-TITLE'
+    publication_issn = 'FAKE-ISSN'
+    publication_isbn = 'FAKE-ISBN'
+    assert search.get_publication_key(publication_title, publication_issn, publication_isbn) == f'ISBN-{publication_isbn.lower()}'
+    assert search.get_publication_key(publication_title, publication_issn) == f'ISSN-{publication_issn.lower()}'
+    assert search.get_publication_key(publication_title) == f'TITLE-{publication_title.lower()}'

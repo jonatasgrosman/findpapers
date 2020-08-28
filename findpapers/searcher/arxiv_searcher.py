@@ -14,7 +14,7 @@ from findpapers.models.publication import Publication
 
 DATABASE_LABEL = 'arXiv'
 MAX_ENTRIES_PER_PAGE = 200
-SUBJECT_ARE_BY_KEY = {
+SUBJECT_AREA_BY_KEY = {
     'astro-ph': 'Astrophysics',
     'astro-ph.CO': 'Cosmology and Nongalactic Astrophysics',
     'astro-ph.EP': 'Earth and Planetary Astrophysics',
@@ -171,7 +171,7 @@ SUBJECT_ARE_BY_KEY = {
 }
 
 
-def _get_search_url(search: Search, start_record: Optional[int] = 0):
+def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     """
     This method return the URL to be used to retrieve data from arXiv database
     See https://arxiv.org/help/api/user-manual for query tips
@@ -202,7 +202,7 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0):
     return url
 
 
-def _get_api_result(search: Search, start_record: Optional[int] = 0):  # pragma: no cover
+def _get_api_result(search: Search, start_record: Optional[int] = 0) -> dict: # pragma: no cover
     """
     This method return results from arXiv database using the provided search parameters
 
@@ -220,8 +220,9 @@ def _get_api_result(search: Search, start_record: Optional[int] = 0):  # pragma:
     """
 
     url = _get_search_url(search, start_record)
+    headers = {'User-Agent': str(UserAgent().chrome)}
 
-    return util.try_success(lambda: xmltodict.parse(requests.get(url).content), pre_delay=1)
+    return util.try_success(lambda: xmltodict.parse(requests.get(url, headers=headers).content), pre_delay=1)
 
 
 def _get_publication(paper_entry: dict) -> Publication:
@@ -249,9 +250,9 @@ def _get_publication(paper_entry: dict) -> Publication:
             if isinstance(paper_entry.get('category'), list):
                 for category in paper_entry.get('category'):
                     subject_areas.add(
-                        SUBJECT_ARE_BY_KEY.get(category.get('@term')))
+                        SUBJECT_AREA_BY_KEY.get(category.get('@term')))
             else:
-                subject_areas.add(SUBJECT_ARE_BY_KEY.get(
+                subject_areas.add(SUBJECT_AREA_BY_KEY.get(
                     paper_entry.get('category').get('@term')))
 
         publication = Publication(
@@ -321,35 +322,27 @@ def run(search: Search):
     search : Search
         A search instance
 
-    Raises
-    ------
-    AttributeError
-        - The API token cannot be null
     """
 
-    start_record = 0
-    result = _get_api_result(search, start_record)
+    papers_count = 0
+    result = _get_api_result(search)
 
     total_papers = int(result.get('feed').get(
         'opensearch:totalResults').get('#text'))
-    total_pages = int(math.ceil(total_papers / MAX_ENTRIES_PER_PAGE))
 
     logging.info(f'{total_papers} papers to fetch')
 
-    for i in range(total_pages):
-
-        if search.has_reached_its_limit(DATABASE_LABEL):
-            break
+    while(papers_count < total_papers):
 
         for paper_entry in result.get('feed').get('entry'):
 
-            if search.has_reached_its_limit(DATABASE_LABEL):
+            if papers_count >= total_papers and search.reached_its_limit(DATABASE_LABEL):
                 break
 
             try:
 
                 logging.info(paper_entry.get('title'))
-                start_record += 1
+                papers_count += 1
 
                 published_date = datetime.datetime.strptime(
                     paper_entry.get('published')[:10], '%Y-%m-%d').date()
@@ -370,10 +363,10 @@ def run(search: Search):
 
                 search.add_paper(paper)
 
-                logging.info(f'{start_record}/{total_papers} papers fetched')
+                logging.info(f'{papers_count}/{total_papers} papers fetched')
 
             except Exception as e:  # pragma: no cover
                 logging.error(e, exc_info=True)
 
-        if start_record < total_papers and not search.has_reached_its_limit(DATABASE_LABEL):
-            result=_get_api_result(search, start_record)
+        if papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL):
+            result=_get_api_result(search, papers_count)

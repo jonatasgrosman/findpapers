@@ -45,7 +45,7 @@ class Search():
         self.paper_by_doi = {}
         self.papers_by_database = {}
 
-    def get_paper_key(self, paper_title: str, publication_date: datetime.date) -> str:
+    def get_paper_key(self, paper_title: str, publication_date: datetime.date, paper_doi: Optional[str] = None) -> str:
         """
         We have a map called paper_by_key that is filled using the string this method returns
 
@@ -55,13 +55,19 @@ class Search():
             The paper title
         publication_date : datetime.date
             The paper publication date
+        paper_doi : str, optional
+            The paper DOI, by default None
 
         Returns
         -------
         str
             A string that represents a unique key for each paper, that will be used to fill and retrieve values from paper_by_key
         """
-        return f'{paper_title.lower()}|{publication_date.year if publication_date is not None else ""}'
+
+        if paper_doi is not None:
+            return f'DOI-{paper_doi}'
+        else:
+            return f'{paper_title.lower()}|{publication_date.year if publication_date is not None else ""}'
 
     def get_publication_key(self, publication_title: str, publication_issn: Optional[str] = None, publication_isbn: Optional[str] = None) -> str:
         """
@@ -82,7 +88,12 @@ class Search():
             A string that represents a unique key for each publication, that will be used to fill and retrieve values from publication_by_key
         """
 
-        return f'{publication_title.lower()}|{str(publication_issn).lower()}|{str(publication_isbn).lower()}'
+        if publication_isbn is not None:
+            return f'ISBN-{publication_isbn.lower()}'
+        elif publication_issn is not None:
+            return f'ISSN-{publication_issn.lower()}'
+        else:
+            return f'TITLE-{publication_title.lower()}'
 
     def add_paper(self, paper: Paper):
         """
@@ -106,7 +117,7 @@ class Search():
                 'Paper cannot be added to search without at least one defined database')
 
         for database in paper.databases:
-            if self.has_reached_its_limit(database):
+            if self.reached_its_limit(database):
                 raise OverflowError(
                     'When the papers limit is provided, you cannot exceed it')
 
@@ -123,12 +134,9 @@ class Search():
             else:
                 self.publication_by_key[publication_key] = paper.publication
 
-        paper_key = self.get_paper_key(paper.title, paper.publication_date)
+        paper_key = self.get_paper_key(paper.title, paper.publication_date, paper.doi)
 
-        if paper.doi is not None and paper.doi in self.paper_by_doi:
-            already_collected_paper = self.paper_by_doi.get(paper.doi)
-        else:
-            already_collected_paper = self.paper_by_key.get(paper_key, None)
+        already_collected_paper = self.paper_by_key.get(paper_key, None)
 
         if (self.since is None or paper.publication_date >= self.since) \
                 and (self.until is None or paper.publication_date <= self.until):
@@ -148,7 +156,7 @@ class Search():
             else:
                 already_collected_paper.enrich(paper)
 
-    def get_paper(self, paper_title: str, publication_date: str) -> Paper:
+    def get_paper(self, paper_title: str, publication_date: str, paper_doi: Optional[str] = None) -> Paper:
         """
         Get a collected paper by paper's title and publication date
 
@@ -158,6 +166,8 @@ class Search():
             The paper title
         publication_date : datetime.date
             The paper publication date
+        paper_doi : str, optional
+            The paper DOI, by default None
 
         Returns
         -------
@@ -165,7 +175,7 @@ class Search():
             The wanted paper, or None if there isn't a paper given by the provided arguments
         """
 
-        paper_key = self.get_paper_key(paper_title, publication_date)
+        paper_key = self.get_paper_key(paper_title, publication_date, paper_doi)
 
         return self.paper_by_key.get(paper_key, None)
 
@@ -202,7 +212,7 @@ class Search():
             A paper instance
         """
 
-        paper_key = self.get_paper_key(paper.title, paper.publication_date)
+        paper_key = self.get_paper_key(paper.title, paper.publication_date, paper.doi)
 
         if paper_key in self.paper_by_key:
             del self.paper_by_key[paper_key]
@@ -253,7 +263,7 @@ class Search():
                 # removing the paper_2 instance
                 self.remove_paper(paper_2)
 
-    def has_reached_its_limit(self, database: str) -> bool:
+    def reached_its_limit(self, database: str) -> bool:
         """
         Returns a flag that says if the search has reached its limit
 

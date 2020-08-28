@@ -7,10 +7,11 @@ import findpapers.searcher.scopus_searcher as scopus_searcher
 import findpapers.searcher.ieee_searcher as ieee_searcher
 import findpapers.searcher.pubmed_searcher as pubmed_searcher
 import findpapers.searcher.arxiv_searcher as arxiv_searcher
+import findpapers.searcher.acm_searcher as acm_searcher
 
 
 def _database_safe_run(function, search, database_label):
-    if not search.has_reached_its_limit(database_label):
+    if not search.reached_its_limit(database_label):
         logging.info(f'Fetching papers from {database_label} database...')
         try:
             function()
@@ -33,6 +34,7 @@ def get(query: str, since: Optional[datetime.date] = None, until: Optional[datet
 
     _database_safe_run(lambda: arxiv_searcher.run(search), search, arxiv_searcher.DATABASE_LABEL)
     _database_safe_run(lambda: pubmed_searcher.run(search), search, pubmed_searcher.DATABASE_LABEL)
+    _database_safe_run(lambda: acm_searcher.run(search), search, acm_searcher.DATABASE_LABEL)
 
     if ieee_api_token is not None:
         _database_safe_run(lambda: ieee_searcher.run(

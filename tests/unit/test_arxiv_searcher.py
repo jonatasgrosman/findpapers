@@ -11,18 +11,18 @@ paper_entry = {
     'arxiv:journal_ref': {
         '#text': 'fake publication name'
     },
-    'category': [  # can be single value
+    'category': [  # can be a single value
         {'@term': 'astro-ph'}
     ],
     'arxiv:doi': {
         '#text': 'fake-doi'
     },
     'summary': 'a long abstract',
-    'link': [  # can be single value
+    'link': [  # can be a single value
         {'@href': 'http://fake-url-A'},
         {'@href': 'http://fake-url-B'},
     ],
-    'author': [  # can be single value
+    'author': [  # can be a single value
         {'name': 'author A'},
         {'name': 'author B'},
     ],
@@ -101,16 +101,11 @@ def test_get_paper(publication: Publication):
 
 def test_run(search: Search):
 
-    search.limit = 5
+    search.limit = 19
     search.limit_per_database = None
     search.since = datetime.date(2020,8,26)
     search.until = datetime.date(2020,8,26)
 
     arxiv_searcher.run(search)
 
-    assert len(search.papers) == 5
-
-    paper_titles = [x.title for x in search.papers]
-
-    assert 'Safe Model-Based Meta-Reinforcement Learning: A Sequential Exploration-Exploitation Framework' in paper_titles
-    assert '5G Utility Pole Planner Using Google Street View and Mask R-CNN' in paper_titles
+    assert len(search.papers) == 19
