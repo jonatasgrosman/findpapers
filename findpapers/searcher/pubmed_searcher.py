@@ -12,6 +12,7 @@ from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
 
+DATABASE_LABEL = 'PubMed'
 MAX_ENTRIES_PER_PAGE = 50
 
 
@@ -219,12 +220,12 @@ def run(search: Search):
 
     for i in range(total_pages):
 
-        if search.has_reached_its_limit():
+        if search.has_reached_its_limit(DATABASE_LABEL):
             break
 
         for pubmed_id in result.get('eSearchResult').get('IdList').get('Id'):
 
-            if search.has_reached_its_limit():
+            if search.has_reached_its_limit(DATABASE_LABEL):
                 break
             try:
 
@@ -237,7 +238,7 @@ def run(search: Search):
                 publication = _get_publication(paper_entry)
                 paper = _get_paper(paper_entry, publication)
 
-                paper.add_database('PubMed')
+                paper.add_database(DATABASE_LABEL)
 
                 search.add_paper(paper)
 
@@ -247,5 +248,5 @@ def run(search: Search):
             start_record += 1
             logging.info(f'{start_record}/{total_papers} papers fetched')
 
-        if start_record < total_papers and not search.has_reached_its_limit():
+        if start_record < total_papers and not search.has_reached_its_limit(DATABASE_LABEL):
             result = _get_api_result(search, start_record)

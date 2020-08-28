@@ -10,7 +10,7 @@ import findpapers.searcher.arxiv_searcher as arxiv_searcher
 
 
 def _database_safe_run(function, search, database_label):
-    if not search.has_reached_its_limit():
+    if not search.has_reached_its_limit(database_label):
         logging.info(f'Fetching papers from {database_label} database...')
         try:
             function()
@@ -20,7 +20,8 @@ def _database_safe_run(function, search, database_label):
 
 
 def get(query: str, since: Optional[datetime.date] = None, until: Optional[datetime.date] = None,
-        limit: Optional[int] = None, scopus_api_token: Optional[str] = None, ieee_api_token: Optional[str] = None) -> Search:
+        limit: Optional[int] = None, limit_per_database: Optional[int] = None,
+        scopus_api_token: Optional[str] = None, ieee_api_token: Optional[str] = None) -> Search:
 
     if ieee_api_token is None:
         ieee_api_token = os.getenv('IEEE_API_TOKEN')
@@ -28,18 +29,18 @@ def get(query: str, since: Optional[datetime.date] = None, until: Optional[datet
     if scopus_api_token is None:
         scopus_api_token = os.getenv('SCOPUS_API_TOKEN')
 
-    search = Search(query, since, until, limit)
+    search = Search(query, since, until, limit, limit_per_database)
 
-    _database_safe_run(lambda: arxiv_searcher.run(search), search, 'arXiv')
-    _database_safe_run(lambda: pubmed_searcher.run(search), search, 'PubMed')
+    _database_safe_run(lambda: arxiv_searcher.run(search), search, arxiv_searcher.DATABASE_LABEL)
+    _database_safe_run(lambda: pubmed_searcher.run(search), search, pubmed_searcher.DATABASE_LABEL)
 
     if ieee_api_token is not None:
         _database_safe_run(lambda: ieee_searcher.run(
-            search, ieee_api_token), search, 'IEEE')
+            search, ieee_api_token), search, ieee_searcher.DATABASE_LABEL)
 
     if scopus_api_token is not None:
         _database_safe_run(lambda: scopus_searcher.run(
-            search, scopus_api_token), search, 'Scopus')
+            search, scopus_api_token), search, scopus_searcher.DATABASE_LABEL)
 
         logging.info('Enriching publication data using Scopus database...')
         try:

@@ -12,9 +12,8 @@ from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
 
-
+DATABASE_LABEL = 'arXiv'
 MAX_ENTRIES_PER_PAGE = 200
-
 SUBJECT_ARE_BY_KEY = {
     'astro-ph': 'Astrophysics',
     'astro-ph.CO': 'Cosmology and Nongalactic Astrophysics',
@@ -335,12 +334,12 @@ def run(search: Search):
 
     for i in range(total_pages):
 
-        if search.has_reached_its_limit():
+        if search.has_reached_its_limit(DATABASE_LABEL):
             break
 
         for paper_entry in result.get('feed').get('entry'):
 
-            if search.has_reached_its_limit():
+            if search.has_reached_its_limit(DATABASE_LABEL):
                 break
 
             try:
@@ -363,7 +362,7 @@ def run(search: Search):
 
                 publication = _get_publication(paper_entry)
                 paper = _get_paper(paper_entry, published_date, publication)
-                paper.add_database('arXiv')
+                paper.add_database(DATABASE_LABEL)
 
                 search.add_paper(paper)
 
@@ -372,5 +371,5 @@ def run(search: Search):
             except Exception as e:  # pragma: no cover
                 logging.error(e, exc_info=True)
 
-        if start_record < total_papers and not search.has_reached_its_limit():
+        if start_record < total_papers and not search.has_reached_its_limit(DATABASE_LABEL):
             result=_get_api_result(search, start_record)

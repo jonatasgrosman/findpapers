@@ -12,7 +12,7 @@ class Search():
     """
 
     def __init__(self, query: str, since: Optional[datetime.date] = None, until: Optional[datetime.date] = None,
-                 limit: Optional[int] = None):
+                 limit: Optional[int] = None, limit_per_database: Optional[int] = None):
         """
         Class constructor
 
@@ -25,7 +25,10 @@ class Search():
         until : datetime.date, optional
             The upper bound (inclusive) date of search, by default None
         limit : int, optional
-            The max number of papers that needs to be returned in the search, 
+            The max number of papers that can be returned in the search, 
+            when the limit is not provided the search will retrieve all the papers that it can, by default None
+        limit_per_database : int, optional
+            The max number of papers that can be returned in the search for each database
             when the limit is not provided the search will retrieve all the papers that it can, by default None
         """
 
@@ -33,11 +36,13 @@ class Search():
         self.since = since
         self.until = until
         self.limit = limit
+        self.limit_per_database = limit_per_database
 
         self.fetched_at = datetime.datetime.utcnow()
         self.papers = set()
         self.paper_by_key = {}
         self.publication_by_key = {}
+        self.papers_by_database = {}
 
     def get_paper_key(self, paper_title: str, publication_date: datetime.date) -> str:
         """
@@ -89,13 +94,20 @@ class Search():
             A new collected paper instance
         Raises
         ------
+        ValueError
+            - Paper cannot be added to search without at least one defined database
         OverflowError
             - When the papers limit is provided, you cannot exceed it
         """
 
-        if self.limit is not None and len(self.papers) >= self.limit:
-            raise OverflowError(
-                'When the papers limit is provided, you cannot exceed it')
+        if len(paper.databases) == 0:
+            raise ValueError(
+                'Paper cannot be added to search without at least one defined database')
+
+        for database in paper.databases:
+            if self.has_reached_its_limit(database):
+                raise OverflowError(
+                    'When the papers limit is provided, you cannot exceed it')
 
         if paper.publication is not None:
 
@@ -119,6 +131,11 @@ class Search():
             if already_collected_paper is None:
                 self.papers.add(paper)
                 self.paper_by_key[paper_key] = paper
+                for database in paper.databases:
+                    if database not in self.papers_by_database:
+                        self.papers_by_database[database] = set()
+                    self.papers_by_database[database].add(paper)
+
             else:
                 already_collected_paper.enrich(paper)
 
@@ -181,6 +198,9 @@ class Search():
         if paper_key in self.paper_by_key:
             del self.paper_by_key[paper_key]
 
+        for database in paper.databases:
+            self.papers_by_database[database].remove(paper)
+
         self.papers.remove(paper)
 
     def merge_duplications(self, similarity_threshold: float = 0.9):
@@ -225,9 +245,14 @@ class Search():
                 # removing the paper_2 instance
                 self.remove_paper(paper_2)
 
-    def has_reached_its_limit(self) -> bool:
+    def has_reached_its_limit(self, database: str) -> bool:
         """
         Returns a flag that says if the search has reached its limit
+
+        Parameters
+        ----------
+        database : str, optional
+            The database name that will be used to check the limit
 
         Returns
         -------
@@ -235,4 +260,9 @@ class Search():
             a flag that says if the search has reached its limit
         """
 
-        return self.limit is not None and len(self.papers) >= self.limit
+        reached_general_limit = self.limit is not None and len(
+            self.papers) >= self.limit
+        reached_database_limit = self.limit_per_database is not None and database in self.papers_by_database and len(
+            self.papers_by_database.get(database)) >= self.limit_per_database
+
+        return reached_general_limit or reached_database_limit

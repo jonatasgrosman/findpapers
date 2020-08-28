@@ -10,6 +10,7 @@ from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
 
+DATABASE_LABEL = 'Scopus'
 
 def _get_query(search: Search) -> str:
     """
@@ -324,7 +325,7 @@ def run(search: Search, api_token: str, url: Optional[str] = None):
 
     for paper_entry in search_results.get('entry', []):
 
-        if search.has_reached_its_limit():
+        if search.has_reached_its_limit(DATABASE_LABEL):
             break
 
         try:
@@ -332,7 +333,7 @@ def run(search: Search, api_token: str, url: Optional[str] = None):
 
             publication = _get_publication(paper_entry, api_token)
             paper = _get_paper(paper_entry, publication)
-            paper.add_database('Scopus')
+            paper.add_database(DATABASE_LABEL)
 
             search.add_paper(paper)
 
@@ -351,5 +352,5 @@ def run(search: Search, api_token: str, url: Optional[str] = None):
 
     # If there is a next url, the API provided response was paginated and we need to process the next url
     # We'll make a recursive call for it
-    if next_url is not None and not search.has_reached_its_limit():
+    if next_url is not None and not search.has_reached_its_limit(DATABASE_LABEL):
         run(search, api_token, next_url)

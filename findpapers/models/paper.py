@@ -66,9 +66,11 @@ class Paper():
             - Nowadays only ACM, arXiv, IEEE, PubMed or Scopus are valid database names
         """
 
-        if database_name not in ['ACM', 'arXiv', 'IEEE', 'PubMed', 'Scopus']:
+        from findpapers.searcher import AVAILABLE_DATABASES
+
+        if database_name not in AVAILABLE_DATABASES:
             raise ValueError(
-                f'Invalid database name "{database_name}". Nowadays only ACM, arXiv, IEEE, PubMed, or Scopus are valid database names')
+                f'Invalid database name "{database_name}". Nowadays only {", ".join(AVAILABLE_DATABASES)} are valid database names')
 
         self.databases.add(database_name)
 
@@ -99,7 +101,7 @@ class Paper():
 
         if self.abstract is None or len(self.abstract) < len(paper.abstract):
             self.abstract = paper.abstract
-        
+
         if self.authors is None or len(self.authors) < len(paper.authors):
             self.authors = paper.authors
 
@@ -108,16 +110,16 @@ class Paper():
 
         if self.citations is None or self.citations <= paper.citations:
             self.citations = paper.citations
-        
+
         if self.keywords is None or len(self.keywords) < len(paper.keywords):
             self.keywords = paper.keywords
 
         if self.comments is None:
             self.comments = paper.comments
-        
+
         for url in paper.urls:
             self.add_url(url)
-        
+
         for database in paper.databases:
             self.add_database(database)
 

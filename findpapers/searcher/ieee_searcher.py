@@ -11,6 +11,8 @@ from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
 
+
+DATABASE_LABEL = 'IEEE'
 MAX_ENTRIES_PER_PAGE = 200
 
 
@@ -185,12 +187,12 @@ def run(search: Search, api_token: str):
 
     for i in range(total_pages):
 
-        if search.has_reached_its_limit():
+        if search.has_reached_its_limit(DATABASE_LABEL):
             break
 
         for paper_entry in result.get('articles'):
 
-            if search.has_reached_its_limit():
+            if search.has_reached_its_limit(DATABASE_LABEL):
                 break
 
             logging.info(paper_entry.get('title'))
@@ -199,11 +201,11 @@ def run(search: Search, api_token: str):
 
             publication = _get_publication(paper_entry)
             paper = _get_paper(paper_entry, publication)
-            paper.add_database('IEEE')
+            paper.add_database(DATABASE_LABEL)
 
             search.add_paper(paper)
 
             logging.info(f'{start_record-1}/{total_papers} papers fetched')
 
-        if start_record < total_papers and not search.has_reached_its_limit():
+        if start_record < total_papers and not search.has_reached_its_limit(DATABASE_LABEL):
             result = _get_api_result(search, api_token, start_record)

@@ -107,7 +107,9 @@ def test_paper(paper: Paper):
 
 def test_search(paper: Paper):
 
-    search = Search('this AND that', datetime.date(1969, 1, 30), datetime.date(1970, 4, 8), 2)
+    search = Search('this AND that', datetime.date(
+        1969, 1, 30), datetime.date(1970, 4, 8), 2)
+    paper.add_database('arXiv')
 
     assert len(search.papers) == 0
 
@@ -118,6 +120,8 @@ def test_search(paper: Paper):
 
     another_paper = Paper('awesome paper title 2', 'a long abstract',
                           paper.authors, paper.publication,  paper.publication_date, paper.urls)
+    another_paper.add_database('arXiv')
+    
     search.add_paper(another_paper)
     assert len(search.papers) == 2
 
@@ -129,11 +133,22 @@ def test_search(paper: Paper):
     assert len(search.papers) == 1
     assert paper in search.papers
 
+    search.limit_per_database = 1
+    with pytest.raises(OverflowError):
+        search.add_paper(another_paper)
+    search.limit_per_database = 2
+
     search.add_paper(another_paper)
     assert len(search.papers) == 2
 
     another_paper_2 = Paper('awesome paper title 3', 'a long abstract',
                             paper.authors, paper.publication,  paper.publication_date, paper.urls)
+    
+    with pytest.raises(ValueError):
+        search.add_paper(another_paper_2)
+    
+    another_paper_2.add_database('arXiv')
+
     with pytest.raises(OverflowError):
         search.add_paper(another_paper_2)
 
