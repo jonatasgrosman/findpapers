@@ -1,6 +1,6 @@
 from __future__ import annotations
+import datetime
 from typing import List, Set, Optional
-from datetime import date
 from findpapers.models.publication import Publication
 
 
@@ -10,9 +10,10 @@ class Paper():
     """
 
     def __init__(self, title: str, abstract: str, authors: List[str], publication: Publication,
-                 publication_date: date, urls: Set[str], doi: Optional[str] = None, citations: Optional[int] = None,
-                 keywords: Optional[Set[str]] = None, comments: Optional[str] = None, number_of_pages: Optional[int] = None, 
-                 pages: Optional[str] = None):
+                 publication_date: datetime.date, urls: Set[str], doi: Optional[str] = None, citations: Optional[int] = None,
+                 keywords: Optional[Set[str]] = None, comments: Optional[str] = None, number_of_pages: Optional[int] = None,
+                 pages: Optional[str] = None, databases: Optional[set] = None, selected: Optional[bool] = None,
+                 category: Optional[bool] = None):
         """
         Paper class constructor
 
@@ -26,7 +27,7 @@ class Paper():
             A list of paper authors
         publication: Publication
             The publication where the paper were published
-        publication_date : date
+        publication_date : datetime.date
             Paper publication date
         urls : Set[str]
             Paper urls (one from each scientific database)
@@ -42,6 +43,12 @@ class Paper():
             Paper number of pages, by default None
         pages : str, optional
             Paper page number or range, by default None
+        databases : set, optional
+            The databases where the paper was found, by default None
+        selected : bool, optional
+            If a paper was selected by the user, by default None
+        category : srt, optional
+            The paper category provided by the user, by default None
         """
 
         self.title = title
@@ -56,9 +63,9 @@ class Paper():
         self.comments = comments
         self.number_of_pages = number_of_pages
         self.pages = pages
-        self.databases = set()
-        self.selected = None
-        self.category = None
+        self.databases = databases if databases is not None else set()
+        self.selected = selected
+        self.category = selected
 
     def add_database(self, database_name: str):
         """
@@ -125,7 +132,7 @@ class Paper():
 
         if self.comments is None:
             self.comments = paper.comments
-        
+
         if self.number_of_pages is None:
             self.number_of_pages = paper.number_of_pages
 
@@ -143,3 +150,73 @@ class Paper():
 
         if self.publication is not None and paper.publication is not None:
             self.publication.enrich(paper.publication)
+
+    @classmethod
+    def from_dict(cls, paper_dict: dict) -> Paper:
+        """
+        A method that returns a Paper instance based on the provided dict object
+
+        Parameters
+        ----------
+        paper_dict : dict
+            A dict that represents a Paper instance
+
+        Returns
+        -------
+        Paper
+            A Paper instance based on the provided dict object
+        """
+
+        title = paper_dict.get('title')
+        abstract = paper_dict.get('abstract')
+        authors = paper_dict.get('authors')
+        publication = Publication.from_dict(paper_dict.get('publication')) if paper_dict.get('publication') is not None else None
+        publication_date = datetime.datetime.strptime(
+            paper_dict.get('publication_date'), '%Y-%m-%d').date()
+        urls = set(paper_dict.get('urls'))
+        doi = paper_dict.get('doi')
+        citations = paper_dict.get('citations')
+        keywords = set(paper_dict.get('keywords'))
+        comments = paper_dict.get('comments')
+        number_of_pages = paper_dict.get('number_of_pages')
+        pages = paper_dict.get('pages')
+        databases = set(paper_dict.get('databases'))
+        selected = paper_dict.get('selected')
+        category = paper_dict.get('category')
+
+        return cls(title, abstract, authors, publication, publication_date, urls, doi, citations, keywords,
+                   comments, number_of_pages, pages, databases, selected, category)
+
+    @staticmethod
+    def to_dict(paper: Paper) -> dict:
+        """
+        A method that returns a dict object based on the provided Paper instance
+
+        Parameters
+        ----------
+        paper : Paper
+            A Paper instance
+
+        Returns
+        -------
+        dict
+            A dict that represents a Paper instance
+        """
+
+        return {
+            'title': paper.title,
+            'abstract': paper.abstract,
+            'authors': paper.authors,
+            'publication': Publication.to_dict(paper.publication) if paper.publication is not None else None,
+            'publication_date': paper.publication_date.strftime('%Y-%m-%d'),
+            'urls': list(paper.urls),
+            'doi': paper.doi,
+            'citations': paper.citations,
+            'keywords': list(paper.keywords),
+            'comments': paper.comments,
+            'number_of_pages': paper.number_of_pages,
+            'pages': paper.pages,
+            'databases': list(paper.databases),
+            'selected': paper.selected,
+            'category': paper.category,
+        }

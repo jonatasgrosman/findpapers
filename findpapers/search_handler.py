@@ -1,6 +1,7 @@
 import os
 import datetime
 import logging
+import json
 from typing import Optional, List
 from findpapers.models.search import Search
 import findpapers.searcher.scopus_searcher as scopus_searcher
@@ -20,7 +21,7 @@ def _database_safe_run(function, search, database_label):
                 f'Error while fetching papers from {database_label} database', exc_info=True)
 
 
-def get(query: str, since: Optional[datetime.date] = None, until: Optional[datetime.date] = None,
+def run(query: str, since: Optional[datetime.date] = None, until: Optional[datetime.date] = None,
         limit: Optional[int] = None, limit_per_database: Optional[int] = None,
         scopus_api_token: Optional[str] = None, ieee_api_token: Optional[str] = None) -> Search:
 
@@ -32,9 +33,12 @@ def get(query: str, since: Optional[datetime.date] = None, until: Optional[datet
 
     search = Search(query, since, until, limit, limit_per_database)
 
-    _database_safe_run(lambda: arxiv_searcher.run(search), search, arxiv_searcher.DATABASE_LABEL)
-    _database_safe_run(lambda: pubmed_searcher.run(search), search, pubmed_searcher.DATABASE_LABEL)
-    _database_safe_run(lambda: acm_searcher.run(search), search, acm_searcher.DATABASE_LABEL)
+    _database_safe_run(lambda: arxiv_searcher.run(search),
+                       search, arxiv_searcher.DATABASE_LABEL)
+    _database_safe_run(lambda: pubmed_searcher.run(search),
+                       search, pubmed_searcher.DATABASE_LABEL)
+    _database_safe_run(lambda: acm_searcher.run(search),
+                       search, acm_searcher.DATABASE_LABEL)
 
     if ieee_api_token is not None:
         _database_safe_run(lambda: ieee_searcher.run(
@@ -48,6 +52,19 @@ def get(query: str, since: Optional[datetime.date] = None, until: Optional[datet
         try:
             scopus_searcher.enrich_publication_data(search, scopus_api_token)
         except Exception:  # pragma: no cover
-            logging.error('Error while fetching data from Scopus database', exc_info=True)
+            logging.error(
+                'Error while fetching data from Scopus database', exc_info=True)
 
     return search
+
+
+def save(search: Search, filepath: str):
+
+    with open(filepath, 'w') as jsonfile:
+        json.dump(Search.to_dict(search), jsonfile, indent=4, sort_keys=True)
+
+
+def load(filepath: str):
+
+    with open(filepath, 'r') as jsonfile:
+        return Search.from_dict(json.load(jsonfile))

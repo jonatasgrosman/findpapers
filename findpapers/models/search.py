@@ -1,3 +1,4 @@
+from __future__ import annotations
 import datetime
 import itertools
 import edlib
@@ -12,7 +13,8 @@ class Search():
     """
 
     def __init__(self, query: str, since: Optional[datetime.date] = None, until: Optional[datetime.date] = None,
-                 limit: Optional[int] = None, limit_per_database: Optional[int] = None):
+                 limit: Optional[int] = None, limit_per_database: Optional[int] = None, processed_at: Optional[datetime.datetime] = None,
+                 papers: Optional[set] = None):
         """
         Class constructor
 
@@ -30,6 +32,10 @@ class Search():
         limit_per_database : int, optional
             The max number of papers that can be returned in the search for each database
             when the limit is not provided the search will retrieve all the papers that it can, by default None
+        processed_at : datetime.datetime, optional
+            The datetime when the search was performed
+        papers : set, optional
+            A list of papers already collected
         """
 
         self.query = query
@@ -37,13 +43,17 @@ class Search():
         self.until = until
         self.limit = limit
         self.limit_per_database = limit_per_database
-
-        self.fetched_at = datetime.datetime.utcnow()
+        self.processed_at = processed_at if processed_at is not None else datetime.datetime.utcnow()
         self.papers = set()
+
         self.paper_by_key = {}
         self.publication_by_key = {}
         self.paper_by_doi = {}
         self.papers_by_database = {}
+
+        if papers is not None:
+            for paper in papers:
+                self.add_paper(paper)
 
     def get_paper_key(self, paper_title: str, publication_date: datetime.date, paper_doi: Optional[str] = None) -> str:
         """
@@ -134,7 +144,8 @@ class Search():
             else:
                 self.publication_by_key[publication_key] = paper.publication
 
-        paper_key = self.get_paper_key(paper.title, paper.publication_date, paper.doi)
+        paper_key = self.get_paper_key(
+            paper.title, paper.publication_date, paper.doi)
 
         already_collected_paper = self.paper_by_key.get(paper_key, None)
 
@@ -144,7 +155,7 @@ class Search():
             if already_collected_paper is None:
                 self.papers.add(paper)
                 self.paper_by_key[paper_key] = paper
-                
+
                 if paper.doi is not None:
                     self.paper_by_doi[paper.doi] = paper
 
@@ -175,7 +186,8 @@ class Search():
             The wanted paper, or None if there isn't a paper given by the provided arguments
         """
 
-        paper_key = self.get_paper_key(paper_title, publication_date, paper_doi)
+        paper_key = self.get_paper_key(
+            paper_title, publication_date, paper_doi)
 
         return self.paper_by_key.get(paper_key, None)
 
@@ -212,7 +224,8 @@ class Search():
             A paper instance
         """
 
-        paper_key = self.get_paper_key(paper.title, paper.publication_date, paper.doi)
+        paper_key = self.get_paper_key(
+            paper.title, paper.publication_date, paper.doi)
 
         if paper_key in self.paper_by_key:
             del self.paper_by_key[paper_key]
@@ -284,3 +297,71 @@ class Search():
             self.papers_by_database.get(database)) >= self.limit_per_database
 
         return reached_general_limit or reached_database_limit
+
+    @classmethod
+    def from_dict(cls, search_dict: dict) -> Search:
+        """
+        A method that returns a Search instance based on the provided dict object
+
+        Parameters
+        ----------
+        search_dict : dict
+            A dict that represents a Search instance
+
+        Returns
+        -------
+        Search
+            A Search instance based on the provided dict object
+        """
+
+        query = search_dict.get('query')
+        limit = search_dict.get('limit')
+        limit_per_database = search_dict.get('limit_per_database')
+
+        since = search_dict.get('since')
+        if since is not None:
+            since = datetime.datetime.strptime(since, '%Y-%m-%d').date()
+
+        until = search_dict.get('until')
+        if until is not None:
+            until = datetime.datetime.strptime(until, '%Y-%m-%d').date()
+
+        processed_at = search_dict.get('processed_at')
+        if processed_at is not None:
+            processed_at = datetime.datetime.strptime(processed_at, '%Y-%m-%d %H:%M:%S')
+
+        papers = set()
+        for paper in search_dict.get('papers', []):
+            papers.add(Paper.from_dict(paper))
+
+        return cls(query, since, until, limit, limit_per_database, processed_at, papers)
+
+    @staticmethod
+    def to_dict(search: Search) -> dict:
+        """
+        A method that returns a dict object based on the provided Search instance
+
+        Parameters
+        ----------
+        search : Search
+            A Search instance
+
+        Returns
+        -------
+        dict
+            A dict that represents a Search instance
+        """
+
+        papers = []
+        for paper in search.papers:
+            papers.append(Paper.to_dict(paper))
+
+        return {
+            'query': search.query,
+            'since': search.since.strftime('%Y-%m-%d') if search.since is not None else None,
+            'until': search.until.strftime('%Y-%m-%d') if search.until is not None else None,
+            'limit': search.limit,
+            'limit_per_database': search.limit_per_database,
+            'processed_at': search.processed_at.strftime('%Y-%m-%d %H:%M:%S') if search.processed_at is not None else None,
+            'papers': papers,
+        }

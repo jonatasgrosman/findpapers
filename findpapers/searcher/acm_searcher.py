@@ -193,11 +193,13 @@ def _get_paper(paper_page: html.HtmlElement, paper_doi: str, paper_url: str) -> 
         paper_keywords = set([x.strip()
                               for x in paper_metadata['keyword'].split(',')])
 
+    paper_pages = paper_metadata.get('page', None)
+    if paper_pages is not None:
+        paper_pages = paper_pages.replace('\u2013', '-')
+
     paper_number_of_pages = paper_metadata.get('number-of-pages', None)
     if paper_number_of_pages is not None:
         paper_number_of_pages = int(paper_number_of_pages)
-
-    paper_pages = paper_metadata.get('page', None)
 
     paper = Paper(paper_title, paper_abstract, paper_authors, publication,
                   paper_publication_date, {paper_url}, paper_doi,
@@ -259,7 +261,7 @@ def run(search: Search):
 
                 search.add_paper(paper)
 
-                logging.info(f'{papers_count}/{total_papers} papers fetched')
+                logging.info(f'{papers_count}/{total_papers} ACM papers fetched')
 
             except Exception as e:  # pragma: no cover
                 logging.error(e, exc_info=True)

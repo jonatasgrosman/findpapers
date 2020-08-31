@@ -17,3 +17,6 @@ coverage.xml
 
 # OS
 .DS_Store
+
+# TESTS
+some_search.json

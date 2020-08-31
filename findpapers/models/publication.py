@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import List, Optional
-from datetime import date
+import json
 
 
 class Publication():
@@ -106,7 +106,7 @@ class Publication():
 
         if self.cite_score is None:
             self.cite_score = publication.cite_score
-        
+
         if self.sjr is None:
             self.sjr = publication.sjr
 
@@ -115,3 +115,124 @@ class Publication():
 
         for subject_area in publication.subject_areas:
             self.subject_areas.add(subject_area)
+
+    @classmethod
+    def from_dict(cls, publication_dict: dict) -> Publication:
+        """
+        A method that returns a Publication instance based on the provided dict object
+
+        Parameters
+        ----------
+        publication_dict : dict
+            A dict that represents a Publication instance
+
+        Returns
+        -------
+        Publication
+            A Publication instance based on the provided dict object
+        """
+
+        title = publication_dict.get('title')
+        isbn = publication_dict.get('isbn')
+        issn = publication_dict.get('issn')
+        publisher = publication_dict.get('publisher')
+        category = publication_dict.get('category')
+        cite_score = publication_dict.get('cite_score')
+        sjr = publication_dict.get('sjr')
+        snip = publication_dict.get('snip')
+        subject_areas = set(publication_dict.get('subject_areas'))
+
+        return cls(title, isbn, issn, publisher, category, cite_score, sjr, snip, subject_areas)
+
+    @staticmethod
+    def to_dict(publication: Publication) -> dict:
+        """
+        A method that returns a dict object based on the provided Publication instance
+
+        Parameters
+        ----------
+        publication : Publication
+            A Publication instance
+
+        Returns
+        -------
+        dict
+            A dict that represents a Publication instance
+        """
+
+        return {
+            'title': publication.title,
+            'isbn': publication.isbn,
+            'issn': publication.issn,
+            'publisher': publication.publisher,
+            'category': publication.category,
+            'cite_score': publication.cite_score,
+            'sjr': publication.sjr,
+            'snip': publication.snip,
+            'subject_areas': list(publication.subject_areas)
+        }
+
+
+# https://stackoverflow.com/questions/48991911/how-to-write-a-custom-json-decoder-for-a-complex-object
+
+# class PublicationEncoder(json.JSONEncoder):
+#     def default(self, publication):
+#         return {
+#             'title': publication.title,
+#             'isbn': publication.isbn,
+#             'issn': publication.issn,
+#             'publisher': publication.publisher,
+#             'category': publication.category,
+#             'cite_score': publication.cite_score,
+#             'sjr': publication.sjr,
+#             'snip': publication.snip,
+#             'subject_areas': list(publication.subject_areas)
+#         }
+
+# class EdgeDecoder(json.JSONDecoder):
+#     def __init__(self, *args, **kwargs):
+#         json.JSONDecoder.__init__(self, object_hook=self.object_hook, *args, **kwargs)
+#     def object_hook(self, dct):
+#         if 'Actor' in dct:
+#             actor = Actor(dct['Actor']['Name'], dct['Actor']['Age'], '')
+#             movie = Movie(dct['Movie']['Title'], dct['Movie']['Gross'], '', dct['Movie']['Year'])
+#             return Edge(actor, movie)
+#         return dct
+
+
+# class EdgeEncoder(json.JSONEncoder):
+#     def default(self, o):
+#         if isinstance(o, Edge):
+#             return {
+#                     "Actor": {
+#                              "Name": o.get_actor().get_name(),
+#                              "Age": o.get_actor().get_age()
+#                              },
+#                     "Movie": {
+#                              "Title": o.get_movie().get_title(),
+#                              "Gross": o.get_movie().get_gross(),
+#                              "Year": o.get_movie().get_year()
+#                              }
+#                     }
+#         return json.JSONEncoder.default(self, o)
+
+# class EdgeDecoder(json.JSONDecoder):
+#     def __init__(self, *args, **kwargs):
+#         json.JSONDecoder.__init__(self, object_hook=self.object_hook, *args, **kwargs)
+#     def object_hook(self, dct):
+#         if 'Actor' in dct:
+#             actor = Actor(dct['Actor']['Name'], dct['Actor']['Age'], '')
+#             movie = Movie(dct['Movie']['Title'], dct['Movie']['Gross'], '', dct['Movie']['Year'])
+#             return Edge(actor, movie)
+#         return dct
+
+
+# filename='test.json'
+# movie = Movie('Python', 'many dollars', '', '2000')
+# actor = Actor('Casper Van Dien', 49, '')
+# edge = Edge(actor, movie)
+# with open(filename, 'w') as jsonfile:
+#     json.dump(edge, jsonfile, cls=EdgeEncoder)
+# with open(filename, 'r') as jsonfile:
+#     edge1 = json.load(jsonfile, cls=EdgeDecoder)
+# assert edge1 == edge

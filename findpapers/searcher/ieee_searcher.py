@@ -224,7 +224,7 @@ def run(search: Search, api_token: str):
                 logging.error(e, exc_info=True)
 
             papers_count += 1
-            logging.info(f'{papers_count}/{total_papers} papers fetched')
+            logging.info(f'{papers_count}/{total_papers} IEEE papers fetched')
 
         if papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL):
             result = _get_api_result(search, api_token, papers_count+1)

@@ -365,7 +365,7 @@ def run(search: Search):
 
                 search.add_paper(paper)
 
-                logging.info(f'{papers_count}/{total_papers} papers fetched')
+                logging.info(f'{papers_count}/{total_papers} arXiv papers fetched')
 
             except Exception as e:  # pragma: no cover
                 logging.error(e, exc_info=True)

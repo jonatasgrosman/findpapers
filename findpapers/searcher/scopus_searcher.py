@@ -359,7 +359,7 @@ def run(search: Search, api_token: str, url: Optional[str] = None, papers_count:
             logging.error(e, exc_info=True)
 
         papers_count += 1
-        logging.info(f'{papers_count}/{total_papers} papers fetched')
+        logging.info(f'{papers_count}/{total_papers} Scopus papers fetched')
 
     next_url = None
     for link in search_results['link']:

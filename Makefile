@@ -14,7 +14,7 @@ help:
 	@echo "       run tests and save tests and coverag reports"
 	@echo "make run_sample sample_file=name_of_sample.py"
 	@echo "       run a script contained in samples folder"
-	@echo "       e.g. make run_sample sample_file=some_research.py"
+	@echo "       e.g. make run_sample sample_file=some_search.py"
 
 setup: poetry.lock
 poetry.lock: pyproject.toml
