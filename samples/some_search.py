@@ -17,4 +17,8 @@ filepath = 'some_search.json'
 findpapers.save(search, filepath)
 loaded_search = findpapers.load(filepath)
 
-print(len(search.papers))
+categories = ['Very nice work', 'Fine', 'Garbage']
+highlights = ['new', 'novel', 'achiev', 'result', 'state of art', 'SOTA', 'limitation', 'future']
+findpapers.refine(filepath, show_abstract=True, categories=categories, highlights=highlights)
+
+print(len(loaded_search.papers))

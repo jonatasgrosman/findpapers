@@ -3,6 +3,8 @@ import re
 import edlib
 import traceback
 import logging
+import os
+import subprocess
 from typing import Optional
 
 
@@ -32,7 +34,7 @@ def try_success(function, attempts: Optional[int] = 1, pre_delay: Optional[int] 
     Try to execute a function and repeat this execution if it raises any exception.
     This function will try N times to succeed, by provided number of attempts.
 
-    Note: you can provide a delay time for pre and post function call, 
+    Note: you can provide a delay time for pre and post function call,
     so the total delayed time between calls is pre_delay + next_try_delay
 
     Parameters
@@ -60,3 +62,15 @@ def try_success(function, attempts: Optional[int] = 1, pre_delay: Optional[int] 
         logging.error(e, exc_info=True)
         time.sleep(next_try_delay)
         return try_success(function, attempts-1)
+
+
+def clear():
+    """
+    Clear the console
+    """
+    if os.name in ('nt', 'dos'):
+        subprocess.call("cls")
+    elif os.name in ('linux', 'osx', 'posix'):
+        subprocess.call("clear")
+    else:
+        print('\n') * 120
