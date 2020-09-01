@@ -1,7 +1,7 @@
 import datetime
 import pytest
 from urllib.parse import quote_plus
-import findpapers.searcher.acm_searcher as acm_searcher
+import findpapers.searchers.acm_searcher as acm_searcher
 from findpapers.models.search import Search
 from findpapers.models.publication import Publication
 

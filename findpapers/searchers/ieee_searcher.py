@@ -6,7 +6,7 @@ import math
 from lxml import html
 from typing import Optional
 from fake_useragent import UserAgent
-import findpapers.util as util
+import findpapers.utils.common_util as util
 from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication

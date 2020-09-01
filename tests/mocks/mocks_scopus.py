@@ -3,7 +3,7 @@ import pytest
 import json
 import datetime
 from lxml import html
-import findpapers.searcher.scopus_searcher as scopus_searcher
+import findpapers.searchers.scopus_searcher as scopus_searcher
 
 
 @pytest.fixture(autouse=True)

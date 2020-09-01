@@ -4,7 +4,7 @@ import pytest
 import json
 import datetime
 from lxml import html
-import findpapers.searcher.acm_searcher as acm_searcher
+import findpapers.searchers.acm_searcher as acm_searcher
 
 
 @pytest.fixture(autouse=True)

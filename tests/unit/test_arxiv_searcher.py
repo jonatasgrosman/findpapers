@@ -1,7 +1,7 @@
 import datetime
 import copy
 import pytest
-import findpapers.searcher.arxiv_searcher as arxiv_searcher
+import findpapers.searchers.arxiv_searcher as arxiv_searcher
 from findpapers.models.search import Search
 from findpapers.models.publication import Publication
 

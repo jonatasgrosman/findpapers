@@ -6,7 +6,7 @@ from urllib.parse import urlencode
 from typing import Optional
 from fake_useragent import UserAgent
 from lxml import html
-import findpapers.util as util
+import findpapers.utils.common_util as util
 from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication

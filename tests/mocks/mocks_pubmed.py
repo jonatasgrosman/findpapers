@@ -3,7 +3,7 @@ import pytest
 import xmltodict
 import random
 import datetime
-import findpapers.searcher.pubmed_searcher as pubmed_searcher
+import findpapers.searchers.pubmed_searcher as pubmed_searcher
 
 
 @pytest.fixture(autouse=True)

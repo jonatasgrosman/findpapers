@@ -1,6 +1,6 @@
 import datetime
 import pytest
-import findpapers.searcher.ieee_searcher as ieee_searcher
+import findpapers.searchers.ieee_searcher as ieee_searcher
 from findpapers.models.search import Search
 from findpapers.models.publication import Publication
 

@@ -82,7 +82,7 @@ class Paper():
             - Nowadays only ACM, arXiv, IEEE, PubMed or Scopus are valid database names
         """
 
-        from findpapers.searcher import AVAILABLE_DATABASES
+        from findpapers.searchers import AVAILABLE_DATABASES
 
         if database_name not in AVAILABLE_DATABASES:
             raise ValueError(

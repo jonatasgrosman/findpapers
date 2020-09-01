@@ -3,7 +3,7 @@ import pytest
 import json
 import datetime
 from lxml import html
-import findpapers.searcher.ieee_searcher as ieee_searcher
+import findpapers.searchers.ieee_searcher as ieee_searcher
 
 
 @pytest.fixture(autouse=True)

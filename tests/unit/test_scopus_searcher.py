@@ -1,6 +1,6 @@
 import datetime
 import pytest
-import findpapers.searcher.scopus_searcher as scopus_searcher
+import findpapers.searchers.scopus_searcher as scopus_searcher
 from findpapers.models.search import Search
 from findpapers.models.publication import Publication
 

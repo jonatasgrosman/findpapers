@@ -1,6 +1,6 @@
 import pytest
 from typing import Callable, Any
-import findpapers.util as util
+import findpapers.utils.common_util as util
 
 
 @pytest.mark.parametrize('string_format, numeric_format', [

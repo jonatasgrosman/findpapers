@@ -2,7 +2,7 @@ import os
 import pytest
 import xmltodict
 import datetime
-import findpapers.searcher.arxiv_searcher as arxiv_searcher
+import findpapers.searchers.arxiv_searcher as arxiv_searcher
 
 
 @pytest.fixture(autouse=True)

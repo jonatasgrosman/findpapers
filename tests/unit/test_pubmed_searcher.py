@@ -1,7 +1,7 @@
 import copy
 import datetime
 import pytest
-import findpapers.searcher.pubmed_searcher as pubmed_searcher
+import findpapers.searchers.pubmed_searcher as pubmed_searcher
 from findpapers.models.search import Search
 from findpapers.models.publication import Publication
 
