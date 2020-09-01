@@ -19,19 +19,60 @@ logging.basicConfig(level=getattr(logging, logging_level),
                     format='%(asctime)s %(levelname)s: %(message)s')
 
 
-def _database_safe_run(function, search, database_label):
-    if not search.reached_its_limit(database_label):
-        logging.info(f'Fetching papers from {database_label} database...')
-        try:
-            function()
-        except Exception:  # pragma: no cover
-            logging.error(
-                f'Error while fetching papers from {database_label} database', exc_info=True)
-
-
 def run(query: str, since: Optional[datetime.date] = None, until: Optional[datetime.date] = None,
         limit: Optional[int] = None, limit_per_database: Optional[int] = None,
         scopus_api_token: Optional[str] = None, ieee_api_token: Optional[str] = None) -> Search:
+    """
+    When you have a query and needs to get papers using it, this is the method that you'll need to call.
+    This method will find papers from some databases based on the provided query, returning a Search instance when the search completes.
+
+    Parameters
+    ----------
+    query : str
+        A query string that will be used to perform the papers search.
+
+        All the query terms need to be enclosed in quotes and can be associated using boolean operators,
+        and grouped using parentheses. 
+        E.g.: "term A" AND ("term B" OR "term C") AND NOT "term D"
+
+        You can use some wildcards in the query too. Use ? to replace a single character or * to replace any number of characters. 
+        E.g.: "son?" -> will match song, sons, ...
+        E.g.: "son*" -> will match song, sons, sonar, songwriting, ...
+
+        Note: All boolean operators needs to be uppercased. The boolean operator "NOT" must be preceded by an "AND" operator.
+
+    since : Optional[datetime.date], optional
+        A lower bound (inclusive) date that will be used to filter the search results, by default None
+
+    until : Optional[datetime.date], optional
+        A upper bound (inclusive) date that will be used to filter the search results, by default None
+
+    limit : Optional[int], optional
+        The max number of papers to collect, by default None
+
+    limit_per_database : Optional[int], optional
+        The max number of papers to collect per each database, by default None
+
+    scopus_api_token : Optional[str], optional
+        A API token used to fetch data from Scopus database. If you don't have one go to https://dev.elsevier.com and get it, by default None
+
+    ieee_api_token : Optional[str], optional
+        A API token used to fetch data from IEEE database. If you don't have one go to https://developer.ieee.org and get it, by default None
+
+    Returns
+    -------
+    Search
+        A Search instance containing the search results
+    """
+
+    def _database_safe_run(function: callable, search: Search, database_label: str):
+        if not search.reached_its_limit(database_label):
+            logging.info(f'Fetching papers from {database_label} database...')
+            try:
+                function()
+            except Exception:  # pragma: no cover
+                logging.error(
+                    f'Error while fetching papers from {database_label} database', exc_info=True)
 
     if ieee_api_token is None:
         ieee_api_token = os.getenv('IEEE_API_TOKEN')
@@ -67,12 +108,30 @@ def run(query: str, since: Optional[datetime.date] = None, until: Optional[datet
 
 
 def save(search: Search, filepath: str):
+    """
+    A method used to save a search result in a JSON representation
+
+    Parameters
+    ----------
+    search : Search
+        A Search instance
+    filepath : str
+        A valid file path used to save the search results
+    """
 
     with open(filepath, 'w') as jsonfile:
         json.dump(Search.to_dict(search), jsonfile, indent=2, sort_keys=True)
 
 
 def load(filepath: str):
+    """
+    A method used to load a search result using a JSON representation
+
+    Parameters
+    ----------
+    filepath : str
+        A valid file path containing a JSON representation of the search results
+    """
 
     with open(filepath, 'r') as jsonfile:
         return Search.from_dict(json.load(jsonfile))
