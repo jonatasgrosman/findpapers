@@ -1,6 +1,7 @@
 import pytest
 import datetime
 import requests
+import findpapers
 from findpapers.models.publication import Publication
 from findpapers.models.paper import Paper
 from findpapers.models.search import Search

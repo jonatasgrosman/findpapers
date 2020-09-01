@@ -7,6 +7,7 @@ import re
 from typing import Optional, List
 from colorama import Fore, Back, Style, init
 from findpapers.models.search import Search
+from findpapers.models.paper import Paper
 import findpapers.util as util
 import findpapers.searcher.scopus_searcher as scopus_searcher
 import findpapers.searcher.ieee_searcher as ieee_searcher
@@ -22,6 +23,28 @@ if logging_level is None:  # pragma: no cover
 
 logging.basicConfig(level=getattr(logging, logging_level),
                     format='%(asctime)s %(levelname)s: %(message)s')
+
+
+def _database_safe_run(function: callable, search: Search, database_label: str):
+    """
+    Private method that calls a provided function catching all exceptions without rasing them, only logging a ERROR message
+
+    Parameters
+    ----------
+    function : callable
+        A function that will be call for database fetching
+    search : Search
+        A search instance
+    database_label : str
+        A database label
+    """
+    if not search.reached_its_limit(database_label):
+        logging.info(f'Fetching papers from {database_label} database...')
+        try:
+            function()
+        except Exception:  # pragma: no cover
+            logging.error(
+                f'Error while fetching papers from {database_label} database', exc_info=True)
 
 
 def run(query: str, since: Optional[datetime.date] = None, until: Optional[datetime.date] = None,
@@ -69,15 +92,6 @@ def run(query: str, since: Optional[datetime.date] = None, until: Optional[datet
     Search
         A Search instance containing the search results
     """
-
-    def _database_safe_run(function: callable, search: Search, database_label: str):
-        if not search.reached_its_limit(database_label):
-            logging.info(f'Fetching papers from {database_label} database...')
-            try:
-                function()
-            except Exception:  # pragma: no cover
-                logging.error(
-                    f'Error while fetching papers from {database_label} database', exc_info=True)
 
     if ieee_api_token is None:
         ieee_api_token = os.getenv('IEEE_API_TOKEN')
@@ -142,13 +156,119 @@ def load(filepath: str):
         return Search.from_dict(json.load(jsonfile))
 
 
+def _print_paper_details(paper: Paper, show_abstract: bool, highlights: List[str]): # pragma: no cover
+    """
+    Private method used to print on console the paper details
+
+    Parameters
+    ----------
+    paper : Paper
+        A paper instance
+    show_abstract : bool
+        A flag to indicate if the abstract should be shown or not
+    highlights : List[str]
+        A list of terms to highlight on the paper's abstract'
+    """
+
+    print(f'{Fore.GREEN}{Style.BRIGHT}{paper.title}')
+    print(f'{Fore.GREEN}{" | ".join(paper.authors)}')
+    print(f'{Fore.GREEN}{paper.publication_date.strftime("%Y-%m-%d")}')
+
+    print('\n')
+
+    if show_abstract:
+        abstract = paper.abstract
+        for term in highlights:
+            abstract = re.sub(r'({0}+)'.format(term), Fore.YELLOW + Style.BRIGHT +
+                              r'\1' + Fore.RESET + Style.NORMAL, abstract, flags=re.IGNORECASE)
+        print(abstract)
+
+        print('\n')
+
+    if len(paper.keywords) > 0:
+        print(f'{Style.BRIGHT}Keywords:{Style.NORMAL} {", ".join(paper.keywords)}')
+    if paper.comments is not None:
+        print(f'{Style.BRIGHT}Comments:{Style.NORMAL} {paper.comments}')
+    if paper.citations is not None:
+        print(f'{Style.BRIGHT}Citations:{Style.NORMAL} {paper.citations}')
+    if paper.comments is not None:
+        print(f'{Style.BRIGHT}Databases:{Style.NORMAL} {", ".join(paper.databases)}')
+
+    print('\n')
+
+    if paper.publication is not None:
+        print(
+            f'{Style.BRIGHT}Publication name:{Style.NORMAL} {paper.publication.title}')
+        print(
+            f'{Style.BRIGHT}Publication category:{Style.NORMAL} {paper.publication.category}')
+
+        if paper.publication.isbn is not None:
+            print(f'{Style.BRIGHT}ISBN:{Style.NORMAL} {paper.publication.isbn}')
+        if paper.publication.issn is not None:
+            print(f'{Style.BRIGHT}ISSN:{Style.NORMAL} {paper.publication.issn}')
+        if paper.publication.publisher is not None:
+            print(
+                f'{Style.BRIGHT}Publisher:{Style.NORMAL} {paper.publication.publisher}')
+        if paper.publication.cite_score is not None:
+            print(
+                f'{Style.BRIGHT}Cite score:{Style.NORMAL} {paper.publication.cite_score}')
+        if paper.publication.sjr is not None:
+            print(f'{Style.BRIGHT}SJR:{Style.NORMAL} {paper.publication.sjr}')
+        if paper.publication.snip is not None:
+            print(f'{Style.BRIGHT}SNIP:{Style.NORMAL} {paper.publication.snip}')
+        if len(paper.publication.subject_areas) > 0:
+            print(
+                f'{Style.BRIGHT}Subject Areas:{Style.NORMAL} {", ".join(paper.publication.subject_areas)}')
+
+        print('\n')
+
+
+def _get_select_question_input():  # pragma: no cover
+    """
+    Private method that prompts a question about the paper selection
+
+    Returns
+    -------
+    str
+        User provided input
+    """
+    questions = [
+        inquirer.List('select',
+                      message='Do you wanna select this paper?',
+                      choices=[
+                          'Skip', 'No', 'Yes', 'Oh Gosh it never ends! I\'m tired! Save what I\'ve done so far and leave'],
+                      ),
+    ]
+    return inquirer.prompt(questions).get('select')
+
+
+def _get_category_question_input(categories):  # pragma: no cover
+    """
+    Private method that prompts a question about the paper category
+
+    Returns
+    -------
+    str
+        User provided input
+    """
+
+    questions = [
+        inquirer.List('category',
+                      message='Which category does this work belong to?',
+                      choices=categories,
+                      ),
+    ]
+    answers = inquirer.prompt(questions)
+    return answers.get('category')
+
+
 def refine(filepath: str, show_abstract: Optional[bool] = True, categories: Optional[list] = None,
            highlights: Optional[list] = None):
     """
     When you have a search result and wanna refine it, this is the method that you'll need to call.
     This method will iterate through all the papers showing their information, 
     then asking if you wanna select a particular paper or not, and assign a category if a list of categories is provided.
-    This method can also highlights some terms in the paper's abstract by a provided list of terms 
+    This method can also highlights some terms on the paper's abstract by a provided list of terms 
 
     Parameters
     ----------
@@ -159,9 +279,9 @@ def refine(filepath: str, show_abstract: Optional[bool] = True, categories: Opti
     categories : Optional[list], optional
         A list of categories to assign to the papers by the user, by default None
     highlights : Optional[list], optional
-        A list of terms to highlight in the paper's abstract', by default None
+        A list of terms to highlight on the paper's abstract', by default None
     """
-           
+
     if categories is None:
         categories = []
     if highlights is None:
@@ -177,81 +297,24 @@ def refine(filepath: str, show_abstract: Optional[bool] = True, categories: Opti
         else:
             refined_papers.append(paper)
 
-    def _show_paper_details(paper):
-
-        print(f'{Fore.GREEN}{Style.BRIGHT}{paper.title}')
-        print(f'{Fore.GREEN}{" | ".join(paper.authors)}')
-        print(f'{Fore.GREEN}{paper.publication_date.strftime("%Y-%m-%d")}')
-
-        print('\n')
-
-        if show_abstract:
-            abstract = paper.abstract
-            for term in highlights:
-                abstract = re.sub(r'({0}+)'.format(term), Fore.YELLOW + Style.BRIGHT +
-                                  r'\1' + Fore.RESET + Style.NORMAL, abstract, flags=re.IGNORECASE)
-            print(abstract)
-
-            print('\n')
-
-        if len(paper.keywords) > 0:
-            print(f'{Style.BRIGHT}Keywords:{Style.NORMAL} {", ".join(paper.keywords)}')
-        if paper.comments is not None:
-            print(f'{Style.BRIGHT}Comments:{Style.NORMAL} {paper.comments}')
-        if paper.citations is not None:
-            print(f'{Style.BRIGHT}Citations:{Style.NORMAL} {paper.citations}')
-        if paper.comments is not None:
-            print(f'{Style.BRIGHT}Databases:{Style.NORMAL} {", ".join(paper.databases)}')
-
-        print('\n')
-
-        if paper.publication is not None:
-            print(f'{Style.BRIGHT}Publication name:{Style.NORMAL} {paper.publication.title}')
-            print(f'{Style.BRIGHT}Publication category:{Style.NORMAL} {paper.publication.category}')
-
-            if paper.publication.isbn is not None:
-                print(f'{Style.BRIGHT}ISBN:{Style.NORMAL} {paper.publication.isbn}')
-            if paper.publication.issn is not None:
-                print(f'{Style.BRIGHT}ISSN:{Style.NORMAL} {paper.publication.issn}')
-            if paper.publication.publisher is not None:
-                print(f'{Style.BRIGHT}Publisher:{Style.NORMAL} {paper.publication.publisher}')
-            if paper.publication.cite_score is not None:
-                print(f'{Style.BRIGHT}Cite score:{Style.NORMAL} {paper.publication.cite_score}')
-            if paper.publication.sjr is not None:
-                print(f'{Style.BRIGHT}SJR:{Style.NORMAL} {paper.publication.sjr}')
-            if paper.publication.snip is not None:
-                print(f'{Style.BRIGHT}SNIP:{Style.NORMAL} {paper.publication.snip}')
-            if len(paper.publication.subject_areas) > 0:
-                print(
-                    f'{Style.BRIGHT}Subject Areas:{Style.NORMAL} {", ".join(paper.publication.subject_areas)}')
-
-            print('\n')
-
     for paper in papers_to_refine:
 
         util.clear()
 
-        _show_paper_details(paper)
+        _print_paper_details(paper, show_abstract, highlights)
 
         print(
             f'{Fore.CYAN}You\'ve already refined {len(refined_papers)}/{len(search.papers)} papers!\n')
 
         print('\n')
 
-        questions = [
-            inquirer.List('select',
-                          message='Do you wanna select this paper?',
-                          choices=[
-                              'Skip', 'No', 'Yes', 'Oh Gosh it never ends! I\'m tired! Save what I\'ve done so far and leave'],
-                          ),
-        ]
-        answers = inquirer.prompt(questions)
+        answer = _get_select_question_input()
 
-        if answers.get('select') == 'Skip':
+        if answer == 'Skip':
             continue
-        elif answers.get('select') == 'No':
+        elif answer == 'No':
             paper.selected = False
-        elif answers.get('select') == 'Yes':
+        elif answer == 'Yes':
             paper.selected = True
         else:
             break
@@ -259,14 +322,7 @@ def refine(filepath: str, show_abstract: Optional[bool] = True, categories: Opti
         print('\n')
 
         if len(categories) > 0:
-            questions = [
-                inquirer.List('category',
-                              message='Which category does this work belong to?',
-                              choices=categories,
-                              ),
-            ]
-            answers = inquirer.prompt(questions)
-            paper.category = answers['category']
+            paper.category = _get_category_question_input(categories)
 
         refined_papers.append(paper)
 

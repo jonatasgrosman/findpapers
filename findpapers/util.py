@@ -64,7 +64,7 @@ def try_success(function, attempts: Optional[int] = 1, pre_delay: Optional[int] 
         return try_success(function, attempts-1)
 
 
-def clear():
+def clear(): # pragma: no cover
     """
     Clear the console
     """
