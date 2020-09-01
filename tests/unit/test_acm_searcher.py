@@ -1,5 +1,4 @@
 import datetime
-import copy
 import pytest
 from urllib.parse import quote_plus
 import findpapers.searcher.acm_searcher as acm_searcher

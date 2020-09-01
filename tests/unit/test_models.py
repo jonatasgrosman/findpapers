@@ -1,5 +1,6 @@
 import datetime
 import pytest
+import copy
 from findpapers.models.publication import Publication
 from findpapers.models.paper import Paper
 from findpapers.models.search import Search
@@ -53,9 +54,11 @@ def test_paper(paper: Paper):
 
     assert paper.title == 'awesome paper title'
     assert paper.abstract == 'a long abstract'
-    assert paper.authors == {'Dr Paul', 'Dr John', 'Dr George', 'Dr Ringo'}
+    assert paper.authors == ['Dr Paul', 'Dr John', 'Dr George', 'Dr Ringo']
     assert len(paper.urls) == 1
-    assert len(paper.databases) == 0
+    assert len(paper.databases) == 5
+
+    paper.databases = set()
 
     with pytest.raises(ValueError):
         paper.add_database('INVALID DATABASE')
@@ -74,13 +77,10 @@ def test_paper(paper: Paper):
     paper.add_url('another://url')
     assert len(paper.urls) == 2
 
-    paper_citations = 30
     another_paper_citations = 10
     another_doi = 'DOI-X'
     another_keywords = {'key-A', 'key-B', 'key-C'}
     another_comments = 'some comments'
-
-    paper.citations = paper_citations
 
     another_paper = Paper('another awesome title paper', 'a long abstract', paper.authors, paper.publication,
                           paper.publication_date, paper.urls, another_doi, another_paper_citations, another_keywords, another_comments)
@@ -91,6 +91,12 @@ def test_paper(paper: Paper):
     paper.authors = None
     paper.keywords = None
     paper.publication = None
+    paper.doi = None
+    paper.citations = 0
+    paper.comments = None
+    paper.number_of_pages = None
+    paper.pages = None
+
     paper.enrich(another_paper)
     assert paper.publication_date == another_paper.publication_date
     assert paper.abstract == another_paper.abstract
@@ -100,17 +106,17 @@ def test_paper(paper: Paper):
     assert 'arXiv' in paper.databases
     assert len(paper.databases) == 3
     assert paper.doi == another_doi
-    # 'cause another_paper_citations was lower than paper_citations
-    assert paper.citations == paper_citations
+    assert paper.citations == another_paper_citations # 'cause another_paper_citations was higher than paper_citations
     assert paper.keywords == another_keywords
     assert paper.comments == another_comments
 
 
 def test_search(paper: Paper):
+    
+    paper.doi = None
 
     search = Search('this AND that', datetime.date(
         1969, 1, 30), datetime.date(1970, 4, 8), 2)
-    paper.add_database('arXiv')
 
     assert len(search.papers) == 0
 
@@ -126,7 +132,7 @@ def test_search(paper: Paper):
     search.add_paper(another_paper)
     assert len(search.papers) == 2
 
-    assert paper == search.get_paper(paper.title, paper.publication_date)
+    assert paper == search.get_paper(paper.title, paper.publication_date, paper.doi)
     assert paper.publication == search.get_publication(
         paper.publication.title, paper.publication.issn, paper.publication.isbn)
 
@@ -142,9 +148,11 @@ def test_search(paper: Paper):
     search.add_paper(another_paper)
     assert len(search.papers) == 2
 
-    another_paper_2 = Paper('awesome paper title 3', 'a long abstract',
-                            paper.authors, paper.publication,  paper.publication_date, paper.urls)
-    
+    another_paper_2 = copy.deepcopy(paper)
+    another_paper_2.title = 'awesome paper title 3'
+    another_paper_2.abstract = 'a long abstract'
+    another_paper_2.databases = set()
+
     with pytest.raises(ValueError):
         search.add_paper(another_paper_2)
     

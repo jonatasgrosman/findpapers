@@ -10,8 +10,9 @@ import findpapers.searcher.pubmed_searcher as pubmed_searcher
 import findpapers.searcher.arxiv_searcher as arxiv_searcher
 import findpapers.searcher.acm_searcher as acm_searcher
 
+
 logging_level = os.getenv('LOGGING_LEVEL')
-if logging_level is None:
+if logging_level is None:  # pragma: no cover
     logging_level = 'INFO'
 
 logging.basicConfig(level=getattr(logging, logging_level),

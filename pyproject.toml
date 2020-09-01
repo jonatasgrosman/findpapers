@@ -43,7 +43,6 @@ testpaths = [
 [tool.coverage.run]
 source = ['.']
 omit = [
-    "findpapers/__init__.py",
     "findpapers/models/__init__.py",
     "findpapers/searcher/__init__.py"
 ]

@@ -13,12 +13,26 @@ def publication():
 
 @pytest.fixture
 def paper(publication):
-    authors = {'Dr Paul', 'Dr John', 'Dr George', 'Dr Ringo'}
+    title = 'awesome paper title'
+    abstract = 'a long abstract'
+    authors = ['Dr Paul', 'Dr John', 'Dr George', 'Dr Ringo']
     publication_date = datetime.date(1969, 1, 30)
     paper_url = "https://en.wikipedia.org/wiki/The_Beatles'_rooftop_concert"
     urls = {paper_url}
+    doi = 'fake-doi'
+    citations = 25
+    keywords = {'term A', 'term B'}
+    comments = 'some comments'
+    number_of_pages = 4
+    pages = '1-4'
+    databases = {'arXiv', 'ACM', 'IEEE', 'PubMed', 'Scopus'}
+    selected = True
+    category = 'Category A'
 
-    return Paper('awesome paper title', 'a long abstract', authors, publication, publication_date, urls)
+    paper = Paper(title, abstract, authors, publication, publication_date, urls, doi, citations, keywords,
+                  comments, number_of_pages, pages, databases, selected, category)
+
+    return paper
 
 
 @pytest.fixture

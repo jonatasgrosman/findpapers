@@ -65,7 +65,7 @@ class Paper():
         self.pages = pages
         self.databases = databases if databases is not None else set()
         self.selected = selected
-        self.category = selected
+        self.category = category
 
     def add_database(self, database_name: str):
         """
@@ -115,28 +115,28 @@ class Paper():
         if self.publication_date is None:
             self.publication_date = paper.publication_date
 
-        if self.abstract is None or len(self.abstract) < len(paper.abstract):
-            self.abstract = paper.abstract
-
-        if self.authors is None or len(self.authors) < len(paper.authors):
-            self.authors = paper.authors
-
         if self.doi is None:
             self.doi = paper.doi
+        
+        if self.abstract is None or (paper.abstract is not None and len(paper.abstract) > len(self.abstract)):
+            self.abstract = paper.abstract
 
-        if self.citations is None or self.citations <= paper.citations:
+        if self.authors is None or (paper.authors is not None and len(paper.authors) > len(self.authors)):
+            self.authors = paper.authors
+
+        if self.citations is None or (paper.citations is not None and paper.citations > self.citations):
             self.citations = paper.citations
 
-        if self.keywords is None or len(self.keywords) < len(paper.keywords):
+        if self.keywords is None or (paper.keywords is not None and len(paper.keywords) > len(self.keywords)):
             self.keywords = paper.keywords
 
-        if self.comments is None:
+        if self.comments is None or (paper.comments is not None and len(paper.comments) > len(self.comments)):
             self.comments = paper.comments
 
-        if self.number_of_pages is None:
+        if self.number_of_pages is None or (paper.number_of_pages is not None and paper.number_of_pages > self.number_of_pages):
             self.number_of_pages = paper.number_of_pages
 
-        if self.pages is None:
+        if self.pages is None or (paper.pages is not None and len(paper.pages) > len(self.pages)):
             self.pages = paper.pages
 
         for url in paper.urls:
@@ -170,7 +170,8 @@ class Paper():
         title = paper_dict.get('title')
         abstract = paper_dict.get('abstract')
         authors = paper_dict.get('authors')
-        publication = Publication.from_dict(paper_dict.get('publication')) if paper_dict.get('publication') is not None else None
+        publication = Publication.from_dict(paper_dict.get(
+            'publication')) if paper_dict.get('publication') is not None else None
         publication_date = datetime.datetime.strptime(
             paper_dict.get('publication_date'), '%Y-%m-%d').date()
         urls = set(paper_dict.get('urls'))
