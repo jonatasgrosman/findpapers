@@ -3,6 +3,7 @@ import logging
 from findpapers.utils.outputfile_util import save, load
 from findpapers.utils.run_util import run
 from findpapers.utils.refine_util import refine
+from findpapers.utils.download_util import download
 
 
 logging_level = os.getenv('LOGGING_LEVEL')
