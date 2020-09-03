@@ -24,7 +24,7 @@ def test_publication(publication: Publication):
     assert publication.category == 'Conference Proceeding'
 
     publication.category = 'newspaper article'
-    assert publication.category == 'Other'
+    assert publication.category == None
 
     another_publication = Publication('awesome publication title 2')
     another_publication.cite_score = 1.0

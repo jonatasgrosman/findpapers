@@ -281,6 +281,10 @@ def enrich_publication_data(search: Search, api_token: str):
 
             if publication_entry is not None:
 
+                publication_category = publication_entry.get('prism:aggregationType', None)
+                if publication_category is not None and publication.category is None:
+                    publication.category = publication_category
+
                 publication_publisher = publication_entry.get(
                     'dc:publisher', None)
 

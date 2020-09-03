@@ -1,5 +1,6 @@
 from __future__ import annotations
 import datetime
+import re
 from typing import List, Set, Optional
 from findpapers.models.publication import Publication
 
@@ -149,6 +150,30 @@ class Paper():
             self.publication = paper.publication
         elif paper.publication is not None:
             self.publication.enrich(paper.publication)
+
+    def get_citation_key(self) -> str:
+        """
+        Get a citation key folowing the pattern <FIRST_AUTHOR><YEAR><TITLE_FIRST_WORD>
+
+        Returns
+        -------
+        str
+            A citation key folowing the pattern <FIRST_AUTHOR><YEAR><TITLE_FIRST_WORD>
+        """
+        
+        author_key = 'unknown'
+        if len(self.authors) > 0:
+            author_key = self.authors[0].lower().replace(' ', '').replace(',','')
+        
+        year_key = 'XXXX'
+        if self.publication_date is not None:
+            year_key = self.publication_date.year
+        
+        title_key = self.title.split(' ')[0].lower()
+
+        citation_key = re.sub(r'[^\w\d]', '', f'{author_key}{year_key}{title_key}') # keeping only letters, numbers
+
+        return citation_key
 
     @classmethod
     def from_dict(cls, paper_dict: dict) -> Paper:

@@ -42,7 +42,7 @@ class Publication():
         self.isbn = isbn
         self.issn = issn
         self.publisher = publisher
-        self.category = category
+        self.category = category if category is not None else title # trying to figure out what is the category by publication title
         self.cite_score = cite_score
         self.sjr = sjr
         self.snip = snip
@@ -74,7 +74,7 @@ class Publication():
             elif 'book' in value.lower():
                 value = 'Book'
             else:
-                value = 'Other'
+                value = None
 
         self._category = value
 
@@ -101,7 +101,7 @@ class Publication():
         if self.publisher is None:
             self.publisher = publication.publisher
 
-        if self.category is None or (self.category == 'Other' and publication.category is not None):
+        if self.category is None and publication.category is not None:
             self.category = publication.category
 
         if self.cite_score is None:

@@ -2,6 +2,7 @@ import os
 import datetime
 import logging
 import requests
+import copy
 from lxml import html
 from typing import Optional
 from findpapers.models.search import Search
@@ -67,14 +68,17 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
         A API token used to fetch data from Scopus database. If you don't have one go to https://dev.elsevier.com and get it, by default None
     """
 
-    logging.info('Enriching paper data using its DOI...')
+    logging.info('Enriching paper data using its URL...')
 
     for paper in search.papers:
-        if paper.doi is not None:
-            doi_url = f'http://doi.org/{paper.doi}'
-            paper.add_url(doi_url)
 
-            paper_metadata = _get_paper_metadata_by_url(doi_url)
+        urls = copy.copy(paper.urls)
+        if paper.doi is not None:
+            urls.add(f'http://doi.org/{paper.doi}')
+
+        for url in urls:
+
+            paper_metadata = _get_paper_metadata_by_url(url)
 
             if paper_metadata is not None and 'citation_title' in paper_metadata:
 
@@ -96,6 +100,9 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
                 
                 new_publication = Publication(publication_title, publication_isbn, publication_issn, publication_publisher)
                 
+                if publication_title is not None:
+                    new_publication.category = 'Journal'
+
                 new_paper = Paper(paper_title, paper_abstract, paper_authors, new_publication, None, set(), keywords=paper_keywords)
                 paper.enrich(new_paper)
                 

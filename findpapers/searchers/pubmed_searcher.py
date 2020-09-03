@@ -170,11 +170,12 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
             break
 
     paper_abstract = None
-    if isinstance(article.get('Abstract').get('AbstractText'), list):
+    paper_abstract_entry = article.get('Abstract').get('AbstractText')
+    if isinstance(paper_abstract_entry, list):
         paper_abstract = '\n'.join(
-            [x.get('#text') for x in article.get('Abstract').get('AbstractText') if x.get('#text') is not None])
+            [x.get('#text') for x in paper_abstract_entry if x.get('#text') is not None])
     else:
-        paper_abstract = article.get('Abstract').get('AbstractText')
+        paper_abstract = paper_abstract_entry if isinstance(paper_abstract_entry, str) else paper_abstract_entry.get('#text')
 
     try:
         paper_keywords = set([x.get('#text') for x in paper_entry.get('PubmedArticleSet').get(
