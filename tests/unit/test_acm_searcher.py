@@ -10,9 +10,9 @@ def test_get_search_url(search: Search):
 
     url = acm_searcher._get_search_url(search)
 
-    assert quote_plus(f'Title:({search.query})') in url
-    assert quote_plus(f'OR Keyword:({search.query})') in url
-    assert quote_plus(f'OR Abstract:({search.query})') in url
+    query = search.query.replace(' AND NOT ', ' NOT ')
+
+    assert quote_plus(query) in url
     assert url.startswith('https://dl.acm.org/action/doSearch?')
 
 

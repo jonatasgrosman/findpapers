@@ -147,8 +147,7 @@ class Paper():
 
         if self.publication is None:
             self.publication = paper.publication
-
-        if self.publication is not None and paper.publication is not None:
+        elif paper.publication is not None:
             self.publication.enrich(paper.publication)
 
     @classmethod

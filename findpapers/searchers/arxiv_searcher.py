@@ -12,6 +12,7 @@ from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
 
+
 DATABASE_LABEL = 'arXiv'
 BASE_URL = 'http://export.arxiv.org'
 MAX_ENTRIES_PER_PAGE = 200
@@ -172,6 +173,7 @@ SUBJECT_AREA_BY_KEY = {
 }
 
 SESSION = requests.Session()
+FAKE_USER_AGENT = str(UserAgent().chrome)
 
 def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     """
@@ -191,7 +193,7 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
         a URL to be used to retrieve data from arXiv database
     """
 
-    transformed_query = search.query.replace('AND NOT', 'ANDNOT')
+    transformed_query = search.query.replace(' AND NOT ', ' ANDNOT ')
     if transformed_query[0] == '"':
         transformed_query = ' ' + transformed_query
     transformed_query = transformed_query.replace(' "', ' all:"')
@@ -222,7 +224,7 @@ def _get_api_result(search: Search, start_record: Optional[int] = 0) -> dict: # 
     """
 
     url = _get_search_url(search, start_record)
-    headers = {'User-Agent': str(UserAgent().chrome)}
+    headers = {'User-Agent': FAKE_USER_AGENT}
 
     return util.try_success(lambda: xmltodict.parse(SESSION.get(url, headers=headers).content), pre_delay=1)
 

@@ -12,11 +12,13 @@ from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
 
+
 DATABASE_LABEL = 'PubMed'
 BASE_URL = 'https://eutils.ncbi.nlm.nih.gov'
 MAX_ENTRIES_PER_PAGE = 50
 
 SESSION = requests.Session()
+FAKE_USER_AGENT = str(UserAgent().chrome)
 
 
 def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
@@ -36,8 +38,8 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     str
         a URL to be used to retrieve data from PubMed database
     """
-
-    url = f'{BASE_URL}/entrez/eutils/esearch.fcgi?db=pubmed&term={search.query} AND has abstract [FILT] AND "journal article"[Publication Type]'
+    query = search.query.replace(' AND NOT ', ' NOT ')
+    url = f'{BASE_URL}/entrez/eutils/esearch.fcgi?db=pubmed&term={query} AND has abstract [FILT] AND "journal article"[Publication Type]'
 
     if search.since is not None or search.until is not None:
         since = datetime.date(
@@ -73,7 +75,7 @@ def _get_api_result(search: Search, start_record: Optional[int] = 0) -> dict:  #
 
     url = _get_search_url(search, start_record)
 
-    headers = {'User-Agent': str(UserAgent().chrome)}
+    headers = {'User-Agent': FAKE_USER_AGENT}
 
     return util.try_success(lambda: xmltodict.parse(SESSION.get(url, headers=headers).content), pre_delay=1)
 
@@ -94,7 +96,7 @@ def _get_paper_entry(pubmed_id: str) -> dict:  # pragma: no cover
     """
 
     url = f'{BASE_URL}/entrez/eutils/efetch.fcgi?db=pubmed&id={pubmed_id}&rettype=abstract'
-    headers = {'User-Agent': str(UserAgent().chrome)}
+    headers = {'User-Agent': FAKE_USER_AGENT}
 
     return util.try_success(lambda: xmltodict.parse(SESSION.get(url, headers=headers).content), pre_delay=1)
 
@@ -205,7 +207,7 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
         pass
 
     paper = Paper(paper_title, paper_abstract, paper_authors, publication,
-                  paper_publication_date, [], paper_doi, None, paper_keywords, None, 
+                  paper_publication_date, set(), paper_doi, None, paper_keywords, None, 
                   paper_number_of_pages, paper_pages)
 
     return paper

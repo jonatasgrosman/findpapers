@@ -33,7 +33,9 @@ def test_get_search_url(search: Search):
     api_token = 'fake-token'
     start_record = 200
 
-    url = f'http://ieeexploreapi.ieee.org/api/v1/search/articles?querytext={search.query}&format=json&apikey={api_token}&max_records=200'
+    query = search.query.replace(' AND NOT ', ' NOT ')
+
+    url = f'http://ieeexploreapi.ieee.org/api/v1/search/articles?querytext={query}&format=json&apikey={api_token}&max_records=200'
     url += f'&start_year={search.since.year}'
     url += f'&end_year={search.until.year}'
     url += f'&start_record={start_record}'

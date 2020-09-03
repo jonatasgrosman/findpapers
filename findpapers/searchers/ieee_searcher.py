@@ -17,6 +17,7 @@ BASE_URL = 'http://ieeexploreapi.ieee.org'
 MAX_ENTRIES_PER_PAGE = 200
 
 SESSION = requests.Session()
+FAKE_USER_AGENT = str(UserAgent().chrome)
 
 
 def _get_search_url(search: Search, api_token: str, start_record: Optional[int] = 1) -> str:
@@ -39,7 +40,9 @@ def _get_search_url(search: Search, api_token: str, start_record: Optional[int] 
         a URL to be used to retrieve data from IEEE database
     """
 
-    url = f'{BASE_URL}/api/v1/search/articles?querytext={search.query}&format=json&apikey={api_token}&max_records={MAX_ENTRIES_PER_PAGE}'
+    query = search.query.replace(' AND NOT ', ' NOT ')
+
+    url = f'{BASE_URL}/api/v1/search/articles?querytext={query}&format=json&apikey={api_token}&max_records={MAX_ENTRIES_PER_PAGE}'
 
     if search.since is not None:
         url += f'&start_year={search.since.year}'
@@ -73,7 +76,7 @@ def _get_api_result(search: Search, api_token: str, start_record: Optional[int] 
     """
 
     url = _get_search_url(search, api_token, start_record)
-    headers = {'User-Agent': str(UserAgent().chrome)}
+    headers = {'User-Agent': FAKE_USER_AGENT}
 
     return util.try_success(lambda: SESSION.get(url, headers=headers).json())
 

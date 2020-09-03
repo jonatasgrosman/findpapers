@@ -17,6 +17,7 @@ BASE_URL = 'https://dl.acm.org'
 MAX_ENTRIES_PER_PAGE = 100
 
 SESSION = requests.Session()
+FAKE_USER_AGENT = str(UserAgent().chrome)
 
 
 def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
@@ -37,9 +38,7 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
         a URL to be used to retrieve data from ACM database
     """
 
-    query = f'Title:({search.query})'
-    query += f' OR Keyword:({search.query})'
-    query += f' OR Abstract:({search.query})'
+    query = search.query.replace(' AND NOT ', ' NOT ')
 
     url_parameters = {
         'fillQuickSearch': 'false',
@@ -80,7 +79,7 @@ def _get_result(search: Search, start_record: Optional[int] = 0) -> dict:  # pra
     """
 
     url = _get_search_url(search, start_record)
-    headers = {'User-Agent': str(UserAgent().chrome)}
+    headers = {'User-Agent': FAKE_USER_AGENT}
 
     response = util.try_success(lambda: SESSION.get(url, headers=headers), 3)
     return html.fromstring(response.content.decode('UTF-8'))
@@ -102,7 +101,7 @@ def _get_paper_page(url: str) -> html.HtmlElement:  # pragma: no cover
     """
 
     response = util.try_success(lambda: SESSION.get(
-        url, headers={'User-Agent': str(UserAgent().chrome)}))
+        url, headers={'User-Agent': FAKE_USER_AGENT}))
     return html.fromstring(response.content.decode('UTF-8'))
 
 
@@ -127,7 +126,7 @@ def _get_paper_metadata(doi: str) -> dict:  # pragma: no cover
         'format': 'bibTex'
     }
 
-    headers = {'User-Agent': str(UserAgent().chrome)}
+    headers = {'User-Agent': FAKE_USER_AGENT}
     response = util.try_success(lambda: SESSION.post(
         f'{BASE_URL}/action/exportCiteProcCitation', headers=headers, data=form).json())
 
@@ -174,7 +173,6 @@ def _get_paper(paper_page: html.HtmlElement, paper_doi: str, paper_url: str) -> 
                               publication_issn, publication_publisher, publication_category)
 
     paper_title = paper_metadata.get('title')
-    paper_doi = paper_metadata.get('DOI')
     paper_authors = paper_metadata.get('author', [])
     paper_authors = ['{} {}'.format(
         x.get('given'), x.get('family')) for x in paper_authors]
@@ -201,8 +199,15 @@ def _get_paper(paper_page: html.HtmlElement, paper_doi: str, paper_url: str) -> 
     if paper_number_of_pages is not None:
         paper_number_of_pages = int(paper_number_of_pages)
 
+    if paper_doi is None:
+        paper_doi = paper_metadata.get('DOI')
+
+    paper_urls = {paper_url}
+    if paper_doi is not None:
+        paper_urls.add(f'https://dl.acm.org/doi/pdf/{paper_doi}')
+
     paper = Paper(paper_title, paper_abstract, paper_authors, publication,
-                  paper_publication_date, {paper_url}, paper_doi,
+                  paper_publication_date, paper_urls, paper_doi,
                   paper_citations, paper_keywords, None, paper_number_of_pages, paper_pages)
 
     return paper

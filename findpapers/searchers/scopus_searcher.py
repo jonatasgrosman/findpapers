@@ -10,10 +10,12 @@ from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
 
+
 DATABASE_LABEL = 'Scopus'
 BASE_URL = 'https://api.elsevier.com'
 
 SESSION = requests.Session()
+FAKE_USER_AGENT = str(UserAgent().chrome)
 
 
 def _get_query(search: Search) -> str:
@@ -60,7 +62,7 @@ def _get_publication_entry(publication_issn: str, api_token: str) -> dict:  # pr
     """
 
     url = f'{BASE_URL}/content/serial/title/issn/{publication_issn}?apiKey={api_token}'
-    headers = {'User-Agent': str(UserAgent().chrome),
+    headers = {'User-Agent': FAKE_USER_AGENT,
                'Accept': 'application/json'}
     response = util.try_success(lambda: SESSION.get(
         url, headers=headers).json()).get('serial-metadata-response', None)
@@ -121,7 +123,7 @@ def _get_paper_page(url: str) -> object:  # pragma: no cover
     """
 
     response = util.try_success(lambda: SESSION.get(
-        url, headers={'User-Agent': str(UserAgent().chrome)}))
+        url, headers={'User-Agent': FAKE_USER_AGENT}))
     return html.fromstring(response.content.decode('UTF-8'))
 
 
@@ -243,7 +245,7 @@ def _get_search_results(search: Search, api_token: str, url: Optional[str] = Non
         query = _get_query(search)
         url = f'{BASE_URL}/content/search/scopus?&sort=citedby-count,relevancy,pubyear&apiKey={api_token}&query={query}'
 
-    headers = {'User-Agent': str(UserAgent().chrome),
+    headers = {'User-Agent': FAKE_USER_AGENT,
                'Accept': 'application/json'}
 
     return util.try_success(lambda: SESSION.get(

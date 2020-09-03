@@ -66,7 +66,9 @@ def test_get_search_url(search: Search):
 
     start_record = 50
 
-    url = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term={search.query} AND has abstract [FILT] AND "journal article"[Publication Type]'
+    query = search.query.replace(' AND NOT ', ' NOT ')
+
+    url = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term={query} AND has abstract [FILT] AND "journal article"[Publication Type]'
     url += f' AND {search.since.strftime("%Y/%m/%d")}:{search.until.strftime("%Y/%m/%d")}[Date - Publication]'
     url += f'&retstart={start_record}&retmax=50'
 

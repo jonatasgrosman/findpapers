@@ -18,7 +18,7 @@ def _get_temp_search_result_path(search: Search, paper: Paper, force_unrefined=T
 def test_select_skip(monkeypatch, search: Search, paper: Paper):
     with monkeypatch.context() as context:
         context.setattr(
-            findpapers.utils.refine_util, '_get_select_question_input', lambda: 'Skip')
+            findpapers.utils.refinement_util, '_get_select_question_input', lambda: 'Skip')
 
         temp_filepath = _get_temp_search_result_path(search, paper)
         findpapers.refine(temp_filepath)
@@ -30,7 +30,7 @@ def test_select_skip(monkeypatch, search: Search, paper: Paper):
 
 def test_select_no(monkeypatch, search: Search, paper: Paper):
     with monkeypatch.context() as context:
-        context.setattr(findpapers.utils.refine_util, '_get_select_question_input', lambda: 'No')
+        context.setattr(findpapers.utils.refinement_util, '_get_select_question_input', lambda: 'No')
 
         temp_filepath = _get_temp_search_result_path(search, paper)
         findpapers.refine(temp_filepath)
@@ -42,7 +42,7 @@ def test_select_no(monkeypatch, search: Search, paper: Paper):
 
 def test_select_leave(monkeypatch, search: Search, paper: Paper):
     with monkeypatch.context() as context:
-        context.setattr(findpapers.utils.refine_util, '_get_select_question_input',
+        context.setattr(findpapers.utils.refinement_util, '_get_select_question_input',
                         lambda: 'Other string')
 
         temp_filepath = _get_temp_search_result_path(search, paper)
@@ -56,9 +56,9 @@ def test_select_leave(monkeypatch, search: Search, paper: Paper):
 def test_select_yes_and_category(monkeypatch, search: Search, paper: Paper):
     with monkeypatch.context() as context:
         context.setattr(
-            findpapers.utils.refine_util, '_get_select_question_input', lambda: 'Yes')
+            findpapers.utils.refinement_util, '_get_select_question_input', lambda: 'Yes')
         context.setattr(
-            findpapers.utils.refine_util, '_get_category_question_input', lambda x: x[0])
+            findpapers.utils.refinement_util, '_get_category_question_input', lambda x: x[0])
 
         temp_filepath = _get_temp_search_result_path(search, paper)
         categories = ['Category A']
@@ -73,9 +73,9 @@ def test_select_yes_and_category(monkeypatch, search: Search, paper: Paper):
 def test_already_defined_selected(monkeypatch, search: Search, paper: Paper):
     with monkeypatch.context() as context:
         context.setattr(
-            findpapers.utils.refine_util, '_get_select_question_input', lambda: 'Yes')
+            findpapers.utils.refinement_util, '_get_select_question_input', lambda: 'Yes')
         context.setattr(
-            findpapers.utils.refine_util, '_get_category_question_input', lambda x: x[0])
+            findpapers.utils.refinement_util, '_get_category_question_input', lambda x: x[0])
 
         paper.selected = False
         paper.category = 'Other category'

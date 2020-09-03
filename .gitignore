@@ -1,15 +1,15 @@
 # IDE
 .vscode
 
-# ENV
+# Env
 venv
 .env
 
-# BUILD
+# Build
 __pycache__
 *.egg-info/
 
-# TEST
+# Test
 tests.xml
 coverage.xml
 .pytest_cache
@@ -18,5 +18,7 @@ coverage.xml
 # OS
 .DS_Store
 
-# TESTS
-some_search.json
+# Generated files
+samples/*.json
+*.pdf
+*.log
