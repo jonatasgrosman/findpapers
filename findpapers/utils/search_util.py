@@ -32,11 +32,11 @@ def _get_paper_metadata_by_url(url: str):
     """
 
     response = util.try_success(
-        lambda url=url: requests.get(url, allow_redirects=True), 3, 2)
+        lambda url=url: requests.get(url, allow_redirects=True), 2, 2)
 
-    if response is not None:
+    if response is not None and 'text/html' in response.headers.get('content-type').lower():
 
-        page = html.fromstring(response.content.decode('UTF-8'))
+        page = html.fromstring(response.content)
         meta_list = page.xpath('//meta')
 
         paper_metadata = {}
@@ -56,6 +56,28 @@ def _get_paper_metadata_by_url(url: str):
         return paper_metadata
 
 
+def _force_single_metadata_value_by_key(metadata_entry: dict, metadata_key: str):
+    """
+    Sometimes a paper page has some erroneous metadata value duplication, 
+    this private method is used to workaround this problem
+
+    Parameters
+    ----------
+    metadata_entry : dict
+        A metadata entry
+    metadata_key : str
+        A metadata key
+
+    Returns
+    -------
+    object
+        A single value
+    """
+
+    return metadata_entry.get(metadata_key, None) if not isinstance(metadata_entry.get(metadata_key, None), list) else metadata_entry.get(metadata_key)[0]
+
+
+
 def _enrich(search: Search, scopus_api_token: Optional[str] = None):
     """
     Private method that enriches the search results based on paper metadata
@@ -68,55 +90,79 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
         A API token used to fetch data from Scopus database. If you don't have one go to https://dev.elsevier.com and get it, by default None
     """
 
-    logging.info('Enriching paper data using its URL...')
-
     for paper in search.papers:
 
-        urls = copy.copy(paper.urls)
+        urls = set()
         if paper.doi is not None:
             urls.add(f'http://doi.org/{paper.doi}')
+        else:
+            urls = paper.urls
 
         for url in urls:
+
+            if paper.title is not None and paper.abstract is not None and paper.publication is not None \
+                and len(paper.authors) > 0 and len(paper.keywords) > 0 and paper.publication.issn is not None \
+                and paper.publication.category is not None:
+                # skipping enrichment if the main values are already filled
+                break
+
+            if 'pdf' in url: # trying to skip PDF links
+                continue
 
             paper_metadata = _get_paper_metadata_by_url(url)
 
             if paper_metadata is not None and 'citation_title' in paper_metadata:
 
-                paper_title = paper_metadata.get('citation_title')
-                paper_abstract = paper_metadata.get('citation_abstract', None)
+                paper_title = _force_single_metadata_value_by_key(paper_metadata, 'citation_title')
+
+                if paper_title is None or len(paper_title) == 0:
+                    continue
+
+                paper_doi = _force_single_metadata_value_by_key(paper_metadata, 'citation_doi')
+                paper_abstract = _force_single_metadata_value_by_key(paper_metadata, 'citation_abstract')
                 
                 paper_authors = paper_metadata.get('citation_author', None)
                 if paper_authors is not None and not isinstance(paper_authors, list): # there is only one author
                     paper_authors = [paper_authors]
 
-                paper_keywords = paper_metadata.get('keywords', None)
+                paper_keywords = _force_single_metadata_value_by_key(paper_metadata, 'keywords')
                 if paper_keywords is not None:
                     paper_keywords = set(paper_keywords.split(','))
-
-                publication_title = paper_metadata.get('citation_journal_title', None)
-                publication_issn = paper_metadata.get('citation_issn', None)
-                publication_isbn = paper_metadata.get('citation_isbn', None)
-                publication_publisher = paper_metadata.get('citation_publisher', None)
                 
-                new_publication = Publication(publication_title, publication_isbn, publication_issn, publication_publisher)
-                
-                if publication_title is not None:
-                    new_publication.category = 'Journal'
+                publication = None
+                publication_title = None
+                publication_category = None
+                if 'citation_journal_title' in paper_metadata:
+                    publication_title = _force_single_metadata_value_by_key(paper_metadata, 'citation_journal_title')
+                    publication_category = 'Journal'
+                elif 'citation_conference_title' in paper_metadata:
+                    publication_title = _force_single_metadata_value_by_key(paper_metadata, 'citation_conference_title')
+                    publication_category = 'Conference Proceedings'
+                elif 'citation_book_title' in paper_metadata:
+                    publication_title = _force_single_metadata_value_by_key(paper_metadata, 'citation_book_title')
+                    publication_category = 'Book'
 
-                new_paper = Paper(paper_title, paper_abstract, paper_authors, new_publication, None, set(), keywords=paper_keywords)
+                if publication_title is not None and len(publication_title) > 0:
+                
+                    publication_issn = _force_single_metadata_value_by_key(paper_metadata, 'citation_issn')
+                    publication_isbn = _force_single_metadata_value_by_key(paper_metadata, 'citation_isbn')
+                    publication_publisher = _force_single_metadata_value_by_key(paper_metadata, 'citation_publisher')
+
+                    publication = Publication(publication_title, publication_isbn, publication_issn, publication_publisher, publication_category)
+                    
+                new_paper = Paper(paper_title, paper_abstract, paper_authors, publication, None, set(), paper_doi, keywords=paper_keywords)
                 paper.enrich(new_paper)
                 
-                paper_pdf_url = paper_metadata.get('citation_pdf_url', None)
+                paper_pdf_url = _force_single_metadata_value_by_key(paper_metadata, 'citation_pdf_url')
                 if paper_pdf_url is not None: 
                     paper.add_url(paper_pdf_url)
 
     if scopus_api_token is not None:
 
-        logging.info('Enriching publication data using Scopus database...')
         try:
             scopus_searcher.enrich_publication_data(search, scopus_api_token)
         except Exception:  # pragma: no cover
-            logging.error(
+            logging.debug(
                 'Error while fetching data from Scopus database', exc_info=True)
 
 
@@ -188,6 +234,8 @@ def run(query: str, since: Optional[datetime.date] = None, until: Optional[datet
         A Search instance containing the search results
     """
 
+    logging.info('Let\'s find some papers, this process may take a while...')
+
     if ieee_api_token is None:
         ieee_api_token = os.getenv('IEEE_API_TOKEN')
 
@@ -211,6 +259,14 @@ def run(query: str, since: Optional[datetime.date] = None, until: Optional[datet
         _database_safe_run(lambda: scopus_searcher.run(
             search, scopus_api_token), search, scopus_searcher.DATABASE_LABEL)
 
+    logging.info('Enriching data...')
+
     _enrich(search, scopus_api_token)
+
+    logging.info('Finding and merging duplications...')
+
+    search.merge_duplications()
+
+    logging.info(f'It\'s finally over! Good luck with your research :)')
 
     return search

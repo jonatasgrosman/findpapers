@@ -82,7 +82,7 @@ def _get_result(search: Search, start_record: Optional[int] = 0) -> dict:  # pra
     headers = {'User-Agent': FAKE_USER_AGENT}
 
     response = util.try_success(lambda: SESSION.get(url, headers=headers), 3)
-    return html.fromstring(response.content.decode('UTF-8'))
+    return html.fromstring(response.content)
 
 
 def _get_paper_page(url: str) -> html.HtmlElement:  # pragma: no cover
@@ -102,7 +102,7 @@ def _get_paper_page(url: str) -> html.HtmlElement:  # pragma: no cover
 
     response = util.try_success(lambda: SESSION.get(
         url, headers={'User-Agent': FAKE_USER_AGENT}))
-    return html.fromstring(response.content.decode('UTF-8'))
+    return html.fromstring(response.content)
 
 
 def _get_paper_metadata(doi: str) -> dict:  # pragma: no cover
@@ -117,7 +117,7 @@ def _get_paper_metadata(doi: str) -> dict:  # pragma: no cover
     Returns
     -------
     dict
-        The ACM paper metadata
+        The ACM paper metadata, or None if there's no metadata available
     """
 
     form = {
@@ -130,7 +130,8 @@ def _get_paper_metadata(doi: str) -> dict:  # pragma: no cover
     response = util.try_success(lambda: SESSION.post(
         f'{BASE_URL}/action/exportCiteProcCitation', headers=headers, data=form).json())
 
-    return response['items'][0][doi]
+    if response is not None and response.get('items', None) is not None and len(response.get('items')) > 0:
+        return response['items'][0][doi]
 
 
 def _get_paper(paper_page: html.HtmlElement, paper_doi: str, paper_url: str) -> Paper:
@@ -163,16 +164,27 @@ def _get_paper(paper_page: html.HtmlElement, paper_doi: str, paper_url: str) -> 
 
     paper_metadata = _get_paper_metadata(paper_doi)
 
+    if paper_metadata is None:
+        return None
+
+    publication = None
     publication_title = paper_metadata.get('container-title', None)
-    publication_isbn = paper_metadata.get('ISBN', None)
-    publication_issn = paper_metadata.get('ISSN', None)
-    publication_publisher = paper_metadata.get('publisher', None)
-    publication_category = paper_metadata.get('type', None)
 
-    publication = Publication(publication_title, publication_isbn,
-                              publication_issn, publication_publisher, publication_category)
+    if publication_title is not None and len(publication_title) > 0:
 
-    paper_title = paper_metadata.get('title')
+        publication_isbn = paper_metadata.get('ISBN', None)
+        publication_issn = paper_metadata.get('ISSN', None)
+        publication_publisher = paper_metadata.get('publisher', None)
+        publication_category = paper_metadata.get('type', None)
+
+        publication = Publication(publication_title, publication_isbn,
+                                publication_issn, publication_publisher, publication_category)
+
+    paper_title = paper_metadata.get('title', None)
+
+    if paper_title is None or len(paper_title) == 0:
+        return None
+
     paper_authors = paper_metadata.get('author', [])
     paper_authors = ['{} {}'.format(
         x.get('given'), x.get('family')) for x in paper_authors]
@@ -202,12 +214,8 @@ def _get_paper(paper_page: html.HtmlElement, paper_doi: str, paper_url: str) -> 
     if paper_doi is None:
         paper_doi = paper_metadata.get('DOI')
 
-    paper_urls = {paper_url}
-    if paper_doi is not None:
-        paper_urls.add(f'https://dl.acm.org/doi/pdf/{paper_doi}')
-
     paper = Paper(paper_title, paper_abstract, paper_authors, publication,
-                  paper_publication_date, paper_urls, paper_doi,
+                  paper_publication_date, {paper_url}, paper_doi,
                   paper_citations, paper_keywords, None, paper_number_of_pages, paper_pages)
 
     return paper
@@ -250,6 +258,7 @@ def run(search: Search):
                 papers_count += 1
 
                 paper_page = _get_paper_page(paper_url)
+                
                 logging.info(paper_page.xpath(
                     '//*[@class="citation__title"]')[0].text)
 
@@ -262,6 +271,10 @@ def run(search: Search):
                     paper_doi = paper_url.split('/doi/')[1]
 
                 paper = _get_paper(paper_page, paper_doi, paper_url)
+
+                if paper is None:
+                    continue
+                
                 paper.add_database(DATABASE_LABEL)
 
                 search.add_paper(paper)

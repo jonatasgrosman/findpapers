@@ -85,12 +85,16 @@ def _get_publication(paper_entry: dict, api_token: str) -> Publication:
     Returns
     -------
     Publication
-        A publication instance
+        A publication instance or None
     """
 
     # getting data
 
     publication_title = paper_entry.get('prism:publicationName', None)
+
+    if publication_title is None or len(publication_title) == 0:
+        return None
+
     publication_isbn = paper_entry.get('prism:isbn', None)
     publication_issn = paper_entry.get('prism:issn', None)
     publication_category = paper_entry.get('prism:aggregationType', None)
@@ -124,7 +128,7 @@ def _get_paper_page(url: str) -> object:  # pragma: no cover
 
     response = util.try_success(lambda: SESSION.get(
         url, headers={'User-Agent': FAKE_USER_AGENT}))
-    return html.fromstring(response.content.decode('UTF-8'))
+    return html.fromstring(response.content)
 
 
 def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
@@ -141,12 +145,16 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
     Returns
     -------
     Paper
-        A paper instance
+        A paper instance or None
     """
 
     # getting data
 
     paper_title = paper_entry.get('dc:title', None)
+
+    if paper_title is None or len(paper_title) == 0:
+        return None
+
     paper_publication_date = paper_entry.get('prism:coverDate', None)
     paper_doi = paper_entry.get('prism:doi', None)
     paper_citations = paper_entry.get('citedby-count', None)
@@ -357,9 +365,10 @@ def run(search: Search, api_token: str, url: Optional[str] = None, papers_count:
 
             publication = _get_publication(paper_entry, api_token)
             paper = _get_paper(paper_entry, publication)
-            paper.add_database(DATABASE_LABEL)
 
-            search.add_paper(paper)
+            if paper is not None:
+                paper.add_database(DATABASE_LABEL)
+                search.add_paper(paper)
 
         except Exception as e:  # pragma: no cover
             logging.error(e, exc_info=True)

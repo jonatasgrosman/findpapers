@@ -165,6 +165,7 @@ class Search():
                     self.papers_by_database[database].add(paper)
 
             else:
+                self.papers_by_database[database].add(already_collected_paper)
                 already_collected_paper.enrich(paper)
 
     def get_paper(self, paper_title: str, publication_date: str, paper_doi: Optional[str] = None) -> Paper:
@@ -235,17 +236,18 @@ class Search():
 
         self.papers.remove(paper)
 
-    def merge_duplications(self, similarity_threshold: float = 0.9):
+    def merge_duplications(self, similarity_threshold: float = 0.95):
         """
         In some cases, a same paper is represented with tiny differences between some databases, 
         this method try to deal with this situation merging those instances of the paper,
-        using a similarity threshold, by default 0.9 (90%), i.e., if two papers keys (see: Search.get_paper_key) 
-        are similar by 90% or more this papers are considered duplications of a same paper.
+        using a similarity threshold, by default 0.95 (95%), i.e., if two papers titles
+        are similar by 95% or more, and if the papers have the same year of publication
+        this papers are considered duplications of a same paper.
 
         Parameters
         ----------
         max_similarity_threshold : float, optional
-            A value between 0 and 1 that represents a threshold that says if a pair of papers is a duplication or not, by default 0.9 (90%)
+            A value between 0 and 1 that represents a threshold that says if a pair of papers is a duplication or not, by default 0.95 (95%)
         """
 
         paper_key_pairs = list(
@@ -258,15 +260,20 @@ class Search():
             paper_1 = self.paper_by_key.get(paper_1_key)
             paper_2 = self.paper_by_key.get(paper_2_key)
 
-            max_key_length = max(len(paper_1_key), len(paper_2_key))
+            if (paper_1.publication_date is None or paper_2.publication_date is None) or \
+                (paper_1.publication_date.year != paper_2.publication_date.year): 
+                # We cannot merge paper from different years or without a year defined
+                break
 
-            # creating the max valid edit distance using the max key length between the two papers and the provided similarity threshold
+            max_title_length = max(len(paper_1.title), len(paper_2.title))
+
+            # creating the max valid edit distance using the max title length between the two papers and the provided similarity threshold
             max_edit_distance = int(
-                max_key_length * (1 - similarity_threshold))
+                max_title_length * (1 - similarity_threshold))
 
-            # calculating the edit distance between the keys
+            # calculating the edit distance between the titles
             titles_edit_distance = edlib.align(
-                paper_1_key, paper_2_key)['editDistance']
+                paper_1.title, paper_2.title)['editDistance']
 
             if (paper_1.doi is not None and paper_1.doi == paper_2.doi) or (titles_edit_distance <= max_edit_distance):
 

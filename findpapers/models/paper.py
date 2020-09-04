@@ -50,7 +50,14 @@ class Paper():
             If a paper was selected by the user, by default None
         category : srt, optional
             The paper category provided by the user, by default None
+        Raises
+        ------
+        ValueError
+            - Paper's title cannot be null
         """
+
+        if title is None or len(title) == 0:
+            raise(ValueError('Paper\'s title cannot be null'))
 
         self.title = title
         self.abstract = abstract

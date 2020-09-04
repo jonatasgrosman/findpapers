@@ -62,7 +62,7 @@ def build_bibtex(search_path: str, outputpath: str, only_selected_papers: Option
         if paper.publication is not None:
             if paper.publication.category == 'Journal':
                 citation_type = '@article'
-            elif paper.publication.category == 'Conference Proceeding':
+            elif paper.publication.category == 'Conference Proceedings':
                 citation_type = '@inproceedings'
             elif paper.publication.category == 'Book':
                 citation_type = '@book'

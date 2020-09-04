@@ -120,6 +120,10 @@ def _get_publication(paper_entry: dict) -> Publication:
         'PubmedArticle').get('MedlineCitation').get('Article')
 
     publication_title = article.get('Journal').get('Title')
+
+    if publication_title is None or len(publication_title) == 0:
+        return None
+
     publication_issn = article.get('Journal').get('ISSN').get('#text')
 
     publication = Publication(publication_title, None,
@@ -142,13 +146,16 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
     Returns
     -------
     Paper
-        A paper instance
+        A paper instance or None
     """
 
     article = paper_entry.get('PubmedArticleSet').get(
         'PubmedArticle').get('MedlineCitation').get('Article')
 
-    paper_title = article.get('ArticleTitle')
+    paper_title = article.get('ArticleTitle', None)
+
+    if paper_title is None or len(paper_title) == 0:
+        return None
 
     if 'ArticleDate' in article:
         paper_publication_date_day = article.get('ArticleDate').get('Day')
@@ -192,8 +199,10 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
 
     paper_authors = []
     for author in article.get('AuthorList').get('Author'):
-        paper_authors.append(
-            f"{author.get('ForeName')} {author.get('LastName')}")
+        if isinstance(author, str):
+            paper_authors.append(author)
+        elif isinstance(author, dict):
+            paper_authors.append(f"{author.get('ForeName')} {author.get('LastName')}")
 
     paper_pages = None
     paper_number_of_pages = None
@@ -259,9 +268,9 @@ def run(search: Search):
                     publication = _get_publication(paper_entry)
                     paper = _get_paper(paper_entry, publication)
 
-                    paper.add_database(DATABASE_LABEL)
-
-                    search.add_paper(paper)
+                    if paper is not None:
+                        paper.add_database(DATABASE_LABEL)
+                        search.add_paper(paper)
 
             except Exception as e:  # pragma: no cover
                 logging.error(e, exc_info=True)

@@ -5,7 +5,7 @@ import json
 
 class Publication():
     """
-    Class that represents a publication (journal, conference proceeding, book) instance
+    Class that represents a publication (journal, conference proceedings, book) instance
     """
 
     def __init__(self, title: str, isbn: Optional[str] = None, issn: Optional[str] = None, publisher: Optional[str] = None,
@@ -25,7 +25,7 @@ class Publication():
         publisher : str, optional
             publication publisher, by default None
         category : str, optional
-            publication category (Journal, Conference Proceeding, Book, Other), by default None
+            publication category (Journal, Conference Proceedings, Book), by default None
         cite_score : float, optional
             CiteScore measures average citations received per document published in the serial, by default None
         sjr : float, optional
@@ -36,7 +36,14 @@ class Publication():
             expected for the serial’s subject field, by default None
         subject_areas : float, optional
             Publication subjects areas, by default None
+        Raises
+        ------
+        ValueError
+            - Publication's title cannot be null
         """
+
+        if title is None or len(title) == 0:
+            raise(ValueError('Publication\'s title cannot be null'))
 
         self.title = title
         self.isbn = isbn
@@ -56,7 +63,7 @@ class Publication():
     def category(self, value: str):
         """
         Category value setter, this method also try to convert a provided invalid category 
-        to a valid one [Journal, Conference Proceeding, Book, Other]
+        to a valid one [Journal, Conference Proceedings, Book]
 
         Parameters
         ----------
@@ -66,11 +73,11 @@ class Publication():
 
         if value is not None:
 
-            # trying to convert a provided invalid category to a valid one [Journal, Conference Proceeding, Book, Other]
+            # trying to convert a provided invalid category to a valid one [Journal, Conference Proceedings, Book]
             if 'journal' in value.lower():
                 value = 'Journal'
             elif 'conference' in value.lower() or 'proceeding' in value.lower():
-                value = 'Conference Proceeding'
+                value = 'Conference Proceedings'
             elif 'book' in value.lower():
                 value = 'Book'
             else:

@@ -21,7 +21,7 @@ def test_publication(publication: Publication):
     assert publication.category == 'Journal'
 
     publication.category = 'Conference'
-    assert publication.category == 'Conference Proceeding'
+    assert publication.category == 'Conference Proceedings'
 
     publication.category = 'newspaper article'
     assert publication.category == None

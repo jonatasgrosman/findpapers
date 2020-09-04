@@ -248,6 +248,9 @@ def _get_publication(paper_entry: dict) -> Publication:
 
         publication_title = paper_entry.get('arxiv:journal_ref').get('#text')
 
+        if publication_title is None or len(publication_title) == 0:
+            return None
+
         subject_areas = set()
 
         if 'category' in paper_entry:
@@ -284,7 +287,11 @@ def _get_paper(paper_entry: dict, paper_publication_date: datetime.date, publica
         A paper instance
     """
 
-    paper_title = paper_entry.get('title')
+    paper_title = paper_entry.get('title', None)
+
+    if paper_title is None or len(paper_title) == 0:
+        return None
+
     paper_title = paper_title.replace('\n','') 
     paper_title = re.sub(' +', ' ', paper_title)
 
@@ -346,7 +353,6 @@ def run(search: Search):
             try:
 
                 logging.info(paper_entry.get('title'))
-                papers_count += 1
 
                 published_date = datetime.datetime.strptime(
                     paper_entry.get('published')[:10], '%Y-%m-%d').date()
@@ -363,10 +369,12 @@ def run(search: Search):
 
                 publication = _get_publication(paper_entry)
                 paper = _get_paper(paper_entry, published_date, publication)
-                paper.add_database(DATABASE_LABEL)
 
-                search.add_paper(paper)
+                if paper is not None:
+                    paper.add_database(DATABASE_LABEL)
+                    search.add_paper(paper)
 
+                papers_count += 1
                 logging.info(f'{papers_count}/{total_papers} arXiv papers fetched')
 
             except Exception as e:  # pragma: no cover

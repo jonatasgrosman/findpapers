@@ -59,7 +59,7 @@ def try_success(function, attempts: Optional[int] = 1, pre_delay: Optional[int] 
             return function()
         return None
     except Exception as e:
-        logging.error(e, exc_info=True)
+        logging.debug(e, exc_info=True)
         time.sleep(next_try_delay)
         return try_success(function, attempts-1)
 

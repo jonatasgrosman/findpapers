@@ -93,10 +93,14 @@ def _get_publication(paper_entry: dict) -> Publication:
     Returns
     -------
     Publication
-        A publication instance
+        A publication instance or None
     """
 
     publication_title = paper_entry.get('publication_title', None)
+
+    if publication_title is None or len(publication_title) == 0:
+        return None
+
     publication_isbn = paper_entry.get('isbn', None)
     publication_issn = paper_entry.get('issn', None)
     publication_publisher = paper_entry.get('publisher', None)
@@ -122,10 +126,14 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
     Returns
     -------
     Paper
-        A paper instance
+        A paper instance or None
     """
 
     paper_title = paper_entry.get('title', None)
+
+    if paper_title is None or len(paper_title) == 0:
+        return None
+
     paper_publication_date = paper_entry.get('publication_date', None)
     paper_doi = paper_entry.get('doi', None)
     paper_citations = paper_entry.get('citing_paper_count', None)
@@ -219,9 +227,10 @@ def run(search: Search, api_token: str):
 
                 publication = _get_publication(paper_entry)
                 paper = _get_paper(paper_entry, publication)
-                paper.add_database(DATABASE_LABEL)
 
-                search.add_paper(paper)
+                if paper is not None:
+                    paper.add_database(DATABASE_LABEL)
+                    search.add_paper(paper)
 
             except Exception as e:  # pragma: no cover
                 logging.error(e, exc_info=True)
