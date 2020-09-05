@@ -184,7 +184,7 @@ def _database_safe_run(function: callable, search: Search, database_label: str):
         try:
             function()
         except Exception:  # pragma: no cover
-            logging.error(
+            logging.debug(
                 f'Error while fetching papers from {database_label} database', exc_info=True)
 
 
@@ -237,10 +237,10 @@ def run(query: str, since: Optional[datetime.date] = None, until: Optional[datet
     logging.info('Let\'s find some papers, this process may take a while...')
 
     if ieee_api_token is None:
-        ieee_api_token = os.getenv('IEEE_API_TOKEN')
+        ieee_api_token = os.getenv('FINDPAPERS_IEEE_API_TOKEN')
 
     if scopus_api_token is None:
-        scopus_api_token = os.getenv('SCOPUS_API_TOKEN')
+        scopus_api_token = os.getenv('FINDPAPERS_SCOPUS_API_TOKEN')
 
     search = Search(query, since, until, limit, limit_per_database)
 

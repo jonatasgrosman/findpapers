@@ -8,29 +8,15 @@ import urllib.parse
 from lxml import html
 from fake_useragent import UserAgent
 from typing import Optional
-import findpapers.utils.common_util as util
+import findpapers.utils.common_util as common_util
 from findpapers.models.search import Search
+from findpapers.utils.requests_util import DefaultSession
 
 
-DEFAULT_SESSION = requests.Session()
-DEFAULT_HEADERS = {'User-Agent': str(UserAgent().chrome)}
+DEFAULT_SESSION = DefaultSession()
 
 
-def _get_response(url, requests_session: requests.Session):
-
-    response = util.try_success(
-        lambda url=url: requests_session.get(url, allow_redirects=True, headers=DEFAULT_HEADERS), 2, 2)
-
-    if (response is None or not response.ok) and requests_session != DEFAULT_SESSION: 
-        # maybe the user provided session isn't working properly, so we'll try one more time with our default session
-        response = util.try_success(
-            lambda url=url: DEFAULT_SESSION.get(url, allow_redirects=True, headers=DEFAULT_HEADERS), 2, 2)
-    
-    return response
-
-
-def download(search: Search, output_directory: str, only_selected_papers: Optional[bool] = True,
-             requests_session: Optional[requests.Session] = None):
+def download(search: Search, output_directory: str, only_selected_papers: Optional[bool] = True):
     """
     Method used to save a search result in a JSON representation
 
@@ -41,9 +27,6 @@ def download(search: Search, output_directory: str, only_selected_papers: Option
     filepath : str
         A valid file path used to save the search results
     """
-
-    if requests_session is None:
-        requests_session = DEFAULT_SESSION
 
     if not os.path.exists(output_directory):
         os.makedirs(output_directory)
@@ -77,7 +60,7 @@ def download(search: Search, output_directory: str, only_selected_papers: Option
                 try:
                     logging.info(f'Fetching data from: {url}')
 
-                    response = _get_response(url, requests_session)
+                    response = common_util.try_success(lambda url=url: DEFAULT_SESSION.get(url), 2)
 
                     if response is None:
                         continue
@@ -168,7 +151,7 @@ def download(search: Search, output_directory: str, only_selected_papers: Option
 
                         if pdf_url is not None:
 
-                            response = _get_response(pdf_url, requests_session)
+                            response = common_util.try_success(lambda url=pdf_url: DEFAULT_SESSION.get(url), 2)
 
                     if 'application/pdf' in response.headers.get('content-type').lower():
                         with open(output_filepath, 'wb') as fp:

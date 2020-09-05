@@ -4,20 +4,18 @@ import requests
 import datetime
 from urllib.parse import urlencode
 from typing import Optional
-from fake_useragent import UserAgent
 from lxml import html
 import findpapers.utils.common_util as util
 from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
+from findpapers.utils.requests_util import DefaultSession
 
 
+DEFAULT_SESSION = DefaultSession()
 DATABASE_LABEL = 'ACM'
 BASE_URL = 'https://dl.acm.org'
 MAX_ENTRIES_PER_PAGE = 100
-
-SESSION = requests.Session()
-FAKE_USER_AGENT = str(UserAgent().chrome)
 
 
 def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
@@ -79,9 +77,8 @@ def _get_result(search: Search, start_record: Optional[int] = 0) -> dict:  # pra
     """
 
     url = _get_search_url(search, start_record)
-    headers = {'User-Agent': FAKE_USER_AGENT}
 
-    response = util.try_success(lambda: SESSION.get(url, headers=headers), 3)
+    response = util.try_success(lambda: DEFAULT_SESSION.get(url), 2)
     return html.fromstring(response.content)
 
 
@@ -100,8 +97,7 @@ def _get_paper_page(url: str) -> html.HtmlElement:  # pragma: no cover
         A HTML element representing the paper given by the provided URL
     """
 
-    response = util.try_success(lambda: SESSION.get(
-        url, headers={'User-Agent': FAKE_USER_AGENT}))
+    response = util.try_success(lambda: DEFAULT_SESSION.get(url), 2)
     return html.fromstring(response.content)
 
 
@@ -126,9 +122,8 @@ def _get_paper_metadata(doi: str) -> dict:  # pragma: no cover
         'format': 'bibTex'
     }
 
-    headers = {'User-Agent': FAKE_USER_AGENT}
-    response = util.try_success(lambda: SESSION.post(
-        f'{BASE_URL}/action/exportCiteProcCitation', headers=headers, data=form).json())
+    response = util.try_success(lambda: DEFAULT_SESSION.post(
+        f'{BASE_URL}/action/exportCiteProcCitation', data=form).json(), 2)
 
     if response is not None and response.get('items', None) is not None and len(response.get('items')) > 0:
         return response['items'][0][doi]
@@ -282,7 +277,7 @@ def run(search: Search):
                 logging.info(f'{papers_count}/{total_papers} ACM papers fetched')
 
             except Exception as e:  # pragma: no cover
-                logging.error(e, exc_info=True)
+                logging.debug(e, exc_info=True)
 
         if papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL):
             page_index += 1

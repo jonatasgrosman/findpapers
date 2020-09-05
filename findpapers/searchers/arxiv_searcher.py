@@ -6,13 +6,14 @@ import math
 import xmltodict
 from lxml import html
 from typing import Optional
-from fake_useragent import UserAgent
 import findpapers.utils.common_util as util
 from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
+from findpapers.utils.requests_util import DefaultSession
 
 
+DEFAULT_SESSION = DefaultSession()
 DATABASE_LABEL = 'arXiv'
 BASE_URL = 'http://export.arxiv.org'
 MAX_ENTRIES_PER_PAGE = 200
@@ -172,8 +173,6 @@ SUBJECT_AREA_BY_KEY = {
     'stat.TH': 'Statistics Theory'
 }
 
-SESSION = requests.Session()
-FAKE_USER_AGENT = str(UserAgent().chrome)
 
 def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     """
@@ -224,9 +223,8 @@ def _get_api_result(search: Search, start_record: Optional[int] = 0) -> dict: # 
     """
 
     url = _get_search_url(search, start_record)
-    headers = {'User-Agent': FAKE_USER_AGENT}
 
-    return util.try_success(lambda: xmltodict.parse(SESSION.get(url, headers=headers).content), pre_delay=1)
+    return util.try_success(lambda: xmltodict.parse(DEFAULT_SESSION.get(url).content), 2, pre_delay=1)
 
 
 def _get_publication(paper_entry: dict) -> Publication:
@@ -378,7 +376,7 @@ def run(search: Search):
                 logging.info(f'{papers_count}/{total_papers} arXiv papers fetched')
 
             except Exception as e:  # pragma: no cover
-                logging.error(e, exc_info=True)
+                logging.debug(e, exc_info=True)
 
         if papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL):
             result=_get_api_result(search, papers_count)

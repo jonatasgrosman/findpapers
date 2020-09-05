@@ -4,18 +4,16 @@ import logging
 import re
 from lxml import html
 from typing import Optional
-from fake_useragent import UserAgent
 import findpapers.utils.common_util as util
 from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
+from findpapers.utils.requests_util import DefaultSession
 
 
+DEFAULT_SESSION = DefaultSession()
 DATABASE_LABEL = 'Scopus'
 BASE_URL = 'https://api.elsevier.com'
-
-SESSION = requests.Session()
-FAKE_USER_AGENT = str(UserAgent().chrome)
 
 
 def _get_query(search: Search) -> str:
@@ -62,10 +60,9 @@ def _get_publication_entry(publication_issn: str, api_token: str) -> dict:  # pr
     """
 
     url = f'{BASE_URL}/content/serial/title/issn/{publication_issn}?apiKey={api_token}'
-    headers = {'User-Agent': FAKE_USER_AGENT,
-               'Accept': 'application/json'}
-    response = util.try_success(lambda: SESSION.get(
-        url, headers=headers).json()).get('serial-metadata-response', None)
+    headers = {'Accept': 'application/json'}
+    response = util.try_success(lambda: DEFAULT_SESSION.get(
+        url, headers=headers).json().get('serial-metadata-response', None), 2)
 
     if response is not None and 'entry' in response and len(response.get('entry')) > 0:
         return response.get('entry')[0]
@@ -126,8 +123,7 @@ def _get_paper_page(url: str) -> object:  # pragma: no cover
         A HTML element representing the paper given by the provided URL
     """
 
-    response = util.try_success(lambda: SESSION.get(
-        url, headers={'User-Agent': FAKE_USER_AGENT}))
+    response = util.try_success(lambda: SESSION.get(url), 2)
     return html.fromstring(response.content)
 
 
@@ -224,7 +220,7 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
                 pass
 
         except Exception as e:
-            logging.error(e, exc_info=True)
+            logging.debug(e, exc_info=True)
 
     paper = Paper(paper_title, paper_abstract, paper_authors, publication,
                   paper_publication_date, paper_urls, paper_doi, paper_citations, paper_keywords,
@@ -253,11 +249,9 @@ def _get_search_results(search: Search, api_token: str, url: Optional[str] = Non
         query = _get_query(search)
         url = f'{BASE_URL}/content/search/scopus?&sort=citedby-count,relevancy,pubyear&apiKey={api_token}&query={query}'
 
-    headers = {'User-Agent': FAKE_USER_AGENT,
-               'Accept': 'application/json'}
+    headers = {'Accept': 'application/json'}
 
-    return util.try_success(lambda: SESSION.get(
-        url, headers=headers).json()['search-results'])
+    return util.try_success(lambda: DEFAULT_SESSION.get(url, headers=headers).json()['search-results'], 2)
 
 
 def enrich_publication_data(search: Search, api_token: str):
@@ -289,7 +283,8 @@ def enrich_publication_data(search: Search, api_token: str):
 
             if publication_entry is not None:
 
-                publication_category = publication_entry.get('prism:aggregationType', None)
+                publication_category = publication_entry.get(
+                    'prism:aggregationType', None)
                 if publication_category is not None and publication.category is None:
                     publication.category = publication_category
 
@@ -371,7 +366,7 @@ def run(search: Search, api_token: str, url: Optional[str] = None, papers_count:
                 search.add_paper(paper)
 
         except Exception as e:  # pragma: no cover
-            logging.error(e, exc_info=True)
+            logging.debug(e, exc_info=True)
 
         papers_count += 1
         logging.info(f'{papers_count}/{total_papers} Scopus papers fetched')

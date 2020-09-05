@@ -6,19 +6,17 @@ import math
 import xmltodict
 from lxml import html
 from typing import Optional
-from fake_useragent import UserAgent
 import findpapers.utils.common_util as util
 from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
+from findpapers.utils.requests_util import DefaultSession
 
 
+DEFAULT_SESSION = DefaultSession()
 DATABASE_LABEL = 'PubMed'
 BASE_URL = 'https://eutils.ncbi.nlm.nih.gov'
 MAX_ENTRIES_PER_PAGE = 50
-
-SESSION = requests.Session()
-FAKE_USER_AGENT = str(UserAgent().chrome)
 
 
 def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
@@ -75,9 +73,7 @@ def _get_api_result(search: Search, start_record: Optional[int] = 0) -> dict:  #
 
     url = _get_search_url(search, start_record)
 
-    headers = {'User-Agent': FAKE_USER_AGENT}
-
-    return util.try_success(lambda: xmltodict.parse(SESSION.get(url, headers=headers).content), pre_delay=1)
+    return util.try_success(lambda: xmltodict.parse(DEFAULT_SESSION.get(url).content), 2, pre_delay=1)
 
 
 def _get_paper_entry(pubmed_id: str) -> dict:  # pragma: no cover
@@ -96,9 +92,8 @@ def _get_paper_entry(pubmed_id: str) -> dict:  # pragma: no cover
     """
 
     url = f'{BASE_URL}/entrez/eutils/efetch.fcgi?db=pubmed&id={pubmed_id}&rettype=abstract'
-    headers = {'User-Agent': FAKE_USER_AGENT}
 
-    return util.try_success(lambda: xmltodict.parse(SESSION.get(url, headers=headers).content), pre_delay=1)
+    return util.try_success(lambda: xmltodict.parse(DEFAULT_SESSION.get(url).content), 2, pre_delay=1)
 
 
 def _get_publication(paper_entry: dict) -> Publication:
@@ -273,7 +268,7 @@ def run(search: Search):
                         search.add_paper(paper)
 
             except Exception as e:  # pragma: no cover
-                logging.error(e, exc_info=True)
+                logging.debug(e, exc_info=True)
 
             papers_count += 1
             logging.info(f'{papers_count}/{total_papers} PubMed papers fetched')

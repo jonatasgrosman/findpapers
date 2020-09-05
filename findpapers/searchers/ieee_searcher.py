@@ -5,19 +5,17 @@ import re
 import math
 from lxml import html
 from typing import Optional
-from fake_useragent import UserAgent
 import findpapers.utils.common_util as util
 from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
+from findpapers.utils.requests_util import DefaultSession
 
 
+DEFAULT_SESSION = DefaultSession()
 DATABASE_LABEL = 'IEEE'
 BASE_URL = 'http://ieeexploreapi.ieee.org'
 MAX_ENTRIES_PER_PAGE = 200
-
-SESSION = requests.Session()
-FAKE_USER_AGENT = str(UserAgent().chrome)
 
 
 def _get_search_url(search: Search, api_token: str, start_record: Optional[int] = 1) -> str:
@@ -76,9 +74,8 @@ def _get_api_result(search: Search, api_token: str, start_record: Optional[int] 
     """
 
     url = _get_search_url(search, api_token, start_record)
-    headers = {'User-Agent': FAKE_USER_AGENT}
 
-    return util.try_success(lambda: SESSION.get(url, headers=headers).json())
+    return util.try_success(lambda: DEFAULT_SESSION.get(url).json(), 2)
 
 
 def _get_publication(paper_entry: dict) -> Publication:
@@ -233,7 +230,7 @@ def run(search: Search, api_token: str):
                     search.add_paper(paper)
 
             except Exception as e:  # pragma: no cover
-                logging.error(e, exc_info=True)
+                logging.debug(e, exc_info=True)
 
             papers_count += 1
             logging.info(f'{papers_count}/{total_papers} IEEE papers fetched')
