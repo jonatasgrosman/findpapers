@@ -13,7 +13,8 @@ import findpapers.searchers.ieee_searcher as ieee_searcher
 import findpapers.searchers.pubmed_searcher as pubmed_searcher
 import findpapers.searchers.arxiv_searcher as arxiv_searcher
 import findpapers.searchers.acm_searcher as acm_searcher
-import findpapers.utils.common_util as util
+import findpapers.utils.common_util as common_util
+import findpapers.utils.persistence_util as persistence_util
 
 
 def _get_paper_metadata_by_url(url: str):
@@ -31,7 +32,7 @@ def _get_paper_metadata_by_url(url: str):
         A paper metadata dict (or None if the paper metadata cannot be found)
     """
 
-    response = util.try_success(
+    response = common_util.try_success(
         lambda url=url: requests.get(url, allow_redirects=True), 2, 2)
 
     if response is not None and 'text/html' in response.headers.get('content-type').lower():
@@ -90,13 +91,13 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
         A API token used to fetch data from Scopus database. If you don't have one go to https://dev.elsevier.com and get it, by default None
     """
 
-    for paper in search.papers:
+    for paper in copy(search.papers):
 
         urls = set()
         if paper.doi is not None:
             urls.add(f'http://doi.org/{paper.doi}')
         else:
-            urls = paper.urls
+            urls = copy(paper.urls)
 
         for url in urls:
 
@@ -188,15 +189,18 @@ def _database_safe_run(function: callable, search: Search, database_label: str):
                 f'Error while fetching papers from {database_label} database', exc_info=True)
 
 
-def run(query: str, since: Optional[datetime.date] = None, until: Optional[datetime.date] = None,
+def search(outputpath: str, query: str, since: Optional[datetime.date] = None, until: Optional[datetime.date] = None,
         limit: Optional[int] = None, limit_per_database: Optional[int] = None,
-        scopus_api_token: Optional[str] = None, ieee_api_token: Optional[str] = None) -> Search:
+        scopus_api_token: Optional[str] = None, ieee_api_token: Optional[str] = None):
     """
     When you have a query and needs to get papers using it, this is the method that you'll need to call.
     This method will find papers from some databases based on the provided query, returning a Search instance when the search completes.
 
     Parameters
     ----------
+    outputpath : str
+        A valid file path where the search result file will be placed
+
     query : str
         A query string that will be used to perform the papers search.
 
@@ -228,13 +232,11 @@ def run(query: str, since: Optional[datetime.date] = None, until: Optional[datet
     ieee_api_token : Optional[str], optional
         A API token used to fetch data from IEEE database. If you don't have one go to https://developer.ieee.org and get it, by default None
 
-    Returns
-    -------
-    Search
-        A Search instance containing the search results
     """
-
+    
     logging.info('Let\'s find some papers, this process may take a while...')
+
+    # common_util.check_write_access(outputpath)
 
     if ieee_api_token is None:
         ieee_api_token = os.getenv('FINDPAPERS_IEEE_API_TOKEN')
@@ -269,4 +271,4 @@ def run(query: str, since: Optional[datetime.date] = None, until: Optional[datet
 
     logging.info(f'It\'s finally over! Good luck with your research :)')
 
-    return search
+    persistence_util.save(search, outputpath)

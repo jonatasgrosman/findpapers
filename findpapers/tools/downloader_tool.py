@@ -9,6 +9,7 @@ from lxml import html
 from fake_useragent import UserAgent
 from typing import Optional
 import findpapers.utils.common_util as common_util
+import findpapers.utils.persistence_util as persistence_util
 from findpapers.models.search import Search
 from findpapers.utils.requests_util import DefaultSession
 
@@ -16,17 +17,33 @@ from findpapers.utils.requests_util import DefaultSession
 DEFAULT_SESSION = DefaultSession()
 
 
-def download(search: Search, output_directory: str, only_selected_papers: Optional[bool] = True):
+def download(search_path: str, output_directory: str, only_selected_papers: Optional[bool] = False):
     """
-    Method used to save a search result in a JSON representation
+    If you've done your search, (probably made the search refinement too) and wanna download the papers, 
+    this is the method that you need to call. This method will try to download the PDF version of the papers to
+    the output directory path.
+
+    We use some heuristics to do our job, but sometime they won't work properly, and we cannot be able
+    to download the papers, but we logging the downloads or failures in a file download.log
+    placed on the output directory, you can check out the log to find what papers cannot be downloaded
+    and try to get them manually later. 
+
+    Note: Some papers are behind a paywall and won't be able to be downloaded by this method. 
+    However, if you have a proxy provided for the institution where you study or work that permit you 
+    to "break" this paywall. You can use this proxy configuration here
+    by setting the environment variables FINDPAPERS_HTTP_PROXY and FINDPAPERS_HTTPS_PROXY.
 
     Parameters
     ----------
-    search : Search
-        A Search instance
-    filepath : str
-        A valid file path used to save the search results
+    search_path : str
+        A valid file path containing a JSON representation of the search results
+    output_directory : str
+        A valid file path of the directory where the downloaded papers will be placed
+    only_selected_papers : bool, False by default
+        If only the selected papers will be downloaded
     """
+
+    search = persistence_util.load(search_path)
 
     if not os.path.exists(output_directory):
         os.makedirs(output_directory)
@@ -34,7 +51,8 @@ def download(search: Search, output_directory: str, only_selected_papers: Option
     log_filepath = os.path.join(output_directory, 'download.log')
     with open(log_filepath, 'a' if os.path.exists(log_filepath) else 'w') as fp:
         now = datetime.datetime.now()
-        fp.write(f"------- A new download process started at: {datetime.datetime.strftime(now, '%Y-%m-%d %H:%M:%S')} \n")
+        fp.write(
+            f"------- A new download process started at: {datetime.datetime.strftime(now, '%Y-%m-%d %H:%M:%S')} \n")
 
     for i, paper in enumerate(search.papers):
 
@@ -47,7 +65,7 @@ def download(search: Search, output_directory: str, only_selected_papers: Option
         output_filename += '.pdf'
         output_filepath = os.path.join(output_directory, output_filename)
 
-        if os.path.exists(output_filepath): # PDF already collected
+        if os.path.exists(output_filepath):  # PDF already collected
             logging.info(f'Paper\'s PDF file has already been collected')
             continue
 
@@ -60,7 +78,8 @@ def download(search: Search, output_directory: str, only_selected_papers: Option
                 try:
                     logging.info(f'Fetching data from: {url}')
 
-                    response = common_util.try_success(lambda url=url: DEFAULT_SESSION.get(url), 2)
+                    response = common_util.try_success(
+                        lambda url=url: DEFAULT_SESSION.get(url), 2)
 
                     if response is None:
                         continue
@@ -68,7 +87,8 @@ def download(search: Search, output_directory: str, only_selected_papers: Option
                     if 'text/html' in response.headers.get('content-type').lower():
 
                         response_url = urllib.parse.urlsplit(response.url)
-                        response_query_string = urllib.parse.parse_qs(urllib.parse.urlparse(response.url).query)
+                        response_query_string = urllib.parse.parse_qs(
+                            urllib.parse.urlparse(response.url).query)
                         response_url_path = response_url.path
                         host_url = f'{response_url.scheme}://{response_url.hostname}'
                         pdf_url = None
@@ -93,40 +113,45 @@ def download(search: Search, output_directory: str, only_selected_papers: Option
                             if response_url_path.startswith('/document/'):
                                 document_id = response_url_path[10:]
                             elif response_query_string.get('arnumber', None) is not None:
-                                document_id = response_query_string.get('arnumber')[0]
+                                document_id = response_query_string.get('arnumber')[
+                                    0]
                             else:
                                 continue
 
                             pdf_url = f'{host_url}/stampPDF/getPDF.jsp?tp=&arnumber={document_id}'
 
                         elif host_url in ['https://www.sciencedirect.com', 'https://linkinghub.elsevier.com']:
-                            
+
                             paper_id = response_url_path.split('/')[-1]
                             pdf_url = f'https://www.sciencedirect.com/science/article/pii/{paper_id}/pdfft?isDTMRedir=true&download=true'
 
                         elif host_url in ['https://pubs.rsc.org']:
 
-                            pdf_url = response.url.replace('/articlelanding/', '/articlepdf/')
+                            pdf_url = response.url.replace(
+                                '/articlelanding/', '/articlepdf/')
 
                         elif host_url in ['https://www.tandfonline.com', 'https://www.frontiersin.org']:
 
                             pdf_url = response.url.replace('/full', '/pdf')
-                        
+
                         elif host_url in ['https://pubs.acs.org', 'https://journals.sagepub.com', 'https://royalsocietypublishing.org']:
 
                             pdf_url = response.url.replace('/doi', '/doi/pdf')
 
                         elif host_url in ['https://link.springer.com']:
 
-                            pdf_url = response.url.replace('/article/', '/content/pdf/').replace('%2F','/') + '.pdf'
+                            pdf_url = response.url.replace(
+                                '/article/', '/content/pdf/').replace('%2F', '/') + '.pdf'
 
                         elif host_url in ['https://www.isca-speech.org']:
 
-                            pdf_url = response.url.replace('/abstracts/', '/pdfs/').replace('.html', '.pdf')
+                            pdf_url = response.url.replace(
+                                '/abstracts/', '/pdfs/').replace('.html', '.pdf')
 
                         elif host_url in ['https://onlinelibrary.wiley.com']:
 
-                            pdf_url = response.url.replace('/full/', '/pdfdirect/').replace('/abs/', '/pdfdirect/')
+                            pdf_url = response.url.replace(
+                                '/full/', '/pdfdirect/').replace('/abs/', '/pdfdirect/')
 
                         elif host_url in ['https://www.jmir.org', 'https://www.mdpi.com']:
 
@@ -134,24 +159,29 @@ def download(search: Search, output_directory: str, only_selected_papers: Option
 
                         elif host_url in ['https://www.pnas.org']:
 
-                            pdf_url = response.url.replace('/content/', '/content/pnas/') + '.full.pdf'
-                        
+                            pdf_url = response.url.replace(
+                                '/content/', '/content/pnas/') + '.full.pdf'
+
                         elif host_url in ['https://www.jneurosci.org']:
 
-                            pdf_url = response.url.replace('/content/', '/content/jneuro/') + '.full.pdf'
+                            pdf_url = response.url.replace(
+                                '/content/', '/content/jneuro/') + '.full.pdf'
 
                         elif host_url in ['https://www.ijcai.org']:
 
                             paper_id = response.url.split('/')[-1].zfill(4)
-                            pdf_url = '/'.join(response.url.split('/')[:-1]) + '/' + paper_id + '.pdf'
+                            pdf_url = '/'.join(response.url.split('/')
+                                               [:-1]) + '/' + paper_id + '.pdf'
 
                         elif host_url in ['https://asmp-eurasipjournals.springeropen.com']:
 
-                            pdf_url = response.url.replace('/articles/', '/track/pdf/')
+                            pdf_url = response.url.replace(
+                                '/articles/', '/track/pdf/')
 
                         if pdf_url is not None:
 
-                            response = common_util.try_success(lambda url=pdf_url: DEFAULT_SESSION.get(url), 2)
+                            response = common_util.try_success(
+                                lambda url=pdf_url: DEFAULT_SESSION.get(url), 2)
 
                     if 'application/pdf' in response.headers.get('content-type').lower():
                         with open(output_filepath, 'wb') as fp:

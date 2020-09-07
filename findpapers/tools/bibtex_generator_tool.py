@@ -1,40 +1,9 @@
-import json
-import re
 from typing import Optional
-from findpapers.models.search import Search
+import findpapers.utils.persistence_util as persistence_util
+import findpapers.utils.common_util as common_util
 
 
-def save(search: Search, outputpath: str):
-    """
-    Method used to save a search result in a JSON representation
-
-    Parameters
-    ----------
-    search : Search
-        A Search instance
-    outputpath : str
-        A valid file path used to save the search results
-    """
-
-    with open(outputpath, 'w') as jsonfile:
-        json.dump(Search.to_dict(search), jsonfile, indent=2, sort_keys=True)
-
-
-def load(search_path: str):
-    """
-    Method used to load a search result using a JSON representation
-
-    Parameters
-    ----------
-    search_path : str
-        A valid file path containing a JSON representation of the search results
-    """
-
-    with open(search_path, 'r') as jsonfile:
-        return Search.from_dict(json.load(jsonfile))
-
-
-def build_bibtex(search_path: str, outputpath: str, only_selected_papers: Optional[bool]=False):
+def generate_bibtex(search_path: str, outputpath: str, only_selected_papers: Optional[bool] = False):
     """
     Method used to generate a BibTeX file from a search result
 
@@ -46,9 +15,11 @@ def build_bibtex(search_path: str, outputpath: str, only_selected_papers: Option
         A valid file path for the BibTeX output file
     only_selected_papers : bool, optional
         If you only want to generate a BibTeX file for selected papers, by default False
+    verbose : bool, optional
+        If the logging needs to be verbose, by default False
     """
 
-    search = load(search_path)
+    search = persistence_util.load(search_path)
 
     default_tab = ' ' * 4
     bibtex_output = ''
@@ -72,7 +43,7 @@ def build_bibtex(search_path: str, outputpath: str, only_selected_papers: Option
         bibtex_output += f'{citation_type}{"{"}{paper.get_citation_key()},\n'
 
         bibtex_output += f'{default_tab}title = {{{paper.title}}},\n'
-        
+
         if len(paper.authors) > 0:
             authors = ' and '.join(paper.authors)
             bibtex_output += f'{default_tab}author = {{{authors}}},\n'
@@ -84,7 +55,8 @@ def build_bibtex(search_path: str, outputpath: str, only_selected_papers: Option
             if paper.publication_date is not None:
                 note += f' ({paper.publication_date.strftime("%Y/%m/%d")})'
             if paper.comments is not None:
-                note += paper.comments if len(note) == 0 else f' | {paper.comments}'
+                note += paper.comments if len(
+                    note) == 0 else f' | {paper.comments}'
             bibtex_output += f'{default_tab}note = {{{note}}},\n'
         elif citation_type == '@article':
             bibtex_output += f'{default_tab}journal = {{{paper.publication.title}}},\n'
@@ -95,7 +67,7 @@ def build_bibtex(search_path: str, outputpath: str, only_selected_papers: Option
             url = list(paper.urls)[0]
             bibtex_output += f'{default_tab}howpublished = {{Available at {url} ({date})}},\n'
 
-        if paper.publication is not None and paper.publication.publisher is not None: 
+        if paper.publication is not None and paper.publication.publisher is not None:
             bibtex_output += f'{default_tab}publisher = {{{paper.publication.publisher}}},\n'
 
         if paper.publication_date is not None:
@@ -104,10 +76,10 @@ def build_bibtex(search_path: str, outputpath: str, only_selected_papers: Option
         if paper.pages is not None:
             bibtex_output += f'{default_tab}pages = {{{paper.pages}}},\n'
 
-        bibtex_output = bibtex_output.rstrip(',\n') + '\n' # removing last comma
+        bibtex_output = bibtex_output.rstrip(
+            ',\n') + '\n'  # removing last comma
 
         bibtex_output += '}\n\n'
-
 
     with open(outputpath, 'w') as fp:
         fp.write(bibtex_output)

@@ -4,8 +4,8 @@ from typing import Optional, List
 from colorama import Fore, Back, Style, init
 from findpapers.models.search import Search
 from findpapers.models.paper import Paper
-import findpapers.utils.common_util as util
-from findpapers.utils.outputfile_util import save, load
+import findpapers.utils.common_util as common_util
+import findpapers.utils.persistence_util as persistence_util
 
 
 def _print_paper_details(paper: Paper, show_abstract: bool, highlights: List[str]):  # pragma: no cover
@@ -114,17 +114,17 @@ def _get_category_question_input(categories):  # pragma: no cover
     return answers.get('category')
 
 
-def refine(filepath: str, show_abstract: Optional[bool] = True, categories: Optional[list] = None,
+def refine(search_path: str, show_abstract: Optional[bool] = True, categories: Optional[list] = None,
            highlights: Optional[list] = None):
     """
     When you have a search result and wanna refine it, this is the method that you'll need to call.
-    This method will iterate through all the papers showing their information, 
+    This method will iterate through all the papers showing their collected data, 
     then asking if you wanna select a particular paper or not, and assign a category if a list of categories is provided.
-    This method can also highlights some terms on the paper's abstract by a provided list of terms 
+    And to help you on the refinement, this method can also highlight some terms on the paper's abstract by a provided list of them 
 
     Parameters
     ----------
-    filepath : str
+    search_path : str
         valid file path containing a JSON representation of the search results
     show_abstract : Optional[bool], optional
         A flag to indicate if the abstract should be shown or not, by default True
@@ -134,6 +134,8 @@ def refine(filepath: str, show_abstract: Optional[bool] = True, categories: Opti
         A list of terms to highlight on the paper's abstract', by default None
     """
 
+    common_util.check_write_access(search_path)
+
     init(autoreset=True)  # colorama initializer
 
     if categories is None:
@@ -141,7 +143,7 @@ def refine(filepath: str, show_abstract: Optional[bool] = True, categories: Opti
     if highlights is None:
         highlights = []
 
-    search = load(filepath)
+    search = persistence_util.load(search_path)
 
     papers_to_refine = []
     refined_papers = []
@@ -153,7 +155,7 @@ def refine(filepath: str, show_abstract: Optional[bool] = True, categories: Opti
 
     for paper in papers_to_refine:
 
-        util.clear()
+        common_util.clear()
 
         _print_paper_details(paper, show_abstract, highlights)
 
@@ -183,4 +185,4 @@ def refine(filepath: str, show_abstract: Optional[bool] = True, categories: Opti
     print(
         f'{Fore.CYAN}You\'ve already refined {len(refined_papers)}/{len(search.papers)} papers!\n')
 
-    save(search, filepath)
+    persistence_util.save(search, search_path)

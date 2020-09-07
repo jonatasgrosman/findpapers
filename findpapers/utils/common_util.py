@@ -1,6 +1,5 @@
 import time
 import re
-import edlib
 import traceback
 import logging
 import os
@@ -75,6 +74,39 @@ def clear(): # pragma: no cover
         subprocess.call("clear")
     else:
         print('\n') * 120
+
+
+def check_write_access(path: str):
+    """
+    Check if you can write on the provided path or raise an error otherwise
+
+    Parameters
+    ----------
+    path : str
+        A OS path
+
+    Raises
+    ------
+    PermissionError
+        If you can't write on the provided path
+    """
+    if not os.access(path, os.W_OK):
+        raise PermissionError('You can\'t write on the provided path')
+
+
+def logging_initialize(verbose: Optional[bool] = False):
+    """
+    Logging initialize method. If verbose mode is True the logging will be initialized on DEBUG mode. 
+    Otherwise, INFO mode will be used
+
+    Parameters
+    ----------
+    verbose : bool, optional
+        If the logging needs to be verbose, by default False
+    """
+
+    logging.basicConfig(level=getattr(logging, 'DEBUG' if verbose else 'INFO'),
+                        format='%(asctime)s %(levelname)s: %(message)s')
 
 
 # Based on tornado.ioloop.IOLoop.instance() approach.
