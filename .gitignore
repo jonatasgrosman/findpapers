@@ -1,6 +1,9 @@
 # IDE
 .vscode
 
+# Build
+dist
+
 # Env
 venv
 .env
