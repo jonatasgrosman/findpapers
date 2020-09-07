@@ -247,37 +247,21 @@ git remote add upstream https://gitlab.com/jonatasgrosman/findpapers.git
 
 ## Installing dependencies
 
-[TODO]
-
 ```shell
-# Install Findpapers project dependencies
-some shell command
+make setup
 ```
-
-## Building
-
-[TODO]
-
-```shell
-# Install Findpapers project dependencies
-some shell command
-```
-
-* Results are put in the `dist` folder.
 
 ## Running Tests
 
-[TOOD]
+```shell
+make test
+```
 
 **Note**: All the tests are executed on our Continuous Integration infrastructure after a commit push. MRs can only be merged if the code is formatted properly and all tests are passing.
 
 ## Linting/verifying your Source Code
 
-You can check that your code is properly formatted and adheres to coding style by running:
-
-``` shell
-some shell command
-```
+(TODO: We need to define this)
 
 [numpy-docstring-style-guide]: https://numpydoc.readthedocs.io/en/latest/format.html
 [pep8-style-guide]: https://www.python.org/dev/peps/pep-0008/

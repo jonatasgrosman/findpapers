@@ -199,7 +199,7 @@ def search(outputpath: str, query: str, since: Optional[datetime.date] = None, u
         scopus_api_token: Optional[str] = None, ieee_api_token: Optional[str] = None):
     """
     When you have a query and needs to get papers using it, this is the method that you'll need to call.
-    This method will find papers from some databases based on the provided query, returning a Search instance when the search completes.
+    This method will find papers from some databases based on the provided query.
 
     Parameters
     ----------

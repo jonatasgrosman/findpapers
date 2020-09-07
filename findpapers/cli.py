@@ -62,17 +62,24 @@ def search(
 
         E.g.: 'term A' AND ('term B' OR 'term C') AND NOT 'term D'
 
-
         You can use some wildcards in the query too. Use ? to replace a single character or * to replace any number of characters.
 
         E.g.: 'son?' -> will match song, sons, ...
 
         E.g.: 'son*' -> will match song, sons, sonar, songwriting, ...
 
-
         Nowadays, we search for papers on ACM, arXiv, IEEE, PubMed, and Scopus database.
-        The searching on IEEE and Scopus needs an API token, that must to be provided
-        by the user.
+        The searching on IEEE and Scopus requires an API token, that must to be provided
+        by the user using the -ts (or --scopus_api_token) and -te (or --ieee_api_token) arguments.
+        If these tokens are not provided the search on these databases will be skipped.
+
+        You can constraint the search by date using the -s (or --since) and -u (or --until) arguments
+        following the pattern YYYY-MM-DD (E.g. 2020-12-31). 
+        
+        You can restrict the max number of retrived papers by using -l (or --limit).
+        And, restrict the max number of retrived papers by database using -ld (or --limit_per_database) argument.
+
+        You can control the command logging verbosity by the -v (or --verbose) argument.
     """
 
     try:
@@ -112,9 +119,18 @@ def refine(
     Refine the search results by selecting/classifying the papers.
 
     When you have a search result and wanna refine it, this is the command that you'll need to call.
-    This command will iterate through all the papers showing their collected data, 
-    then asking if you wanna select a particular paper or not, and assign a category if a list of categories is provided.
-    And to help you on the refinement, this command can also highlight some terms on the paper's abstract by a provided list of them 
+    This command will iterate through all the papers showing their collected data,
+    then asking if you wanna select a particular paper or not
+
+    You can show or hide the paper abstract by using the -a (or --abstract) flag.
+
+    If a comma-separated list of categories is provided by the -c (or --categories) argument, 
+    you can assign a category to the paper.
+
+    And to help you on the refinement, this command can also highlight some terms on the paper's abstract 
+    by a provided comma-separated list of them provided by the -h (or --highlights) argument.
+
+    You can control the command logging verbosity by the -v (or --verbose) argument.
     """
 
     try:
@@ -151,6 +167,8 @@ def download(
     this is the command that you need to call. This command will try to download the PDF version of the papers to
     the output directory path.
 
+    You can download only the selected papers by using the -s (or --selected) flag
+
     We use some heuristics to do our job, but sometime they won't work properly, and we cannot be able
     to download the papers, but we logging the downloads or failures in a file download.log
     placed on the output directory, you can check out the log to find what papers cannot be downloaded
@@ -159,7 +177,9 @@ def download(
     Note: Some papers are behind a paywall and won't be able to be downloaded by this command. 
     However, if you have a proxy provided for the institution where you study or work that permit you 
     to "break" this paywall. You can use this proxy configuration here
-    by setting the environment variables FINDPAPERS_HTTP_PROXY and FINDPAPERS_HTTPS_PROXY.
+    by setting the environment variable FINDPAPERS_PROXY.
+    
+    You can control the command logging verbosity by the -v (or --verbose) argument.
     """
 
     try:
@@ -188,7 +208,9 @@ def bibtex(
     )
 ):
     """
-    Method used to generate a BibTeX file from a search result.
+    Command used to generate a BibTeX file from a search result.
+
+    You can generate the bibtex only for the selected papers by using the -s (or --selected) flag
     """
 
     try:
