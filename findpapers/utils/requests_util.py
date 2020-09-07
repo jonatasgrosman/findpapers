@@ -17,14 +17,13 @@ class DefaultSession(requests.Session, metaclass=common_util.ThreadSafeSingleton
 
         super(DefaultSession, self).__init__()
 
-        HTTP_PROXY = os.getenv('FINDPAPERS_HTTP_PROXY')
-        HTTPS_PROXY = os.getenv('FINDPAPERS_HTTPS_PROXY')
+        PROXY = os.getenv('FINDPAPERS_PROXY')
 
-        if HTTP_PROXY is not None or HTTPS_PROXY is not None:
+        if PROXY is not None:
 
             self.proxies = {
-                'http': HTTP_PROXY,
-                'https': HTTPS_PROXY
+                'http': PROXY,
+                'https': PROXY
             }
 
         self.headers.update({'User-Agent': str(UserAgent(fallback=DEFAULT_USER_AGENT).chrome)})
