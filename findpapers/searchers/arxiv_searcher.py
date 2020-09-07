@@ -348,9 +348,12 @@ def run(search: Search):
             if papers_count >= total_papers or search.reached_its_limit(DATABASE_LABEL):
                 break
 
+            papers_count += 1
+
             try:
 
-                logging.info(paper_entry.get('title'))
+                paper_title = paper_entry.get("title")
+                logging.info(f'({papers_count}/{total_papers}) Fetching arXiv paper: {paper_title}')
 
                 published_date = datetime.datetime.strptime(
                     paper_entry.get('published')[:10], '%Y-%m-%d').date()
@@ -371,9 +374,6 @@ def run(search: Search):
                 if paper is not None:
                     paper.add_database(DATABASE_LABEL)
                     search.add_paper(paper)
-
-                papers_count += 1
-                logging.info(f'{papers_count}/{total_papers} arXiv papers fetched')
 
             except Exception as e:  # pragma: no cover
                 logging.debug(e, exc_info=True)

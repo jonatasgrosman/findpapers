@@ -6,6 +6,7 @@ import os
 import subprocess
 import threading
 from typing import Optional
+from pathlib import Path
 
 
 def get_numeric_month_by_string(string: str) -> str:
@@ -90,7 +91,10 @@ def check_write_access(path: str):
     PermissionError
         If you can't write on the provided path
     """
-    if not os.access(path, os.W_OK):
+
+    try:
+        with open(path, 'a'): pass
+    except Exception:
         raise PermissionError('You can\'t write on the provided path')
 
 

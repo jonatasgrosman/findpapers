@@ -253,10 +253,11 @@ def run(search: Search):
                 papers_count += 1
 
                 paper_page = _get_paper_page(paper_url)
-                
-                logging.info(paper_page.xpath(
-                    '//*[@class="citation__title"]')[0].text)
 
+                paper_title = paper_page.xpath('//*[@class="citation__title"]')[0].text
+
+                logging.info(f'({papers_count}/{total_papers}) Fetching ACM paper: {paper_title}')
+                
                 paper_doi = None
                 if '/abs/' in paper_url:
                     paper_doi = paper_url.split('/abs/')[1]
@@ -273,8 +274,6 @@ def run(search: Search):
                 paper.add_database(DATABASE_LABEL)
 
                 search.add_paper(paper)
-
-                logging.info(f'{papers_count}/{total_papers} ACM papers fetched')
 
             except Exception as e:  # pragma: no cover
                 logging.debug(e, exc_info=True)

@@ -249,16 +249,19 @@ def run(search: Search):
 
             if papers_count >= total_papers or search.reached_its_limit(DATABASE_LABEL):
                 break
+            
+            papers_count += 1
+            
             try:
 
                 paper_entry = _get_paper_entry(pubmed_id)
 
                 if paper_entry is not None:
 
-                    title = paper_entry.get('PubmedArticleSet').get('PubmedArticle').get(
+                    paper_title = paper_entry.get('PubmedArticleSet').get('PubmedArticle').get(
                         'MedlineCitation').get('Article').get('ArticleTitle')
 
-                    logging.info(title)
+                    logging.info(f'({papers_count}/{total_papers}) Fetching PubMed paper: {paper_title}')
 
                     publication = _get_publication(paper_entry)
                     paper = _get_paper(paper_entry, publication)
@@ -269,9 +272,6 @@ def run(search: Search):
 
             except Exception as e:  # pragma: no cover
                 logging.debug(e, exc_info=True)
-
-            papers_count += 1
-            logging.info(f'{papers_count}/{total_papers} PubMed papers fetched')
 
         if papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL):
             result = _get_api_result(search, papers_count)

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "findpapers"
-version = "1.0.0"
+version = "0.1.0"
 description = "Easy way to find academic papers across scientific databases by using a single query."
 authors = ["Jonatas Grosman <jonatasgrosman@gmail.com>"]
 maintainers = ["Jonatas Grosman <jonatasgrosman@gmail.com>"]

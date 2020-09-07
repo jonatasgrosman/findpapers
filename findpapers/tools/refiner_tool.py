@@ -177,7 +177,7 @@ def refine(search_path: str, show_abstract: Optional[bool] = True, categories: O
 
         print('\n')
 
-        if len(categories) > 0:
+        if paper.selected and len(categories) > 0:
             paper.category = _get_category_question_input(categories)
 
         refined_papers.append(paper)

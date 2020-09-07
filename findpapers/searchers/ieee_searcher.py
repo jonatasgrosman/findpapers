@@ -217,10 +217,12 @@ def run(search: Search, api_token: str):
 
             if papers_count >= total_papers or search.reached_its_limit(DATABASE_LABEL):
                 break
+            
+            papers_count += 1
 
             try:
 
-                logging.info(paper_entry.get('title'))
+                logging.info(f'({papers_count}/{total_papers}) Fetching IEEE paper: {paper_entry.get("title")}')
 
                 publication = _get_publication(paper_entry)
                 paper = _get_paper(paper_entry, publication)
@@ -231,9 +233,6 @@ def run(search: Search, api_token: str):
 
             except Exception as e:  # pragma: no cover
                 logging.debug(e, exc_info=True)
-
-            papers_count += 1
-            logging.info(f'{papers_count}/{total_papers} IEEE papers fetched')
 
         if papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL):
             result = _get_api_result(search, api_token, papers_count+1)

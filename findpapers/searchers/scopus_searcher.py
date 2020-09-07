@@ -123,7 +123,7 @@ def _get_paper_page(url: str) -> object:  # pragma: no cover
         A HTML element representing the paper given by the provided URL
     """
 
-    response = util.try_success(lambda: SESSION.get(url), 2)
+    response = util.try_success(lambda: DEFAULT_SESSION.get(url), 2)
     return html.fromstring(response.content)
 
 
@@ -273,8 +273,13 @@ def enrich_publication_data(search: Search, api_token: str):
 
     if api_token is None or len(api_token.strip()) == 0:
         raise AttributeError('The API token cannot be null')
-
+    
+    i = 0
+    total = len(search.publication_by_key.items())
     for publication_key, publication in search.publication_by_key.items():
+        
+        i += 1
+        logging.info(f'({i}/{total}) Enriching publication: {publication.title}')
 
         if publication.issn is not None:
 
@@ -355,8 +360,12 @@ def run(search: Search, api_token: str, url: Optional[str] = None, papers_count:
         if papers_count >= total_papers or search.reached_its_limit(DATABASE_LABEL):
             break
 
+        papers_count += 1
+
         try:
-            logging.info(paper_entry.get("dc:title"))
+
+            paper_title = paper_entry.get("dc:title")
+            logging.info(f'({papers_count}/{total_papers}) Fetching Scopus paper: {paper_title}')
 
             publication = _get_publication(paper_entry, api_token)
             paper = _get_paper(paper_entry, publication)
@@ -367,9 +376,6 @@ def run(search: Search, api_token: str, url: Optional[str] = None, papers_count:
 
         except Exception as e:  # pragma: no cover
             logging.debug(e, exc_info=True)
-
-        papers_count += 1
-        logging.info(f'{papers_count}/{total_papers} Scopus papers fetched')
 
     next_url = None
     for link in search_results['link']:
