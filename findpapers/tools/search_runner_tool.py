@@ -91,13 +91,15 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
         A API token used to fetch data from Scopus database. If you don't have one go to https://dev.elsevier.com and get it, by default None
     """
 
-    for paper in copy(search.papers):
+    for paper in copy.copy(search.papers):
+
+        #TODO: logging progress
 
         urls = set()
         if paper.doi is not None:
             urls.add(f'http://doi.org/{paper.doi}')
         else:
-            urls = copy(paper.urls)
+            urls = copy.copy(paper.urls)
 
         for url in urls:
 
