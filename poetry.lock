@@ -123,14 +123,6 @@ version = "1.3.8.post1"
 
 [[package]]
 category = "main"
-description = "Up to date simple useragent faker with real world database"
-name = "fake-useragent"
-optional = false
-python-versions = "*"
-version = "0.1.11"
-
-[[package]]
-category = "main"
 description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
 optional = false
@@ -555,7 +547,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "78f129d1af997b0bb5151c2a7d29029399ab4bd11659b8fc3141633a90186d74"
+content-hash = "a190092bc793de9360553d19dff17c31b5cee9790f0c5cb7253b5fd4b27247b0"
 lock-version = "1.1"
 python-versions = "^3.7"
 
@@ -642,9 +634,6 @@ docutils = [
 ]
 edlib = [
     {file = "edlib-1.3.8.post1.tar.gz", hash = "sha256:81bc688e8fc69d657a6b5067e104a0924b0217b7ab54547155278935d09346e0"},
-]
-fake-useragent = [
-    {file = "fake-useragent-0.1.11.tar.gz", hash = "sha256:c104998b750eb097eefc28ae28e92d66397598d2cf41a31aa45d5559ef1adf35"},
 ]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},

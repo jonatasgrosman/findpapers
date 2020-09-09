@@ -6,7 +6,6 @@ import logging
 import datetime
 import urllib.parse
 from lxml import html
-from fake_useragent import UserAgent
 from typing import Optional
 import findpapers.utils.common_util as common_util
 import findpapers.utils.persistence_util as persistence_util
