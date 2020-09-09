@@ -152,6 +152,8 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
     if paper_title is None or len(paper_title) == 0:
         return None
 
+    paper_title = paper_title if isinstance(paper_title, str) else paper_title.get('#text')
+
     if 'ArticleDate' in article:
         paper_publication_date_day = article.get('ArticleDate').get('Day')
         paper_publication_date_month = article.get('ArticleDate').get('Month')
