@@ -72,8 +72,6 @@ def download(search_path: str, output_directory: str, only_selected_papers: Opti
             continue
         
         if only_selected_papers and not paper.selected:
-            with open(log_filepath, 'a') as fp:
-                fp.write(f'[SKIPED] {paper.title}\n')
             continue
 
         if paper.doi is not None:
