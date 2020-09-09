@@ -195,12 +195,16 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     transformed_query = search.query.replace(' AND NOT ', ' ANDNOT ')
     if transformed_query[0] == '"':
         transformed_query = ' ' + transformed_query
-    transformed_query = transformed_query.replace(' "', ' all:"')
-    transformed_query = transformed_query.replace('("', '(all:"')
+    transformed_query = transformed_query.replace(' "', ' FIELD_TYPE:"')
+    transformed_query = transformed_query.replace('("', '(FIELD_TYPE:"')
     transformed_query = transformed_query.replace('"', '')
     transformed_query = transformed_query.strip()
 
-    url = f'{BASE_URL}/api/query?search_query={transformed_query}&start={start_record}&sortBy=submittedDate&sortOrder=descending&max_results={MAX_ENTRIES_PER_PAGE}'
+    abstract_query = transformed_query.replace('FIELD_TYPE:', 'abs:')
+    title_query = transformed_query.replace('FIELD_TYPE:', 'ti:')
+    final_query = f'{title_query} OR {abstract_query}'
+
+    url = f'{BASE_URL}/api/query?search_query={final_query}&start={start_record}&sortBy=submittedDate&sortOrder=descending&max_results={MAX_ENTRIES_PER_PAGE}'
 
     return url
 

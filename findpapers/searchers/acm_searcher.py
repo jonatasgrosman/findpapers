@@ -35,8 +35,11 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     str
         a URL to be used to retrieve data from ACM database
     """
+    transformed_query = search.query.replace(' AND NOT ', ' NOT ')
 
-    query = search.query.replace(' AND NOT ', ' NOT ')
+    query = f'Title:({transformed_query})'
+    query += f' OR Keyword:({transformed_query})'
+    query += f' OR Abstract:({transformed_query})'
 
     url_parameters = {
         'fillQuickSearch': 'false',
