@@ -4,6 +4,7 @@ import findpapers
 import tempfile
 from findpapers.models.search import Search
 from findpapers.models.paper import Paper
+import findpapers.tools.search_runner_tool as search_runner_tool
 
 
 def test_run():
@@ -37,3 +38,24 @@ def test_save_and_load(search: Search, paper: Paper):
     assert loaded_search.limit_per_database == search.limit_per_database
     assert loaded_search.processed_at.strftime('%Y-%m-%d %H:%M:%S') == search.processed_at.strftime('%Y-%m-%d %H:%M:%S')
     assert len(loaded_search.papers) == len(search.papers)
+
+
+def test_query_format():
+
+    assert search_runner_tool._is_query_ok('("term a" OR "term b")')
+    assert search_runner_tool._is_query_ok('"term a" OR "term b"')
+    assert search_runner_tool._is_query_ok('"term a" AND "term b"')
+    assert search_runner_tool._is_query_ok('"term a" AND NOT ("term b" OR "term b")')
+    assert search_runner_tool._is_query_ok('"term a"')
+    assert not search_runner_tool._is_query_ok('"term a" or "term b"')
+    assert not search_runner_tool._is_query_ok('"term a" and "term b"')
+    assert not search_runner_tool._is_query_ok('"term a" and not "term b"')
+    assert not search_runner_tool._is_query_ok('("term a" OR "term b"')
+    assert not search_runner_tool._is_query_ok('term a OR "term b"')
+    assert not search_runner_tool._is_query_ok('"term a" "term b"')
+    assert not search_runner_tool._is_query_ok('"term a" XOR "term b"')
+    assert not search_runner_tool._is_query_ok('"term a" OR NOT "term b"')
+    assert not search_runner_tool._is_query_ok('"" AND "term b"')
+    assert not search_runner_tool._is_query_ok('" " AND "term b"')
+    assert not search_runner_tool._is_query_ok('" "')
+    assert not search_runner_tool._is_query_ok('"')

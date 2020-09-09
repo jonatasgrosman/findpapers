@@ -194,6 +194,96 @@ def _database_safe_run(function: callable, search: Search, database_label: str):
                 f'Error while fetching papers from {database_label} database', exc_info=True)
 
 
+def _is_query_ok(query: str) -> bool:
+    """
+    Checking a search query, it will return True if it's valid or False otherwise.
+
+    Examples
+    VALID = ("term a" OR "term b")
+    INVALID = ("term a" OR "term b"
+    VALID = "term a" OR "term b"
+    INVALID = term a OR "term b"
+    INVALID = term a "term b"
+    INVALID = "" AND "term b"
+    VALID = "term a"
+    INVALID = ""
+    INVALID = "
+
+    Parameters
+    ----------
+    query : str
+        A search query to be validated
+
+    Returns
+    -------
+    bool
+        A boolean value indicating whether the query is valid or not
+    """
+
+    if len(query) == 0 or len(query) < 3 or query[0] not in ['(', '"'] or query[-1] not in [')', '"']:
+        return False
+    
+    # checking groups
+    group_characters = []
+    for character in query:
+        if character in ['(', ')']:
+            if len(group_characters) == 0:
+                group_characters.append(character)
+            else:
+                last_group_character = group_characters[-1]
+
+                if last_group_character == character:
+                    group_characters.append(character)
+                else:
+                    group_characters.pop()
+
+    if len(group_characters) > 0: 
+        # after the processing above, the list needs to be empty
+        return False
+    
+    # checking keywords and operators
+    #TODO: improve this query validation, 'cause this approach ignore the parenthesis
+    # and still can return True for invalid queries like "term a" O(R) "term b"
+
+    query_ok = True
+    inside_keyword = False
+    current_operator = None
+    current_keyword = None
+    valid_operators = [' AND ', ' OR ', ' AND NOT ']
+    transformed_query = query.replace('(','').replace(')','')
+    
+    for character in transformed_query:
+
+        if inside_keyword:
+            if character == '"': # closing a search term
+                if current_keyword is None or len(current_keyword.strip()) == 0:
+                    query_ok = False
+                    break
+                current_keyword = None
+                inside_keyword = False
+            else:
+                if current_keyword is None:
+                    current_keyword = character
+                else:
+                    current_keyword += character
+        else:
+            if character == '"': # opening a search term
+                if current_operator is not None and current_operator not in valid_operators:
+                    query_ok = False
+                    break
+                current_operator = None
+                inside_keyword = True
+            else:
+                if current_operator is None:
+                    current_operator = character
+                else:
+                    current_operator += character
+
+    # after the processing above, query_ok needs to be True, 
+    # and current_keyword and current_operator need to be null
+    return query_ok and current_keyword is None and current_operator is None
+
+
 def search(outputpath: str, query: str, since: Optional[datetime.date] = None, until: Optional[datetime.date] = None,
         limit: Optional[int] = None, limit_per_database: Optional[int] = None,
         scopus_api_token: Optional[str] = None, ieee_api_token: Optional[str] = None):
@@ -240,6 +330,9 @@ def search(outputpath: str, query: str, since: Optional[datetime.date] = None, u
     """
     
     logging.info('Let\'s find some papers, this process may take a while...')
+
+    if not _is_query_ok(query):
+        raise ValueError('Invalid query format')
 
     common_util.check_write_access(outputpath)
 
