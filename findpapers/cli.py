@@ -83,9 +83,11 @@ def search(
     """
 
     try:
+        since = since.date() if since is not None else None
+        until = until.date() if until is not None else None
         common_util.logging_initialize(verbose)
         query = query.replace('\'', '"') # replacing single quotes by double quotes
-        findpapers.search(outputpath, query, since.date(), until.date(),
+        findpapers.search(outputpath, query, since, until,
                           limit, limit_per_database, scopus_api_token, ieee_api_token)
     except Exception as e:
         typer.echo(e)
@@ -99,7 +101,7 @@ def refine(
         ..., help='A valid file path for the search result file'
     ),
     show_abstract: bool = typer.Option(
-        True, "-a", "--show_abstract", show_default=True,
+        False, "-a", "--show_abstract", show_default=True,
         help="A flag to indicate if the abstract should be shown or not"
     ),
     categories: str = typer.Option(
