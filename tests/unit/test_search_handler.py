@@ -48,6 +48,7 @@ def test_query_format():
     assert search_runner_tool._is_query_ok('"term a" AND NOT ("term b" OR "term c")')
     assert search_runner_tool._is_query_ok('"term a" OR ("term b" AND ("term c" OR "term d"))')
     assert search_runner_tool._is_query_ok('"term a"')
+    assert not search_runner_tool._is_query_ok('"term a" OR ("term b" AND ("term c" OR "term d")')
     assert not search_runner_tool._is_query_ok('"term a" or "term b"')
     assert not search_runner_tool._is_query_ok('"term a" and "term b"')
     assert not search_runner_tool._is_query_ok('"term a" and not "term b"')
