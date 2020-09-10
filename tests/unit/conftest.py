@@ -28,10 +28,10 @@ def paper(publication):
     pages = '1-4'
     databases = {'arXiv', 'ACM', 'IEEE', 'PubMed', 'Scopus'}
     selected = True
-    category = 'Category A'
+    categories = {'Facet A': ['Category A', 'Category B']}
 
     paper = Paper(title, abstract, authors, publication, publication_date, urls, doi, citations, keywords,
-                  comments, number_of_pages, pages, databases, selected, category)
+                  comments, number_of_pages, pages, databases, selected, categories)
 
     return paper
 

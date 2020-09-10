@@ -14,7 +14,7 @@ class Paper():
                  publication_date: datetime.date, urls: Set[str], doi: Optional[str] = None, citations: Optional[int] = None,
                  keywords: Optional[Set[str]] = None, comments: Optional[str] = None, number_of_pages: Optional[int] = None,
                  pages: Optional[str] = None, databases: Optional[set] = None, selected: Optional[bool] = None,
-                 category: Optional[bool] = None):
+                 categories: Optional[bool] = None):
         """
         Paper class constructor
 
@@ -48,8 +48,8 @@ class Paper():
             The databases where the paper was found, by default None
         selected : bool, optional
             If a paper was selected by the user, by default None
-        category : srt, optional
-            The paper category provided by the user, by default None
+        categories : dict, optional
+            The defined paper categories by their facets, by default None
         Raises
         ------
         ValueError
@@ -73,7 +73,7 @@ class Paper():
         self.pages = pages
         self.databases = databases if databases is not None else set()
         self.selected = selected
-        self.category = category
+        self.categories = categories
 
     def add_database(self, database_name: str):
         """
@@ -214,10 +214,10 @@ class Paper():
         pages = paper_dict.get('pages')
         databases = set(paper_dict.get('databases'))
         selected = paper_dict.get('selected')
-        category = paper_dict.get('category')
+        categories = paper_dict.get('categories')
 
         return cls(title, abstract, authors, publication, publication_date, urls, doi, citations, keywords,
-                   comments, number_of_pages, pages, databases, selected, category)
+                   comments, number_of_pages, pages, databases, selected, categories)
 
     @staticmethod
     def to_dict(paper: Paper) -> dict:
@@ -250,5 +250,5 @@ class Paper():
             'pages': paper.pages,
             'databases': list(paper.databases),
             'selected': paper.selected,
-            'category': paper.category,
+            'categories': paper.categories,
         }

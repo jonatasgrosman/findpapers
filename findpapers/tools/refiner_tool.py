@@ -1,5 +1,6 @@
 import inquirer
 import re
+import os
 from typing import Optional, List
 from colorama import Fore, Back, Style, init
 from findpapers.models.search import Search
@@ -22,9 +23,9 @@ def _print_paper_details(paper: Paper, show_abstract: bool, highlights: List[str
         A list of terms to highlight on the paper's abstract'
     """
 
-    print(f'{Fore.GREEN}{Style.BRIGHT}{paper.title}')
-    print(f'{Fore.GREEN}{" | ".join(paper.authors)}')
-    print(f'{Fore.GREEN}{paper.publication_date.strftime("%Y-%m-%d")}')
+    print(f'{Fore.GREEN}{Style.BRIGHT}Title:{Style.NORMAL} {paper.title}')
+    print(f'{Fore.GREEN}{Style.BRIGHT}Authors:{Style.NORMAL} {" | ".join(paper.authors)}')
+    print(f'{Fore.GREEN}{Style.BRIGHT}Publication date:{Style.NORMAL} {paper.publication_date.strftime("%Y-%m-%d")}')
 
     print('\n')
 
@@ -38,41 +39,65 @@ def _print_paper_details(paper: Paper, show_abstract: bool, highlights: List[str
         print('\n')
 
     if len(paper.keywords) > 0:
-        print(f'{Style.BRIGHT}Keywords:{Style.NORMAL} {", ".join(paper.keywords)}')
+        print(f'{Style.BRIGHT}Papar keywords:{Style.NORMAL} {", ".join(paper.keywords)}')
     if paper.comments is not None:
-        print(f'{Style.BRIGHT}Comments:{Style.NORMAL} {paper.comments}')
+        print(f'{Style.BRIGHT}Paper comments:{Style.NORMAL} {paper.comments}')
     if paper.citations is not None:
-        print(f'{Style.BRIGHT}Citations:{Style.NORMAL} {paper.citations}')
-    if paper.comments is not None:
-        print(f'{Style.BRIGHT}Databases:{Style.NORMAL} {", ".join(paper.databases)}')
+        print(f'{Style.BRIGHT}Paper citations:{Style.NORMAL} {paper.citations}')
+    if paper.doi is not None:
+        print(f'{Style.BRIGHT}Paper DOI:{Style.NORMAL} {paper.doi}')
+    if paper.databases is not None:
+        print(f'{Style.BRIGHT}Paper found in:{Style.NORMAL} {", ".join(paper.databases)}')
+
+    if paper.publication is not None:
+        print(f'{Style.BRIGHT}Publication name:{Style.NORMAL} {paper.publication.title}')
+        if paper.publication.category is not None:
+            print(f'{Style.BRIGHT}Publication category:{Style.NORMAL} {paper.publication.category}')
+        if len(paper.publication.subject_areas) > 0:
+            print(f'{Style.BRIGHT}Publication areas:{Style.NORMAL} {", ".join(paper.publication.subject_areas)}')
+        if paper.publication.isbn is not None:
+            print(f'{Style.BRIGHT}Publication ISBN:{Style.NORMAL} {paper.publication.isbn}')
+        if paper.publication.issn is not None:
+            print(f'{Style.BRIGHT}Publication ISSN:{Style.NORMAL} {paper.publication.issn}')
+        if paper.publication.publisher is not None:
+            print(f'{Style.BRIGHT}Publication publisher:{Style.NORMAL} {paper.publication.publisher}')
+        if paper.publication.cite_score is not None:
+            print(f'{Style.BRIGHT}Publication cite score:{Style.NORMAL} {paper.publication.cite_score}')
+        if paper.publication.sjr is not None:
+            print(f'{Style.BRIGHT}Publication SJR:{Style.NORMAL} {paper.publication.sjr}')
+        if paper.publication.snip is not None:
+            print(f'{Style.BRIGHT}Publication SNIP:{Style.NORMAL} {paper.publication.snip}')
 
     print('\n')
 
-    if paper.publication is not None:
-        print(
-            f'{Style.BRIGHT}Publication name:{Style.NORMAL} {paper.publication.title}')
-        print(
-            f'{Style.BRIGHT}Publication category:{Style.NORMAL} {paper.publication.category}')
+    if paper.selected is not None:
 
-        if paper.publication.isbn is not None:
-            print(f'{Style.BRIGHT}ISBN:{Style.NORMAL} {paper.publication.isbn}')
-        if paper.publication.issn is not None:
-            print(f'{Style.BRIGHT}ISSN:{Style.NORMAL} {paper.publication.issn}')
-        if paper.publication.publisher is not None:
-            print(
-                f'{Style.BRIGHT}Publisher:{Style.NORMAL} {paper.publication.publisher}')
-        if paper.publication.cite_score is not None:
-            print(
-                f'{Style.BRIGHT}Cite score:{Style.NORMAL} {paper.publication.cite_score}')
-        if paper.publication.sjr is not None:
-            print(f'{Style.BRIGHT}SJR:{Style.NORMAL} {paper.publication.sjr}')
-        if paper.publication.snip is not None:
-            print(f'{Style.BRIGHT}SNIP:{Style.NORMAL} {paper.publication.snip}')
-        if len(paper.publication.subject_areas) > 0:
-            print(
-                f'{Style.BRIGHT}Subject Areas:{Style.NORMAL} {", ".join(paper.publication.subject_areas)}')
+        print(f'{Fore.BLUE}{Style.BRIGHT}Selected: {Style.NORMAL}{"Yes" if paper.selected else "No"}')
+        
+        if paper.categories is not None and len(paper.categories.items()) > 0:
+            categories_string = ' | '.join([f'{k}: {", ".join(v)}' for k, v in paper.categories.items() if len(v) > 0])
+            print(f'{Fore.BLUE}{Style.BRIGHT}Categories: {Style.NORMAL}{categories_string}')
 
         print('\n')
+
+
+def _get_wanna_re_refine_papers_input():  # pragma: no cover
+    """
+    Private method that prompts a question about the paper selection
+
+    Returns
+    -------
+    str
+        User provided input
+    """
+    REFINE_TEXT = 'Show me the not yet refined papers'
+    REREFINE_TEXT = 'Show me the already refined papers'
+    questions = [
+        inquirer.List('answer',
+                      message='What would you like to do now?',
+                      choices=[REFINE_TEXT, REREFINE_TEXT])
+    ]
+    return inquirer.prompt(questions).get('answer') == REREFINE_TEXT
 
 
 def _get_select_question_input():  # pragma: no cover
@@ -85,36 +110,52 @@ def _get_select_question_input():  # pragma: no cover
         User provided input
     """
     questions = [
-        inquirer.List('select',
+        inquirer.List('answer',
                       message='Do you wanna select this paper?',
                       choices=[
-                          'Skip', 'No', 'Yes', 'Oh Gosh it never ends! I\'m tired! Save what I\'ve done so far and leave'],
+                          'Skip', 
+                          'No', 
+                          'Yes', 
+                          'Save what I\'ve done so far and leave'],
                       ),
     ]
-    return inquirer.prompt(questions).get('select')
+    return inquirer.prompt(questions).get('answer')
 
 
-def _get_category_question_input(categories):  # pragma: no cover
+def _get_category_question_input(categories: dict):  # pragma: no cover
     """
     Private method that prompts a question about the paper category
+    
+    Parameters
+    ----------
+    categories : dict
+        A dict with lists of categories by their facets, used to assign to papers
 
     Returns
     -------
-    str
-        User provided input
+    dict
+        A dict with lists of selected categories by their facets
     """
 
-    questions = [
-        inquirer.List('category',
-                      message='Which category does this work belong to?',
-                      choices=categories,
-                      ),
-    ]
-    answers = inquirer.prompt(questions)
-    return answers.get('category')
+    selections = {}
+
+    for facet, facet_categories in categories.items():
+
+        questions = [
+            inquirer.Checkbox('answer',
+                        message=f'With respect to "{facet}"", which categories does the document belong to?',
+                        choices=facet_categories,
+                        ),
+        ]
+
+        answers = inquirer.prompt(questions)
+
+        selections[facet] = answers.get('answer')
+        
+    return selections
 
 
-def refine(search_path: str, show_abstract: Optional[bool] = True, categories: Optional[list] = None,
+def refine(search_path: str, show_abstract: Optional[bool] = False, categories: Optional[dict] = None,
            highlights: Optional[list] = None):
     """
     When you have a search result and wanna refine it, this is the method that you'll need to call.
@@ -126,11 +167,20 @@ def refine(search_path: str, show_abstract: Optional[bool] = True, categories: O
     ----------
     search_path : str
         valid file path containing a JSON representation of the search results
-    show_abstract : Optional[bool], optional
-        A flag to indicate if the abstract should be shown or not, by default True
-    categories : Optional[list], optional
-        A list of categories to assign to the papers by the user, by default None
-    highlights : Optional[list], optional
+    show_abstract : bool, optional
+        A flag to indicate if the abstract should be shown or not, by default False
+    categories : dict, optional
+        A dict with lists of categories by their facets, used to assign to selected papers, by default None
+        E.g.:
+            {
+                'Research Type': [
+                    'Validation Research', 'Evaluation Research', 'Solution Proposal', 'Philosophical', 'Opinion', 'Experience'
+                ],
+                'Contribution': [
+                    'Metric', 'Tool', 'Model', 'Method'
+                ]
+            }
+    highlights : list, optional
         A list of terms to highlight on the paper's abstract', by default None
     """
 
@@ -139,30 +189,33 @@ def refine(search_path: str, show_abstract: Optional[bool] = True, categories: O
     init(autoreset=True)  # colorama initializer
 
     if categories is None:
-        categories = []
+        categories = {}
     if highlights is None:
         highlights = []
 
     search = persistence_util.load(search_path)
 
-    papers_to_refine = []
-    refined_papers = []
+    wanna_re_refine_papers = _get_wanna_re_refine_papers_input()
+
+    todo_papers = []
+    done_papers = []
     for paper in search.papers:
-        if paper.selected is None:
-            papers_to_refine.append(paper)
+        if wanna_re_refine_papers:
+            if paper.selected is not None:
+                todo_papers.append(paper)
         else:
-            refined_papers.append(paper)
+            if paper.selected is None:
+                todo_papers.append(paper)
+            else:
+                done_papers.append(paper)
 
-    for paper in papers_to_refine:
+    for paper in todo_papers:
 
-        common_util.clear()
+        print(f'\n{Fore.CYAN}{len(done_papers)}/{len(todo_papers)} of the papers already done!\n')
+
+        print(f'\n{"." * os.get_terminal_size()[0]}\n\n')
 
         _print_paper_details(paper, show_abstract, highlights)
-
-        print(
-            f'{Fore.CYAN}You\'ve already refined {len(refined_papers)}/{len(search.papers)} papers!\n')
-
-        print('\n')
 
         answer = _get_select_question_input()
 
@@ -175,14 +228,11 @@ def refine(search_path: str, show_abstract: Optional[bool] = True, categories: O
         else:
             break
 
-        print('\n')
+        if paper.selected:
+            paper.categories = _get_category_question_input(categories)
 
-        if paper.selected and len(categories) > 0:
-            paper.category = _get_category_question_input(categories)
+        done_papers.append(paper)
 
-        refined_papers.append(paper)
-
-    print(
-        f'{Fore.CYAN}You\'ve already refined {len(refined_papers)}/{len(search.papers)} papers!\n')
+    print(f'\n{Fore.CYAN}{len(done_papers)}/{len(todo_papers)} of the papers already done!\n')
 
     persistence_util.save(search, search_path)

@@ -104,9 +104,9 @@ def refine(
         False, "-a", "--show_abstract", show_default=True,
         help="A flag to indicate if the abstract should be shown or not"
     ),
-    categories: str = typer.Option(
-        None, "-c", "--categories", show_default=True,
-        help="A comma-separated list of categories to assign to the papers"
+    categories: List[str] = typer.Option(
+        [], "-c", "--categories", show_default=True,
+        help="A comma-separated list of categories to assign to the papers with their facet following the pattern: <facet>:<term_b>,<term_c>,..."
     ),
     highlights: str = typer.Option(
         None, "-h", "--highlights", show_default=True,
@@ -127,7 +127,13 @@ def refine(
     You can show or hide the paper abstract by using the -a (or --abstract) flag.
 
     If a comma-separated list of categories is provided by the -c (or --categories) argument, 
-    you can assign a category to the paper.
+    you can assign a category to the paper. You need to define these categories following the pattern: <facet>:<term_b>,<term_c>,...
+
+    E.g.: 
+    --categories "Contribution:Metric,Tool,Model,Method"
+    --categories "Research Type:Validation Research,Evaluation Research,Solution Proposal,Philosophical,Opinion,Experience"
+    
+    The -c parameter can be defined several times, so you can define as many facets as you want
 
     And to help you on the refinement, this command can also highlight some terms on the paper's abstract 
     by a provided comma-separated list of them provided by the -h (or --highlights) argument.
@@ -137,9 +143,15 @@ def refine(
 
     try:
         common_util.logging_initialize(verbose)
-        categories = [x.strip() for x in categories.split(',')] if categories is not None else None
         highlights = [x.strip() for x in highlights.split(',')]if highlights is not None else None
-        findpapers.refine(filepath, show_abstract, categories, highlights)
+        
+        categories_by_facet = {}
+        for categories_string in categories:
+            string_split = categories_string.split(':')
+            facet = string_split[0].strip()
+            categories_by_facet[facet] = [x.strip() for x in string_split[1].split(',')]
+
+        findpapers.refine(filepath, show_abstract, categories_by_facet, highlights)
     except Exception as e:
         typer.echo(e)
         raise typer.Exit(code=1)
