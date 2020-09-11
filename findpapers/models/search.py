@@ -370,5 +370,6 @@ class Search():
             'limit': search.limit,
             'limit_per_database': search.limit_per_database,
             'processed_at': search.processed_at.strftime('%Y-%m-%d %H:%M:%S') if search.processed_at is not None else None,
-            'papers': papers,
+            'number_of_papers': len(papers),
+            'papers': papers
         }

@@ -35,19 +35,23 @@ def search(
         help="The max number of papers to collect"
     ),
     limit_per_database: int = typer.Option(
-        None, "-ld", "--limit_per_database", show_default=True,
+        None, "-ld", "--limit-db", show_default=True,
         help="The max number of papers to collect per each database"
     ),
     verbose: bool = typer.Option(
         False, "-v", "--verbose", show_default=True,
         help="If you wanna a verbose mode logging"
     ),
+    databases: str = typer.Option(
+        None, "-d", "--databases", show_default=True,
+        help="A comma-separated list of databases where the search should be performed, if not specified all databases will be used (this parameter is case insensitive)"
+    ),
     scopus_api_token: str = typer.Option(
-        None, "-ts", "--scopus_api_token", show_default=True,
+        None, "-ts", "--token-scopus", show_default=True,
         help="A API token used to fetch data from Scopus database. If you don't have one go to https://dev.elsevier.com and get it. (If not provided it will be loaded from the environment variable FINDPAPERS_SCOPUS_API_TOKEN)"
     ),
     ieee_api_token: str = typer.Option(
-        None, "-te", "--ieee_api_token", show_default=True,
+        None, "-te", "--token-ieee", show_default=True,
         help="A API token used to fetch data from IEEE database. If you don't have one go to https://developer.ieee.org and get it. (If not provided it will be loaded from the environment variable FINDPAPERS_IEEE_API_TOKEN)"
     )
 ):
@@ -80,15 +84,24 @@ def search(
         You can restrict the max number of retrived papers by using -l (or --limit).
         And, restrict the max number of retrived papers by database using -ld (or --limit_per_database) argument.
 
+        You can control which databases you would like to use in your search by the -d (or --databases) option. This parameter
+        accepts a comma-separated list of database names, and is case-insensitive. Nowadays the available databases are
+        ACM, arXiv, IEEE, PubMed, Scopus
+
+        E.g.:
+        --databases "scopus,arxiv,acm"
+        --databases "ieee,ACM,PubMed"
+
         You can control the command logging verbosity by the -v (or --verbose) argument.
     """
 
     try:
         since = since.date() if since is not None else None
         until = until.date() if until is not None else None
+        databases = [x.strip() for x in databases.split(',')] if databases is not None else None
         common_util.logging_initialize(verbose)
-        findpapers.search(outputpath, query, since, until,
-                          limit, limit_per_database, scopus_api_token, ieee_api_token)
+        findpapers.search(outputpath, query, since, until, limit,
+                          limit_per_database, databases, scopus_api_token, ieee_api_token)
     except Exception as e:
         typer.echo(e)
         logging.debug(e, exc_info=True)
@@ -109,15 +122,15 @@ def refine(
         help="A comma-separated list of terms to be highlighted on the abstract"
     ),
     show_abstract: bool = typer.Option(
-        False, "-a", "--show_abstract", show_default=True,
+        False, "-a", "--abstract", show_default=True,
         help="A flag to indicate if the paper's abstract should be shown or not"
     ),
     show_metadata: bool = typer.Option(
-        False, "-m", "--show_metadata", show_default=True,
+        False, "-m", "--metadata", show_default=True,
         help="A flag to indicate if the paper's metadata should be shown or not"
     ),
     read_only: bool = typer.Option(
-        False, "-r", "--read_only", show_default=True,
+        False, "-r", "--read-only", show_default=True,
         help="If this flag is present, this function call will only list the papers"
     ),
     verbose: bool = typer.Option(
@@ -151,7 +164,7 @@ def refine(
 
     try:
         common_util.logging_initialize(verbose)
-        highlights = [x.strip() for x in highlights.split(',')]if highlights is not None else None
+        highlights = [x.strip() for x in highlights.split(',')] if highlights is not None else None
         
         categories_by_facet = {}
         for categories_string in categories:

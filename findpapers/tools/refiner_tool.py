@@ -205,7 +205,15 @@ def refine(search_path: str, categories: Optional[dict] = None, highlights: Opti
 
     search = persistence_util.load(search_path)
 
-    wanna_re_refine_papers = _get_wanna_re_refine_papers_input()
+    has_already_refined_papers = False
+    for paper in search.papers:
+        if paper.selected is not None:
+            has_already_refined_papers = True
+            break
+
+    wanna_re_refine_papers = False
+    if has_already_refined_papers:
+        wanna_re_refine_papers = _get_wanna_re_refine_papers_input()
 
     todo_papers = []
     done_papers = []
@@ -219,9 +227,12 @@ def refine(search_path: str, categories: Optional[dict] = None, highlights: Opti
             else:
                 done_papers.append(paper)
 
-    for paper in todo_papers:
+    for i, paper in enumerate(todo_papers):
+        
+        print(f'\n{"." * os.get_terminal_size()[0]}\n')
 
-        print(f'\n{"." * os.get_terminal_size()[0]}\n\n')
+        if not read_only:
+            print(f'\n{Fore.CYAN}{i+1}/{len(todo_papers)} papers\n')
 
         _print_paper_details(paper, highlights, show_abstract, show_metadata)
 
@@ -242,8 +253,5 @@ def refine(search_path: str, categories: Optional[dict] = None, highlights: Opti
                 paper.categories = _get_category_question_input(categories)
             
             done_papers.append(paper)
-
-            print(f'\n{Fore.CYAN}{len(done_papers)}/{len(todo_papers)} of the papers already done!\n')
-
 
     persistence_util.save(search, search_path)

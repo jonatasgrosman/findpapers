@@ -4,7 +4,7 @@ import logging
 import requests
 import copy
 from lxml import html
-from typing import Optional
+from typing import Optional, List
 from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
@@ -285,7 +285,7 @@ def _is_query_ok(query: str) -> bool:
 
 
 def search(outputpath: str, query: Optional[str] = None, since: Optional[datetime.date] = None, until: Optional[datetime.date] = None,
-        limit: Optional[int] = None, limit_per_database: Optional[int] = None,
+        limit: Optional[int] = None, limit_per_database: Optional[int] = None, databases: Optional[List[str]] = None,
         scopus_api_token: Optional[str] = None, ieee_api_token: Optional[str] = None):
     """
     When you have a query and needs to get papers using it, this is the method that you'll need to call.
@@ -324,6 +324,9 @@ def search(outputpath: str, query: Optional[str] = None, since: Optional[datetim
     limit_per_database : Optional[int], optional
         The max number of papers to collect per each database, by default None
 
+    databases : List[str], optional
+        List of databases where the search should be performed, if not specified all databases will be used, by default None
+
     scopus_api_token : Optional[str], optional
         A API token used to fetch data from Scopus database. If you don't have one go to https://dev.elsevier.com and get it, by default None
 
@@ -333,6 +336,9 @@ def search(outputpath: str, query: Optional[str] = None, since: Optional[datetim
     """
     
     logging.info('Let\'s find some papers, this process may take a while...')
+
+    if databases is not None:
+        databases = [x.lower() for x in databases]
 
     if query is None:
         query = os.getenv('FINDPAPERS_QUERY')
@@ -350,20 +356,31 @@ def search(outputpath: str, query: Optional[str] = None, since: Optional[datetim
 
     search = Search(query, since, until, limit, limit_per_database)
 
-    _database_safe_run(lambda: arxiv_searcher.run(search),
-                       search, arxiv_searcher.DATABASE_LABEL)
-    _database_safe_run(lambda: pubmed_searcher.run(search),
-                       search, pubmed_searcher.DATABASE_LABEL)
-    _database_safe_run(lambda: acm_searcher.run(search),
-                       search, acm_searcher.DATABASE_LABEL)
+    if databases is None or arxiv_searcher.DATABASE_LABEL.lower() in databases:
+        _database_safe_run(lambda: arxiv_searcher.run(search),
+                        search, arxiv_searcher.DATABASE_LABEL)
+    
+    if databases is None or pubmed_searcher.DATABASE_LABEL.lower() in databases:
+        _database_safe_run(lambda: pubmed_searcher.run(search),
+                        search, pubmed_searcher.DATABASE_LABEL)
+
+    if databases is None or acm_searcher.DATABASE_LABEL.lower() in databases:
+        _database_safe_run(lambda: acm_searcher.run(search),
+                        search, acm_searcher.DATABASE_LABEL)
 
     if ieee_api_token is not None:
-        _database_safe_run(lambda: ieee_searcher.run(
-            search, ieee_api_token), search, ieee_searcher.DATABASE_LABEL)
+        if databases is None or ieee_searcher.DATABASE_LABEL.lower() in databases:
+            _database_safe_run(lambda: ieee_searcher.run(
+                search, ieee_api_token), search, ieee_searcher.DATABASE_LABEL)
+    else:
+        logging.info('IEEE API token not found, skipping search on this database')
 
     if scopus_api_token is not None:
-        _database_safe_run(lambda: scopus_searcher.run(
-            search, scopus_api_token), search, scopus_searcher.DATABASE_LABEL)
+        if databases is None or scopus_searcher.DATABASE_LABEL.lower() in databases:
+            _database_safe_run(lambda: scopus_searcher.run(
+                search, scopus_api_token), search, scopus_searcher.DATABASE_LABEL)
+    else:
+        logging.info('Scopus API token not found, skipping search on this database')
 
     logging.info('Enriching data...')
 
