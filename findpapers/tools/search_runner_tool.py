@@ -284,7 +284,7 @@ def _is_query_ok(query: str) -> bool:
     return query_ok and current_keyword is None and current_operator is None
 
 
-def search(outputpath: str, query: str, since: Optional[datetime.date] = None, until: Optional[datetime.date] = None,
+def search(outputpath: str, query: Optional[str] = None, since: Optional[datetime.date] = None, until: Optional[datetime.date] = None,
         limit: Optional[int] = None, limit_per_database: Optional[int] = None,
         scopus_api_token: Optional[str] = None, ieee_api_token: Optional[str] = None):
     """
@@ -296,8 +296,11 @@ def search(outputpath: str, query: str, since: Optional[datetime.date] = None, u
     outputpath : str
         A valid file path where the search result file will be placed
 
-    query : str
+    query : str, optional
+
         A query string that will be used to perform the papers search.
+        
+        If not provided, the query will be loaded from the environment variable FINDPAPERS_QUERY
 
         All the query terms need to be enclosed in quotes and can be associated using boolean operators,
         and grouped using parentheses. 
@@ -331,7 +334,10 @@ def search(outputpath: str, query: str, since: Optional[datetime.date] = None, u
     
     logging.info('Let\'s find some papers, this process may take a while...')
 
-    if not _is_query_ok(query):
+    if query is None:
+        query = os.getenv('FINDPAPERS_QUERY')
+
+    if query is None or not _is_query_ok(query):
         raise ValueError('Invalid query format')
 
     common_util.check_write_access(outputpath)

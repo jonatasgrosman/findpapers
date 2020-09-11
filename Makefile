@@ -36,5 +36,5 @@ test_report: setup
 	@poetry run pytest --durations=3 -v --cov=${PWD}/findpapers --cov-report xml:reports/coverage.xml --junitxml=reports/tests.xml
 
 publish: setup
-	@poetry config pypi-token.pypi ${PYPI_API_TOKEN}
+	@poetry config pypi-token.pypi ${FINDPAPERS_PYPI_API_TOKEN}
 	@poetry publish --build

@@ -16,8 +16,9 @@ def search(
     outputpath: str = typer.Argument(
         ..., help='A valid file path where the search result JSON file will be placed'
     ),
-    query: str = typer.Argument(
-        ..., help='A query string that will be used to perform the papers search. E.g. [term A] AND ([term B] OR [term C]) AND NOT [term D]'
+    query: str = typer.Option(
+        None, "-q", "--query", show_default=True,
+        help='A query string that will be used to perform the papers search (If not provided it will be loaded from the environment variable FINDPAPERS_QUERY). E.g. [term A] AND ([term B] OR [term C]) AND NOT [term D]'
     ),
     since: datetime = typer.Option(
         None, "-s", "--since", show_default=True,
@@ -43,11 +44,11 @@ def search(
     ),
     scopus_api_token: str = typer.Option(
         None, "-ts", "--scopus_api_token", show_default=True,
-        help="A API token used to fetch data from Scopus database. If you don't have one go to https://dev.elsevier.com and get it"
+        help="A API token used to fetch data from Scopus database. If you don't have one go to https://dev.elsevier.com and get it. (If not provided it will be loaded from the environment variable FINDPAPERS_SCOPUS_API_TOKEN)"
     ),
     ieee_api_token: str = typer.Option(
         None, "-te", "--ieee_api_token", show_default=True,
-        help="A API token used to fetch data from IEEE database. If you don't have one go to https://developer.ieee.org and get it"
+        help="A API token used to fetch data from IEEE database. If you don't have one go to https://developer.ieee.org and get it. (If not provided it will be loaded from the environment variable FINDPAPERS_IEEE_API_TOKEN)"
     )
 ):
     """

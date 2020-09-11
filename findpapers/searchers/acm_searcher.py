@@ -41,8 +41,6 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     query += f' OR Keyword:({transformed_query})'
     query += f' OR Abstract:({transformed_query})'
 
-    print(transformed_query)
-
     url_parameters = {
         'fillQuickSearch': 'false',
         'expand': 'all',
@@ -241,7 +239,7 @@ def run(search: Search):
     except Exception:  # pragma: no cover
         total_papers = 0
 
-    logging.info(f'{total_papers} papers to fetch')
+    logging.info(f'ACM: {total_papers} papers to fetch')
 
     page_index = 0
     while(papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL)):

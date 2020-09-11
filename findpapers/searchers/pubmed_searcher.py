@@ -244,7 +244,7 @@ def run(search: Search):
 
     total_papers = int(result.get('eSearchResult').get('Count'))
 
-    logging.info(f'{total_papers} papers to fetch')
+    logging.info(f'PubMed: {total_papers} papers to fetch')
 
     while(papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL)):
 

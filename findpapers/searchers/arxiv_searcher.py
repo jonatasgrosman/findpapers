@@ -343,7 +343,7 @@ def run(search: Search):
     total_papers = int(result.get('feed').get(
         'opensearch:totalResults').get('#text'))
 
-    logging.info(f'{total_papers} papers to fetch')
+    logging.info(f'arXiv: {total_papers} papers to fetch')
 
     while(papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL)):
 

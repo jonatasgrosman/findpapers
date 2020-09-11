@@ -210,7 +210,7 @@ def run(search: Search, api_token: str):
     result = _get_api_result(search, api_token)
     total_papers = result.get('total_records')
 
-    logging.info(f'{total_papers} papers to fetch')
+    logging.info(f'IEEE: {total_papers} papers to fetch')
 
     while(papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL)):
 

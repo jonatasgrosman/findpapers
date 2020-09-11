@@ -353,7 +353,7 @@ def run(search: Search, api_token: str, url: Optional[str] = None, papers_count:
 
     total_papers = int(search_results.get('opensearch:totalResults', 0))
 
-    logging.info(f'{total_papers} papers to fetch')
+    logging.info(f'Scopus: {total_papers} papers to fetch')
 
     for paper_entry in search_results.get('entry', []):
 
