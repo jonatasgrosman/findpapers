@@ -100,10 +100,6 @@ def refine(
     filepath: str = typer.Argument(
         ..., help='A valid file path for the search result file'
     ),
-    show_abstract: bool = typer.Option(
-        False, "-a", "--show_abstract", show_default=True,
-        help="A flag to indicate if the abstract should be shown or not"
-    ),
     categories: List[str] = typer.Option(
         [], "-c", "--categories", show_default=True,
         help="A comma-separated list of categories to assign to the papers with their facet following the pattern: <facet>:<term_b>,<term_c>,..."
@@ -111,6 +107,18 @@ def refine(
     highlights: str = typer.Option(
         None, "-h", "--highlights", show_default=True,
         help="A comma-separated list of terms to be highlighted on the abstract"
+    ),
+    show_abstract: bool = typer.Option(
+        False, "-a", "--show_abstract", show_default=True,
+        help="A flag to indicate if the paper's abstract should be shown or not"
+    ),
+    show_metadata: bool = typer.Option(
+        False, "-m", "--show_metadata", show_default=True,
+        help="A flag to indicate if the paper's metadata should be shown or not"
+    ),
+    read_only: bool = typer.Option(
+        False, "-r", "--read_only", show_default=True,
+        help="If this flag is present, this function call will only list the papers"
     ),
     verbose: bool = typer.Option(
         False, "-v", "--verbose", show_default=True,
@@ -151,7 +159,7 @@ def refine(
             facet = string_split[0].strip()
             categories_by_facet[facet] = [x.strip() for x in string_split[1].split(',')]
 
-        findpapers.refine(filepath, show_abstract, categories_by_facet, highlights)
+        findpapers.refine(filepath, categories_by_facet, highlights, show_abstract, show_metadata, read_only)
     except Exception as e:
         typer.echo(e)
         raise typer.Exit(code=1)
