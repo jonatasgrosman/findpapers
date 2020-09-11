@@ -199,15 +199,15 @@ def _is_query_ok(query: str) -> bool:
     Checking a search query, it will return True if it's valid or False otherwise.
 
     Examples
-    VALID = ("term a" OR "term b")
-    INVALID = ("term a" OR "term b"
-    VALID = "term a" OR "term b"
-    INVALID = term a OR "term b"
-    INVALID = term a "term b"
-    INVALID = "" AND "term b"
-    VALID = "term a"
-    INVALID = ""
-    INVALID = "
+    VALID = ([term a] OR [term b])
+    INVALID = ([term a] OR [term b]
+    VALID = [term a] OR [term b]
+    INVALID = term a OR [term b]
+    INVALID = term a [term b]
+    INVALID = [] AND [term b]
+    VALID = [term a]
+    INVALID = []
+    INVALID = [
 
     Parameters
     ----------
@@ -220,7 +220,7 @@ def _is_query_ok(query: str) -> bool:
         A boolean value indicating whether the query is valid or not
     """
 
-    if len(query) == 0 or len(query) < 3 or query[0] not in ['(', '"'] or query[-1] not in [')', '"']:
+    if len(query) == 0 or len(query) < 3 or query[0] not in ['(', '['] or query[-1] not in [')', ']']:
         return False
     
     # checking groups
@@ -243,7 +243,7 @@ def _is_query_ok(query: str) -> bool:
     
     # checking keywords and operators
     #TODO: improve this query validation, 'cause this approach ignore the parenthesis
-    # and still can return True for invalid queries like "term a" O(R) "term b"
+    # and still can return True for invalid queries like [term a] O(R) [term b]
 
     query_ok = True
     inside_keyword = False
@@ -255,7 +255,7 @@ def _is_query_ok(query: str) -> bool:
     for character in transformed_query:
 
         if inside_keyword:
-            if character == '"': # closing a search term
+            if character == ']': # closing a search term
                 if current_keyword is None or len(current_keyword.strip()) == 0:
                     query_ok = False
                     break
@@ -267,7 +267,7 @@ def _is_query_ok(query: str) -> bool:
                 else:
                     current_keyword += character
         else:
-            if character == '"': # opening a search term
+            if character == '[': # opening a search term
                 if current_operator is not None and current_operator not in valid_operators:
                     query_ok = False
                     break
@@ -301,7 +301,7 @@ def search(outputpath: str, query: str, since: Optional[datetime.date] = None, u
 
         All the query terms need to be enclosed in quotes and can be associated using boolean operators,
         and grouped using parentheses. 
-        E.g.: "term A" AND ("term B" OR "term C") AND NOT "term D"
+        E.g.: [term A] AND ([term B] OR [term C]) AND NOT [term D]
 
         You can use some wildcards in the query too. Use ? to replace a single character or * to replace any number of characters. 
         E.g.: "son?" -> will match song, sons, ...

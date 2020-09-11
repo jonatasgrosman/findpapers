@@ -35,11 +35,13 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     str
         a URL to be used to retrieve data from ACM database
     """
-    transformed_query = search.query.replace(' AND NOT ', ' NOT ')
+    transformed_query = search.query.replace(' AND NOT ', ' NOT ').replace('[', '"').replace(']', '"')
 
     query = f'Title:({transformed_query})'
     query += f' OR Keyword:({transformed_query})'
     query += f' OR Abstract:({transformed_query})'
+
+    print(transformed_query)
 
     url_parameters = {
         'fillQuickSearch': 'false',
@@ -54,8 +56,8 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
         url_parameters['AfterYear'] = search.since.year
 
     if search.until is not None:
-        url_parameters['BeforeMonth'] = search.since.month
-        url_parameters['BeforeYear'] = search.since.year
+        url_parameters['BeforeMonth'] = search.until.month
+        url_parameters['BeforeYear'] = search.until.year
 
     url = f'{BASE_URL}/action/doSearch?{urlencode(url_parameters)}'
 

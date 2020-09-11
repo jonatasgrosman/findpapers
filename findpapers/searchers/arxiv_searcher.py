@@ -195,9 +195,9 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     transformed_query = search.query.replace(' AND NOT ', ' ANDNOT ')
     if transformed_query[0] == '"':
         transformed_query = ' ' + transformed_query
-    transformed_query = transformed_query.replace(' "', ' FIELD_TYPE:"')
-    transformed_query = transformed_query.replace('("', '(FIELD_TYPE:"')
-    transformed_query = transformed_query.replace('"', '')
+    transformed_query = transformed_query.replace(' [', ' FIELD_TYPE:[')
+    transformed_query = transformed_query.replace('([', '(FIELD_TYPE:[')
+    transformed_query = transformed_query.replace('[', '').replace(']', '')
     transformed_query = transformed_query.strip()
 
     abstract_query = transformed_query.replace('FIELD_TYPE:', 'abs:')

@@ -37,6 +37,7 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
         a URL to be used to retrieve data from PubMed database
     """
     query = search.query.replace(' AND NOT ', ' NOT ')
+    query = query.replace('[','"').replace(']','"')
     url = f'{BASE_URL}/entrez/eutils/esearch.fcgi?db=pubmed&term={query} AND has abstract [FILT] AND "journal article"[Publication Type]'
 
     if search.since is not None or search.until is not None:

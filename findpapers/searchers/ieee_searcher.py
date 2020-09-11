@@ -39,6 +39,7 @@ def _get_search_url(search: Search, api_token: str, start_record: Optional[int] 
     """
 
     query = search.query.replace(' AND NOT ', ' NOT ')
+    query = query.replace('[','"').replace(']','"')
 
     url = f'{BASE_URL}/api/v1/search/articles?querytext={query}&format=json&apikey={api_token}&max_records={MAX_ENTRIES_PER_PAGE}'
 

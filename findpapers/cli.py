@@ -17,7 +17,7 @@ def search(
         ..., help='A valid file path where the search result JSON file will be placed'
     ),
     query: str = typer.Argument(
-        ..., help='A query string that will be used to perform the papers search. E.g. "term A" AND ("term B" OR "term C") AND NOT "term D"'
+        ..., help='A query string that will be used to perform the papers search. E.g. [term A] AND ([term B] OR [term C]) AND NOT [term D]'
     ),
     since: datetime = typer.Option(
         None, "-s", "--since", show_default=True,
@@ -60,7 +60,7 @@ def search(
         and grouped using parentheses. The available boolean operators are "AND", "OR". "NOT".
         All boolean operators needs to be uppercased. The boolean operator "NOT" must be preceded by an "AND" operator.
 
-        E.g.: 'term A' AND ('term B' OR 'term C') AND NOT 'term D'
+        E.g.: [term A] AND ([term B] OR [term C]) AND NOT [term D]
 
         You can use some wildcards in the query too. Use ? to replace a single character or * to replace any number of characters.
 
@@ -86,7 +86,6 @@ def search(
         since = since.date() if since is not None else None
         until = until.date() if until is not None else None
         common_util.logging_initialize(verbose)
-        query = query.replace('\'', '"') # replacing single quotes by double quotes
         findpapers.search(outputpath, query, since, until,
                           limit, limit_per_database, scopus_api_token, ieee_api_token)
     except Exception as e:

@@ -31,8 +31,8 @@ def _get_query(search: Search) -> str:
     str
         The translated query
     """
-
-    query = f'TITLE-ABS-KEY({search.query})'
+    query = search.query.replace('[','"').replace(']','"')
+    query = f'TITLE-ABS-KEY({query})'
 
     if search.since is not None:
         query += f' AND PUBYEAR > {search.since.year - 1}'
