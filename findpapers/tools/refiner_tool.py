@@ -9,7 +9,7 @@ import findpapers.utils.common_util as common_util
 import findpapers.utils.persistence_util as persistence_util
 
 
-def _print_paper_details(paper: Paper, highlights: List[str], show_abstract: bool, show_metadata: bool):  # pragma: no cover
+def _print_paper_details(paper: Paper, highlights: List[str], show_abstract: bool, show_extra_info: bool):  # pragma: no cover
     """
     Private method used to print on console the paper details
 
@@ -21,8 +21,8 @@ def _print_paper_details(paper: Paper, highlights: List[str], show_abstract: boo
         A list of terms to highlight on the paper's abstract'
     show_abstract : bool
         A flag to indicate if the abstract should be shown or not
-    show_metadata : bool, optional
-        A flag to indicate if the paper's metadata should be shown or not, by default False
+    show_extra_info : bool, optional
+        A flag to indicate if the paper's extra info should be shown or not, by default False
     """
 
     print(f'{Fore.GREEN}{Style.BRIGHT}Title:{Style.NORMAL} {paper.title}')
@@ -40,7 +40,7 @@ def _print_paper_details(paper: Paper, highlights: List[str], show_abstract: boo
 
         print('\n')
 
-    if show_metadata:
+    if show_extra_info:
 
         if len(paper.keywords) > 0:
             print(f'{Style.BRIGHT}Paper keywords:{Style.NORMAL} {", ".join(paper.keywords)}')
@@ -162,7 +162,7 @@ def _get_category_question_input(categories: dict):  # pragma: no cover
 
 
 def refine(search_path: str, categories: Optional[dict] = None, highlights: Optional[list] = None,
-           show_abstract: Optional[bool] = False, show_metadata: Optional[bool] = False, read_only: Optional[bool] = False):
+           show_abstract: Optional[bool] = False, show_extra_info: Optional[bool] = False, read_only: Optional[bool] = False):
     """
     When you have a search result and wanna refine it, this is the method that you'll need to call.
     This method will iterate through all the papers showing their collected data, 
@@ -188,8 +188,8 @@ def refine(search_path: str, categories: Optional[dict] = None, highlights: Opti
         A list of terms to highlight on the paper's abstract', by default None
     show_abstract : bool, optional
         A flag to indicate if the abstract should be shown or not, by default False
-    show_metadata : bool, optional
-        A flag to indicate if the paper's metadata should be shown or not, by default False
+    show_extra_info : bool, optional
+        A flag to indicate if the paper's extra info should be shown or not, by default False
     read_only : bool, optional
         If true, this method will only list the papers, by default False
     """
@@ -234,7 +234,7 @@ def refine(search_path: str, categories: Optional[dict] = None, highlights: Opti
         if not read_only:
             print(f'\n{Fore.CYAN}{i+1}/{len(todo_papers)} papers\n')
 
-        _print_paper_details(paper, highlights, show_abstract, show_metadata)
+        _print_paper_details(paper, highlights, show_abstract, show_extra_info)
 
         if not read_only:
 

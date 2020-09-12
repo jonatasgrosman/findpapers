@@ -182,6 +182,29 @@ class Paper():
 
         return citation_key
 
+    def has_category_match(self, categories: dict) -> bool:
+        """
+        Check is there is a match with provided categories
+
+        Parameters
+        ----------
+        categories : dict
+            The categories to match
+
+        Returns
+        -------
+        bool
+            if has a match with provided categories
+        """
+
+        if categories is not None and self.categories is not None:
+            for facet, facet_categories in categories.items():
+                for facet_category in facet_categories:
+                    if facet_category in self.categories.get(facet, []):
+                        return True
+
+        return False
+
     @classmethod
     def from_dict(cls, paper_dict: dict) -> Paper:
         """

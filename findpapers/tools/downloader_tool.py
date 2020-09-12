@@ -6,7 +6,7 @@ import logging
 import datetime
 import urllib.parse
 from lxml import html
-from typing import Optional
+from typing import Optional, List
 import findpapers.utils.common_util as common_util
 import findpapers.utils.persistence_util as persistence_util
 from findpapers.models.search import Search
@@ -16,7 +16,8 @@ from findpapers.utils.requests_util import DefaultSession
 DEFAULT_SESSION = DefaultSession()
 
 
-def download(search_path: str, output_directory: str, only_selected_papers: Optional[bool] = False):
+def download(search_path: str, output_directory: str, only_selected_papers: Optional[bool] = False,
+             categories_filter: Optional[dict] = None):
     """
     If you've done your search, (probably made the search refinement too) and wanna download the papers, 
     this is the method that you need to call. This method will try to download the PDF version of the papers to
@@ -40,6 +41,8 @@ def download(search_path: str, output_directory: str, only_selected_papers: Opti
         A valid file path of the directory where the downloaded papers will be placed
     only_selected_papers : bool, False by default
         If only the selected papers will be downloaded
+    categories_filter : dict, None by default
+        A dict of categories to be used to filter which papers will be downloaded
     """
 
     search = persistence_util.load(search_path)
@@ -60,6 +63,10 @@ def download(search_path: str, output_directory: str, only_selected_papers: Opti
 
         logging.info(f'({i+1}/{len(search.papers)}) {paper.title}')
 
+        if (only_selected_papers and not paper.selected) or \
+        (categories_filter is not None and (paper.categories is None or not paper.has_category_match(categories_filter))):
+            continue
+
         downloaded = False
         output_filename = f'{paper.publication_date.year}-{paper.title}'
         output_filename = re.sub(
@@ -69,9 +76,6 @@ def download(search_path: str, output_directory: str, only_selected_papers: Opti
 
         if os.path.exists(output_filepath):  # PDF already collected
             logging.info(f'Paper\'s PDF file has already been collected')
-            continue
-        
-        if only_selected_papers and not paper.selected:
             continue
 
         if paper.doi is not None:
@@ -174,7 +178,7 @@ def download(search_path: str, output_directory: str, only_selected_papers: Opti
 
                         paper_id = response.url.split('/')[-1].zfill(4)
                         pdf_url = '/'.join(response.url.split('/')
-                                            [:-1]) + '/' + paper_id + '.pdf'
+                                           [:-1]) + '/' + paper_id + '.pdf'
 
                     elif host_url in ['https://asmp-eurasipjournals.springeropen.com']:
 

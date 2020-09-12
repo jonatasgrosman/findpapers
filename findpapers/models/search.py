@@ -98,10 +98,10 @@ class Search():
             A string that represents a unique key for each publication, that will be used to fill and retrieve values from publication_by_key
         """
 
-        if publication_isbn is not None:
-            return f'ISBN-{publication_isbn.lower()}'
-        elif publication_issn is not None:
+        if publication_issn is not None:
             return f'ISSN-{publication_issn.lower()}'
+        elif publication_isbn is not None:
+            return f'ISBN-{publication_isbn.lower()}'
         else:
             return f'TITLE-{publication_title.lower()}'
 

@@ -38,10 +38,6 @@ def search(
         None, "-ld", "--limit-db", show_default=True,
         help="The max number of papers to collect per each database"
     ),
-    verbose: bool = typer.Option(
-        False, "-v", "--verbose", show_default=True,
-        help="If you wanna a verbose mode logging"
-    ),
     databases: str = typer.Option(
         None, "-d", "--databases", show_default=True,
         help="A comma-separated list of databases where the search should be performed, if not specified all databases will be used (this parameter is case insensitive)"
@@ -51,8 +47,12 @@ def search(
         help="A API token used to fetch data from Scopus database. If you don't have one go to https://dev.elsevier.com and get it. (If not provided it will be loaded from the environment variable FINDPAPERS_SCOPUS_API_TOKEN)"
     ),
     ieee_api_token: str = typer.Option(
-        None, "-te", "--token-ieee", show_default=True,
+        None, "-ti", "--token-ieee", show_default=True,
         help="A API token used to fetch data from IEEE database. If you don't have one go to https://developer.ieee.org and get it. (If not provided it will be loaded from the environment variable FINDPAPERS_IEEE_API_TOKEN)"
+    ),
+    verbose: bool = typer.Option(
+        False, "-v", "--verbose", show_default=True,
+        help="If you wanna a verbose mode logging"
     )
 ):
     """
@@ -125,9 +125,9 @@ def refine(
         False, "-a", "--abstract", show_default=True,
         help="A flag to indicate if the paper's abstract should be shown or not"
     ),
-    show_metadata: bool = typer.Option(
-        False, "-m", "--metadata", show_default=True,
-        help="A flag to indicate if the paper's metadata should be shown or not"
+    show_extra_info: bool = typer.Option(
+        False, "-e", "--extra-info", show_default=True,
+        help="A flag to indicate if the paper's extra info should be shown or not"
     ),
     read_only: bool = typer.Option(
         False, "-r", "--read-only", show_default=True,
@@ -155,6 +155,7 @@ def refine(
     --categories "Research Type:Validation Research,Evaluation Research,Solution Proposal,Philosophical,Opinion,Experience"
     
     The -c parameter can be defined several times, so you can define as many facets as you want
+    The -c parameter is case-sensitive.
 
     And to help you on the refinement, this command can also highlight some terms on the paper's abstract 
     by a provided comma-separated list of them provided by the -h (or --highlights) argument.
@@ -166,13 +167,13 @@ def refine(
         common_util.logging_initialize(verbose)
         highlights = [x.strip() for x in highlights.split(',')] if highlights is not None else None
         
-        categories_by_facet = {}
+        categories_by_facet = {} if len(categories) > 0 else None
         for categories_string in categories:
             string_split = categories_string.split(':')
             facet = string_split[0].strip()
             categories_by_facet[facet] = [x.strip() for x in string_split[1].split(',')]
 
-        findpapers.refine(filepath, categories_by_facet, highlights, show_abstract, show_metadata, read_only)
+        findpapers.refine(filepath, categories_by_facet, highlights, show_abstract, show_extra_info, read_only)
     except Exception as e:
         typer.echo(e)
         raise typer.Exit(code=1)
@@ -190,6 +191,10 @@ def download(
         False, "-s", "--selected", show_default=True,
         help="A flag to indicate if only selected papers (selections can be done on refine command) will be downloaded"
     ),
+    categories: List[str] = typer.Option(
+        [], "-c", "--categories", show_default=True,
+        help="A comma-separated list of categories (categorization can be done on refine command) that will be used to filter which papers will be downloaded, using the following pattern: <facet>:<term_b>,<term_c>,..."
+    ),
     verbose: bool = typer.Option(
         False, "-v", "--verbose", show_default=True,
         help="If you wanna a verbose mode logging"
@@ -203,6 +208,16 @@ def download(
     the output directory path.
 
     You can download only the selected papers by using the -s (or --selected) flag
+
+    You can filter which kind of categorized papers will be downloaded providing 
+    a comma-separated list of categories is provided by the -c (or --categories) argument, 
+    You need to define these categories following the pattern: <facet>:<term_b>,<term_c>,...
+
+    E.g.: 
+    --categories "Contribution:Metric,Tool"
+    
+    The -c parameter can be defined several times, so you can define as many filters as you want
+    The -c parameter is case-sensitive.
 
     We use some heuristics to do our job, but sometime they won't work properly, and we cannot be able
     to download the papers, but we logging the downloads or failures in a file download.log
@@ -219,7 +234,14 @@ def download(
 
     try:
         common_util.logging_initialize(verbose)
-        findpapers.download(filepath, outputpath, only_selected_papers)
+
+        categories_by_facet = {} if len(categories) > 0 else None
+        for categories_string in categories:
+            string_split = categories_string.split(':')
+            facet = string_split[0].strip()
+            categories_by_facet[facet] = [x.strip() for x in string_split[1].split(',')]
+
+        findpapers.download(filepath, outputpath, only_selected_papers, categories_by_facet)
     except Exception as e:
         typer.echo(e)
         raise typer.Exit(code=1)
@@ -237,6 +259,10 @@ def bibtex(
         False, "-s", "--selected", show_default=True,
         help="A flag to indicate if only selected papers (selections be done on refine command) will be used for bibtex generation"
     ),
+    categories: List[str] = typer.Option(
+        [], "-c", "--categories", show_default=True,
+        help="A comma-separated list of categories (categorization can be done on refine command) that will be used to filter which papers will be used for bibtex generation, using the following pattern: <facet>:<term_b>,<term_c>,..."
+    ),
     verbose: bool = typer.Option(
         False, "-v", "--verbose", show_default=True,
         help="If you wanna a verbose mode logging"
@@ -246,12 +272,31 @@ def bibtex(
     Command used to generate a BibTeX file from a search result.
 
     You can generate the bibtex only for the selected papers by using the -s (or --selected) flag
+
+    You can filter which kind of categorized papers will be used for bibtex generation providing 
+    a comma-separated list of categories is provided by the -c (or --categories) argument, 
+    You need to define these categories following the pattern: <facet>:<term_b>,<term_c>,...
+
+    E.g.: 
+    --categories "Contribution:Metric,Tool"
+    
+    The -c parameter can be defined several times, so you can define as many filters as you want.
+    The -c parameter is case-sensitive.
+
+    You can control the command logging verbosity by the -v (or --verbose) argument.
+
     """
 
     try:
         common_util.logging_initialize(verbose)
-        findpapers.generate_bibtex(
-            filepath, outputpath, only_selected_papers)
+
+        categories_by_facet = {} if len(categories) > 0 else None
+        for categories_string in categories:
+            string_split = categories_string.split(':')
+            facet = string_split[0].strip()
+            categories_by_facet[facet] = [x.strip() for x in string_split[1].split(',')]
+        
+        findpapers.generate_bibtex(filepath, outputpath, only_selected_papers, categories_by_facet)
     except Exception as e:
         typer.echo(e)
         raise typer.Exit(code=1)
