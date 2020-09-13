@@ -1,18 +1,113 @@
 # Findpapers
 
-Findpapers is a console application that helps researchers find papers by submitting a single query to multiple databases (currently ACM, arXiv, IEEE, PubMed, and Scopus)
+Findpapers is an application that helps researchers who are looking for the perfect references for their work. The application will perform searches in several databases (currently ACM, arXiv, IEEE, PubMed, and Scopus) from a user-defined search query.
 
-## Requirements
+Basically this tool will help you to perform the process below:
+
+![Workflow](docs/workflow.png)
+
+# Requirements
 
 - Python 3.7+
 
-## Installation
+# Installation
 
 ```console
 $ pip install findpapers
 ```
 
-## Usage
+# How to use it?
+
+All application actions are command line based. The available commands are 
+
+- ```findpapers search```: Search for papers using a query
+
+- ```findpapers refine```: Refine the search results by selecting/classifying the papers
+
+- ```findpapers download```: Download papers using the search results
+
+- ```findpapers bibtex```: Generate a BibTeX file from the search results
+
+In the following sections we will show how to use these commands. However, all the commands have the **--help** argument to display some summary about their usage.
+
+## Search query construction
+
+First of all we need to know how to build the search queries. The search queries must follow the rules:
+
+- All the query terms need to be not empty and enclosed by square brackets. E.g. **[term a]**
+
+- You cannot place a query term . E.g. **[term a]**
+
+- The query can contains boolean operators, but they must be uppercase. The allowed operators are AND, OR, and NOT. E.g. **[term a] AND [term b]**
+
+- All the operators must have 1 space before and after them. E.g. **[term a] OR [term b] OR [term c]**
+
+- The NOT operator must always be preceded by an AND operator E.g. **[term a] AND NOT [term b]**
+
+- A subquery needs to be enclosed by parentheses. E.g. **[term a] AND ([term b] AND [term c])**
+
+- The composition of terms is only allowed through boolean operators, queries like "**[term a] [term b]**" are invalid
+
+You can use some wildcards in the query too. Use ? to replace a single character or * to replace any number of characters:
+
+- **[son?]** will match song, sons, ...
+
+- **[son\*]** will match song, sons, songwriting, ...
+
+Let's see some examples of valid and invalid queries:
+
+| Query  | Valid? |
+| ------------- | ------------- |
+| ([term a] OR [term b])  |  Yes  |
+| [term a] OR [term b]  |  Yes  |
+| [term a] AND [term b]  |  Yes  |
+| [term a] AND NOT ([term b] OR [term c])  |  Yes  |
+| [term a] OR ([term b] AND ([term\*] OR [term ?]))  |  Yes |
+| [term a]  |  Yes  |
+| ([term a] OR [term b]  |  **No** (missing parentheses)  |
+| [term a] or [term b] |  **No** (lowercase operator)  |
+| term a OR [term b] |  **No** (missing square brackets)  |
+| [term a] [term b] |  **No** (missing boolean operator)  |
+| [term a] XOR [term b] |  **No** (invalid boolean operator)  |
+| [term a] OR NOT [term b] |  **No** (NOT operator must be preceded by AND)  |
+| [] AND [term b] |  **No** (empty term)  |
+
+
+## Basic example (TL;DR)
+
+- Getting papers:
+
+```console
+$ findpapers search /some/path/search.json "[term a] AND ([term b] OR [term c])"
+```
+
+- Refining results:
+
+```console
+$ findpapers refine /some/path/search.json
+```
+
+- Downloading full-text papers:
+
+```console
+$ findpapers download /some/path/search.json /some/path/papers/ -s
+```
+
+- Generating BibTeX file:
+
+```console
+$ findpapers bibtex /some/path/search.json /some/path/mybib.bib -s
+```
+
+## Advanced example
+
+This advanced usage documentation can be a bit boring to read (and write), so I think it's better to go for a storytelling approach here.
+
+[TODO]
+
+
+
+## DEPRECATED
 
 We basically have 4 basic commands available in the tool:
 

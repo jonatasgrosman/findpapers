@@ -61,7 +61,7 @@ def search(
         When you have a query and needs to get papers using it, this is the command that you'll need to call.
         This command will find papers from some databases based on the provided query.
 
-        All the query terms need to be enclosed by single quotes (') and can be associated using boolean operators,
+        All the query terms need to be enclosed by square brackets and can be associated using boolean operators,
         and grouped using parentheses. The available boolean operators are "AND", "OR". "NOT".
         All boolean operators needs to be uppercased. The boolean operator "NOT" must be preceded by an "AND" operator.
 
@@ -269,7 +269,7 @@ def bibtex(
     )
 ):
     """
-    Command used to generate a BibTeX file from a search result.
+    Generate a BibTeX file from the search results.
 
     You can generate the bibtex only for the selected papers by using the -s (or --selected) flag
 
