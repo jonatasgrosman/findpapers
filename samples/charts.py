@@ -138,7 +138,7 @@ def show_categories_headmap(papers, category_facet):
             text = ax.text(j, i, value_matrix[i, j],
                         ha="center", va="center", color=textcolors[int(value_matrix[i, j] > threshold)])
 
-    ax.set_title("Selected papers count (category/year)", pad=20)
+    ax.set_title(f"Selected papers count ({category_facet}/year)", pad=20)
     fig.tight_layout()
 
     plt.show()
