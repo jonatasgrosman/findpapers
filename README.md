@@ -209,7 +209,7 @@ As you could see, all the information collected and enriched by the Findpapers i
 
 ![charts](docs/charts.png)
 
-... so, use your imagination!
+... so, use your imagination! (the above visualization was made by the [samples/charts.py](https://gitlab.com/jonatasgrosman/findpapers/-/blob/master/samples/charts.py) script)
 
 That's all, folks! We have reached the end of our journey. I hope Dr. McCartney can continue his research and publish his work without any major problems now.
 
