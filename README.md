@@ -48,34 +48,46 @@ First of all, we need to know how to build the search queries. The search querie
 
 - The composition of terms is only allowed through boolean operators. Queries like "**[term a] [term b]**" are invalid
 
-You can use some wildcards in the query too. Use **?** to replace a single character or **\*** to replace any number of characters:
+You can use some wildcards in the query too. Use **\*** to replace zero or more characters:
 
 - **[son?]** will match song, sons, ...
 
-- **[son\*]** will match song, sons, sonic, songwriting, ...
+- **[son\*]** will match son, song, sons, sonic, songwriting, ...
+
+There are some rules that you'll need to follow when using wildcards:
+
+- Cannot be used at the start of a search term
+- A minimum of 3 characters preceding the asterisk wildcard (*) is required
+- The asterisk wildcard (*) can only be used at the end of a search term
+- Can be used only in single terms
+- Only one wildcard can be included in a search term
+
+Note: The IEEE and PubMed databases don't support the **"?"** wildcard usage
 
 Let's see some examples of valid and invalid queries:
 
 | Query  | Valid? |
 | ------------- | ------------- |
-| <pre>[term a]</pre>   |  Yes  |
-| <pre>([term a] OR [term b])</pre>   |  Yes  |
-| <pre>[term a] OR [term b]</pre>   |  Yes  |
-| <pre>[term a] AND [term b]</pre>   |  Yes  |
-| <pre>[term a] AND NOT ([term b] OR [term c])</pre>   |  Yes  |
-| <pre>[term a] OR ([term b] AND ([term\*] OR [term ?])) </pre>  |  Yes |
-| <pre>[term a]OR[term b]</pre>   |  **No** (no whitespace between terms and operator)  |
-| <pre>[term a]  OR  [term b]</pre>  |  **No** (more than 1 whitespace between terms and operator)  |
-| <pre>([term a] OR [term b]</pre>   |  **No** (missing parentheses)  |
-| <pre>[term a] or [term b]</pre>  |  **No** (lowercase operator)  |
-| <pre>term a OR [term b]</pre>  |  **No** (missing square brackets)  |
-| <pre>[term a] [term b]</pre>  |  **No** (missing boolean operator)  |
-| <pre>[term a] XOR [term b] |  **No** (invalid boolean operator)</pre>   |
-| <pre>[term a] OR NOT [term b] |  **No** (NOT operator must be preceded by AND)</pre>   |
-| <pre>[] AND [term b]</pre>  |  **No** (empty term)  |
-
-
-
+| [term a]   |  Yes  |
+| ([term a] OR [term b])   |  Yes  |
+| [term a] OR [term b]  |  Yes  |
+| [term a] AND [term b]   |  Yes  |
+| [term a] AND NOT ([term b] OR [term c])  |  Yes  |
+| [term a] OR ([term b] AND ([term\*] OR [t?rm]))  |  Yes |
+| [term a]OR[term b]   |  **No** (no whitespace between terms and boolean operator)  |
+| [term a] &nbsp;&nbsp;OR&nbsp;&nbsp; [term b]  |  **No** (more than 1 whitespace between terms and boolean operator)  |
+| ([term a] OR [term b]  |  **No** (missing parentheses)  |
+| [term a] or [term b]  |  **No** (lowercase boolean operator)  |
+| term a OR [term b]  |  **No** (missing square brackets)  |
+| [term a] [term b]  |  **No** (missing boolean operator)  |
+| [term a] XOR [term b] |  **No** (invalid boolean operator)   |
+| [term a] OR NOT [term b] |  **No** (NOT boolean operator must be preceded by AND)   |
+| [] AND [term b]  |  **No** (empty term)  |
+|[some term\*]  |  **No** (wildcards can be used only in single terms)  |
+|[?erm]  |  **No** (wildcards cannot be used at the start of a search term)  |
+|[te*]  |  **No** (a minimum of 3 characters preceding the asterisk wildcard is required)  |
+|[ter*s]  |  **No** (the asterisk wildcard can only be used at the end of a search term)  |
+|[t?rm?]  |  **No** (only one wildcard can be included in a search term)  |
 
 ## Basic example (TL;DR)
 
@@ -177,7 +189,14 @@ $ findpapers refine /some/path/search_paul.json --selected --abstract --extra-in
 
 An interesting point to stand out from the tool is that it automatically prevents duplication of papers, merging their information when the same paper is found in different databases. You can see this in the image above, where the Findpapers found the same work on the IEEE and Scopus databases (see "Paper found in" value) and merged the paper information on a single record.
 
-*Now that Dr. McCartney has selected all the papers he wanted, he will try to download the full-text from all of them which have a "Model" or "Tool" as a contribution.*
+
+*Now that Dr. McCartney has selected all the papers he wanted, he wanna see all of them.*
+
+```console
+$ findpapers refine /some/path/search_paul.json --selected --abstract --extra-info --read-only
+```
+
+*Then, he decides to download the full-text from all the selected papers which have a "Model" or "Tool" as a contribution.*
 
 ```console
 $ findpapers download /some/path/search_paul.json /some/path/papers --selected --categories "Contribution:Tool,Model"
