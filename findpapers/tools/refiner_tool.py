@@ -27,6 +27,8 @@ def _print_paper_details(paper: Paper, highlights: List[str], show_abstract: boo
 
     print(f'{Fore.GREEN}{Style.BRIGHT}Title:{Style.NORMAL} {paper.title}')
     print(f'{Fore.GREEN}{Style.BRIGHT}Authors:{Style.NORMAL} {" | ".join(paper.authors)}')
+    if len(paper.keywords) > 0:
+        print(f'{Fore.GREEN}{Style.BRIGHT}Keywords:{Style.NORMAL} {", ".join(paper.keywords)}')
     print(f'{Fore.GREEN}{Style.BRIGHT}Publication date:{Style.NORMAL} {paper.publication_date.strftime("%Y-%m-%d")}')
 
     print('\n')
@@ -41,9 +43,6 @@ def _print_paper_details(paper: Paper, highlights: List[str], show_abstract: boo
         print('\n')
 
     if show_extra_info:
-
-        if len(paper.keywords) > 0:
-            print(f'{Style.BRIGHT}Paper keywords:{Style.NORMAL} {", ".join(paper.keywords)}')
         if paper.comments is not None:
             print(f'{Style.BRIGHT}Paper comments:{Style.NORMAL} {paper.comments}')
         if paper.citations is not None:
@@ -161,8 +160,8 @@ def _get_category_question_input(categories: dict):  # pragma: no cover
     return selections
 
 
-def refine(search_path: str, categories: Optional[dict] = None, highlights: Optional[list] = None,
-           show_abstract: Optional[bool] = False, show_extra_info: Optional[bool] = False, read_only: Optional[bool] = False):
+def refine(search_path: str, categories: Optional[dict] = None, highlights: Optional[list] = None, show_abstract: Optional[bool] = False, 
+           show_extra_info: Optional[bool] = False, only_selected_papers: Optional[bool] = False, read_only: Optional[bool] = False):
     """
     When you have a search result and wanna refine it, this is the method that you'll need to call.
     This method will iterate through all the papers showing their collected data, 
@@ -190,6 +189,8 @@ def refine(search_path: str, categories: Optional[dict] = None, highlights: Opti
         A flag to indicate if the abstract should be shown or not, by default False
     show_extra_info : bool, optional
         A flag to indicate if the paper's extra info should be shown or not, by default False
+    only_selected_papers : bool, False by default
+        If only the selected papers will be refined, by default False
     read_only : bool, optional
         If true, this method will only list the papers, by default False
     """
@@ -211,15 +212,16 @@ def refine(search_path: str, categories: Optional[dict] = None, highlights: Opti
             has_already_refined_papers = True
             break
 
-    wanna_re_refine_papers = False
-    if has_already_refined_papers:
-        wanna_re_refine_papers = _get_wanna_re_refine_papers_input()
+    # wanna_re_refine_papers = False
+    # if has_already_refined_papers:
+    #     wanna_re_refine_papers = _get_wanna_re_refine_papers_input()
 
     todo_papers = []
     done_papers = []
     for paper in search.papers:
-        if wanna_re_refine_papers:
-            if paper.selected is not None:
+        #if wanna_re_refine_papers:
+        if only_selected_papers:
+            if paper.selected:
                 todo_papers.append(paper)
         else:
             if paper.selected is None:

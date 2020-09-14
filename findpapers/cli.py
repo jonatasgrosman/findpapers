@@ -56,7 +56,7 @@ def search(
     )
 ):
     """
-        Search for papers using a query.
+        Search for papers metadata using a query.
 
         When you have a query and needs to get papers using it, this is the command that you'll need to call.
         This command will find papers from some databases based on the provided query.
@@ -129,6 +129,10 @@ def refine(
         False, "-e", "--extra-info", show_default=True,
         help="A flag to indicate if the paper's extra info should be shown or not"
     ),
+    only_selected_papers: bool = typer.Option(
+        False, "-s", "--selected", show_default=True,
+        help="If only the selected papers will be refined"
+    ),
     read_only: bool = typer.Option(
         False, "-r", "--read-only", show_default=True,
         help="If this flag is present, this function call will only list the papers"
@@ -173,7 +177,7 @@ def refine(
             facet = string_split[0].strip()
             categories_by_facet[facet] = [x.strip() for x in string_split[1].split(',')]
 
-        findpapers.refine(filepath, categories_by_facet, highlights, show_abstract, show_extra_info, read_only)
+        findpapers.refine(filepath, categories_by_facet, highlights, show_abstract, show_extra_info, only_selected_papers, read_only)
     except Exception as e:
         typer.echo(e)
         raise typer.Exit(code=1)
@@ -201,7 +205,7 @@ def download(
     )
 ):
     """
-    Download papers using the search results.
+    Download full-text papers using the search results.
 
     If you've done your search, (probably made the search refinement too) and wanna download the papers, 
     this is the command that you need to call. This command will try to download the PDF version of the papers to
