@@ -1,0 +1,2443 @@
+{
+  "limit": null,
+  "limit_per_database": null,
+  "number_of_papers": 62,
+  "papers": [
+    {
+      "abstract": "In this paper, we address unsupervised pose-guided person image generation, which is known challenging due to non-rigid deformation. Unlike previous methods learning a rock-hard direct mapping between human bodies, we propose a new pathway to decompose the hard mapping into two more accessible subtasks, namely, semantic parsing transformation and appearance generation. Firstly, a semantic generative network is proposed to transform between semantic parsing maps, in order to simplify the non-rigid deformation learning. Secondly, an appearance generative network learns to synthesize semantic-aware textures. Thirdly, we demonstrate that training our framework in an end-to-end manner further refines the semantic maps and final results accordingly. Our method is generalizable to other semantic-aware person image generation tasks, e.g., clothing texture transfer and controlled image manipulation. Experimental results demonstrate the superiority of our method on DeepFashion and Market-1501 datasets, especially in keeping the clothing attributes and better body shapes.",
+      "authors": [
+        "Sijie Song",
+        "Wei Zhang",
+        "Jiaying Liu",
+        "Tao Mei"
+      ],
+      "categories": null,
+      "citations": 9,
+      "comments": null,
+      "databases": [
+        "IEEE"
+      ],
+      "doi": "10.1109/CVPR.2019.00246",
+      "keywords": [
+        "Vision Applications and Systems",
+        "Image and Video Synthesis"
+      ],
+      "number_of_pages": 10,
+      "pages": "2352-2361",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": 36.3,
+        "isbn": "978-1-7281-3294-5",
+        "issn": "1063-6919",
+        "publisher": "IEEE Computer Society",
+        "sjr": 13.396,
+        "snip": 22.378,
+        "subject_areas": [
+          "Software",
+          "Computer Vision and Pattern Recognition"
+        ],
+        "title": "2019 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)"
+      },
+      "publication_date": "2019-06-15",
+      "selected": null,
+      "title": "Unsupervised Person Image Generation With Semantic Parsing Transformation",
+      "urls": [
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8953978"
+      ]
+    },
+    {
+      "abstract": "Being a matter of cognition, user interests should be apt to classification independent of the language of users, social network and the essence of interest itself. To prove it, we built a collection of English and Russian Twitter and Vkontakte community pages manually classified according to the interests of their followers. First, we created a model of Major Interests (MaIs) with the help of expert analysis and then classified the mentioned set of pages using machine learning algorithms (SVM, Neural Network, Naive Bayes, Logistic Regression, Decision Trees, k-Nearest Neighbors) trying different optimization techniques. We take three interest domains that are typical of both English and Russian-speaking communities: football, rock music, vegetarianism. The results of classification show a greater correlation between Russian-Twitter and English-Twitter pages. The Logistic Regression with Bernoulli bag-of-words model proves to be the most effective classification algorithm. \u00a9 2018 Rossiiskii Gosudarstvennyi Gumanitarnyi Universitet Society of Cosmetic Chemists. All rights reserved.",
+      "authors": [],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": null,
+      "keywords": [
+        "Interest discovery",
+        "Natural language processing",
+        "Optimization",
+        "Social networks"
+      ],
+      "number_of_pages": 11,
+      "pages": "501-511",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": null,
+        "issn": "22217932",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Komp'juternaja Lingvistika i Intellektual'nye Tehnologii"
+      },
+      "publication_date": "2018-01-01",
+      "selected": null,
+      "title": "Machine learning classification of user interests across languages and social networks",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85051257715&origin=inward",
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85058051370&origin=inward"
+      ]
+    },
+    {
+      "abstract": "The exterior and interior displacements of the earth-rock dam are the important characters which can reflect its operation state. And it also has pivotal function in evaluating the quality of the project and judging whether the crack of the dam appears. The initial omission settlement is a popular problem in the observation of the earth-rock distortion. Because of the constructing schedule, the settlement observation dot is usually set at the time of the revetment accomplished simultaneously or after it finished. And at this time, it will be longer than the time which the dam spend reaching its elevation. Thus, a time difference existed. The quickest phase is just formed during this longer time when the settlement has grown. Usually, more than half of the total settlement has been accomplished during this time. The result shows that not only can the measure not reflect the whole process of the settlement, but the value of the measurement is far away from the fact as well, which makes the value of the observation result discounted greatly. Therefore, whether the calculation for the Initial Omission Settlement of Earth-rock Dam is right appears. The accuracy of these data has a direct influence on the reliability of the conclusion. In the paper, the initial omission settlement of earth-rock dam is optimized based on Hierarchic Genetic Algorithm by setting the omission settlement as new regression gene and optimizing the three parameters in different GA layers. The result has been testified that the value obtained from the HGA model is better than the one from early model which is far away from the real settlement process.",
+      "authors": [
+        "Song-Hui Li",
+        "Ji-Jian Lian",
+        "Zhi-Hong Qie",
+        "Chun-Di Si"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "IEEE"
+      ],
+      "doi": "10.1109/ICMLC.2007.4370282",
+      "keywords": [
+        "Initial omission settlement",
+        "Earth-rock dam",
+        "Hierarchic Genetic Algorithm"
+      ],
+      "number_of_pages": 6,
+      "pages": "968-973",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "978-1-4244-0973-0",
+        "issn": "2160-1348",
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "2007 International Conference on Machine Learning and Cybernetics"
+      },
+      "publication_date": "2007-08-19",
+      "selected": null,
+      "title": "Hierarchic Genetic Algorithm for the Initial Omission Settlement of the Earth-Rock Dam",
+      "urls": [
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=4370282"
+      ]
+    },
+    {
+      "abstract": "The microseismic monitoring signals which need to be determined in mines include those caused by both rock bursts and by blasting. The blasting signals must be separated from the microseismic signals in order to extract the information needed for the correct location of the source and for determining the blast mechanism. The use of a convolutional neural network (CNN) is a viable approach to extract these blast characteristic parameters automatically and to achieve the accuracy needed in the signal recognition. The Stockwell Transform (or S-Transform) has excellent two-dimensional time-frequency characteristics and thus to obtain the microseismic signal and blasting vibration signal separately, the microseismic signal has been converted in this work into a two-dimensional image format by use of the S-Transform, following which it is recognized by using the CNN. The sample data given in this paper are used for model training, where the training sample is an image containing three RGB color channels. The training time can be decreased by means of reducing the picture size and thus reducing the number of training steps used. The optimal combination of parameters can then be obtained after continuously updating the training parameters. When the image size is $180\\times140$ pixels, it has been shown that the test accuracy can reach 96.15% and that it is feasible to classify separately the blasting signal and the microseismic signal based on using the S-Transform and the CNN model architecture, where the training parameters were designed by synthesizing LeNet-5 and AlexNet.",
+      "authors": [
+        "Guangdong Song",
+        "Jiulong Cheng",
+        "Kenneth T. V. Grattan"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "IEEE"
+      ],
+      "doi": "10.1109/ACCESS.2020.2978392",
+      "keywords": [
+        "microseismic and blasting signal",
+        "signal recognition",
+        "Convolutional neural network (CNN)",
+        "Stockwell transform (S-Transform)"
+      ],
+      "number_of_pages": 8,
+      "pages": "45523-45530",
+      "publication": {
+        "category": "Journal",
+        "cite_score": 3.9,
+        "isbn": null,
+        "issn": "2169-3536",
+        "publisher": "Institute of Electrical and Electronics Engineers Inc.",
+        "sjr": 0.775,
+        "snip": 1.734,
+        "subject_areas": [
+          "Engineering (all)",
+          "Materials Science (all)",
+          "Computer Science (all)"
+        ],
+        "title": "IEEE Access"
+      },
+      "publication_date": "2020-01-01",
+      "selected": null,
+      "title": "Recognition of Microseismic and Blasting Signals in Mines Based on Convolutional Neural Network and Stockwell Transform",
+      "urls": [
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9025041"
+      ]
+    },
+    {
+      "abstract": "A study on a 220-piece corpus (baroque, classical, romantic, 12-tone, jazz, rock, DNA strings, and random music) reveals that aesthetically pleasing music may be describable under the Zipf-Mandelbrot law. Various Zipf-based metrics have been developed and evaluated. Some focus on music-theoretic attributes such as pitch, pitch and duration, melodic intervals, and harmonic intervals. Others focus on higher-order attributes and fractal aspects of musical balance. Zipf distributions across certain dimensions appear to be a necessary, but not sufficient condition for pleasant music. Statistical analyses suggest that combinations of Zipf-based metrics might be used to identify genre and/or composer. This is supported by a preliminary experiment with a neural network classifier. We describe an evolutionary music framework under development, which utilizes Zipf-based metrics as fitness functions. \u00a9 Springer-Verlag Berlin Heidelberg 2003.",
+      "authors": [
+        "Bill Manaris",
+        "Dallas Vaughan",
+        "Christopher Wagner",
+        "Juan Romero",
+        "Robert B. Davis"
+      ],
+      "categories": null,
+      "citations": 33,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.1007/3-540-36605-9_48",
+      "keywords": [],
+      "number_of_pages": 13,
+      "pages": "522-534",
+      "publication": {
+        "category": "Book",
+        "cite_score": 1.9,
+        "isbn": "3540009760",
+        "issn": "03029743",
+        "publisher": "Springer Verlag",
+        "sjr": 0.427,
+        "snip": 0.776,
+        "subject_areas": [
+          "Theoretical Computer Science",
+          "Computer Science (all)"
+        ],
+        "title": "Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)"
+      },
+      "publication_date": "2003-01-01",
+      "selected": null,
+      "title": "Evolutionary music and the Zipf-Mandelbrot law: Developing fitness functions for pleasant music",
+      "urls": [
+        "https://link.springer.com/content/pdf/10.1007%2F3-540-36605-9_48.pdf",
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=35248816417&origin=inward"
+      ]
+    },
+    {
+      "abstract": "YouTube is one of the world's most popular websites and hosts numerous amateur and professional videos. Comments on these videos might be researched to give insights into audience reactions to important issues or particular videos. Yet, little is known about YouTube discussions in general: how frequent they are, who typically participates, and the role of sentiment. This article fills this gap through an analysis of large samples of text comments on YouTube videos. The results identify patterns and give some benchmarks against which future YouTube research into individual videos can be compared. For instance, the typical YouTube comment was mildly positive, was posted by a 29-year-old male, and contained 58 characters. About 23% of comments in the complete comment sets were replies to previous comments. There was no typical density of discussion on YouTube videos in the sense of the proportion of replies to other comments: videos with both few and many replies were common. The YouTube audience engaged with each other disproportionately when making negative comments, however; positive comments elicited few replies. The biggest trigger of discussion seemed to be religion, whereas the videos attracting the least discussion were predominantly from the Music, Comedy, and How to & Style categories. This suggests different audience uses for YouTube, from passive entertainment to active debating. \u00a9 2011 ASIS&T.",
+      "authors": [],
+      "categories": null,
+      "citations": 106,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.1002/asi.21679",
+      "keywords": [],
+      "number_of_pages": 14,
+      "pages": "616-629",
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "isbn": null,
+        "issn": "15322882",
+        "publisher": "John Wiley and Sons Inc.",
+        "sjr": 0.245,
+        "snip": 0.419,
+        "subject_areas": [
+          "Computer Networks and Communications",
+          "Human-Computer Interaction",
+          "Artificial Intelligence",
+          "Information Systems",
+          "Software"
+        ],
+        "title": "Journal of the American Society for Information Science and Technology"
+      },
+      "publication_date": "2012-03-01",
+      "selected": null,
+      "title": "Commenting on YouTube videos: From guatemalan rock to El Big Bang",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84857650076&origin=inward"
+      ]
+    },
+    {
+      "abstract": "We apply a new machine learning tool, kernel combination, to the task of semantic music retrieval. We use 4 different types of acoustic content and social context feature sets to describe a large music corpus and derive 4 individual kernel matrices from these feature sets. Each kernel is used to train a support vector machine (SVM) classifier for each semantic tag (e.g., 'aggressive', 'classic rock', 'distorted electric guitar') in a large tag vocabulary. We examine the individual performance of each feature kernel and then show how to learn an optimal linear combination of these kernels using convex optimization. We find that the retrieval performance of the SVMs trained using the combined kernel is superior to SVMs trained using the best individual kernel for a large number of tags. In addition, the weights placed on individual kernels in the linear combination reflect the relative importance of each feature set when predicting a tag.",
+      "authors": [],
+      "categories": null,
+      "citations": 27,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": null,
+      "keywords": [],
+      "number_of_pages": 6,
+      "pages": "614-619",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "9780615248493",
+        "issn": null,
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "ISMIR 2008 - 9th International Conference on Music Information Retrieval"
+      },
+      "publication_date": "2008-12-01",
+      "selected": null,
+      "title": "Combining feature kernels for semantic music retrieval",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84873421439&origin=inward"
+      ]
+    },
+    {
+      "abstract": "Although the deferrable scheduling algorithm for fixed priority transactions ( DS-FP) has been shown to provide a better performance compared with the More-Less (ML) method, there is still a lack of any comprehensive studies on the necessary and sufficient conditions for the schedulability of DS-FP. In this paper, we first analyze the necessary and sufficient schedulability conditions for DS-FP, and then propose a schedulability test algorithm for DS-FP by exploiting the fact that there always exists a repeating pattern in a DS-FP schedule. To resolve the limitation of fixed priority scheduling in DS-FP, we then extend the deferrable scheduling to a dynamic priority scheduling algorithm called DS-EDF by applying the earliest deadline first (EDF) policy to schedule update jobs. We also propose a schedulability test for DS-EDF and compare its performance with DS-FP and ML through extensive simulation experiments. The results show that the schedulability tests are effective. Although the schedulability of DS-EDF is lower than DS-FP and the repeating patterns in DS-EDF schedules are longer than those in DS-FP due to the use of dynamic priority scheduling, the performance of DS-EDF is better than both DS-FP and ML in terms of CPU utilization and impact on lower priority application transactions.",
+      "authors": [
+        "Song Han",
+        "Deji Chen",
+        "Ming Xiong",
+        "Kam-Yiu Lam",
+        "Aloysius K. Mok",
+        "Krithi Ramamritham"
+      ],
+      "categories": null,
+      "citations": 12,
+      "comments": null,
+      "databases": [
+        "IEEE"
+      ],
+      "doi": "10.1109/TC.2012.266",
+      "keywords": [
+        "temporal validity",
+        "Real-time database",
+        "real-time data",
+        "schedulability",
+        "real-time scheduling"
+      ],
+      "number_of_pages": 16,
+      "pages": "979-994",
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "isbn": null,
+        "issn": "2326-3814",
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "IEEE Transactions on Computers"
+      },
+      "publication_date": "2014-01-01",
+      "selected": null,
+      "title": "Schedulability Analysis of DeferrableScheduling Algorithms for MaintainingReal-Time Data Freshness",
+      "urls": [
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6338927"
+      ]
+    },
+    {
+      "abstract": "Feedback is a general idea of modifying system behavior depending on the measurement outcomes. It spreads from natural sciences, engineering, and artificial intelligence to contemporary classical and rock music. Recently, feedback has been suggested as a tool to induce phase transitions beyond the dissipative ones and tune their universality class. Here, we propose and theoretically investigate a system possessing such a feedback-induced phase transition. The system contains a Bose-Einstein condensate placed in an optical potential with the depth that is feedback-controlled according to the intensity of the Bragg-reflected probe light. We show that there is a critical value of the feedback gain where the uniform gas distribution loses its stability and the ordered periodic density distribution emerges. Due to the external feedback, the presence of a cavity is not necessary for this type of atomic self-organization. We analyze the dynamics after a sudden change of the feedback control parameter. The feedback time constant is shown to determine the relaxation above the critical point. We show as well that the control algorithm with the derivative of the measured signal dramatically decreases the transient time. \u00a9 2020, The Author(s).",
+      "authors": [
+        "Denis A. Ivanov",
+        "Tatiana Yu. Ivanova",
+        "Santiago F. Caballero-Benitez",
+        "Igor B. Mekhov"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.1038/s41598-020-67280-3",
+      "keywords": [],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": 7.2,
+        "isbn": null,
+        "issn": "2045-2322",
+        "publisher": "Nature Publishing Group",
+        "sjr": 1.341,
+        "snip": 1.365,
+        "subject_areas": [
+          "Multidisciplinary"
+        ],
+        "title": "Scientific Reports"
+      },
+      "publication_date": "2020-12-01",
+      "selected": null,
+      "title": "Cavityless self-organization of ultracold atoms due to the feedback-induced phase transition",
+      "urls": [
+        "https://www.nature.com/articles/s41598-020-67280-3.pdf",
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85087014149&origin=inward"
+      ]
+    },
+    {
+      "abstract": "Electrocardiogram (ECG) is a non-invasive, simple and effective technique which is widely used for the diagnosis of cardiovascular diseases. In this work, a non-invasive type of ECG measurement system was used for recording of ECG signals. Further, the normal individuals were subjected to two different music genres namely rock and melody and the influence of music on the recorded ECG signals were analyzed. The descriptive statistical features, stress index, entropy, power and mobility features were extracted and the machine learning classifiers such as K-means, Na\u00efve Bayes and Artificial Neural Network (ANN) classifiers were used to classify the ECG signals (before and after listening to music) for two different music genres. Results demonstrate that there are significant variations in the features extracted from the ECG signals at two different conditions. Further, the performance of ANN classifier is better when compared to other two adopted classifiers. \u00a9 2019 IEEE.",
+      "authors": [
+        "D Najumnissa",
+        "Paramasivam Alagumariappan",
+        "A Bakiya",
+        "Mohamed Syed Ali"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "Scopus",
+        "IEEE"
+      ],
+      "doi": "10.1109/ICACCP.2019.8882925",
+      "keywords": [
+        "ECG signals",
+        "Na\u00efve Bayes classifier",
+        "music genre",
+        "K-means classifier"
+      ],
+      "number_of_pages": 5,
+      "pages": "1-5",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "978-1-5386-7990-6",
+        "issn": null,
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "2019 2nd International Conference on Advanced Computational and Communication Paradigms, ICACCP 2019"
+      },
+      "publication_date": "2019-02-25",
+      "selected": null,
+      "title": "Analysis on the effect of ECG signals while listening to different genres of music",
+      "urls": [
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8882925",
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85074971113&origin=inward"
+      ]
+    },
+    {
+      "abstract": "The risk of avian influenza outbreaks in poultry is partially dependent on the probability of contact between domestic poultry and wild birds shedding avian influenza (AI) virus. The major objective of this study was to document wild bird activity on poultry farms to determine which wild bird species should be targeted for AI surveillance in Canada. We collected data in 2 major poultry producing regions of Canada, southwestern Ontario and the Fraser Valley of British Columbia, on the relative abundance of various wild bird species found on poultry farms and on how these species utilized habitat around poultry farms. We reviewed the published literature to determine what was known about AI pathobiology in the species we observed. From these results we created a list of 10 wild bird species that are a priority for further study. These species are the European starling, barn swallow, rock dove, American crow, northwestern crow, American robin, dark-eyed junco, song sparrow, horned lark, and common grackle. Abundance of these and other species varied between provinces and seasons.",
+      "authors": [],
+      "categories": null,
+      "citations": 13,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": null,
+      "keywords": [],
+      "number_of_pages": 9,
+      "pages": "158-166",
+      "publication": {
+        "category": "Journal",
+        "cite_score": 0.9,
+        "isbn": null,
+        "issn": "00085286",
+        "publisher": "Canadian Veterinary Medical Association",
+        "sjr": 0.328,
+        "snip": 0.627,
+        "subject_areas": [
+          "Veterinary (all)"
+        ],
+        "title": "Canadian Veterinary Journal"
+      },
+      "publication_date": "2012-02-01",
+      "selected": null,
+      "title": "Use of observed wild bird activity on poultry farms and a literature review to target species as high priority for avian influenza testing in 2 regions of Canada",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84863228384&origin=inward"
+      ]
+    },
+    {
+      "abstract": "As the Semantic Web gains popularity, the technical challenges of representing and reasoning with imprecise and uncertain information still remain an outstanding issue. The foundation of the Semantic Web is the assertion of relations between entities, but these relations usually do not carry a degree or level of relationship. Using a simple subject-predicate-object triple we can say that \u201cAlice\u201d (subject) \u201clikes\u201d (predicate) \u201cRock music\u201d (object), but we can not say that she does so with a confidence or level of 80%. We propose the use of the Transferable Belief Model (TBM) as a way to achieve this. Two contributions are presented in this work: an ontology to represent information in a way which is consistent with the TBM, and a reasoner to assess the knowledge of a given system. Tests show the feasibility of applying this model on large scale Semantic Web information, but further optimisations and tests must be performed.",
+      "authors": [
+        "Cesar Pantoja",
+        "Ebroul Izquierdo"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "IEEE"
+      ],
+      "doi": "10.1109/CBMI.2016.7500269",
+      "keywords": [],
+      "number_of_pages": 6,
+      "pages": "1-6",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "978-1-4673-8695-1",
+        "issn": "1949-3991",
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "2016 14th International Workshop on Content-Based Multimedia Indexing (CBMI)"
+      },
+      "publication_date": "2016-06-15",
+      "selected": null,
+      "title": "A novel architecture of semantic web reasoner based on transferable belief model",
+      "urls": [
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7500269"
+      ]
+    },
+    {
+      "abstract": "Machine learning techniques for automated musical genre classification are currently widely studied. With large collections of digital musical files, one approach to classification is to classify by musical genres such as pop, rock and classical in Western music. Beat, pitch and temporal related features are extracted from audio signals and various machine learning algorithms are applied for classification. Features that resulted in better classification accuracies for Traditional Malay Music (TMM), in comparison to western music, in a previous study were beat related features. However, only the J48 classifier was used and in this study we perform a more comprehensive investigation on improving the classification of TMM. In addition, feature selection was performed for dimensionality reduction. Classification accuracies using classifiers of varying paradigms on a dataset comprising ten TMM genres were obtained. Results identify potentially useful classifiers and show the impact of adding a feature selection phase for TMM genre classification.",
+      "authors": [],
+      "categories": null,
+      "citations": 3,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": null,
+      "keywords": [
+        "Classification",
+        "Data mining",
+        "Genre classification",
+        "Feature selection"
+      ],
+      "number_of_pages": 7,
+      "pages": "71-77",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "1601320620",
+        "issn": null,
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Proceedings of the 2008 International Conference on Data Mining, DMIN 2008"
+      },
+      "publication_date": "2008-12-01",
+      "selected": null,
+      "title": "A comprehensive study in benchmarking feature selection and classification approaches for traditional Malay Music genre classification",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=62649168689&origin=inward"
+      ]
+    },
+    {
+      "abstract": "This talk will present the design approach for technological tools that may enhance playful interaction for a vast variety of people, e.g. for play, education, cardiac patients, stroke patients, hospitalised children, home care, autistic children, dementia patients, and handicapped. The approach builds upon the development of modular robotics to create a kind of playware, which is flexible in both set-up and activity building for anybody and anywhere. Key features of this design approach are modularity, flexibility, and construction, immediate feedback to stimulate engagement, activity design by end-users, and creative exploration of play activities. These features permit the use of such modular playware by a vast array of users, including elderly and disabled who often could be prevented from using and taking benefits from modern technologies. For instance, the creative play activities with modular playware helps confidence and self-esteem blossom as young children meet success in activities that are fun. The objective is to get any person moving, exchanging, experimenting and having fun, regardless of their cognitive or physical ability levels. By offering exciting activities that entice users to participate, the interactive playware technologies can not only help them reap the physical benefits of exercise, but also provide opportunities for them to learn, share, express feelings, set goals, and function independently.",
+      "authors": [
+        "Henrik Hautop Lund"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "ACM"
+      ],
+      "doi": "10.5555/1895260.1895270",
+      "keywords": [],
+      "number_of_pages": 1,
+      "pages": "24",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "9789604742318",
+        "issn": null,
+        "publisher": "World Scientific and Engineering Academy and Society (WSEAS)",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Proceedings of the 10th WSEAS international conference on Applied computer science"
+      },
+      "publication_date": "2010-10-04",
+      "selected": null,
+      "title": "Plenary lecture 10: playware: Intelligent hardware and software that creates playful experiences",
+      "urls": [
+        "https://dl.acm.org/doi/10.5555/1895260.1895270"
+      ]
+    },
+    {
+      "abstract": "Music has a variety of genres, namely pop, rock, jazz, and so on. Indonesia has its own music that other countries do not have, including campursari, dangdut, and keroncong music. The three types of music have musical instruments that are almost similar, which makes it difficult for listeners to distinguish the genre of music, especially the younger generation, so we need a tool called classification. This study uses a mel-spectogram and the Convolutional Neural Network (CNN) method to classify Indonesian music. The CNN parameters and architecture tested in this study were batch normalization, ReLU activation, dropout, activation of sigmoid and softmax output, epoch value, learning rate value, and dense layer value. The entire parameter is tested using input with two different data sharing methods, namely stratified split and k-fold cross validation. The highest accuracy of 82% was obtained by using the stratified split data distribution method and using batch normalization parameters, ReLU activation, activation of outputs sigmoid and softmax, 30 epoch values, 0.05 learning rate values, and 200 layer dense values. The model with the highest accuracy value is used as the basis for classifying Indonesian music into campursari, dangdut, or keroncong classes.",
+      "authors": [
+        "Saesarinda Rahmike Juwita",
+        "Sukmawati Nur Endah"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "IEEE"
+      ],
+      "doi": "10.1109/ICICoS48119.2019.8982470",
+      "keywords": [
+        "indonesian music",
+        "music classification",
+        "convolutional neural network"
+      ],
+      "number_of_pages": 5,
+      "pages": "1-5",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "978-1-7281-4611-9",
+        "issn": null,
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "2019 3rd International Conference on Informatics and Computational Sciences (ICICoS)"
+      },
+      "publication_date": "2019-10-29",
+      "selected": null,
+      "title": "Classification of Indonesian Music Using the Convolutional Neural Network Method",
+      "urls": [
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8982470"
+      ]
+    },
+    {
+      "abstract": "With the maturity of the Internet of Things, 5G communication, big data and artificial intelligence technologies, open-pit mine intelligent transportation systems based on unmanned vehicles has become a trend in smart mine construction. Traditional open-pit mine transportation systems rely on human power for command, which often causes vehicle delay and congestion. The operation of unmanned vehicles in an open pit mine relies on many sensors. Using big data from the sensors, we optimize vehicle paths and build an efficient intelligent transportation system. Based on large amounts of data, such as unmanned vehicle GPS data, vehicle equipment information, production plan data, etc., with the goal of reducing vehicle transportation costs, total unmanned vehicle delay time, and ore content fluctuation rate, a multi-objective intelligent scheduling model for open-pit mine unmanned vehicles was established, and it is aligned with actual open pit mine production. Next, we use artificial intelligence algorithms to solve the scheduling problem. To improve the convergence, distribution and diversity of the classical fast non-dominated sorting genetic algorithm (NSGA-II) to solve constrained high-dimensional multi-objective problems, we propose a decomposition-based constrained dominance principle genetic algorithm (DBCDP-NSGA-II), retaining feasible and non-feasible solutions in sparse areas, and compare it with four other commonly-used multi-objective optimization algorithms. Simulation analysis shows our algorithm provides the best overall performance results of the multi-objective models. Furthermore, we apply intelligent scheduling models and optimization algorithms to mining practice and obtain new truck operation routes and schedules, reducing truck operation costs by 18.2%, truck waiting time by 55.5%, and ore content fluctuation by 40.3%. For open-pit mine unmanned transportation, the approach provides a variety of optimized solutions for minimum transportation costs, minimum waiting time, minimum ore content fluctuation rate, and a balance of the three indicators. Through an artificial intelligence algorithm, this study realizes intelligent unmanned vehicle path planning and improves the operation efficiency of open-pit mine intelligent transportation systems.",
+      "authors": [
+        "Sai Zhang",
+        "Caiwu Lu",
+        "Song Jiang",
+        "Lu Shan",
+        "Neal Naixue Xiong"
+      ],
+      "categories": null,
+      "citations": 1,
+      "comments": null,
+      "databases": [
+        "IEEE"
+      ],
+      "doi": "10.1109/ACCESS.2020.3011109",
+      "keywords": [
+        "NSGA-II",
+        "open-pit mine",
+        "traffic big data",
+        "Intelligent transportation system",
+        "unmanned driving",
+        "intelligent scheduling"
+      ],
+      "number_of_pages": 16,
+      "pages": "135524-135539",
+      "publication": {
+        "category": "Journal",
+        "cite_score": 3.9,
+        "isbn": null,
+        "issn": "2169-3536",
+        "publisher": "Institute of Electrical and Electronics Engineers Inc.",
+        "sjr": 0.775,
+        "snip": 1.734,
+        "subject_areas": [
+          "Engineering (all)",
+          "Materials Science (all)",
+          "Computer Science (all)"
+        ],
+        "title": "IEEE Access"
+      },
+      "publication_date": "2020-01-01",
+      "selected": null,
+      "title": "An Unmanned Intelligent Transportation Scheduling System for Open-Pit Mine Vehicles Based on 5G and Big Data",
+      "urls": [
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9146106"
+      ]
+    },
+    {
+      "abstract": "Machine learning techniques for automated musical genre classification is currently widely studied. With large collections of digital musical files, one approach to classification is to classify by musical genres such as pop, rock and classical in Western music. Beat, pitch and temporal related features are extracted from audio signals and various machine learning algorithms are applied for classification. Features that resulted in better classification accuracies for Traditional Malay Music (TMM), in comparison to western music, in a previous study were beat related features. However, only the J48 classifier was used and in this study we perform a more comprehensive investigation on improving the classification of TMM. In addition, feature selection was performed for dimensionality reduction. Classification accuracies using classifiers of varying paradigms on a dataset comprising ten TMM genres were obtained. Results identify potentially useful classifiers and show the impact of adding a feature selection phase for TMM genre classification.",
+      "authors": [],
+      "categories": null,
+      "citations": 53,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": null,
+      "keywords": [],
+      "number_of_pages": 6,
+      "pages": "331-336",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "9780615248493",
+        "issn": null,
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "ISMIR 2008 - 9th International Conference on Music Information Retrieval"
+      },
+      "publication_date": "2008-12-01",
+      "selected": null,
+      "title": "A study on feature selection and classification techniques for automatic genre classification of traditional malay music",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=72949108828&origin=inward"
+      ]
+    },
+    {
+      "abstract": "In multimedia research, scientific progress is often slowed down by high demands on hard- and software. However, hardware continuously improves and today's hardware got powerful enough to meet the performance demands of complex 3D and deep learning applications. With this demo, we demonstrate that utilizing deep learning and 3D modeling is not a major barrier anymore when building prototypes for showcasing research projects. Our web-based game, called \"HeadbangZ\", showcases a novel gesturebased input methodology realized through deeply learned pose estimation and user interaction in a 3D environment. Since gesturebased inputs increase the immersion in virtual environments, we assume this input methodology to be especially useful for AR/VR applications and games. Furthermore, we demonstrate that rapid prototyping of applications using novel technologies, such as deep learning, is even possible within 48 hours by developing a working demo within this time frame. Finally, we provide insights into what we learned during the development of HeadbangZ to encourage other researchers to make use of novel technologies. In reference to Stephen Harper's quote \"Having hit a wall, the next logical step is not to bang our heads against it.\", we hope that the presentation of HeadbangZ encourages researchers to bang their heads rhythmically to rock music instead of angrily against a virtual wall created by hard- and software limitations. \u00a9 2019 ACM.",
+      "authors": [],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.1145/3304109.3323832",
+      "keywords": [
+        "Alternative inputs",
+        "Rhythm games",
+        "Deep learning"
+      ],
+      "number_of_pages": 4,
+      "pages": "320-323",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "9781450362979",
+        "issn": null,
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Proceedings of the 10th ACM Multimedia Systems Conference, MMSys 2019"
+      },
+      "publication_date": "2019-06-18",
+      "selected": null,
+      "title": "Alternative inputs for games and AR/VR applications: Deep headbanging on the web",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85069040909&origin=inward"
+      ]
+    },
+    {
+      "abstract": "Today, where people carry thousands of songs in their MP3 players or role-play as rock stars via video games, AI stands poised to transform how we interact with music in even more dramatic ways. This paper shows the development of software applications that rely on AI tools such as machine learning and Markovian analysis are providing new ways to analyze music, arrange playlists, and even devise customized accompaniments to user-created melodies.",
+      "authors": [
+        "Mark Ingebretsen"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "IEEE"
+      ],
+      "doi": "10.1109/MIS.2009.11",
+      "keywords": [
+        "network",
+        "artificial intelligence",
+        "Visualizing Music",
+        "composition",
+        "music",
+        "malicious",
+        "Pandora",
+        "multi-agent",
+        "security",
+        "virus",
+        "software",
+        "REST",
+        "neural",
+        "MusicBox",
+        "accompaniment"
+      ],
+      "number_of_pages": 4,
+      "pages": "8-11",
+      "publication": {
+        "category": null,
+        "cite_score": null,
+        "isbn": null,
+        "issn": "1941-1294",
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "IEEE Intelligent Systems"
+      },
+      "publication_date": "2009-01-01",
+      "selected": null,
+      "title": "In the News",
+      "urls": [
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=4763647"
+      ]
+    },
+    {
+      "abstract": "We are interested in the distribution of top-down attention in noisy environments, in which the listening capability is challenged by rock music playing in the background. We conducted behavioral experiments in which the subjects were asked to focus their attention on a narrative and detect a specific word, while the voice of the narrator was masked by rock songs that were alternating in the background. Our study considers several types of songs and investigates how their distinct features affect the ability to segregate sounds. Additionally, we examine the effect of the subjects' familiarity to the music. \u00a9 2013 Springer International Publishing.",
+      "authors": [
+        "Letizia Marchegiani",
+        "Xenofon Fafoutis"
+      ],
+      "categories": null,
+      "citations": 4,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.1007/978-3-319-02714-2_2",
+      "keywords": [
+        "Speech Intelligibility",
+        "Auditory Attention",
+        "Cocktail Party Problem"
+      ],
+      "number_of_pages": 12,
+      "pages": "15-26",
+      "publication": {
+        "category": "Book",
+        "cite_score": 1.9,
+        "isbn": "3540009760",
+        "issn": "03029743",
+        "publisher": "Springer Verlag",
+        "sjr": 0.427,
+        "snip": 0.776,
+        "subject_areas": [
+          "Theoretical Computer Science",
+          "Computer Science (all)"
+        ],
+        "title": "Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)"
+      },
+      "publication_date": "2013-11-07",
+      "selected": null,
+      "title": "A behavioral study on the effects of rock music on auditory attention",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84886832736&origin=inward",
+        "https://link.springer.com/content/pdf/10.1007%2F978-3-319-02714-2_2.pdf"
+      ]
+    },
+    {
+      "abstract": "Preferences about objects of interest are often expressed at different levels of granularity, not always matching the level of detail of stored data. For instance, we prefer rock to pop music, yet scheduled concerts only cite the name of the performer, with no reference to the musical genre. In this paper we address this common mismatch by leveraging the vast amounts of data organized in taxonomies (such as those found in electronic catalogs and classification systems) for propagating preferences from more generic to more specific concepts. This will help users to locate their preferred objects. In spite of its apparent simplicity, this problem requires special care in order to avoid some undesirable effects, e.g., when conflicting preferences at different levels have to be combined (although, generally, we prefer rock to pop music, we would never miss a performance by Madonna). We present a formal model to represent preferences and state the desirable properties of preference propagation, such as the fact that more specific preferences always prevail over more generic ones. We then propose a method for propagating preferences along taxonomies, complying with the stated properties, and show how preferred objects can thereby be efficiently determined. \u00a9 Springer Nature Switzerland AG 2019.",
+      "authors": [
+        "Paolo Ciaccia",
+        "Davide Martinenghi",
+        "Riccardo Torlone"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.1007/978-3-030-33223-5_33",
+      "keywords": [
+        "Taxonomy",
+        "Preferences",
+        "Best results"
+      ],
+      "number_of_pages": 15,
+      "pages": "397-411",
+      "publication": {
+        "category": "Book",
+        "cite_score": 1.9,
+        "isbn": "3540009760",
+        "issn": "03029743",
+        "publisher": "Springer Verlag",
+        "sjr": 0.427,
+        "snip": 0.776,
+        "subject_areas": [
+          "Theoretical Computer Science",
+          "Computer Science (all)"
+        ],
+        "title": "Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)"
+      },
+      "publication_date": "2019-01-01",
+      "selected": null,
+      "title": "Finding preferred objects with taxonomies",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85076155744&origin=inward",
+        "https://link.springer.com/content/pdf/10.1007%2F978-3-030-33223-5_33.pdf"
+      ]
+    },
+    {
+      "abstract": "The rapid development of technology accelerates the process of distributing the song in Indonesia. But that songs have not been followed by the age label of the listener, such as the age label on the movie. It certainly makes people difficult to choose songs that appropriate to their age, so people are free to enjoy a variety of songs and probably will earn the bad effect to the mental development. Therefore, there need to classify the lyrics of Indonesian language songs according to the age of the community. Several types of research classify song by its genre like pop, rock, jazz, i.e., classify by emotion of the song, and region of the song. In this study, develops a system that can categorize the lyrics into four age groups of the listener, namely children, adolescents, adults and all ages using na\u00efve bayes classifier (NBC) algorithm with the number of datasets are 400 titles obtained through crawling on lirik.kapanlagi.com website. The testing algorithm using training data of 60, 70, 80, and 90 percent from the overall dataset with equitable distribution resulted accuracies are 62.5%, 65%, 67.5%, and 67.5% respectively.",
+      "authors": [
+        "Moch. Fadli Shadiqin Thirafi",
+        "Faisal Rahutomo"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "IEEE"
+      ],
+      "doi": "10.1109/SIET.2018.8693201",
+      "keywords": [
+        "naive bayes classifier",
+        "text mining",
+        "the age of listener",
+        "lyrics",
+        "Indonesian songs"
+      ],
+      "number_of_pages": 4,
+      "pages": "106-109",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "978-1-5386-7408-6",
+        "issn": null,
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "2018 International Conference on Sustainable Information Engineering and Technology (SIET)"
+      },
+      "publication_date": "2018-11-10",
+      "selected": null,
+      "title": "Implementation of Na\u00efve Bayes Classifier Algorithm to Categorize Indonesian Song Lyrics Based on Age",
+      "urls": [
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8693201"
+      ]
+    },
+    {
+      "abstract": "Music Emotion Recognition (MER) is an important topic in music understanding, recommendation and retrieval that has gained great attention in the last years due to the constantly increasing number of people accessing digital musical content. In this paper we propose a new song emotion recognition system that takes into consideration the song\u2019s genre and we investigate the effect that genre has, on the recognition task of four basic music emotions of the valence-arousal (VA) plane: happy, angry, sad and peaceful. Experiments on a database consisting of 1100 songs from four different music genres (blues, country, pop and rock) using timbral, spectral, dynamical and chroma descriptors of the music, have shown that successful recognition of the song\u2019s genre as a pre-processing step, can improve the recognition of its emotion by a factor of 10\u201315%. \u00a9 Springer International Publishing AG 2017.",
+      "authors": [
+        "Athanasios Koutras"
+      ],
+      "categories": null,
+      "citations": 1,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.1007/978-3-319-66429-3_67",
+      "keywords": [
+        "Music emotion",
+        "ICA mixture models",
+        "Music genre"
+      ],
+      "number_of_pages": 11,
+      "pages": "669-679",
+      "publication": {
+        "category": "Book",
+        "cite_score": 1.9,
+        "isbn": "3540009760",
+        "issn": "03029743",
+        "publisher": "Springer Verlag",
+        "sjr": 0.427,
+        "snip": 0.776,
+        "subject_areas": [
+          "Theoretical Computer Science",
+          "Computer Science (all)"
+        ],
+        "title": "Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)"
+      },
+      "publication_date": "2017-01-01",
+      "selected": null,
+      "title": "Song emotion recognition using music genre information",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85029538188&origin=inward",
+        "https://link.springer.com/content/pdf/10.1007%2F978-3-319-66429-3_67.pdf"
+      ]
+    },
+    {
+      "abstract": "The proceedings contain 49 papers. The special focus in this conference is on Machine Learning and Information Processing. The topics include: Virtual conversation with real-time prediction of body moments/gestures on video streaming data; automatic diagnosis of attention deficit/hyperactivity disorder; classification of types of automobile fractures using convolutional neural networks; a subjectivity detection-based approach to sentiment analysis; image processing and machine learning techniques to detect and classify paddy leaf diseases: A review; a comparative study of classifiers for extractive text summarization; capabilities of chatbots and its performance enhancements in machine learning; a deep learning-based approach for predicting the outcome of H-1B visa application; data leakage detection and prevention: Review and research directions; Stress detection in speech signal using machine learning and AI; a blockchain based model to eliminate drug counterfeiting; a comparative analysis of predictive modeling techniques: A case study of device failure; Python and OpenCV in automation of live surveillance; Privacy preservation in ROI of medical images using LSB manipulation; novel approach for measuring nutrition values using smartphone; detection of hate speech in hinglish language; enhancing multi-level cache performance using dynamic R-F characteristics; denoising documents using image processing for digital restoration; humming-Based song recognition; a new data structure for representation of relational databases for application in the normalization process; e-Classroom Using IOT to revolutionize the classical way of knowledge sharing; real drowsiness detection using viola\u2013jones algorithm in tensorflow; smart sound system controller for restricted zones; predictive analysis of co-seismic rock fall hazard in hualien county Taiwan.",
+      "authors": [],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": null,
+      "keywords": [],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Book",
+        "cite_score": 0.9,
+        "isbn": "9789811518836",
+        "issn": "21945357",
+        "publisher": "Springer Verlag",
+        "sjr": 0.184,
+        "snip": 0.429,
+        "subject_areas": [
+          "Control and Systems Engineering",
+          "Computer Science (all)"
+        ],
+        "title": "Advances in Intelligent Systems and Computing"
+      },
+      "publication_date": "2020-01-01",
+      "selected": null,
+      "title": "1st International Conference on Machine Learning and Information Processing, ICMLIP 2019",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85083632831&origin=inward"
+      ]
+    },
+    {
+      "abstract": "Human emotion recognition using brain signals is an active research topic in the field of affective computing. Music is considered as a powerful tool for arousing emotions in human beings. This study recognized happy, sad, love and anger emotions in response to audio music tracks from electronic, rap, metal, rock and hiphop genres. Participants were asked to listen to audio music tracks of 1 min for each genre in a noise free environment. The main objectives of this study were to determine the effect of different genres of music on human emotions and indicating age group that is more responsive to music. Thirty men and women of three different age groups (15\u201325 years, 26\u201335 years and 36\u201350 years) underwent through the experiment that also included self reported emotional state after listening to each type of music. Features from three different domains i.e., time, frequency and wavelet were extracted from recorded EEG signals, which were further used by the classifier to recognize human emotions. It has been evident from results that MLP gives best accuracy to recognize human emotion in response to audio music tracks using hybrid features of brain signals. It is also observed that rock and rap genres generated happy and sad emotions respectively in subjects under study. The brain signals of age group (26\u201335 years) gave best emotion recognition accuracy in accordance to the self reported emotions. \u00a9 2016 Elsevier Ltd",
+      "authors": [],
+      "categories": null,
+      "citations": 60,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.1016/j.chb.2016.08.029",
+      "keywords": [
+        "Classification",
+        "Music",
+        "Machine learning",
+        "Feature extraction",
+        "Emotions",
+        "Electroencephalography (EEG)"
+      ],
+      "number_of_pages": 9,
+      "pages": "267-275",
+      "publication": {
+        "category": "Journal",
+        "cite_score": 12.1,
+        "isbn": null,
+        "issn": "07475632",
+        "publisher": "Elsevier Ltd.",
+        "sjr": 2.173,
+        "snip": 3.079,
+        "subject_areas": [
+          "Human-Computer Interaction",
+          "Arts and Humanities (miscellaneous)",
+          "Psychology (all)"
+        ],
+        "title": "Computers in Human Behavior"
+      },
+      "publication_date": "2016-12-01",
+      "selected": null,
+      "title": "Human emotion recognition and analysis in response to audio music using brain signals",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84984626818&origin=inward"
+      ]
+    },
+    {
+      "abstract": "Music genres allow to categorize musical items that share common characteristics. Although these categories are not mutually exclusive, most related research is traditionally focused on classifying tracks into a single class. Furthermore, these categories (e.g., Pop, Rock) tend to be too broad for certain applications. In this work we aim to expand this task by categorizing musical items into multiple and fine-grained labels, using three different data modalities: audio, text, and images. To this end we present MuMu, a new dataset of more than 31k albums classified into 250 genre classes. For every album we have collected the cover image, text reviews, and audio tracks. Additionally, we propose an approach for multi-label genre classification based on the combination of feature embeddings learned with state-of-the-art deep learning methodologies. Experiments show major differences between modalities, which not only introduce new baselines for multi-label genre classification, but also suggest that combining them yields improved results. \u00a9 2019 Sergio Oramas, Oriol Nieto, Francesco Barbieri, Xavier Serra.",
+      "authors": [],
+      "categories": null,
+      "citations": 18,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": null,
+      "keywords": [],
+      "number_of_pages": 8,
+      "pages": "23-30",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "9789811151798",
+        "issn": null,
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Proceedings of the 18th International Society for Music Information Retrieval Conference, ISMIR 2017"
+      },
+      "publication_date": "2017-01-01",
+      "selected": null,
+      "title": "Multi-label music genre classification from audio, text, and images using deep features",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85069917282&origin=inward"
+      ]
+    },
+    {
+      "abstract": "Inference of musical genre, whilst seemingly innate to the human mind, remains a challenging task for the machine learning community. Online music retrieval and automatic music generation are just two of many interesting applications that could benefit from such research. This paper applies four different classification methods to the task of distinguishing between rock and classical music styles. Each method uses the Minimum Message Length (MML) principle of statistical inference. The first, an unsupervised learning tool called Snob, performed very poorly. Three supervised classification methods, namely decision trees, decision graphs and neural networks, performed significantly better. The defining attributes of the two musical genres were found to be pitch mean and standard deviation, duration mean and standard deviation, along with counts of distinct pitches and rhythms per piece. Future work includes testing more attributes for significance, extending the classification to include more genres (for example, jazz, blues etcetera) and using probabilistic (rather than absolute) genre class assignment. Our research shows that the distribution of note pitch and duration can indeed distinguish between significantly different types of music. \u00a9 Springer-Verlag Berlin Heidelberg 2003.",
+      "authors": [
+        "Adrian C. Bickerstaffe",
+        "Enes Makalic"
+      ],
+      "categories": null,
+      "citations": 2,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.1007/978-3-540-24581-0_91",
+      "keywords": [],
+      "number_of_pages": 9,
+      "pages": "1063-1071",
+      "publication": {
+        "category": "Book",
+        "cite_score": 1.9,
+        "isbn": "3540009760",
+        "issn": "03029743",
+        "publisher": "Springer Verlag",
+        "sjr": 0.427,
+        "snip": 0.776,
+        "subject_areas": [
+          "Theoretical Computer Science",
+          "Computer Science (all)"
+        ],
+        "title": "Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)"
+      },
+      "publication_date": "2003-01-01",
+      "selected": null,
+      "title": "MML classification of music genres",
+      "urls": [
+        "https://link.springer.com/content/pdf/10.1007%2F978-3-540-24581-0_91.pdf",
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=0346955768&origin=inward"
+      ]
+    },
+    {
+      "abstract": "Recent computer-aided studies of harmony in various corpora of music (e.g., Bach and Lutheran chorales, late-twentieth-century rock music, etc.) have demonstrated how the treatment of various harmonies differs among repertoires. These differences are most often represented through transitional probability matrices showing the likelihood of any recognized sonority following any other sonority within a defined state space of possible sonorities. While such models of tonality are useful for demonstrating differences among genres, they tend to downplay the impact of temporal ordering and metric position on harmonic treatment. A potential source of this deficit is the difficulty in making meaningful temporal comparisons without a precise definition of phrase beginnings and endings and without a large collection of phrases of the same length. This paper mitigates these challenges by identifying 799 phrases from the Bach chorale corpus that are identical in length and cadence. It then creates a small state space of chord roots and functional categories and, further, demonstrates how the treatment of harmonies is conditioned by their location within phrases. In so doing, it is hoped that the paper will contribute to more refined models of tonalities that recognize music's essential temporality. \u00a9 2013 Springer-Verlag.",
+      "authors": [
+        "Mitchell Ohriner"
+      ],
+      "categories": null,
+      "citations": 1,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.1007/978-3-642-39357-0_13",
+      "keywords": [],
+      "number_of_pages": 10,
+      "pages": "167-176",
+      "publication": {
+        "category": "Book",
+        "cite_score": 1.9,
+        "isbn": "3540009760",
+        "issn": "03029743",
+        "publisher": "Springer Verlag",
+        "sjr": 0.427,
+        "snip": 0.776,
+        "subject_areas": [
+          "Theoretical Computer Science",
+          "Computer Science (all)"
+        ],
+        "title": "Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)"
+      },
+      "publication_date": "2013-09-26",
+      "selected": null,
+      "title": "Effects of temporal position on harmonic succession in the bach chorale corpus",
+      "urls": [
+        "https://link.springer.com/content/pdf/10.1007%2F978-3-642-39357-0_13.pdf",
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84884489861&origin=inward"
+      ]
+    },
+    {
+      "abstract": "This paper will focus on the co-adaptation of a group of humans and an intelligent system which acts as a disc jockey. The intelligent system selects and delivers background music in a workplace environment. The humans provide limited feedback about their preferences, and the intelligent system attempts to minimize the number of unacceptable choices of music. During the study, the actual tracks presented to the humans, which humans were present, and the response of the humans are recorded over an 8 month period. The intelligent system (Personal DJ) monitors the responses of the audience, and derives preference rules that describe the mix of music that is acceptable to each audience. It then draws from this music mix, based on the current audience, time of day, and other environmental conditions. The humans have the option of vetoing any song at any time. These veto actions are recorded, and the Personal DJ adapts to these veto actions to refine its model of the audience's preferences. At the same time, the humans are being presented with a mix of music that is drawn from a wide range of musical selections (rock, heavy metal, reggae, classical, jazz, new age), and during the study period it became apparent that the humans were adapting their preferences to the delivered music. Tracks which were uniformly vetoed under specific conditions during the early part of the study became acceptable to the same audience under the same conditions during the latter part of the study. This causes the Personal DJ to alter its model of the audience and adapt to the new preferences. However, as the new mix of music was presented to the audience, they, in turn, adapted to the new mix and changed their pattern of vetoes; this co-adaptation is capable of causing a pattern similar to Pilot Induced Oscillation. The paper presents an analysis of this phenomenon, and draws some guidelines for the design of adaptive systems which will have long-term interaction with humans. Copyright \u00a9 2005 American Association for Artificial Intelligence (www.aaai.org). All rights reserved.",
+      "authors": [],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": null,
+      "keywords": [],
+      "number_of_pages": 5,
+      "pages": "34-38",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": null,
+        "issn": null,
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "AAAI Spring Symposium - Technical Report"
+      },
+      "publication_date": "2005-12-01",
+      "selected": null,
+      "title": "Living with a personal disk jockey - The start of the journey",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=32944481878&origin=inward"
+      ]
+    },
+    {
+      "abstract": "The classification of mineralized areas into different groups based on mineral grade and prosperity is a practical problem in the area of optimal risk, time, and cost management of exploration projects. This paper presents a new approach for optimizing the grade classification model of an orebody. The machine learning technique was integrated with a metaheuristic algorithm called Harmony Search (HS) to obtain a proper model for the spatial distribution of the grade classes, while improving the computational cost of the traditional classification methods. The HS is an algorithm inspired by the simulation of the process where a composer tries to harmonize a piece of music. By interpolating the dataset of Cu and Mo concentrations in the surface rock samples taken from the Kooh-Panj mineral prospect, the grid data of the two elements were extracted. Five popular indices were used to estimate the true number of groups in the dataset, which in turn determined two classes as the optimal number of groups. Harmony Search Learning (HSL) was used to classify the grid dataset of Cu and Mo. A comparison of the results of the proposed approach with those of the conventional k-means clustering suggested that the use of the HSL method significantly reduced the cost function of the problem (up to 13%). The comparison of the mineralization class derived from the HSL and k-means clustering with the borehole locations proved that the results of the HSL were more successful in the accurate estimation of the economic mineralization class identified by the exploratory excavations. In this respect, the HSL technique significantly improved the k-means performance by 25%. Furthermore, the results of the HSL were more consistent with the lithological units and the alteration zones involved in ore-forming processes. The use of HS-based learning technique rectified the disadvantages arising from the typical clustering methods regarding the entrapment in local optimums. It also led to the extraction of weak mineralization signals, numerically laid in boundary conditions. This approach can be extended to more than two geochemical variables and can be a valuable tool for the classification of mineralized areas to design and optimally manage mineral exploration projects. \u00a9 2019 International Journal of Mining and Geo-Engineering. All rights reserved.",
+      "authors": [
+        "Esmaeiloghli, Saeid",
+        "Tabatabaei, Seyed Hassan",
+        "Mokhtari, Ahmad Reza"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.22059/IJMGE.2019.251554.594714",
+      "keywords": [
+        "Machine learning",
+        "Kooh-Panj Cu-Mo deposit",
+        "Harmony Search",
+        "Geochemical data",
+        "Grade classification"
+      ],
+      "number_of_pages": 9,
+      "pages": "123-131",
+      "publication": {
+        "category": "Journal",
+        "cite_score": 0.1,
+        "isbn": null,
+        "issn": "23456930",
+        "publisher": "University of Tehran",
+        "sjr": 0.898,
+        "snip": 1.599,
+        "subject_areas": [
+          "Geology",
+          "Geotechnical Engineering and Engineering Geology",
+          "Economic Geology"
+        ],
+        "title": "International Journal of Mining and Geo-Engineering"
+      },
+      "publication_date": "2019-01-01",
+      "selected": null,
+      "title": "Optimizing grade classification model of mineralized zones using a learning method based on harmony search algorithm",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85080046981&origin=inward",
+        "https://ijmge.ut.ac.ir/article_70588_cd4991f539eaf71e29c89b63ee89dcb3.pdf"
+      ]
+    },
+    {
+      "abstract": "Genre classification is a process of grouping similarities, such as patterns, styles, or objectives with management data as already in the music (e.g. pop and rock). It is used along with the classification of topics. This paper will classify songs from audio signal to a hierarchy of musical genre by using feature extraction. Trimbral texture, rhythmic content and pitch content are used as the main feature sets. Feature selection is selected by using Particle Swarm Optimization (PSO) and sent selected feature to classification. The result in classification has low accuracy. Thus, using stacking ensemble method is to improve the prediction. In this paper, the purpose is to improve the prediction by using stacking ensemble method. Stacking ensemble that have the second level is base classifier and meta-classifier. In base classifier consists of 5 classification; K-Nearest Neighbors (k-NN), Decision Tree (DT), Random Forest, Support Vector Machines (SVM); and Na\u00efve Bayes. This process is generated to build multiple classifier predictors and sent it to meta-classifier. In the process of meta-classifier will create new model to predict test data. The new model has been created from neural network which train data is the output of base classifier.",
+      "authors": [
+        "Krittika Leartpantulak",
+        "Yuttana Kitjaidure"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "IEEE"
+      ],
+      "doi": "10.1109/iEECON45304.2019.8938995",
+      "keywords": [
+        "Classification",
+        "Stacking",
+        "PSO",
+        "Feature selection",
+        "Genre"
+      ],
+      "number_of_pages": 4,
+      "pages": "1-4",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "978-1-7281-0730-1",
+        "issn": null,
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "2019 7th International Electrical Engineering Congress (iEECON)"
+      },
+      "publication_date": "2019-03-06",
+      "selected": null,
+      "title": "Music Genre Classification of audio signals Using Particle Swarm Optimization and Stacking Ensemble",
+      "urls": [
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8938995"
+      ]
+    },
+    {
+      "abstract": "In recent years many research projects have been published in the area of multimedia information retrieval (MIR). The requirement is to enable access to multimedia data with the same ease as textual information. A distinctly new branch in the MIR research area is categorizing music items by user preference. Some experiments proposed and published by different authors, showed that machine learning techniques can be applied to the problem. This work tries to extend the use of signal approximation and characterization from genre classification to recognition of user taste. The idea is to learn music preferences by applying instance based classifiers to user profiles. The audio signal (item) is characterized by features sensitive to music genres (Rock, Jazz, Classical, Techno). Two different classifiers are explored in order to determine the generalization accuracy of the system: k-NN and feature sub-pace based ensembles (FSSE). Feature selection techniques are explored to boost the accuracy of the predictor. The evaluation shows that this kind of problem can be solved to some extent. When the user taste is driven by a certain genre preference, the system shows reasonable accuracy. Copyright 2004 ACM.",
+      "authors": [
+        "Marco Grimaldi",
+        "P\u00e1draig Cunningham"
+      ],
+      "categories": null,
+      "citations": 15,
+      "comments": null,
+      "databases": [
+        "ACM",
+        "Scopus"
+      ],
+      "doi": "10.1145/1026711.1026740",
+      "keywords": [
+        "music information retrieval",
+        "features selection",
+        "user taste prediction",
+        "ensemble techniques"
+      ],
+      "number_of_pages": 8,
+      "pages": "173-180",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "1581139403",
+        "issn": null,
+        "publisher": "Association for Computing Machinery",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "MIR'04 - Proceedings of the 6th ACM SIGMM International Workshop on Multimedia Information Retrieval"
+      },
+      "publication_date": "2004-10-15",
+      "selected": null,
+      "title": "Experimenting with music taste prediction by user profiling",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=15344340941&origin=inward",
+        "https://dl.acm.org/doi/10.1145/1026711.1026740"
+      ]
+    },
+    {
+      "abstract": "In a previous paper the authors use a recurrent network in the form of a NARX architecture to model the nonlinear behavior of a vacuum-tube guitar amplifier and its effects as applied to an electric guitar signal. The use of recurrent networks is important in the vacuum-tube modeling effort as the nonlinear dynamic responses are thought to be an important component in achieving the distortion that creates the sound treasured by rock guitarists and the fans of rock music. In this paper, we report on our current experiments evaluating the use of long/short-term memory (LSTM) units for modeling the dynamic nonlinear characteristics of a vacuum-tube guitar amplifier. It is our view that since LSTM units incorporate information from both recent and distant changes in state, they are useful for modeling the amplifier characteristics that produce the desired musical timbre. Our experiments involve investigating differing combinations of the hyperparameters of a deep learning network including the number of hidden layers, the number of units within each layer, and the type of unit within each layer. Model performance is evaluated using mean-square error and aural comparisons. Once the best architecture is determined, efforts will be put forth to minimize the hardware requirements for the implementation of the feedforward network. \u00a9 2018 IEEE.",
+      "authors": [
+        "Zhichen Zhang",
+        "Edward Olbrych",
+        "Joseph Bruchalski",
+        "Thomas J. McCormick",
+        "David L. Livingston"
+      ],
+      "categories": null,
+      "citations": 5,
+      "comments": null,
+      "databases": [
+        "Scopus",
+        "IEEE"
+      ],
+      "doi": "10.1109/SECON.2018.8479039",
+      "keywords": [],
+      "number_of_pages": 5,
+      "pages": "1-5",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "978-1-5386-6134-5",
+        "issn": "1091-0050",
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Conference Proceedings - IEEE SOUTHEASTCON"
+      },
+      "publication_date": "2018-04-19",
+      "selected": null,
+      "title": "A Vacuum-Tube Guitar Amplifier Model Using Long/Short-Term Memory Networks",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85056192576&origin=inward",
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8479039"
+      ]
+    },
+    {
+      "abstract": "Speech classification is an important part of speech signal processing. It is significant to classify speech accurately and quickly in speech coding and speech synthesis. Because of the diversity and uncertainty of the speech signals, the traditional classification method is slow and not so accurate in the large-scale application of real speech classification. In order to improve the accuracy and precision of speech classification, a speech classification method based on support vector machine optimized by cuckoo algorithm(CS-SVM) is proposed. Firstly, choose four types of music: folk songs, Guzheng, rock and pop. And adopt the cepstral coefficient to extract speech feature, then use the support vector machine optimized by the cuckoo algorithm to train the characteristic signals, and establish the optimal classifier model, and finally classify the tested speech. The results of the simulation experiment show that the support vector machine based on the cuckoo algorithm(CS-SVM) is better than the traditional SVM and BP neural network in speech recognition. \u00a9 2017 IEEE.",
+      "authors": [],
+      "categories": null,
+      "citations": 2,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.1109/CIAPP.2017.8167188",
+      "keywords": [
+        "Support vector machine",
+        "Classification model",
+        "Speech classification",
+        "BP neural network",
+        "Cuckoo algorithm"
+      ],
+      "number_of_pages": 5,
+      "pages": "98-102",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "9781538620304",
+        "issn": null,
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "2017 2nd IEEE International Conference on Computational Intelligence and Applications, ICCIA 2017"
+      },
+      "publication_date": "2017-12-04",
+      "selected": null,
+      "title": "Speech classification based on cuckoo algorithm and support vector machines",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85043461306&origin=inward"
+      ]
+    },
+    {
+      "abstract": "Ethnopharmacological relevance: Orostachys japonicus A. Berger (O. japonicus), so-called Wa-song in Korea, a traditional food and medicine that grows on mountain rocks and roof tiles. Wa-song containing various phenolic compounds have been reported as a medicinal plant for prevention of fibrosis, cancer, inflammation, and oxidative damage. Aim of the study: The present study was designed to examine the anti-angiogenic effects of cultivated Orostachys japonicus 70% ethanol extract (CE) in vascular endothelial growth factor (VEGF)-stimulated human umbilical vein endothelial cells (HUVECs). Materials and methods: CE was prepared with 70% ethanol. HUVECs, rat aortic rings, and matrigel plug in mice were treated with CE (10\u201320 \u03bcg/mL) and VEGF (20\u201350 ng/mL), and the anti-angiogenic activities of CE were analyzed by SRB, wound healing, trans-well invasion, capillary-like tubule formation, rat aortas, Western blot, and matrigel plug assay. Phenolic compounds in CE were analyzed using a high-performance liquid chromatography (HPLC)-PDA system. Results: Treatment of CE (10\u201320 \u03bcg/mL) markedly suppressed proliferation of HUVECs in the presence (from 136.5% to 112.2%) or absence of VEGF (from 100.0% to 92.1%). The proliferation inhibitory effect of CE was caused by G0/G1 cell cycle arrest, and the decrease of CDK-2, CDK-4, Cyclin D1 and Cyclin E1. Furthermore, CE treatment showed significant angiogenesis inhibitory effects on motility, invasion and micro-vessel formation of HUVECs, rat aortic rings and subcutaneous matrigels under VEGF-stimulation condition. In HUVECs, CE-induced anti-angiogenic effect was regulated by inhibition of the PI3K/AKT/mTOR, MAPK/p38, MAPK/ERK, FAK-Src, and VEGF-VEGFR2 signaling pathways. Conclusion: This study demonstrated that CE might be used as a potential natural substance, multi-targeted angiogenesis inhibitor, functional food material. \u00a9 2020 Elsevier B.V.",
+      "authors": [],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.1016/j.jep.2020.112664",
+      "keywords": [
+        "Vascular endothelial growth factor receptor 2",
+        "Angiogenesis",
+        "Cultivated Orostachys japonicus"
+      ],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": 6.3,
+        "isbn": null,
+        "issn": "03788741",
+        "publisher": "Elsevier Ireland Ltd",
+        "sjr": 0.898,
+        "snip": 1.599,
+        "subject_areas": [
+          "Pharmacology",
+          "Drug Discovery"
+        ],
+        "title": "Journal of Ethnopharmacology"
+      },
+      "publication_date": "2020-06-28",
+      "selected": null,
+      "title": "Cultivated Orostachys japonicus extract inhibits VEGF-induced angiogenesis via regulation of VEGFR2 signaling pathway in vitro and in vivo",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85082777349&origin=inward"
+      ]
+    },
+    {
+      "abstract": "Because music tonality detection plays an important role in content-based music retrieval, music structure analysis, melody analysis and chord transcription, it has been one of the research hotspots of music information retrieval (MIR). The paper proposed a method to realize music tonality detection by using the Krumhansl-Schmuckler (K-S) profile. The binary template is re-assigned according to the K-S profile obtained by human perception experiment. Then, we calculate the correlation coefficient between the input summed chroma vector and the K-S profile value template for tonality detection. Experimental results show that the accuracy of the method in the music tonality detection is 21%19%19.3%10.2% and 8.2% higher than that of the binary template matching music tonality detection on Pop, Blues, Metal, Rock, and Hip-hop music genres. \u00a9 2019 IEEE.",
+      "authors": [
+        "Yuren You",
+        "Hongwu Yang",
+        "Haiyan Xu",
+        "Yun Zhou"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "Scopus",
+        "IEEE"
+      ],
+      "doi": "10.1109/ITAIC.2019.8785576",
+      "keywords": [
+        "music information retrieval",
+        "tonality detection",
+        "K-S profile"
+      ],
+      "number_of_pages": 4,
+      "pages": "85-88",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "978-1-5386-8179-4",
+        "issn": null,
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Proceedings of 2019 IEEE 8th Joint International Information Technology and Artificial Intelligence Conference, ITAIC 2019"
+      },
+      "publication_date": "2019-05-24",
+      "selected": null,
+      "title": "Music Tonality Detection Based on Krumhansl-Schmuckler Profile",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85071125664&origin=inward",
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8785576"
+      ]
+    },
+    {
+      "abstract": "Musical genres can be used to distribute and manage music datasets to increase the ease in finding a music piece a person wants to listen to. This paper presents a research for creating a suitable model for genre recognition in audio files using machine learning classifiers on the IRMAS 11 https://www.upf.edu/web/mtg/irmas dataset. Python language library pyAudinAnalysls 22 https://github.com/tyiannak/pyAudioAnalysis for extracting features from audio files is used. Further, three base classifiers, namely Support Vector Machines (SVM), Decision Tree and Random Forest are also depicted. IRMAS [10] genre dataset provides 6705 audio files of four genres classical, country folk, jazz and pop-rock. Also explored is an ensemble classification model by creating a stack of classifiers for the genre recognition task. Genre classification using SMOTE has been characterized in the confusion matrix. Maximum accuracy of 81.56% using the ensemble classifier is achieved using the proposed methodology. \u00a9 2018 IEEE.",
+      "authors": [
+        "Somya Goel",
+        "Raghav Pangasa",
+        "Suma Dawn",
+        "Anuja Arora"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "Scopus",
+        "IEEE"
+      ],
+      "doi": "10.1109/IC3.2018.8530512",
+      "keywords": [
+        "genre",
+        "classification",
+        "IRMAS",
+        "ensemble model"
+      ],
+      "number_of_pages": 5,
+      "pages": "1-5",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "978-1-5386-6836-8",
+        "issn": "2572-6110",
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "2018 Eleventh International Conference on Contemporary Computing (IC3)"
+      },
+      "publication_date": "2018-08-02",
+      "selected": null,
+      "title": "Audio Acoustic Features Based Tagging and Comparative Analysis of its Classifications",
+      "urls": [
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8530512",
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85058232634&origin=inward"
+      ]
+    },
+    {
+      "abstract": "In this paper, we tackle the problem of pose-guided person image generation with unpaired data, which is a challenging problem due to non-rigid spatial deformation. Instead of learning a rock-hard mapping directly between human bodies as previous methods, we propose a new pathway to decompose the hard mapping into two more accessible subtasks, namely, semantic parsing transformation and appearance generation. Firstly, to simplify the learning for non-rigid deformation, a semantic generative network is developed to transform semantic parsing maps between different poses. Secondly, guided by semantic parsing maps, we render the foreground and background image, respectively. A foreground generative network learns to synthesize semantic-aware textures, and another background generative network learns to predict missing background regions caused by pose changing. Thirdly, we enable pseudo-label training with unpaired data, and demonstrate that end-to-end training of the overall network further refines the semantic map prediction and final results accordingly. Moreover, our method is generalizable to other person image generation tasks defined on semantic maps, e.g.,clothing texture transfer, controlled image manipulation, and virtual try-on. Experimental results on DeepFashion and Market-1501 datasets demonstrate the superiority of our method, especially in keeping better body shapes and clothing attributes, as well as rendering structure-coherent backgrounds.",
+      "authors": [
+        "Sijie Song",
+        "Wei Zhang",
+        "Jiaying Liu",
+        "Zongming Guo",
+        "Tao Mei"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "IEEE"
+      ],
+      "doi": "10.1109/TPAMI.2020.2992105",
+      "keywords": [
+        "Image generation",
+        "appearance generation",
+        "fashion application",
+        "semantic parsing transformation"
+      ],
+      "number_of_pages": 1,
+      "pages": "1-1",
+      "publication": {
+        "category": null,
+        "cite_score": null,
+        "isbn": null,
+        "issn": "1939-3539",
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "IEEE Transactions on Pattern Analysis and Machine Intelligence"
+      },
+      "publication_date": "2020-01-01",
+      "selected": null,
+      "title": "Unpaired Person Image Generation with Semantic Parsing Transformation",
+      "urls": [
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9085915"
+      ]
+    },
+    {
+      "abstract": "Predicting the performance of a tunneling boring machine is vitally important to avoid any possible accidents during tunneling boring. The prediction is not straightforward due to the uncertain geological conditions and the complex rock-machine interactions. Based on the big data obtained from the 72.1 \u200bkm long tunnel in the Yin-Song Diversion Project in China, this study developed a machine learning model to predict the TBM performance in a real-time manner. The total thrust and the cutterhead torque during a stable period in a boring cycle was predicted in advance by using the machine-returned parameters in the rising period. A long short-term memory model was developed and its accuracy was evaluated. The results show that the variation in the total thrust and cutterhead torque with various geological conditions can be well reflected by the proposed model. This real-time predication shows superior performance than the classical theoretical model in which only a single value can be obtained based on the single measurement of the rock properties. To improve the accuracy of the model a filtering process was proposed. Results indicate that filtering the unnecessary parameters can enhance both the accuracy and the computational efficiency. Finally, the data deficiency was discussed by assuming a parameter was missing. It is found that the missing of a key parameter can significantly reduce the accuracy of the model, while the supplement of a parameter that highly-correlated with the missing one can improve the prediction. \u00a9 2020 China University of Geosciences (Beijing) and Peking University",
+      "authors": [],
+      "categories": null,
+      "citations": 2,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.1016/j.gsf.2020.02.011",
+      "keywords": [
+        "Big data",
+        "TBM",
+        "Machine learning",
+        "Data deficiency",
+        "LSTM neural network",
+        "Data efficiency"
+      ],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": 7.4,
+        "isbn": null,
+        "issn": "16749871",
+        "publisher": "China University of Geosciences (Beijing) and Peking University",
+        "sjr": 1.535,
+        "snip": 2.055,
+        "subject_areas": [
+          "Earth and Planetary Sciences (all)"
+        ],
+        "title": "Geoscience Frontiers"
+      },
+      "publication_date": "2020-01-01",
+      "selected": null,
+      "title": "Advanced prediction of tunnel boring machine performance based on big data",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85082841510&origin=inward"
+      ]
+    },
+    {
+      "abstract": "This paper proposes a MIDI- and audio-based music genre classification method for Korean traditional music. There are many traditional instruments in Korea, and most of the traditional songs played using the instruments have similar patterns and rhythms. Although music information processing such as music genre classification and audio melody extraction have been studied, most studies have focused on pop, jazz, rock, and other universal genres. There are few studies on Korean traditional music because of the lack of datasets. This paper analyzes raw audio and MIDI phrases in Korean traditional music, performed using Korean traditional musical instruments. The classified samples and MIDI, based on our classification system, will be used to construct a database or to implement our Kontakt-based instrument library. Thus, we can construct a management system for a Korean traditional music library using this classification system. Appropriate feature sets for raw audio and MIDI phrases are proposed and the classification results\u2014based on machine learning algorithms such as support vector machine, multi-layer perception, decision tree, and random forest\u2014are outlined in this paper. \u00a9 2018 KSII.",
+      "authors": [
+        "JongSeol Lee",
+        "MyeongChun Lee",
+        "Dalwon Jang",
+        "Kyoungro Yoon"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.3837/tiis.2018.04.026",
+      "keywords": [
+        "Music genre classification",
+        "Music editor",
+        "Music sample analysis",
+        "MIDI analysis",
+        "Korean traditional music"
+      ],
+      "number_of_pages": 18,
+      "pages": "1869-1886",
+      "publication": {
+        "category": "Journal",
+        "cite_score": 1.4,
+        "isbn": null,
+        "issn": "19767277",
+        "publisher": "Korea Society of Internet Information",
+        "sjr": 0.215,
+        "snip": 0.42,
+        "subject_areas": [
+          "Information Systems",
+          "Computer Networks and Communications"
+        ],
+        "title": "KSII Transactions on Internet and Information Systems"
+      },
+      "publication_date": "2018-04-30",
+      "selected": null,
+      "title": "Korean traditional music genre classification using sample and MIDI phrases",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85046898360&origin=inward",
+        "http://itiis.org/digital-library/manuscript/file/21745/TIISVol12No4-26.pdf"
+      ]
+    },
+    {
+      "abstract": "Genre classification for musical documents is conventionally based on keywords, statistical features or lowlevel acoustic features. Such features are either lack of in-depth information of music content or incomprehensible for music professionals. This paper proposed a classification scheme based on the correlation analysis of the melodic patterns extracted from music documents. The extracted patterns can be further clustered, and smoothing techniques for the statistics of the patterns can be utilized to improve the performance effectively. The accuracy of 70.67% for classifying five types of genre, including jazz, lyric, rock, classical and others, can be achieved, which outperforms an ANN-based classifier using statistical features significantly. The patterns can be converted into symbolic forms such that the classification results are meaningful and comprehensible for most music workers. \u00a9 2012 IEEE.",
+      "authors": [
+        "Bor-Shen Lin",
+        "Tai-Cheng Chen"
+      ],
+      "categories": null,
+      "citations": 2,
+      "comments": null,
+      "databases": [
+        "Scopus",
+        "IEEE"
+      ],
+      "doi": "10.1109/TAAI.2012.23",
+      "keywords": [
+        "N-gram Melodies",
+        "Repeated Melodic Patterns",
+        "Genre Classification",
+        "Automatic Tagging",
+        "Music Information Retrieval"
+      ],
+      "number_of_pages": 5,
+      "pages": "39-43",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "978-0-7695-4919-4",
+        "issn": "2376-6824",
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Proceedings - 2012 Conference on Technologies and Applications of Artificial Intelligence, TAAI 2012"
+      },
+      "publication_date": "2012-11-16",
+      "selected": null,
+      "title": "Genre Classification for Musical Documents Based on Extracted Melodic Patterns and Clustering",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84873362941&origin=inward",
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6395003"
+      ]
+    },
+    {
+      "abstract": "Over the last decade, music-streaming services have grown dramatically. Pandora, one company in the field, has pioneered and popularized streaming music by successfully deploying the Music Genome Project [1] (https://www.pandora.com/about/mgp) based on human-annotated content analysis. Another company, Spotify, has a catalog of over 40 million songs and over 180 million users as of mid-2018 (https://press.spotify.com/us/about/), making it a leading music service provider worldwide. Giant technology companies such as Apple, Google, and Amazon have also been strengthening their music service platforms. Furthermore, artificial intelligence speakers, such as Amazon Echo, are gaining popularity, providing listeners with a new and easily accessible way to listen to music. \u00a9 1991-2012 IEEE.",
+      "authors": [
+        "Juhan Nam",
+        "Keunwoo Choi",
+        "Jongpil Lee",
+        "Szu-Yu Chou",
+        "Yi-Hsuan Yang"
+      ],
+      "categories": null,
+      "citations": 11,
+      "comments": null,
+      "databases": [
+        "Scopus",
+        "IEEE"
+      ],
+      "doi": "10.1109/MSP.2018.2874383",
+      "keywords": [],
+      "number_of_pages": 11,
+      "pages": "41-51",
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "isbn": null,
+        "issn": "1558-0792",
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "IEEE Signal Processing Magazine"
+      },
+      "publication_date": "2019-01-01",
+      "selected": null,
+      "title": "Deep Learning for Audio-Based Music Classification and Tagging: Teaching Computers to Distinguish Rock from Bach",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85059746088&origin=inward",
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8588424"
+      ]
+    },
+    {
+      "abstract": "As a severe hazard in coal mining and rock excavation, the rockburst is usually induced by the high energy tremor. Microseismic (MS) monitoring is suggested to forecast the rockburst risk to reduce its damage. The paper aims to investigate contribution of multi-MS data, including MS raw wave data and MS energy data, to prediction of the high energy tremor, using support vector machine (SVM) together with genetic algorithm (GA). MS monitoring data recorded for more than 400 days at Wudong coal mine of Xinjiang, China, were used in the paper. 132 and 24 features are initially extracted from MS raw wave and energy data in the frequency domain, entropy and time-frequency domain, respectively. GA is not only used to select effective ones among initially extracted features, but also optimize hyperparameters for SVM to classify high energy tremors from general MS events. The performances of the proposed approach based on multi-MS data are evaluated by cross-validation. The results show that the classifier achieves 98% sensitivity, 88% accuracy and 87% specificity using both MS raw wave and energy data, which is better than solely utilizing MS raw wave (98% sensitivity, 84% accuracy and 83% specificity) or energy data (98% sensitivity, 86% accuracy and 85% specificity). These findings suggest that MS raw wave data makes important contribution to rockburst risk prediction as well as MS energy data, and the better performance can be achieved when utilizing two kinds of data simultaneously.",
+      "authors": [
+        "Bing Ji",
+        "Fa Xie",
+        "Xinpei Wang",
+        "Shengquan He",
+        "Dazhao Song"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "IEEE"
+      ],
+      "doi": "10.1109/ACCESS.2020.2982366",
+      "keywords": [
+        "microseismic raw wave data",
+        "microseismic monitoring",
+        "genetic algorithm",
+        "Rockburst risk prediction",
+        "support vector machine"
+      ],
+      "number_of_pages": 12,
+      "pages": "58817-58828",
+      "publication": {
+        "category": "Journal",
+        "cite_score": 3.9,
+        "isbn": null,
+        "issn": "2169-3536",
+        "publisher": "Institute of Electrical and Electronics Engineers Inc.",
+        "sjr": 0.775,
+        "snip": 1.734,
+        "subject_areas": [
+          "Engineering (all)",
+          "Materials Science (all)",
+          "Computer Science (all)"
+        ],
+        "title": "IEEE Access"
+      },
+      "publication_date": "2020-01-01",
+      "selected": null,
+      "title": "Investigate Contribution of Multi-Microseismic Data to Rockburst Risk Prediction Using Support Vector Machine With Genetic Algorithm",
+      "urls": [
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9043533"
+      ]
+    },
+    {
+      "abstract": "The extent to which auditory experience can shape general auditory perceptual abilities is still under constant debate. Some studies show that specific auditory expertise may have a general effect on auditory perceptual abilities, while others show a more limited influence, exhibited only in a relatively narrow range associated with the area of expertise. The current study addresses this issue by examining experience-dependent enhancement in perceptual abilities in the auditory domain. Three experiments were performed. In the first experiment, 12 pop and rock musicians and 15 non-musicians were tested in frequency discrimination (DLF), intensity discrimination, spectrum discrimination (DLS), and time discrimination (DLT). Results showed significant superiority of the musician group only for the DLF and DLT tasks, illuminating enhanced perceptual skills in the key features of pop music, in which miniscule changes in amplitude and spectrum are not critical to performance. The next two experiments attempted to differentiate between generalization and specificity in the influence of auditory experience, by comparing subgroups of specialists. First, seven guitar players and eight percussionists were tested in the DLF and DLT tasks that were found superior for musicians. Results showed superior abilities on the DLF task for guitar players, though no difference between the groups in DLT, demonstrating some dependency of auditory learning on the specific area of expertise. Subsequently, a third experiment was conducted, testing a possible influence of vowel density in native language on auditory perceptual abilities. Ten native speakers of German (a language characterized by a dense vowel system of 14 vowels), and 10 native speakers of Hebrew (characterized by a sparse vowel system of five vowels), were tested in a formant discrimination task. This is the linguistic equivalent of a DLS task. Results showed that German speakers had superior formant discrimination, demonstrating highly specific effects for auditory linguistic experience as well. Overall, results suggest that auditory superiority is associated with the specific auditory exposure. \u00a9 2017 Zaltz, Globerson and Amir.",
+      "authors": [
+        "Zaltz, Yael",
+        "Globerson, Eitan",
+        "Amir, Noam"
+      ],
+      "categories": null,
+      "citations": 1,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.3389/fpsyg.2017.02080",
+      "keywords": [
+        "Psychoacoustic thresholds",
+        "Time discrimination",
+        "Musicians",
+        "Auditory experience",
+        "Frequency discrimination",
+        "Auditory training",
+        "Intensity discrimination",
+        "Spectrum discrimination"
+      ],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": 3.2,
+        "isbn": null,
+        "issn": "1664-1078",
+        "publisher": "Frontiers Media S.A.",
+        "sjr": 0.914,
+        "snip": 1.2,
+        "subject_areas": [
+          "Psychology (all)"
+        ],
+        "title": "Frontiers in Psychology"
+      },
+      "publication_date": "2017-11-29",
+      "selected": null,
+      "title": "Auditory perceptual abilities are associated with specific auditory experience",
+      "urls": [
+        "https://www.frontiersin.org/articles/10.3389/fpsyg.2017.02080/pdf",
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85035781098&origin=inward"
+      ]
+    },
+    {
+      "abstract": "Exponentially increasing electronic music distribution creates a natural pressure for fine-grained musical metadata. On the basis of the fact that a primary motive for listening to music is its emotional effect, diversion, and the memories it awakens, we propose a novel affective music taxonomy which combines the global music genre taxonomy, e.g. Classical, Jazz, Rock/Pop, and Rap, with emotion categories such as Joy, Sadness, Anger, and Pleasure, in a complementary way. In this paper, we deal with all essential stages of automatic genre/emotion recognition system, i.e. from reasonable music data collection up to performance evaluation of various machine learning algorithms. Particularly, a novel classification scheme, called as consecutive dichotomous decomposition tree (CDDT) is presented which is specifically parametrized for multi-class classification problem with extremely high number of class, e.g. sixteen music categories in our case. The average recognition accuracy of 75% for the 16 music categories shows a realistic possibility of the affective music taxonomy we proposed.",
+      "authors": [],
+      "categories": null,
+      "citations": 3,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": null,
+      "keywords": [],
+      "number_of_pages": 8,
+      "pages": "1344-1351",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "9781617387739",
+        "issn": null,
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "128th Audio Engineering Society Convention 2010"
+      },
+      "publication_date": "2010-12-01",
+      "selected": null,
+      "title": "Music emotion and genre recognition towards new affective music taxonomy",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84866042212&origin=inward"
+      ]
+    },
+    {
+      "abstract": "This paper reports on the text analysis (visually and computationally) carried out on the lyrics of the rock musician Tom Waits. The analysis mainly focuses on the generally agreed transition period of the musician with his album Swordfishtrombones which started a new phase in Waits' 40 year career. A total of ten supervised learners are tested with the aim to separate the high dimensional space of the word vector (based on his lyrics)into two phases. After initial tests particular focus is given to the Maximum Entropy classifier by further working with some additional pre-processing techniques. The classifier is able to shed some further light into the two classes by being able to separate the two classes with an accuracy of 95%.",
+      "authors": [
+        "Christos Iraklis Tsatsoulis",
+        "Markus Hofmann"
+      ],
+      "categories": null,
+      "citations": 1,
+      "comments": null,
+      "databases": [
+        "IEEE"
+      ],
+      "doi": "10.1109/IAdCC.2014.6779403",
+      "keywords": [],
+      "number_of_pages": 4,
+      "pages": "664-667",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "978-1-4799-2571-1",
+        "issn": null,
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "2014 IEEE International Advance Computing Conference (IACC)"
+      },
+      "publication_date": "2014-02-21",
+      "selected": null,
+      "title": "Focusing on Maximum Entropy classification of lyrics by Tom Waits",
+      "urls": [
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6779403"
+      ]
+    },
+    {
+      "abstract": "This article is concerned with several different concepts of literary history. It concludes that a multi-disciplinary approach spanning a number of different media is now often used in synthetic histories of literature. It is no longer possible to write a history of literature in terms of a single, unified narrative or as a text governed by a single overarching idea. One must now use a multiplicity of approaches: literature as an autonomous evolutionary process, literature as part of cultural history, literature in the transnational context,and literature in the comparative context. The series of literary histories published by Harvard University Press (A New History of French Literature, A New History of German Literature, and A New Literary History of America) is particularly thought-provoking in this respect since these works consider literature within a broad cultural and social context. The point of departure for each chapter is a literary or a social and/or political event. The History of the Literary Cultures of East-Central Europe, of which three volumes have been published so far (2004, 2006, and 2007) is unconventional and noteworthy. Czech literary history has, traditionally, struggled with national ideology and its prejudices. After the Communist take-over of 1948, this was superseded by Marxist ideology, which was similarly limiting. The article analyzes three recent histories of Czech literature, which have tried to overcome these boundaries. D\u011bjiny \u010desk\u00e9 literatury (A History of Czech Literature) by Hana Voisine-jlechov\u00e1 was published in Czech in 2005 (and in French as Histoire de la litt\u00e9-rature tch\u011bque, in 2001). Although the author says she is using a comparative approach, her work contains a large number of mistakes, inaccuracies, and teleological and causal constructions. The third volume of Schamschula's voluminous Geschichte der tschechlschen Literatur (A History of Czech Literature, 2004) is much more successful. This work covers the period from 1918 to the present day. Schamschula manifests much greater literary-historical knowledge than Voisine-Jechov\u00e1, but his approach is marred by an anti-Czech bias. What is more, Schamschula's and Voisine-Jechov\u00e1's treatment of Czech literature after 1968 is quite inadequate. In many respects, these shortcomings have been rectified by the extensive, four volume project D\u011bjiny \u010desk\u00e9 literatury 1945-1989 (A History of Czech Literature, 1945-89, vols Ml, 2007, vols III-IV, 2008),a collective work produced by the Prague-based Institute of Czech Literature under Pavel Janou\u0161ek. This work uses a much broader definition of the concept of literature (taking into account, for example, the cultural context, the mass media, and rock and folk music). There are inaccuracies and problems even in this work, but on the whole this history has managed to overcome the teleological concept and some of the traditional constraints of Czech literary history.",
+      "authors": [],
+      "categories": null,
+      "citations": 3,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": null,
+      "keywords": [],
+      "number_of_pages": 27,
+      "pages": "775-801",
+      "publication": {
+        "category": "Journal",
+        "cite_score": 0.2,
+        "isbn": null,
+        "issn": "00090468",
+        "publisher": "Czech Academy Science Editorial Office",
+        "sjr": 0.1,
+        "snip": 0.393,
+        "subject_areas": [
+          "Literature and Literary Theory"
+        ],
+        "title": "Ceska Literatura"
+      },
+      "publication_date": "2009-12-01",
+      "selected": null,
+      "title": "How and how not to write a history of Czech literature",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=77950840348&origin=inward"
+      ]
+    },
+    {
+      "abstract": "It is often known that an EEG has a personal characteristic. However, there are no researches to achieve the consideration of the personal characteristic. Then, the analyzed frequency components of the EEG have that the frequency components in which characteristics are contained significantly, and that not. Moreover, these combinations have the human equation. We think that these combinations are the personal characteristics frequency components of the EEG. In this paper, the EEG analysis method by using the GA, the FA and the NN is proposed. The GA is used for selecting the personal characteristics frequency components. The FA is used for extracting the characteristic data of the EEG. The NN is used for estimating extracted the characteristics data of the EEG. Finally, in order to show the effectiveness of the proposed method, EEG pattern was classified using computer simulations. The EEG pattern has 4 conditions, which are listening to rock music, Schmaltzy Japanese ballad music, healing music and classical music. The result, in the case of not using the personal characteristics frequency components, gave over 95% accuracy. This result of our experiment shows the effectiveness of the proposed method. \u00a9 2003 IEEE.",
+      "authors": [],
+      "categories": null,
+      "citations": 2,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.1109/CIRA.2003.1222167",
+      "keywords": [],
+      "number_of_pages": 5,
+      "pages": "1196-1200",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "0780378660",
+        "issn": null,
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Proceedings of IEEE International Symposium on Computational Intelligence in Robotics and Automation, CIRA"
+      },
+      "publication_date": "2003-01-01",
+      "selected": null,
+      "title": "An EEG feature detection system using the neural networks based on genetic algorithms",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=79959960178&origin=inward"
+      ]
+    },
+    {
+      "abstract": "This paper aims to study the evolution of five different music genres: Hip-Hop, Rock, Pop, Country and Metal over the last five decades. Each style of music has been classified into three-time slots: Before the 2000s, between 2000 to 2009 and from 2010 to present. Length of lyrics for each genre over the three different time slots has been compared. Similarly, most frequently used words were studied to understand the mood and expression of emotions which each style carries and how they have evolved. Then the lexical diversity and sentimental analysis over time of each music type have been studied to analyze how the songs have evolved to satisfy the ever-changing taste of listeners and the dynamic underlying tone which they carry. We have also studied the various classification models to predict genres with lyrics based on numerous parameters like most frequently words, word-length, lyrics length. At last, we present our opinion on what can we expect from each music-genre in the near future. \u00a9 BEIESP.",
+      "authors": [],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.35940/ijeat.A1674.109119",
+      "keywords": [
+        "Music",
+        "Lyrics analysis",
+        "Predictive analysis",
+        "Machine learning",
+        "Natural language processing",
+        "RStudio",
+        "Sentimental analysis"
+      ],
+      "number_of_pages": 6,
+      "pages": "5138-5143",
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "isbn": null,
+        "issn": null,
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "International Journal of Engineering and Advanced Technology"
+      },
+      "publication_date": "2019-10-01",
+      "selected": null,
+      "title": "Evolution of different music genres",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85074665394&origin=inward"
+      ]
+    },
+    {
+      "abstract": "This paper presents a study using artificial neural networks (ANN)to perform automatic estimation of rock permeability in a reservoir scale. Three well log responses (acoustic time, gamma-ray and deep induction) were used to predict formation permeability. Permeability from core data and conventional computing have been used to test the results of the neural network. Results from the ANN are in good agreement with core analysis and better than conventional computing data. Based on artificial neural network, combining with the thought of facies controlled modeling, this study presents a reasonable and valuable method to establish the 3D reservoir model, which could provide significant geological and geophysical basis for the further research of improving recovery ratio and the potential of residual oil. Finally, it is shown that the application of artificial neural networks in permeability prediction reduces costs and predicts the reservoir properties more accurately.",
+      "authors": [
+        "Xueping Ma",
+        "Jinliang Zhang",
+        "Aixue Song"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "IEEE"
+      ],
+      "doi": "10.1109/CCCM.2009.5267627",
+      "keywords": [
+        "3D reservoir modelling",
+        "well log",
+        "permeability",
+        "artificial neural networks"
+      ],
+      "number_of_pages": 5,
+      "pages": "446-450",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "978-1-4244-4247-8",
+        "issn": "2154-963X",
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "2009 ISECS International Colloquium on Computing, Communication, Control, and Management"
+      },
+      "publication_date": "2009-08-08",
+      "selected": null,
+      "title": "3D reservoir modelling with the aid of artificial neural networks",
+      "urls": [
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=5267627"
+      ]
+    },
+    {
+      "abstract": "This explorative study investigates the perception of clash of keys in music. It is a replication and extension of an earlier study by Wolpert (2000) on the perception of a harmonic (bitonal) manipulation of a melody and accompaniment. We investigated (a) how reliable results were, (b) how results would change if listeners' attention changed from nondirected (NDL) to directed listening (DL), and (c) whether the perception of clash of keys is influenced by the musical style of the particular composition. Participants included 101 expert listeners and 147 nonexpert listeners who evaluated music of four different styles in two versions each (original and with a pitch difference of 200 cents between melody and accompaniment). On the whole, expert listeners noticed the clash of keys significantly more often than did nonexperts (NDL: 49.30% vs. 9.30%; DL: 78.00% vs. 46.90%). For NDL, the perception of clash of keys differed between musical styles and decreased from classical to rock 'n' roll and from pop to jazz. Differences in responses are mainly explained by acculturation effects (listening expertise, attention, musical style, and familiarity with the particular piece). \u00a9 2009 By the Regents of the University of California.",
+      "authors": [],
+      "categories": null,
+      "citations": 5,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.1525/mp.2009.26.4.321",
+      "keywords": [
+        "Attention",
+        "Perception",
+        "Tonality",
+        "Listening",
+        "Sensory pleasantness"
+      ],
+      "number_of_pages": 14,
+      "pages": "321-334",
+      "publication": {
+        "category": "Journal",
+        "cite_score": 2.6,
+        "isbn": null,
+        "issn": "07307829",
+        "publisher": "University of California Press",
+        "sjr": 0.746,
+        "snip": 1.107,
+        "subject_areas": [
+          "Music"
+        ],
+        "title": "Music Perception"
+      },
+      "publication_date": "2009-03-31",
+      "selected": null,
+      "title": "The role of listening expertise, attention, and musical style in the perception of clash of keys",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=63049109892&origin=inward"
+      ]
+    },
+    {
+      "abstract": "For many, the pursuit and enjoyment of musical performance goes hand-in-hand with collaborative creativity, whether in a choir, jazz combo, orchestra, or rock band. However, few musical interfaces use the affordances of computers to create or enhance ensemble musical experiences. One possibility for such a system would be to use an artificial neural network (ANN) to model the way other musicians respond to a single performer. Some forms of music have well-understood rules for interaction; however, this is not the case for free improvisation with new touch-screen instruments where styles of interaction may be discovered in each new performance. This paper describes an ANN model of ensemble interactions trained on a corpus of such ensemble touch-screen improvisations. The results show realistic ensemble interactions and the model has been used to implement a live performance system where a performer is accompanied by the predicted and sonified touch gestures of three virtual players. \u00a9 2017 Copyright held by the owner/author(s).",
+      "authors": [],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.1145/3123514.3123556",
+      "keywords": [
+        "Mobile music",
+        "Ensemble interaction",
+        "Touch screen performance",
+        "RNN",
+        "Deep learning"
+      ],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "9781450353731",
+        "issn": null,
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "ACM International Conference Proceeding Series"
+      },
+      "publication_date": "2017-08-23",
+      "selected": null,
+      "title": "Deep models for ensemble touch-screen improvisation",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85038368363&origin=inward"
+      ]
+    },
+    {
+      "abstract": "Music genre classification has been a challenging task in the field of Music Information Retrieval (MIR). Using a machine to automate this classification process is a more complex task. Audio feature extraction is the first important step of MIR. Essentia, a tool is used for the audio feature extraction. In this paper, a comparative study of the standard machine learning classifiers including K-Nearest Neighbor Classifier, Support Vector Machine, Naive Bayes Classifier, Neural Network, Quadratic Discriminant Analysis and Fuzzy Classifiers is undertaken in context of music genre classification. In this paper, a two phase hybrid classifier is proposed to overcome the problem of blurry classification of Pop, Rock and Electronic genres. It is observed that these genres are not classified accurately by above mentioned classifiers. The behavior of the proposed classifier on the standard music genre dataset GTZAN Genre Collection (1000 songs) and Free Music Archive (FMA) Dataset (approx. 20K songs) is investigated. The overall result of proposed approach on both the datasets is approximately 90% and 70% respectively. \u00a9 2018 IEEE.",
+      "authors": [
+        "Nagamanoj Karunakaran",
+        "Arti Arya"
+      ],
+      "categories": null,
+      "citations": 1,
+      "comments": null,
+      "databases": [
+        "Scopus",
+        "IEEE"
+      ],
+      "doi": "10.1109/ICoIAS.2018.8494161",
+      "keywords": [
+        "music information retrieval",
+        "feature extraction",
+        "essentia",
+        "machine learning concepts"
+      ],
+      "number_of_pages": 8,
+      "pages": "128-135",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "978-1-5386-6332-5",
+        "issn": null,
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "2018 International Conference on Intelligent Autonomous Systems, ICoIAS 2018"
+      },
+      "publication_date": "2018-03-01",
+      "selected": null,
+      "title": "A Scalable Hybrid Classifier for Music Genre Classification using Machine Learning Concepts and Spark",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85056889102&origin=inward",
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8494161"
+      ]
+    },
+    {
+      "abstract": "Conventional methods for measuring contact angle are usually applied on smooth surfaces. Methods concerning contact angle determinations performed directly on pore surfaces of porous media have rarely been reported. This work approaches the pore-scale measurement of local contact angle in a CO2-brine-glass beads system, using micro-focused X-ray computed tomography (micro-CT). Both drainage and imbibition experiments with 0.1 ml/min injection rate were conducted at 40\u00b0C and 8 MPa. The effectiveness of this pore-scale approach is confirmed by comparing the results with the results gathered from traditional sessile drop methodology. Observations indicate that the contact angle hysteresis phenomenon was not so obvious for intermediate-wet glass beads in the employed experimental setting. In real reservoir circumstances, the roughness and capillary variation caused significant deviations in contact angle distribution for both drainage and imbibition, even in rock cores consisting of a single-phase material.",
+      "authors": [
+        "Pengfei Lv",
+        "Yu Liu",
+        "Lanlan Jiang",
+        "Yongchen Song",
+        "Qingxun Huang"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "IEEE"
+      ],
+      "doi": "10.1049/mnl.2016.0215",
+      "keywords": [],
+      "number_of_pages": 4,
+      "pages": "524-527",
+      "publication": {
+        "category": "Journal",
+        "cite_score": 1.5,
+        "isbn": null,
+        "issn": "1750-0443",
+        "publisher": "Institution of Engineering and Technology",
+        "sjr": 0.245,
+        "snip": 0.419,
+        "subject_areas": [
+          "Bioengineering",
+          "Materials Science (all)",
+          "Condensed Matter Physics",
+          "Biomedical Engineering"
+        ],
+        "title": "Micro & Nano Letters"
+      },
+      "publication_date": "2016-01-01",
+      "selected": null,
+      "title": "Pore-scale contact angle measurements of CO2\u2013brine\u2013glass beads system using micro-focused X-ray computed tomography",
+      "urls": [
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7560058"
+      ]
+    },
+    {
+      "abstract": "An analytical method using solid-phase extraction (SPE) and high-performance liquid chromatography-mass spectrometry (LC-MS) has been developed and validated for the confirmation of \u03949- tetrahydrocannabinol (THC) in oral fluid samples. Oral fluid was extracted using Bond Elut LRC-Certify solid-phase extraction columns (10 cm3, 300 mg) and elution performed with n-hexane/ethyl acetate. Quantitation made use of the selected ion-recording mode (SIR) using the most abundant characteristic ion [THC + H+], m/z 315.31 and the fragment ion, m/z 193.13 for confirmation, and m/z 318.00 for the protonated internal standard, [d 3-THC + H+]. The method proved to be precise for THC, in terms of both intra-day and inter-day analyses, with coefficients of variation less than 10%, and the calculated extraction efficiencies for THC ranged from 76 to 83%. Calibration standards spiked with THC between 2 and 100 ng/mL showed a linear relationship (r2 = 0.999). The method presented was applied to the oral fluid samples taken from the volunteers during the largest music event in Portugal, named Rock in Rio-Lisboa. Oral fluid was collected from 40 persons by expectoration and with Salivette\u00ae. In 55% of the samples obtained by expectorating, THC was detected with concentration ranges from 1033 to 6552 ng/mL and in 45% of cases THC was detected at concentrations between 51 and 937 ng/mL. However, using Salivette\u00ae collection, 26 of the 40 cases had an undetectable THC. \u00a9 2005 Elsevier Ireland Ltd. All rights reserved.",
+      "authors": [],
+      "categories": null,
+      "citations": 44,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.1016/j.forsciint.2004.11.026",
+      "keywords": [
+        "Oral fluid",
+        "THC",
+        "LC-MS"
+      ],
+      "number_of_pages": 7,
+      "pages": "205-211",
+      "publication": {
+        "category": "Journal",
+        "cite_score": 3.7,
+        "isbn": null,
+        "issn": "03790738",
+        "publisher": "Elsevier Ireland Ltd",
+        "sjr": 0.867,
+        "snip": 1.317,
+        "subject_areas": [
+          "Pathology and Forensic Medicine"
+        ],
+        "title": "Forensic Science International"
+      },
+      "publication_date": "2005-06-10",
+      "selected": null,
+      "title": "Analysis of \u0394<sup>9</sup>-tetrahydrocannabinol in oral fluid samples using solid-phase extraction and high-performance liquid chromatography- electrospray ionization mass spectrometry",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=24144455668&origin=inward"
+      ]
+    },
+    {
+      "abstract": "This paper presents the application of Machine Learning (ML) algorithm as an algorithmic music composer, compared to a rule-based algorithm. The ML model is based on LSTMs which takes in previous notes and predicts the next set of notes based on a midi format. For the rule-based method, we apply chord progression rules and binary rhythm pattern theory. We used both algorithms to generate music in two different genres, namely rock, and jazz. To evaluate the effectiveness of the algorithms, fifteen raters are asked to identify the genre of the generated songs. The results showed 77.33% of the rulebased algorithms Jazz songs were correctly identified, compared to the 62.67% generated by the LSTM. For the rock genre, only 49.33% percent of rule-based algorithms songs and 44% Machine Learning algorithms songs were correctly identified. In terms of music satisfaction, the rule-based algorithm on average obtains higher scores in both genres, 2.17 for Jazz and 2.42 for Rock while Machine Learning algorithm receives 1.83 for Jazz songs and 1.57 for Rock. \u00a9 2018 IEEE.",
+      "authors": [
+        "Panida Wiriyachaiporn",
+        "Kankawee Chanasit",
+        "Atiwong Suchato",
+        "Proadpran Punyabukkana",
+        "Ekapol Chuangsuwanich"
+      ],
+      "categories": null,
+      "citations": 1,
+      "comments": null,
+      "databases": [
+        "Scopus",
+        "IEEE"
+      ],
+      "doi": "10.1109/JCSSE.2018.8457397",
+      "keywords": [
+        "Rock music composition",
+        "Long Short-Term Memory",
+        "Machine learning",
+        "Computer generated music",
+        "Jazz music composition",
+        "Recurrent neural networks",
+        "Rule-based algorithm",
+        "Algorithmic music composition"
+      ],
+      "number_of_pages": 6,
+      "pages": "1-6",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "978-1-5386-5539-9",
+        "issn": null,
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Proceeding of 2018 15th International Joint Conference on Computer Science and Software Engineering, JCSSE 2018"
+      },
+      "publication_date": "2018-07-11",
+      "selected": null,
+      "title": "Algorithmic Music Composition Comparison",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85057744305&origin=inward",
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8457397"
+      ]
+    },
+    {
+      "abstract": "This paper is aimed at proposing a machine learning approach to analyze and make sense out of the ancient rock arts by exploring them through cloud infrastructure. The visual language of the rock art is proposed to be interpreted and transformed into the current language of human cognition. The rock arts can be captured as 3D motion pictures; ultrasonically detected images; pictures captured using laser sensors and thermography techniques. Since the countries across the Globe are rich in culture and also diverse in nature, rock arts have been explored and keeping on exploring more in quantity, the rock arts information collected through the above said methods can be represented and processed using cloud infrastructure. Further, using machine learning algorithms in the cloud is proposed, to arrive at definite, meaningful information from rock arts. Through the machine learning approach, the symbols represented by rock arts could be matched with the twenty six English alphabets. The proposed work is the interpretation of the olden rock art scripts and hence to predict the meaning that they wish to convey.",
+      "authors": [
+        "R. S. Ponmagal",
+        "N. Srinivasan"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "IEEE"
+      ],
+      "doi": "10.1109/ICCIC.2015.7435682",
+      "keywords": [
+        "visual language",
+        "cloud",
+        "machine learning",
+        "symbol",
+        "interpretation",
+        "rock art"
+      ],
+      "number_of_pages": 6,
+      "pages": "1-6",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "978-1-4799-7847-2",
+        "issn": null,
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "2015 IEEE International Conference on Computational Intelligence and Computing Research (ICCIC)"
+      },
+      "publication_date": "2015-12-10",
+      "selected": null,
+      "title": "Machine learning approach for exploring rock arts through the cloud infrastructure",
+      "urls": [
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7435682"
+      ]
+    },
+    {
+      "abstract": "The rapid growth in audio processing has given much help in advancing the development of digital music. It encourages the creation of method for the genre classification which is able to optimize the learning process to be done with ease, simple and has a good quality in a song search accuracy. Hence we need a development of the learning process with a variety of methods and better algorithms. This study discusses the genre classification with good quality in the classification accuracy using a frequency content characteristics and classification using Hidden Markov Models. From the testing scenario about the parameters of type and filter order, obtained the best parameters are the Butterworth filter order 5. The best system performance has 80% accuracy from the test of 3 genre songs: pop, rock, and dance, with 80% accuracy from the amount of 40 samples data from each genre, with 10 testing data of each genre, quantization characteristic of 20, and 150 iterations for HMM.",
+      "authors": [
+        "Imam Ikhsan",
+        "Ledya Novamizanti",
+        "I Nyoman Apraz Ramatryana"
+      ],
+      "categories": null,
+      "citations": 1,
+      "comments": null,
+      "databases": [
+        "IEEE"
+      ],
+      "doi": "10.1109/ICoICT.2014.6914095",
+      "keywords": [
+        "Classification",
+        "Hidden Markov Models",
+        "musical genre"
+      ],
+      "number_of_pages": 6,
+      "pages": "397-402",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "978-1-4799-3580-2",
+        "issn": null,
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "2014 2nd International Conference on Information and Communication Technology (ICoICT)"
+      },
+      "publication_date": "2014-05-28",
+      "selected": null,
+      "title": "Automatic musical genre classification of audio using Hidden Markov Model",
+      "urls": [
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6914095"
+      ]
+    },
+    {
+      "abstract": "We are developing a system to support remote audiences of live music shows. At live shows of rock or popular music, audiences take actions responding to the music. This is a style of nonverbal communication between audiences to share emotion. The 'sense of unity', which is often mentioned among music players and audiences, is a key of successful live performance. This research tries to enable remote audiences to exchange nonverbal communication with body actions between them in a VR environment. We have developed a prototype system and conducted evaluation sessions. Most of the participants of the sessions felt the sense of unity. \u00a9 2018 IEEE.",
+      "authors": [
+        "Tatsuyoshi Kaneko",
+        "Hiroyuki Tarumi",
+        "Keiya Kataoka",
+        "Yuki Kubochi",
+        "Daiki Yamashita",
+        "Tomoki Nakai",
+        "Ryota Yamaguchi"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "Scopus",
+        "IEEE"
+      ],
+      "doi": "10.1109/AIVR.2018.00025",
+      "keywords": [
+        "Nonverbal communication",
+        "Affective communication",
+        "Remote audiences",
+        "Virtual reality",
+        "Live music performance"
+      ],
+      "number_of_pages": 4,
+      "pages": "124-127",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "978-1-5386-9270-7",
+        "issn": null,
+        "publisher": "IEEE",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Proceedings - 2018 IEEE International Conference on Artificial Intelligence and Virtual Reality, AIVR 2018"
+      },
+      "publication_date": "2018-12-10",
+      "selected": null,
+      "title": "Supporting the Sense of Unity between Remote Audiences in VR-Based Remote Live Music Support System KSA2",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85062168719&origin=inward",
+        "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8613644"
+      ]
+    },
+    {
+      "abstract": "Music plays an important role in our everyday lives. Not surprisingly, shared musical taste is said to lead to social attraction. In this paper, we study in detail friendship links on the social music platform Last.fm, asking for similarities in taste as well as on demographic attributes and local network structure. On Last.fm, users connect to 'online' friends as usual, but also indicate strong 'real-life' friends by co-attending the same events. Thus, we can contrast these online ties with offline links of different strength. Complementing the analysis, we learn to predict both kinds of ties automatically, including public interaction data as additional relevant features. Our results emphasize the predictive power of the simple measure of mutual friends, while the indicative value of similarity on taste (though increasing with tie strength) is negligible. Copyright \u00a9 2012 ACM.",
+      "authors": [],
+      "categories": null,
+      "citations": 15,
+      "comments": null,
+      "databases": [
+        "Scopus"
+      ],
+      "doi": "10.1145/2380718.2380725",
+      "keywords": [
+        "Social links",
+        "Social networks",
+        "Online vs. offline",
+        "Machine learning",
+        "Tie strength",
+        "Statistical analysis"
+      ],
+      "number_of_pages": 10,
+      "pages": "47-56",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "9781450312288",
+        "issn": null,
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Proceedings of the 4th Annual\u00a0ACM\u00a0Web\u00a0Science\u00a0Conference, WebSci'12"
+      },
+      "publication_date": "2012-01-01",
+      "selected": null,
+      "title": "We love rock 'n' roll: Analyzing and predicting friendship links in Last.fm",
+      "urls": [
+        "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=84869014750&origin=inward"
+      ]
+    },
+    {
+      "abstract": "This paper presents a multimodal approach to style identification in pop/rock music. Considering the intuitive feelings of similarity from the listener's perspective, this study focuses on features that are computed using similarity metrics for melodies, harmonies, and audio signals for style identification. Support vector machine is used as a binary classifier to determine if two songs are created by the same artist given their similarity distances in the three aspects. Experiments are conducted using songs of four well-known pop/rock bands from 6 albums. The preliminary result shows that the approach achieves the best result in correct rate of 85% using only seven similarity metrics.",
+      "authors": [
+        "Ching-Hua Chuan"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "ACM"
+      ],
+      "doi": "10.1109/ICMLA.2013.143",
+      "keywords": [
+        "style",
+        "n-grams",
+        "melodic contour",
+        "music similarity",
+        "Gaussian mixture models"
+      ],
+      "number_of_pages": 4,
+      "pages": "321-324",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "9780769551449",
+        "issn": null,
+        "publisher": "IEEE Computer Society",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Proceedings of the 2013 12th International Conference on Machine Learning and Applications - Volume 02"
+      },
+      "publication_date": "2013-12-04",
+      "selected": null,
+      "title": "A Multimodal Approach to Song-Level Style Identification in Pop/Rock Using Similarity Metrics",
+      "urls": [
+        "https://dl.acm.org/doi/10.1109/ICMLA.2013.143"
+      ]
+    },
+    {
+      "abstract": "This talk will present playware for creating playful technological applications, and how playware technology can be generalised for a vast variety of people, e.g. for play, education, cardiac patients, stroke patients, hospitalised children, home care, autistic children, dementia patients, and handicapped. The approach builds upon the development of modular robotics to create a kind of playware, which is flexible in both set-up and activity building for anybody and anywhere. Key features of this design approach are modularity, flexibility, and construction, immediate feedback to stimulate engagement, activity design by end-users, and creative exploration of play activities. I will illustrate the design approach by a system composed of different modular playware devices that by its modularity is used for creating playful experiences in a vast variety of application areas, e.g. music, sport, play and rehabilitation, e.g. most recently for the FIFA World Cup 2010 in South Africa. The system composed of the modular devices engages the user in physical activities, and I will show how it motivates to perform physical activities by providing immediate feedback based upon playful physical interaction with the system. The modularity, ease of use and the functionality of the devices such as modular robotic tiles and cubic I-BLOCKS suit well into these kinds of scenarios, because they can provide feedback in a generic way. It is therefore possible to create applications with different stimuli and to dynamically change parameters to provide immediate feedback to the users. The modularity allows to investigate adaptivity both as changes in the physical structure and in the processing of the modules (e.g. by neural networks).",
+      "authors": [
+        "Henrik Hautop Lund"
+      ],
+      "categories": null,
+      "citations": 0,
+      "comments": null,
+      "databases": [
+        "ACM"
+      ],
+      "doi": "10.5555/1989676.1989677",
+      "keywords": [],
+      "number_of_pages": 2,
+      "pages": "13-14",
+      "publication": {
+        "category": "Conference Proceedings",
+        "cite_score": null,
+        "isbn": "9789604742868",
+        "issn": null,
+        "publisher": "World Scientific and Engineering Academy and Society (WSEAS)",
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Proceedings of the 10th WSEAS international conference on communications, electrical & computer engineering, and 9th WSEAS international conference on Applied electromagnetics, wireless and optical communications"
+      },
+      "publication_date": "2011-03-24",
+      "selected": null,
+      "title": "Plenary lecture 1: applications of playware: intelligent technology that creates playful experiences",
+      "urls": [
+        "https://dl.acm.org/doi/10.5555/1989676.1989677"
+      ]
+    }
+  ],
+  "processed_at": "2020-09-13 17:41:43",
+  "query": "([artificial intelligence] OR [AI] OR [machine learning] OR [ML] OR [deep learning] OR [DL]) AND [rock] AND ([music] OR [song]) AND NOT [drum*]",
+  "since": "2000-01-01",
+  "until": "2020-12-31"
+}

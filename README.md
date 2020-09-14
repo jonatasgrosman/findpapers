@@ -155,7 +155,7 @@ First, he wants to filter the papers looking only at their basic information.
 $ findpapers refine /some/path/search_paul.json
 ```
 
-![Workflow](docs/refine-01.jpeg)
+![refine-01](docs/refine-01.jpeg)
 
 After completing the first round filtering of the collected papers, he decides to do new filtering on the selected ones looking at the paper's extra info and abstract now. He also chooses to perform some classification while doing this further filtering. And to help in this process, he decides to highlight some keywords contained in the abstract.
 
@@ -169,7 +169,7 @@ $ export HIGHLIGHTS="propose,achiev,accuracy,method,metric,result,limitation"
 $ findpapers refine /some/path/search_paul.json --selected --abstract --extra-info --categories "$CATEGORIES_CONTRIBUTION" --categories "$CATEGORIES_CONTRIBUTION" --highlights "$HIGHLIGHTS"
 ```
 
-![Workflow](docs/refine-02.jpeg)
+![refine-02](docs/refine-02.jpeg)
 
 Now that he has selected all the papers he wanted, he will try to download the full-text from all of them that have a "Model" or "Tool" as a contribution.
 
@@ -206,6 +206,8 @@ $ findpapers bibtex /some/path/search_paul.json /some/path/mybib.bib --selected
 ```
 
 As you could see, all the information collected and enriched by the Findpapers is persisted in a single JSON file. From this file, it is possible to create interesting visualizations about the collected data ...
+
+![charts](docs/charts.png)
 
 ... so, use your imagination!
 

@@ -22,7 +22,6 @@ coverage.xml
 .DS_Store
 
 # Generated files
-samples/*.json
 *.pdf
 *.log
 *.bib
