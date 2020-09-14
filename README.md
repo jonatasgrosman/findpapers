@@ -147,7 +147,7 @@ Now everything is working as he expected, so it's time to do the final papers se
 $ findpapers search /some/path/search_paul.json --query "$QUERY" --token-ieee "$IEEE_TOKEN" --token-scopus "$SCOPUS_TOKEN" --since 2000-01-01 --until 2020-12-31 --databases "acm,ieee,scopus"
 ```
 
-The searching process took a long time, but after many cups of coffee, Dr. McCartney finally has a good list of papers with the potential to help in his research. All the information collected is in the ```search_paul.json``` file. He can now access this file manually to filter which works are most interesting for him, but he prefers to use the Findpapers ```refine``` command for this.
+The searching process took a long time, but after many cups of coffee, Dr. McCartney finally has a good list of papers with the potential to help in his research. All the information collected is in the ```search_paul.json``` file. He could access this file now and manually filter which works are most interesting for him, but he prefers to use the Findpapers ```refine``` command for this.
 
 First, he wants to filter the papers looking only at their basic information.
 
@@ -157,7 +157,7 @@ $ findpapers refine /some/path/search_paul.json
 
 ![refine-01](docs/refine-01.jpeg)
 
-After completing the first round filtering of the collected papers, he decides to do new filtering on the selected ones looking at the paper's extra info and abstract now. He also chooses to perform some classification while doing this further filtering. And to help in this process, he decides to highlight some keywords contained in the abstract.
+After completing the first round filtering of the collected papers, he decides to do new filtering on the selected ones looking at the paper's extra info (citations, DOI, publication name, etc) and abstract now. He also chooses to perform some classification while doing this further filtering. And to help in this process, he decides to highlight some keywords contained in the abstract.
 
 ```console
 $ export CATEGORIES_CONTRIBUTION="Contribution:Metric,Tool,Model,Method"
@@ -171,7 +171,7 @@ $ findpapers refine /some/path/search_paul.json --selected --abstract --extra-in
 
 ![refine-02](docs/refine-02.jpeg)
 
-Now that he has selected all the papers he wanted, he will try to download the full-text from all of them that have a "Model" or "Tool" as a contribution.
+Now that he has selected all the papers he wanted, he will try to download the full-text from all of them which have a "Model" or "Tool" as a contribution.
 
 ```console
 $ findpapers download /some/path/search_paul.json /some/path/papers --selected --categories "Contribution:Tool,Model"
@@ -183,11 +183,11 @@ He also wants to generate the BibTeX file from these papers.
 $ findpapers bibtex /some/path/search_paul.json /some/path/mybib.bib --selected --categories "Contribution:Tool,Model"
 ```
 
-But when he compared the papers' data in the ```/some/path/mybib.bib```  file to the PDF files in the ```/some/path/papers``` folder, he noticed that many papers had not been downloaded.
+But when he compared the papers' data in the ```/some/path/mybib.bib```  and PDF files in the ```/some/path/papers``` folder, he noticed that many papers had not been downloaded.
 
-So when checking the ```/some/path/papers/download.log``` file he could see the link of all papers that were not downloaded correctly, and noticed that some of them were not downloaded due to some limitation of Findpapers (currently the tool has a set of heuristics to perform the download that may not work in all cases). However, the vast majority of papers were not downloaded because they were behind a paywall. Dr. McCartney has access to these jobs within the network at the university where he works, but he is at home right now.
+So when he opened the ```/some/path/papers/download.log``` file, he could see the URL of all papers that weren't downloaded correctly. After accessing these links, he noticed that some of them weren't downloaded due to some limitations of Findpapers (currently, the tool has a set of heuristics to perform the download that may not work in all cases). However, the vast majority of papers weren't downloaded because they were behind a paywall. But, Dr. McCartney has access to these papers when he's connected to the network at the university where he works, but unfortunately, he is at home right now.
 
-But he discovers two things that save him from this mess. First, the university provides a proxy for tunneling requests. Second, Findpapers accepts the configuration of a proxy URL via a variables environment.
+But he discovers two things that could save him from this mess. First, the university provides a proxy for tunneling requests. Second, Findpapers accepts the configuration of a proxy URL via a variables environment. And of course, he'll use this feature.
 
 ```console
 export FINDPAPERS_PROXY=https://mccartney:super_secret_pass@liverpool.ac.uk:1234
@@ -197,7 +197,7 @@ $ findpapers download /some/path/search_paul.json /some/path/papers --selected -
 
 Now the vast majority of the papers he has access have been downloaded correctly.
 
-And at the end of it, he decides to download all the selected works and generate their BibTeX file too.
+And at the end of it, he decides to download all the selected works (regardless of their categorization) and generate their BibTeX file too.
 
 ```console
 $ findpapers download /some/path/search_paul.json /some/path/papers --selected
@@ -213,7 +213,7 @@ As you could see, all the information collected and enriched by the Findpapers i
 
 That's all, folks! We have reached the end of our journey. I hope Dr. McCartney can continue his research and publish his work without any major problems now.
 
-With this story, we saw all the commands of the tool. I know this documentation is kind of weird, but I haven't had time to write more formal documentation of the tool yet. But you can help us to improve this, take a look at the next section and see how you can do that.
+With the story above, we cover all the commands available in Findpapers. I know this documentation is unconventional, but I haven't had time to write a more formal version of the documentation. But you can help us to improve this, take a look at the next section and see how you can do that.
 
 
 ## Want to help?
