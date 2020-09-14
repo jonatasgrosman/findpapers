@@ -78,7 +78,7 @@ Let's see some examples of valid and invalid queries:
 - Searching for papers:
 
 ```console
-$ findpapers search /some/path/search.json "[happiness] AND ([joy] OR [peace of mind]) AND NOT [stressful]"
+$ findpapers search /some/path/search.json -q "[happiness] AND ([joy] OR [peace of mind]) AND NOT [stressful]"
 ```
 
 - Refining search results:
@@ -166,7 +166,7 @@ $ export CATEGORIES_RESEARCH_TYPE="Research Type:Validation Research,Solution Pr
 
 $ export HIGHLIGHTS="propose,achiev,accuracy,method,metric,result,limitation"
 
-$ findpapers refine /some/path/search_paul.json --selected --abstract --extra-info --categories "$CATEGORIES_CONTRIBUTION" --categories "$CATEGORIES_CONTRIBUTION" --highlights "$HIGHLIGHTS"
+$ findpapers refine /some/path/search_paul.json --selected --abstract --extra-info --categories "$CATEGORIES_CONTRIBUTION" --categories "$CATEGORIES_RESEARCH_TYPE" --highlights "$HIGHLIGHTS"
 ```
 
 ![refine-02](docs/refine-02.jpeg)
@@ -187,7 +187,7 @@ But when he compared the papers' data in the ```/some/path/mybib.bib```  and PDF
 
 So when he opened the ```/some/path/papers/download.log``` file, he could see the URL of all papers that weren't downloaded correctly. After accessing these links, he noticed that some of them weren't downloaded due to some limitations of Findpapers (currently, the tool has a set of heuristics to perform the download that may not work in all cases). However, the vast majority of papers weren't downloaded because they were behind a paywall. But, Dr. McCartney has access to these papers when he's connected to the network at the university where he works, but unfortunately, he is at home right now.
 
-But he discovers two things that could save him from this mess. First, the university provides a proxy for tunneling requests. Second, Findpapers accepts the configuration of a proxy URL via a variables environment. And of course, he'll use this feature.
+But he discovers two things that could save him from this mess. First, the university provides a proxy for tunneling requests. Second, Findpapers accepts the configuration of a proxy URL via a variables environment (You don't need to pass this environment variable as a parameter in download command, just need to define it). And of course, he'll use this feature.
 
 ```console
 export FINDPAPERS_PROXY=https://mccartney:super_secret_pass@liverpool.ac.uk:1234
