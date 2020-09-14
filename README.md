@@ -216,7 +216,7 @@ That's all, folks! We have reached the end of our journey. I hope Dr. McCartney 
 With the story above, we cover all the commands available in Findpapers. I know this documentation is unconventional, but I haven't had time to write a more formal version of the documentation. But you can help us to improve this, take a look at the next section and see how you can do that.
 
 
-## Want to help?
+# Want to help?
 
 See the [contribution guidelines](https://gitlab.com/jonatasgrosman/findpapers/-/blob/master/CONTRIBUTING.md)
 if you'd like to contribute to Findpapers project.
