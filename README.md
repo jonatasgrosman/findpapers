@@ -20,15 +20,17 @@ $ pip install findpapers
 
 All application actions are command line based. The available commands are 
 
-- ```findpapers search```: Search for papers using a query
+- ```findpapers search```: Search for papers metadata using a query. This search will be made by matching the query with paper's title, abstract, and keywords.
 
 - ```findpapers refine```: Refine the search results by selecting/classifying the papers
 
-- ```findpapers download```: Download papers using the search results
+- ```findpapers download```: Download full-text papers using the search results
 
 - ```findpapers bibtex```: Generate a BibTeX file from the search results
 
-In the following sections we will show how to use these commands. However, all the commands have the **--help** argument to display some summary about their usage.
+You can control the commands logging verbosity by the **-v** (or **--verbose**) argument.
+
+In the following sections we will show how to use the findpapers commands. However, all the commands have the **--help** argument to display some summary about their usage, E.g. ```findpapers search --help```.
 
 ## Search query construction
 
@@ -36,23 +38,21 @@ First of all we need to know how to build the search queries. The search queries
 
 - All the query terms need to be not empty and enclosed by square brackets. E.g. **[term a]**
 
-- You cannot place a query term . E.g. **[term a]**
-
 - The query can contains boolean operators, but they must be uppercase. The allowed operators are AND, OR, and NOT. E.g. **[term a] AND [term b]**
 
 - All the operators must have 1 space before and after them. E.g. **[term a] OR [term b] OR [term c]**
 
 - The NOT operator must always be preceded by an AND operator E.g. **[term a] AND NOT [term b]**
 
-- A subquery needs to be enclosed by parentheses. E.g. **[term a] AND ([term b] AND [term c])**
+- A subquery needs to be enclosed by parentheses. E.g. **[term a] AND ([term b] OR [term c])**
 
-- The composition of terms is only allowed through boolean operators, queries like "**[term a] [term b]**" are invalid
+- The composition of terms is only allowed through boolean operators. Queries like "**[term a] [term b]**" are invalid
 
-You can use some wildcards in the query too. Use ? to replace a single character or * to replace any number of characters:
+You can use some wildcards in the query too. Use **?** to replace a single character or **\*** to replace any number of characters:
 
 - **[son?]** will match song, sons, ...
 
-- **[son\*]** will match song, sons, songwriting, ...
+- **[son\*]** will match song, sons, sonic, songwriting, ...
 
 Let's see some examples of valid and invalid queries:
 
@@ -75,25 +75,25 @@ Let's see some examples of valid and invalid queries:
 
 ## Basic example (TL;DR)
 
-- Getting papers:
+- Searching for papers:
 
 ```console
-$ findpapers search /some/path/search.json "[term a] AND ([term b] OR [term c])"
+$ findpapers search /some/path/search.json "[happiness] AND ([joy] OR [peace of mind]) AND NOT [stressful]"
 ```
 
-- Refining results:
+- Refining search results:
 
 ```console
 $ findpapers refine /some/path/search.json
 ```
 
-- Downloading full-text papers:
+- Downloading full-text from selected papers:
 
 ```console
 $ findpapers download /some/path/search.json /some/path/papers/ -s
 ```
 
-- Generating BibTeX file:
+- Generating BibTeX file from selected papers:
 
 ```console
 $ findpapers bibtex /some/path/search.json /some/path/mybib.bib -s
@@ -101,121 +101,117 @@ $ findpapers bibtex /some/path/search.json /some/path/mybib.bib -s
 
 ## Advanced example
 
-This advanced usage documentation can be a bit boring to read (and write), so I think it's better to go for a storytelling approach here.
+This advanced usage documentation can be a bit boring to read (and write), so I think it's better to go for a storytelling approach here...
 
-[TODO]
+Let's take a look at Dr McCartney's research. He's a computer scientist interested in AI and music, so he created a search query to collect papers that can help with his research and export it to an environment variable.
 
+```console
+$ export QUERY="([artificial intelligence] OR [AI] OR [machine learning] OR [ML] OR [deep learning] OR [DL]) AND ([music] OR [song])"
+```
 
+Dr. McCartney is interested in testing his query, so he decides to collect only 20 papers to test whether the query is suitable for his research.
 
-## DEPRECATED
+```console
+$ findpapers search /some/path/search_paul.json --query "$QUERY" --limit 20
+```
 
-We basically have 4 basic commands available in the tool:
+But after taking a look at the results contained in the ```search_paul.json``` file he notice two problems:
+ - Only one database was used to collect the 20 papers
+ - Some collected papers were about drums, but he doesn't like drums and drummers
 
-- ```findpapers search```
+So he decides to solve these problems by reformulating his query... 
 
-    When you have a query and needs to get papers using it, this is the command that you'll need to call.
-    This command will find papers from some databases based on the provided query.
+```console
+$ export QUERY="([artificial intelligence] OR [AI] OR [machine learning] OR [ML] OR [deep learning] OR [DL]) AND ([music] OR [song]) AND NOT [drum*]"
+```
 
-    All the query terms need to be enclosed by single quotes (') and can be associated using boolean operators,
-    and grouped using parentheses. The available boolean operators are "AND", "OR". "NOT".
-    All boolean operators needs to be uppercased. The boolean operator "NOT" must be preceded by an "AND" operator.
+... and limiting the number of papers that can be collected by 4 per database.
 
-    E.g.: 'term A' AND ('term B' OR 'term C') AND NOT 'term D'
+```console
+$ findpapers search /some/path/search_paul.json --query "$QUERY" --limit-db 4
+```
 
-    You can use some wildcards in the query too. Use ? to replace a single character or * to replace any number of characters.
+Now his query returned the papers he wanted, but he realized one thing, no papers were collected from Scopus nor IEEE databases. Then he noticed that he needed to pass his Scopus and IEEE API access keys when calling the search command. So he went to https://dev.elsevier.com and https://developer.ieee.org, generated the access keys, and used them in the search.
 
-    E.g.: 'son?' -> will match song, sons, ...
+```console
+$ export IEEE_TOKEN=SOME_SUPER_SECRET_TOKEN
 
-    E.g.: 'son*' -> will match song, sons, sonar, songwriting, ...
+$ export SCOPUS_TOKEN=SOME_SUPER_SECRET_TOKEN
 
-    Nowadays, we search for papers on ACM, arXiv, IEEE, PubMed, and Scopus database.
-    The searching on IEEE and Scopus requires an API token, that must to be provided
-    by the user using the -ts (or --scopus_api_token) and -te (or --ieee_api_token) arguments.
-    If these tokens are not provided the search on these databases will be skipped.
+$ findpapers search /some/path/search_paul.json --query "$QUERY" --limit-db 4 --token-ieee "$IEEE_TOKEN" --token-scopus "$SCOPUS_TOKEN"
+```
 
-    You can constraint the search by date using the -s (or --since) and -u (or --until) arguments
-    following the pattern YYYY-MM-DD (E.g. 2020-12-31). 
-    
-    You can restrict the max number of retrived papers by using -l (or --limit).
-    And, restrict the max number of retrived papers by database using -ld (or --limit_per_database) argument.
+Now everything is working as he expected, so it's time to do the final papers search. So he defines that he wants to collect only works published between 2000 and 2020. He also decides that only wants papers collected from ACM, IEEE, and Scopus.
 
-    Usage example:
+```console
+$ findpapers search /some/path/search_paul.json --query "$QUERY" --token-ieee "$IEEE_TOKEN" --token-scopus "$SCOPUS_TOKEN" --since 2000-01-01 --until 2020-12-31 --databases "acm,ieee,scopus"
+```
 
-    ```console
-    $ findpapers search /some/path/search.json "('machine learning' OR 'deep learning') AND 'music' AND NOT 'drum*'" -s 2019-01-01 -u 2020-12-31 -ld 100 -v -ts VALID_SCOPUS_API_TOKEN -te VALID_IEEE_API_TOKEN
-    ```
+The searching process took a long time, but after many cups of coffee Dr. McCartney finally has a good list of papers with the potential to help in his research. All the information collected is in the ```search_paul.json``` file, he can now access this file manually to filter which works are most interesting for him, but he prefers to use the Findpapers ```refine``` command for this.
 
-- ```findpapers refine```
+First he wants to filter the papers looking only at their basic information.
 
-    When you have a search result and wanna refine it, this is the command that you'll need to call.
-    This command will iterate through all the papers showing their collected data,
-    then asking if you wanna select a particular paper or not
+```console
+$ findpapers refine /some/path/search_paul.json
+```
 
-    You can show or hide the paper abstract by using the -a (or --abstract) flag.
+![Workflow](docs/refine-01.jpeg)
 
-    If a comma-separated list of categories is provided by the -c (or --categories) argument, 
-    you can assign a category to the paper.
+After completing the first round filtering of the collected papers, he decides to do a new filtering on the selected ones looking at the paper's extra info and abstract now. He also chooses to perform some classification while doing this further filtering. And to help in this process, he decides to highlight some keywords contained in the abstract.
 
-    And to help you on the refinement, this command can also highlight some terms on the paper's abstract 
-    by a provided comma-separated list of them provided by the -h (or --highlights) argument.
+```console
+$ export CATEGORIES_CONTRIBUTION="Contribution:Metric,Tool,Model,Method"
 
-    ```console
-    $ findpapers refine /some/path/search.json -c "Category A, Category B" -h "result, state of art, improve, better" -v
-    ```
+$ export CATEGORIES_RESEARCH_TYPE="Research Type:Validation Research,Solution Proposal,Philosophical,Opinion,Experience,Other"
 
-- ```findpapers download```
+$ export HIGHLIGHTS="propose,achiev,accuracy,method,metric,result,limitation"
 
-    If you've done your search, (probably made the search refinement too) and wanna download the papers, 
-    this is the command that you need to call. This command will try to download the PDF version of the papers to
-    the output directory path.
+$ findpapers refine /some/path/search_paul.json --selected --abstract --extra-info --categories "$CATEGORIES_CONTRIBUTION" --categories "$CATEGORIES_CONTRIBUTION" --highlights "$HIGHLIGHTS"
+```
 
-    You can download only the selected papers by using the -s (or --selected) flag
+![Workflow](docs/refine-02.jpeg)
 
-    We use some heuristics to do our job, but sometime they won't work properly, and we cannot be able
-    to download the papers, but we logging the downloads or failures in a file download.log
-    placed on the output directory, you can check out the log to find what papers cannot be downloaded
-    and try to get them manually later. 
+Now that he has selected all the papers he wanted, he decides to try to download the full-text of all the selected ones that have a "Model" or "Tool" as contribution.
 
-    Note: Some papers are behind a paywall and won't be able to be downloaded by this command. 
-    However, if you have a proxy provided for the institution where you study or work that permit you 
-    to "break" this paywall. You can use this proxy configuration here
-    by setting the environment variable FINDPAPERS_PROXY.
+```console
+$ findpapers download /some/path/search_paul.json /some/path/papers --selected --categories "Contribution:Tool,Model"
+```
 
-    ```console
-    $ findpapers download /some/path/search.json /some/path/papers/ -s -v
-    ```
+He also wants to generate the BibTeX file from these papers.
 
-- ```findpapers download```
+```console
+$ findpapers bibtex /some/path/search_paul.json /some/path/mybib.bib --selected --categories "Contribution:Tool,Model"
+```
 
-    Command used to generate a BibTeX file from a search result.
+But when he compared the papers data in the ```/some/path/mybib.bib```  file to the PDF files in the ```/some/path/papers``` folder, he noticed that many papers had not been downloaded.
 
-    You can generate the bibtex only for the selected papers by using the -s (or --selected) flag
+So when checking the ```/some/path/papers/download.log``` file he could see the link of all papers that were not downloaded correctly, and noticed that some of them were not downloaded due to some limitation of Findpapers (currently the tool has a set of heuristics to perform the download that may not work in all cases). However, the vast majority of papers were not downloaded because they were behind a paywall, Dr. McCartney has access to these jobs within the network at the university where he works, but he is at home right now and he will have to wait until the next day, to perform this operation when on the university network.
 
-    ```console
-    $ findpapers bibtex /some/path/search.json /some/path/mybib.bib -s -v
-    ```
+But he discovers 2 things that save him from this mess. First, the university provides a proxy for tunneling external requests. Second, Findpapers accepts the configuration of a proxy URL via variables environment.
 
-More details about the commands can be found by running ```findpapers [command] --help```. 
+```console
+export FINDPAPERS_PROXY=https://mccartney:super_secret_pass@liverpool.ac.uk:1234
 
-You can control the commands logging verbosity by the -v (or --verbose) argument.
+$ findpapers download /some/path/search_paul.json /some/path/papers --selected --categories "Contribution:Tool,Model"
+```
 
-I know that this documentation is boring and incomplete, and it needs to be improved.
-I just don't have time to do this for now. But if you wanna help me with it see the [contribution guidelines](https://gitlab.com/jonatasgrosman/findpapers/-/blob/master/CONTRIBUTING.md).
+Now the vast majority of the papers he has access have been downloaded correctly.
 
+And at the end of it, he decides to download all the selected works and generate their BibTeX file too.
 
-## FAQ
+```console
+$ findpapers download /some/path/search_paul.json /some/path/papers --selected
 
-- I don't have the API token for Scopus and IEEE databases, how do I get them?
+$ findpapers bibtex /some/path/search_paul.json /some/path/mybib.bib --selected
+```
 
-    Go to https://dev.elsevier.com and https://developer.ieee.org to get them
+As you could see, all the information collected and enriched by the Findpapers is persisted in a single JSON file, from this file it is possible to create interesting visualizations about the collected data ...
 
-- When I tried to download the papers collected in my search, most of them were not downloaded, why did this happen?
+... so, use your imagination!
 
-    Most papers are behind a paywall, so you may not have access to download them using the network you're connected to. However, this problem can be worked around, if you have a proxy from the institution where you work/study that has broader access to these databases, you only need to define a environment variable called FINDPAPERS_PROXY with the URL that points to that proxy. Another possible cause of the download problem is some limitation in the heuristic that we use to download the papers, identifying this problem and coding a solution is a good opportunity for you to contribute to our project. See the [contribution guidelines](https://gitlab.com/jonatasgrosman/findpapers/-/blob/master/CONTRIBUTING.md)
+That's all folks! We have reached the end of our journey, I hope Dr. McCartney can continue his research and publish his work without any major problems now.
 
-- My institutional proxy has login and password, how can i include this in the proxy URL definition?
-
-    Probably your institutional proxy can be defined with credentials following the pattern "https://[username]:[password]@[host]:[port]"
+With this story we saw all the commands of the tool. I know this documentation is kind of weird, but I haven't had time to write more formal documentation of the tool yet. But you can help us to improve this, take a look at the next section and see how you can do that.
 
 
 ## Want to help?
