@@ -40,7 +40,7 @@ First of all, we need to know how to build the search queries. The search querie
 
 - The query can contain boolean operators, but they must be uppercase. The allowed operators are AND, OR, and NOT. E.g., **[term a] AND [term b]**
 
-- All the operators must have one space before and after them. E.g., **[term a] OR [term b] OR [term c]**
+- All the operators must have one and only one whitespace before and after them. E.g., **[term a] OR [term b] OR [term c]**
 
 - The NOT operator must always be preceded by an AND operator E.g., **[term a] AND NOT [term b]**
 
@@ -58,19 +58,23 @@ Let's see some examples of valid and invalid queries:
 
 | Query  | Valid? |
 | ------------- | ------------- |
-| ([term a] OR [term b])  |  Yes  |
-| [term a] OR [term b]  |  Yes  |
-| [term a] AND [term b]  |  Yes  |
-| [term a] AND NOT ([term b] OR [term c])  |  Yes  |
-| [term a] OR ([term b] AND ([term\*] OR [term ?]))  |  Yes |
-| [term a]  |  Yes  |
-| ([term a] OR [term b]  |  **No** (missing parentheses)  |
-| [term a] or [term b] |  **No** (lowercase operator)  |
-| term a OR [term b] |  **No** (missing square brackets)  |
-| [term a] [term b] |  **No** (missing boolean operator)  |
-| [term a] XOR [term b] |  **No** (invalid boolean operator)  |
-| [term a] OR NOT [term b] |  **No** (NOT operator must be preceded by AND)  |
-| [] AND [term b] |  **No** (empty term)  |
+| <pre>[term a]</pre>   |  Yes  |
+| <pre>([term a] OR [term b])</pre>   |  Yes  |
+| <pre>[term a] OR [term b]</pre>   |  Yes  |
+| <pre>[term a] AND [term b]</pre>   |  Yes  |
+| <pre>[term a] AND NOT ([term b] OR [term c])</pre>   |  Yes  |
+| <pre>[term a] OR ([term b] AND ([term\*] OR [term ?])) </pre>  |  Yes |
+| <pre>[term a]OR[term b]</pre>   |  **No** (no whitespace between terms and operator)  |
+| <pre>[term a]  OR  [term b]</pre>  |  **No** (more than 1 whitespace between terms and operator)  |
+| <pre>([term a] OR [term b]</pre>   |  **No** (missing parentheses)  |
+| <pre>[term a] or [term b]</pre>  |  **No** (lowercase operator)  |
+| <pre>term a OR [term b]</pre>  |  **No** (missing square brackets)  |
+| <pre>[term a] [term b]</pre>  |  **No** (missing boolean operator)  |
+| <pre>[term a] XOR [term b] |  **No** (invalid boolean operator)</pre>   |
+| <pre>[term a] OR NOT [term b] |  **No** (NOT operator must be preceded by AND)</pre>   |
+| <pre>[] AND [term b]</pre>  |  **No** (empty term)  |
+
+
 
 
 ## Basic example (TL;DR)
@@ -103,35 +107,35 @@ $ findpapers bibtex /some/path/search.json /some/path/mybib.bib -s
 
 This advanced usage documentation can be a bit boring to read (and write), so I think it's better to go for a storytelling approach here.
 
-Let's take a look at Dr. McCartney's research. He's a computer scientist interested in AI and music, so he created a search query to collect papers that can help with his research and export it to an environment variable.
+*Let's take a look at Dr. McCartney's research. He's a computer scientist interested in AI and music, so he created a search query to collect papers that can help with his research and exported this query to an environment variable.*
 
 ```console
 $ export QUERY="([artificial intelligence] OR [AI] OR [machine learning] OR [ML] OR [deep learning] OR [DL]) AND ([music] OR [song])"
 ```
 
-Dr. McCartney is interested in testing his query, so he decides to collect only 20 papers to test whether the query is suitable for his research.
+*Dr. McCartney is interested in testing his query, so he decides to collect only 20 papers to test whether the query is suitable for his research.*
 
 ```console
 $ findpapers search /some/path/search_paul.json --query "$QUERY" --limit 20
 ```
 
-But after taking a look at the results contained in the ```search_paul.json``` file, he notices two problems:
- - Only one database was used to collect the 20 papers
- - Some collected papers were about drums, but he doesn't like drums or drummers
+*But after taking a look at the results contained in the ```search_paul.json``` file, he notices two problems:*
+ - *Only one database was used to collect all the 20 papers*
+ - *Some collected papers were about drums, but he doesn't like drums or drummers*
 
-So he decides to solve these problems by reformulating his query.
+*So he decides to solve these problems by reformulating his query.*
 
 ```console
 $ export QUERY="([artificial intelligence] OR [AI] OR [machine learning] OR [ML] OR [deep learning] OR [DL]) AND ([music] OR [song]) AND NOT [drum*]"
 ```
 
-He will also perform the search limiting the number of papers that can be collected by each database.
+*He will also perform the search limiting the number of papers that can be collected by each database.*
 
 ```console
 $ findpapers search /some/path/search_paul.json --query "$QUERY" --limit-db 4
 ```
 
-Now his query returned the papers he wanted, but he realized one thing, no papers were collected from Scopus or IEEE databases. Then he noticed that he needed to pass his Scopus and IEEE API access keys when calling the search command. So he went to https://dev.elsevier.com and https://developer.ieee.org, generated the access keys, and used them in the search.
+*Now his query returned the papers he wanted, but he realized one thing, no papers were collected from Scopus or IEEE databases. Then he noticed that he needed to pass his Scopus and IEEE API access keys when calling the search command. So he went to https://dev.elsevier.com and https://developer.ieee.org, generated the access keys, and used them in the search.*
 
 ```console
 $ export IEEE_TOKEN=SOME_SUPER_SECRET_TOKEN
@@ -141,15 +145,15 @@ $ export SCOPUS_TOKEN=SOME_SUPER_SECRET_TOKEN
 $ findpapers search /some/path/search_paul.json --query "$QUERY" --limit-db 4 --token-ieee "$IEEE_TOKEN" --token-scopus "$SCOPUS_TOKEN"
 ```
 
-Now everything is working as he expected, so it's time to do the final papers search. So he defines that he wants to collect only works published between 2000 and 2020. He also decides that he only wants papers collected from ACM, IEEE, and Scopus.
+*Now everything is working as he expected, so it's time to do the final papers search. So he defines that he wanna collect only works published between 2000 and 2020. He also decides that he only wants papers collected from ACM, IEEE, and Scopus.*
 
 ```console
 $ findpapers search /some/path/search_paul.json --query "$QUERY" --token-ieee "$IEEE_TOKEN" --token-scopus "$SCOPUS_TOKEN" --since 2000-01-01 --until 2020-12-31 --databases "acm,ieee,scopus"
 ```
 
-The searching process took a long time, but after many cups of coffee, Dr. McCartney finally has a good list of papers with the potential to help in his research. All the information collected is in the ```search_paul.json``` file. He could access this file now and manually filter which works are most interesting for him, but he prefers to use the Findpapers ```refine``` command for this.
+*The searching process took a long time, but after many cups of coffee, Dr. McCartney finally has a good list of papers with the potential to help in his research. All the information collected is in the ```search_paul.json``` file. He could access this file now and manually filter which works are most interesting for him, but he prefers to use the Findpapers ```refine``` command for this.*
 
-First, he wants to filter the papers looking only at their basic information.
+*First, he wants to filter the papers looking only at their basic information.*
 
 ```console
 $ findpapers refine /some/path/search_paul.json
@@ -157,37 +161,39 @@ $ findpapers refine /some/path/search_paul.json
 
 ![refine-01](docs/refine-01.jpeg)
 
-After completing the first round filtering of the collected papers, he decides to do new filtering on the selected ones looking at the paper's extra info (citations, DOI, publication name, etc) and abstract now. He also chooses to perform some classification while doing this further filtering. And to help in this process, he decides to highlight some keywords contained in the abstract.
+*After completing the first round filtering of the collected papers, he decides to do new filtering on the selected ones looking at the paper's extra info (citations, DOI, publication name, etc.) and abstract now. He also chooses to perform some classification while doing this further filtering. And to help in this process, he also decides to highlight some keywords contained in the abstract.*
 
 ```console
 $ export CATEGORIES_CONTRIBUTION="Contribution:Metric,Tool,Model,Method"
 
 $ export CATEGORIES_RESEARCH_TYPE="Research Type:Validation Research,Solution Proposal,Philosophical,Opinion,Experience,Other"
 
-$ export HIGHLIGHTS="propose,achiev,accuracy,method,metric,result,limitation"
+$ export HIGHLIGHTS="propose, achiev, accuracy, method, metric, result, limitation, state of the art"
 
 $ findpapers refine /some/path/search_paul.json --selected --abstract --extra-info --categories "$CATEGORIES_CONTRIBUTION" --categories "$CATEGORIES_RESEARCH_TYPE" --highlights "$HIGHLIGHTS"
 ```
 
 ![refine-02](docs/refine-02.jpeg)
 
-Now that he has selected all the papers he wanted, he will try to download the full-text from all of them which have a "Model" or "Tool" as a contribution.
+An interesting point to stand out from the tool is that it automatically prevents duplication of papers, merging their information when the same paper is found in different databases. You can see this in the image above, where the Findpapers found the same work on the IEEE and Scopus databases (see "Paper found in" value) and merged the paper information on a single record.
+
+*Now that Dr. McCartney has selected all the papers he wanted, he will try to download the full-text from all of them which have a "Model" or "Tool" as a contribution.*
 
 ```console
 $ findpapers download /some/path/search_paul.json /some/path/papers --selected --categories "Contribution:Tool,Model"
 ```
 
-He also wants to generate the BibTeX file from these papers.
+*He also wants to generate the BibTeX file from these papers.*
 
 ```console
 $ findpapers bibtex /some/path/search_paul.json /some/path/mybib.bib --selected --categories "Contribution:Tool,Model"
 ```
 
-But when he compared the papers' data in the ```/some/path/mybib.bib```  and PDF files in the ```/some/path/papers``` folder, he noticed that many papers had not been downloaded.
+*But when he compared the papers' data in the ```/some/path/mybib.bib```  and PDF files in the ```/some/path/papers``` folder, he noticed that many papers had not been downloaded.*
 
-So when he opened the ```/some/path/papers/download.log``` file, he could see the URL of all papers that weren't downloaded correctly. After accessing these links, he noticed that some of them weren't downloaded due to some limitations of Findpapers (currently, the tool has a set of heuristics to perform the download that may not work in all cases). However, the vast majority of papers weren't downloaded because they were behind a paywall. But, Dr. McCartney has access to these papers when he's connected to the network at the university where he works, but unfortunately, he is at home right now.
+*So when he opened the ```/some/path/papers/download.log``` file, he could see the URL of all papers that weren't downloaded correctly. After accessing these links, he noticed that some of them weren't downloaded due to some limitations of Findpapers (currently, the tool has a set of heuristics to perform the download that may not work in all cases). However, the vast majority of papers weren't downloaded because they were behind a paywall. But, Dr. McCartney has access to these papers when he's connected to the network at the university where he works, but unfortunately, he is at home right now.*
 
-But he discovers two things that could save him from this mess. First, the university provides a proxy for tunneling requests. Second, Findpapers accepts the configuration of a proxy URL via a variables environment (You don't need to pass this environment variable as a parameter in download command, just need to define it). And of course, he'll use this feature.
+*But he discovers two things that could save him from this mess. First, the university provides a proxy for tunneling requests. Second, Findpapers accepts the configuration of a proxy URL via a variables environment (You don't need to pass this environment variable as a parameter in download command, you just need to define it). And of course, he'll use this feature.*
 
 ```console
 export FINDPAPERS_PROXY=https://mccartney:super_secret_pass@liverpool.ac.uk:1234
@@ -195,9 +201,9 @@ export FINDPAPERS_PROXY=https://mccartney:super_secret_pass@liverpool.ac.uk:1234
 $ findpapers download /some/path/search_paul.json /some/path/papers --selected --categories "Contribution:Tool,Model"
 ```
 
-Now the vast majority of the papers he has access have been downloaded correctly.
+*Now the vast majority of the papers he has access have been downloaded correctly.*
 
-And at the end of it, he decides to download all the selected works (regardless of their categorization) and generate their BibTeX file too.
+*And at the end of it, he decides to download the full-text from all the selected works (regardless of their categorization) and generate their BibTeX file too.*
 
 ```console
 $ findpapers download /some/path/search_paul.json /some/path/papers --selected
@@ -205,13 +211,13 @@ $ findpapers download /some/path/search_paul.json /some/path/papers --selected
 $ findpapers bibtex /some/path/search_paul.json /some/path/mybib.bib --selected
 ```
 
+*That's all, folks! We have reached the end of our journey. I hope Dr. McCartney can continue his research and publish his work without any major problems now.*
+
 As you could see, all the information collected and enriched by the Findpapers is persisted in a single JSON file. From this file, it is possible to create interesting visualizations about the collected data ...
 
 ![charts](docs/charts.png)
 
 ... so, use your imagination! (the above visualization was made by the [samples/charts.py](https://gitlab.com/jonatasgrosman/findpapers/-/blob/master/samples/charts.py) script)
-
-That's all, folks! We have reached the end of our journey. I hope Dr. McCartney can continue his research and publish his work without any major problems now.
 
 With the story above, we cover all the commands available in Findpapers. I know this documentation is unconventional, but I haven't had time to write a more formal version of the documentation. But you can help us to improve this, take a look at the next section and see how you can do that.
 
