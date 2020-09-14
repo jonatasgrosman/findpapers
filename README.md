@@ -117,7 +117,7 @@ $ findpapers search /some/path/search_paul.json --query "$QUERY" --limit 20
 
 But after taking a look at the results contained in the ```search_paul.json``` file, he notices two problems:
  - Only one database was used to collect the 20 papers
- - Some collected papers were about drums, but he doesn't like drums and drummers
+ - Some collected papers were about drums, but he doesn't like drums or drummers
 
 So he decides to solve these problems by reformulating his query.
 
@@ -125,13 +125,13 @@ So he decides to solve these problems by reformulating his query.
 $ export QUERY="([artificial intelligence] OR [AI] OR [machine learning] OR [ML] OR [deep learning] OR [DL]) AND ([music] OR [song]) AND NOT [drum*]"
 ```
 
-And he will perform the search limiting the number of papers that can be collected by 4 per database.
+He will also perform the search limiting the number of papers that can be collected by each database.
 
 ```console
 $ findpapers search /some/path/search_paul.json --query "$QUERY" --limit-db 4
 ```
 
-Now his query returned the papers he wanted, but he realized one thing, no papers were collected from Scopus nor IEEE databases. Then he noticed that he needed to pass his Scopus and IEEE API access keys when calling the search command. So he went to https://dev.elsevier.com and https://developer.ieee.org, generated the access keys, and used them in the search.
+Now his query returned the papers he wanted, but he realized one thing, no papers were collected from Scopus or IEEE databases. Then he noticed that he needed to pass his Scopus and IEEE API access keys when calling the search command. So he went to https://dev.elsevier.com and https://developer.ieee.org, generated the access keys, and used them in the search.
 
 ```console
 $ export IEEE_TOKEN=SOME_SUPER_SECRET_TOKEN
