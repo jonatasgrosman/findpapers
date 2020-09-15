@@ -197,12 +197,34 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
         transformed_query = ' ' + transformed_query
     transformed_query = transformed_query.replace(' [', ' FIELD_TYPE:[')
     transformed_query = transformed_query.replace('([', '(FIELD_TYPE:[')
-    transformed_query = transformed_query.replace('[', '').replace(']', '')
-    transformed_query = transformed_query.strip()
 
-    abstract_query = transformed_query.replace('FIELD_TYPE:', 'abs:')
-    title_query = transformed_query.replace('FIELD_TYPE:', 'ti:')
-    final_query = f'{title_query} OR {abstract_query}'
+    # when a wildcard is present, the search term cannot be enclosed in quotes
+    is_inside_a_term = False
+    search_term = ''
+    final_query = ''
+    for character in transformed_query:
+        
+        if character == '[':
+            search_term += character
+            is_inside_a_term = True
+            continue
+        
+        if is_inside_a_term:
+            search_term += character
+            if character == ']':
+                if '?' in search_term or '*' in search_term:
+                    search_term = search_term.replace('[', '').replace(']', '')
+                final_query += search_term
+                search_term = ''
+                is_inside_a_term = False
+        else:
+            final_query += character
+
+    final_query = final_query.replace('[', '"').replace(']', '"').strip()
+
+    abstract_query = final_query.replace('FIELD_TYPE:', 'abs:')
+    title_query = final_query.replace('FIELD_TYPE:', 'ti:')
+    final_query = f'({title_query}) OR ({abstract_query})'
 
     url = f'{BASE_URL}/api/query?search_query={final_query}&start={start_record}&sortBy=submittedDate&sortOrder=descending&max_results={MAX_ENTRIES_PER_PAGE}'
 

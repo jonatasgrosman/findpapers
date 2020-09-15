@@ -35,11 +35,37 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     str
         a URL to be used to retrieve data from ACM database
     """
-    transformed_query = search.query.replace(' AND NOT ', ' NOT ').replace('[', '"').replace(']', '"')
+    
+    # when a wildcard is present, the search term cannot be enclosed in quotes
+    is_inside_a_term = False
+    search_term = ''
+    transformed_query = ''
+    for character in search.query:
+        
+        if character == '[':
+            search_term += character
+            is_inside_a_term = True
+            continue
+        
+        if is_inside_a_term:
+            search_term += character
+            if character == ']':
+                if '?' in search_term or '*' in search_term:
+                    search_term = search_term.replace('[', '').replace(']', '')
+                transformed_query += search_term
+                search_term = ''
+                is_inside_a_term = False
+        else:
+            transformed_query += character
 
-    query = f'Title:({transformed_query})'
-    query += f' OR Keyword:({transformed_query})'
-    query += f' OR Abstract:({transformed_query})'
+    # some additional query transformations
+    transformed_query = transformed_query.replace(' AND NOT ', ' NOT ').replace('[', '"').replace(']', '"')
+
+    query = f'Abstract:({transformed_query})'
+
+    # the OR connector between the fields are not working properly, so we'll use only the abstract for now
+    #query += f' OR Keyword:({transformed_query})'
+    #query += f' OR Title:({transformed_query})'
 
     url_parameters = {
         'fillQuickSearch': 'false',

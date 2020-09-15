@@ -48,7 +48,7 @@ First of all, we need to know how to build the search queries. The search querie
 
 - The composition of terms is only allowed through boolean operators. Queries like "**[term a] [term b]**" are invalid
 
-You can use some wildcards in the query too. Use **\*** to replace zero or more characters:
+You can use some wildcards in the query too. Use question mark (?) to replace exactly one character, and use an asterisk (*) to replace zero or more characters:
 
 - **[son?]** will match song, sons, ...
 
@@ -56,13 +56,13 @@ You can use some wildcards in the query too. Use **\*** to replace zero or more 
 
 There are some rules that you'll need to follow when using wildcards:
 
-- Cannot be used at the start of a search term
-- A minimum of 3 characters preceding the asterisk wildcard (*) is required
-- The asterisk wildcard (*) can only be used at the end of a search term
-- Can be used only in single terms
-- Only one wildcard can be included in a search term
+- Cannot be used at the start of a search term;
+- A minimum of 3 characters preceding the asterisk wildcard (*) is required;
+- The asterisk wildcard (*) can only be used at the end of a search term;
+- Can be used only in single terms;
+- Only one wildcard can be included in a search term.
 
-Note: The IEEE and PubMed databases don't support the **"?"** wildcard usage
+Note: The IEEE and PubMed databases don't support the "?" wildcard.
 
 Let's see some examples of valid and invalid queries:
 
