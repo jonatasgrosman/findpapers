@@ -103,8 +103,10 @@ def search(
         findpapers.search(outputpath, query, since, until, limit,
                           limit_per_database, databases, scopus_api_token, ieee_api_token)
     except Exception as e:
-        typer.echo(e)
-        logging.debug(e, exc_info=True)
+        if verbose:
+            logging.debug(e, exc_info=True)
+        else:
+            typer.echo(e)
         raise typer.Exit(code=1)
 
 
@@ -179,7 +181,10 @@ def refine(
 
         findpapers.refine(filepath, categories_by_facet, highlights, show_abstract, show_extra_info, only_selected_papers, read_only)
     except Exception as e:
-        typer.echo(e)
+        if verbose:
+            logging.debug(e, exc_info=True)
+        else:
+            typer.echo(e)
         raise typer.Exit(code=1)
 
 
@@ -247,7 +252,10 @@ def download(
 
         findpapers.download(filepath, outputpath, only_selected_papers, categories_by_facet)
     except Exception as e:
-        typer.echo(e)
+        if verbose:
+            logging.debug(e, exc_info=True)
+        else:
+            typer.echo(e)
         raise typer.Exit(code=1)
 
 
@@ -302,7 +310,10 @@ def bibtex(
         
         findpapers.generate_bibtex(filepath, outputpath, only_selected_papers, categories_by_facet)
     except Exception as e:
-        typer.echo(e)
+        if verbose:
+            logging.debug(e, exc_info=True)
+        else:
+            typer.echo(e)
         raise typer.Exit(code=1)
 
 
