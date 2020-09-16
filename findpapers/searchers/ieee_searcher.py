@@ -5,7 +5,8 @@ import re
 import math
 from lxml import html
 from typing import Optional
-import findpapers.utils.common_util as util
+import findpapers.utils.common_util as common_util
+import findpapers.utils.query_util as query_util
 from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
@@ -39,7 +40,7 @@ def _get_search_url(search: Search, api_token: str, start_record: Optional[int] 
     """
 
     query = search.query.replace(' AND NOT ', ' NOT ')
-    query = query.replace('[','"').replace(']','"')
+    query = query_util.replace_search_term_enclosures(query, '"', '"')
 
     url = f'{BASE_URL}/api/v1/search/articles?querytext={query}&format=json&apikey={api_token}&max_records={MAX_ENTRIES_PER_PAGE}'
 
@@ -76,7 +77,7 @@ def _get_api_result(search: Search, api_token: str, start_record: Optional[int] 
 
     url = _get_search_url(search, api_token, start_record)
 
-    return util.try_success(lambda: DEFAULT_SESSION.get(url).json(), 2)
+    return common_util.try_success(lambda: DEFAULT_SESSION.get(url).json(), 2)
 
 
 def _get_publication(paper_entry: dict) -> Publication:
@@ -150,7 +151,7 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
         try:
             paper_publication_date_split = paper_publication_date.split(' ')
             day = int(paper_publication_date_split[0].split('-')[0])
-            month = int(util.get_numeric_month_by_string(
+            month = int(common_util.get_numeric_month_by_string(
                 paper_publication_date_split[1]))
             year = int(paper_publication_date_split[2])
 

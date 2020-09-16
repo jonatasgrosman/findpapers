@@ -5,7 +5,8 @@ import datetime
 from urllib.parse import urlencode
 from typing import Optional
 from lxml import html
-import findpapers.utils.common_util as util
+import findpapers.utils.query_util as query_util
+import findpapers.utils.common_util as common_util
 from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
@@ -37,29 +38,11 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     """
     
     # when a wildcard is present, the search term cannot be enclosed in quotes
-    is_inside_a_term = False
-    search_term = ''
-    transformed_query = ''
-    for character in search.query:
-        
-        if character == '[':
-            search_term += character
-            is_inside_a_term = True
-            continue
-        
-        if is_inside_a_term:
-            search_term += character
-            if character == ']':
-                if '?' in search_term or '*' in search_term:
-                    search_term = search_term.replace('[', '').replace(']', '')
-                transformed_query += search_term
-                search_term = ''
-                is_inside_a_term = False
-        else:
-            transformed_query += character
-
+    transformed_query = query_util.replace_search_term_enclosures(search.query, '', '', True)
+    
     # some additional query transformations
-    transformed_query = transformed_query.replace(' AND NOT ', ' NOT ').replace('[', '"').replace(']', '"')
+    transformed_query = transformed_query.replace(' AND NOT ', ' NOT ')
+    transformed_query = query_util.replace_search_term_enclosures(transformed_query, '"', '"')
 
     query = f'Abstract:({transformed_query})'
 
@@ -107,7 +90,7 @@ def _get_result(search: Search, start_record: Optional[int] = 0) -> dict:  # pra
 
     url = _get_search_url(search, start_record)
 
-    response = util.try_success(lambda: DEFAULT_SESSION.get(url), 2)
+    response = common_util.try_success(lambda: DEFAULT_SESSION.get(url), 2)
     return html.fromstring(response.content)
 
 
@@ -126,7 +109,7 @@ def _get_paper_page(url: str) -> html.HtmlElement:  # pragma: no cover
         A HTML element representing the paper given by the provided URL
     """
 
-    response = util.try_success(lambda: DEFAULT_SESSION.get(url), 2)
+    response = common_util.try_success(lambda: DEFAULT_SESSION.get(url), 2)
     return html.fromstring(response.content)
 
 
@@ -151,7 +134,7 @@ def _get_paper_metadata(doi: str) -> dict:  # pragma: no cover
         'format': 'bibTex'
     }
 
-    response = util.try_success(lambda: DEFAULT_SESSION.post(
+    response = common_util.try_success(lambda: DEFAULT_SESSION.post(
         f'{BASE_URL}/action/exportCiteProcCitation', data=form).json(), 2)
 
     if response is not None and response.get('items', None) is not None and len(response.get('items')) > 0:

@@ -6,7 +6,8 @@ import math
 import xmltodict
 from lxml import html
 from typing import Optional
-import findpapers.utils.common_util as util
+import findpapers.utils.common_util as common_util
+import findpapers.utils.query_util as query_util
 from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
@@ -37,7 +38,8 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
         a URL to be used to retrieve data from PubMed database
     """
     query = search.query.replace(' AND NOT ', ' NOT ')
-    query = query.replace('[','"').replace(']','"')
+    query = query_util.replace_search_term_enclosures(query, '"', '"')
+
     url = f'{BASE_URL}/entrez/eutils/esearch.fcgi?db=pubmed&term={query} AND has abstract [FILT] AND "journal article"[Publication Type]'
 
     if search.since is not None or search.until is not None:
@@ -74,7 +76,7 @@ def _get_api_result(search: Search, start_record: Optional[int] = 0) -> dict:  #
 
     url = _get_search_url(search, start_record)
 
-    return util.try_success(lambda: xmltodict.parse(DEFAULT_SESSION.get(url).content), 2, pre_delay=1)
+    return common_util.try_success(lambda: xmltodict.parse(DEFAULT_SESSION.get(url).content), 2, pre_delay=1)
 
 
 def _get_paper_entry(pubmed_id: str) -> dict:  # pragma: no cover
@@ -94,7 +96,7 @@ def _get_paper_entry(pubmed_id: str) -> dict:  # pragma: no cover
 
     url = f'{BASE_URL}/entrez/eutils/efetch.fcgi?db=pubmed&id={pubmed_id}&rettype=abstract'
 
-    return util.try_success(lambda: xmltodict.parse(DEFAULT_SESSION.get(url).content), 2, pre_delay=1)
+    return common_util.try_success(lambda: xmltodict.parse(DEFAULT_SESSION.get(url).content), 2, pre_delay=1)
 
 
 def _get_publication(paper_entry: dict) -> Publication:
@@ -161,7 +163,7 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
         paper_publication_date_year = article.get('ArticleDate').get('Year')
     else:
         paper_publication_date_day = 1
-        paper_publication_date_month = util.get_numeric_month_by_string(
+        paper_publication_date_month = common_util.get_numeric_month_by_string(
             article.get('Journal').get('JournalIssue').get('PubDate').get('Month'))
         paper_publication_date_year = article.get('Journal').get(
             'JournalIssue').get('PubDate').get('Year')
@@ -175,7 +177,10 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
             break
 
     paper_abstract = None
-    paper_abstract_entry = article.get('Abstract').get('AbstractText')
+    paper_abstract_entry = article.get('Abstract', {}).get('AbstractText', None)
+    if paper_abstract_entry is None:
+        raise ValueError('Paper abstract is empty')
+
     if isinstance(paper_abstract_entry, list):
         paper_abstract = '\n'.join(
             [x.get('#text') for x in paper_abstract_entry if x.get('#text') is not None])
@@ -242,8 +247,12 @@ def run(search: Search):
     papers_count = 0
     result = _get_api_result(search)
 
-    total_papers = int(result.get('eSearchResult').get('Count'))
 
+    if result.get('eSearchResult').get('ErrorList', None) is not None:
+        total_papers = 0
+    else:
+        total_papers = int(result.get('eSearchResult').get('Count'))
+    
     logging.info(f'PubMed: {total_papers} papers to fetch')
 
     while(papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL)):

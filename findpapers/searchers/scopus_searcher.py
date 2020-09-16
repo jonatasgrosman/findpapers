@@ -4,7 +4,8 @@ import logging
 import re
 from lxml import html
 from typing import Optional
-import findpapers.utils.common_util as util
+import findpapers.utils.common_util as common_util
+import findpapers.utils.query_util as query_util
 from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
@@ -31,7 +32,10 @@ def _get_query(search: Search) -> str:
     str
         The translated query
     """
-    query = search.query.replace('[','"').replace(']','"')
+
+    query = query_util.replace_search_term_enclosures(search.query, '"', '"', True)
+    query = query_util.replace_search_term_enclosures(query, '{', '}')
+
     query = f'TITLE-ABS-KEY({query})'
 
     if search.since is not None:
@@ -61,7 +65,7 @@ def _get_publication_entry(publication_issn: str, api_token: str) -> dict:  # pr
 
     url = f'{BASE_URL}/content/serial/title/issn/{publication_issn}?apiKey={api_token}'
     headers = {'Accept': 'application/json'}
-    response = util.try_success(lambda: DEFAULT_SESSION.get(
+    response = common_util.try_success(lambda: DEFAULT_SESSION.get(
         url, headers=headers).json().get('serial-metadata-response', None), 2)
 
     if response is not None and 'entry' in response and len(response.get('entry')) > 0:
@@ -123,7 +127,7 @@ def _get_paper_page(url: str) -> object:  # pragma: no cover
         A HTML element representing the paper given by the provided URL
     """
 
-    response = util.try_success(lambda: DEFAULT_SESSION.get(url), 2)
+    response = common_util.try_success(lambda: DEFAULT_SESSION.get(url), 2)
     return html.fromstring(response.content)
 
 
@@ -251,7 +255,7 @@ def _get_search_results(search: Search, api_token: str, url: Optional[str] = Non
 
     headers = {'Accept': 'application/json'}
 
-    return util.try_success(lambda: DEFAULT_SESSION.get(url, headers=headers).json()['search-results'], 2)
+    return common_util.try_success(lambda: DEFAULT_SESSION.get(url, headers=headers).json()['search-results'], 2)
 
 
 def enrich_publication_data(search: Search, api_token: str):
@@ -302,21 +306,21 @@ def enrich_publication_data(search: Search, api_token: str):
                 for subject_area in publication_entry.get('subject-area', []):
                     publication.subject_areas.add(subject_area.get('$'))
 
-                publication_cite_score = util.try_success(lambda x=publication_entry: float(
+                publication_cite_score = common_util.try_success(lambda x=publication_entry: float(
                     x.get('citeScoreYearInfoList').get('citeScoreCurrentMetric')))
 
                 if publication_cite_score is not None:
                     publication.cite_score = publication_cite_score
 
                 if 'SJRList' in publication_entry and len(publication_entry.get('SJRList').get('SJR')) > 0:
-                    publication_sjr = util.try_success(lambda x=publication_entry: float(
+                    publication_sjr = common_util.try_success(lambda x=publication_entry: float(
                         x.get('SJRList').get('SJR')[0].get('$')))
 
                 if publication_sjr is not None:
                     publication.sjr = publication_sjr
 
                 if 'SNIPList' in publication_entry and len(publication_entry.get('SNIPList').get('SNIP')) > 0:
-                    publication_snip = util.try_success(lambda x=publication_entry: float(
+                    publication_snip = common_util.try_success(lambda x=publication_entry: float(
                         x.get('SNIPList').get('SNIP')[0].get('$')))
 
                 if publication_snip is not None:
