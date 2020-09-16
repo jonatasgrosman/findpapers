@@ -211,9 +211,7 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
     paper_number_of_pages = None
     try:
         paper_pages = article.get('Pagination').get('MedlinePgn')
-        if paper_pages.isdigit():
-            paper_number_of_pages = 1
-        else:
+        if not paper_pages.isdigit(): # if it's a digit, the paper pages range is invalid
             pages_split = paper_pages.split('-')
             paper_number_of_pages = abs(int(pages_split[0])-int(pages_split[1]))+1
     except Exception:  # pragma: no cover
