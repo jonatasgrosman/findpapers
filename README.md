@@ -173,7 +173,7 @@ $ findpapers refine /some/path/search_paul.json
 
 ![refine-01](docs/refine-01.jpeg)
 
-*After completing the first round filtering of the collected papers, he decides to do new filtering on the selected ones looking at the paper's extra info (citations, DOI, publication name, etc.) and abstract now. He also chooses to perform some classification while doing this further filtering. And to help in this process, he also decides to highlight some keywords contained in the abstract.*
+*After completing the first round filtering of the collected papers, he decides to do new filtering on the selected ones looking at the paper's extra info (citations, DOI, publication name, etc.) and abstract now. He also chooses to perform some classification while doing this further filtering (tip: he'll need to use spacebar for categories selection). And to help in this process, he also decides to highlight some keywords contained in the abstract.*
 
 ```console
 $ export CATEGORIES_CONTRIBUTION="Contribution:Metric,Tool,Model,Method"
