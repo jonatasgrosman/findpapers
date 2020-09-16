@@ -366,6 +366,10 @@ class Search():
         for paper in search.papers:
             papers.append(Paper.to_dict(paper))
 
+        number_of_papers_by_database = {}
+        for database, items in search.papers_by_database.items():
+            number_of_papers_by_database[database] = len(items)
+
         return {
             'query': search.query,
             'since': search.since.strftime('%Y-%m-%d') if search.since is not None else None,
@@ -374,5 +378,6 @@ class Search():
             'limit_per_database': search.limit_per_database,
             'processed_at': search.processed_at.strftime('%Y-%m-%d %H:%M:%S') if search.processed_at is not None else None,
             'number_of_papers': len(papers),
+            'number_of_papers_by_database': number_of_papers_by_database,
             'papers': papers
         }
