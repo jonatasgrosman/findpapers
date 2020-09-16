@@ -47,6 +47,8 @@ def _print_paper_details(paper: Paper, highlights: List[str], show_abstract: boo
             print(f'{Style.BRIGHT}Paper comments:{Style.NORMAL} {paper.comments}')
         if paper.citations is not None:
             print(f'{Style.BRIGHT}Paper citations:{Style.NORMAL} {paper.citations}')
+        if paper.number_of_pages is not None:
+            print(f'{Style.BRIGHT}Paper number of pages:{Style.NORMAL} {paper.number_of_pages}')
         if paper.doi is not None:
             print(f'{Style.BRIGHT}Paper DOI:{Style.NORMAL} {paper.doi}')
         if paper.databases is not None:
