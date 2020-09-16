@@ -131,6 +131,9 @@ class Search():
                 raise OverflowError(
                     'When the papers limit is provided, you cannot exceed it')
 
+        if database not in self.papers_by_database:
+            self.papers_by_database[database] = set()
+
         if paper.publication is not None:
 
             publication_key = self.get_publication_key(
@@ -160,13 +163,13 @@ class Search():
                     self.paper_by_doi[paper.doi] = paper
 
                 for database in paper.databases:
-                    if database not in self.papers_by_database:
-                        self.papers_by_database[database] = set()
                     self.papers_by_database[database].add(paper)
 
             else:
                 self.papers_by_database[database].add(already_collected_paper)
                 already_collected_paper.enrich(paper)
+        
+        print(f'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA: {len(self.papers)}')
 
     def get_paper(self, paper_title: str, publication_date: str, paper_doi: Optional[str] = None) -> Paper:
         """
