@@ -42,7 +42,7 @@ def _get_search_url(search: Search, api_token: str, start_record: Optional[int] 
     query = search.query.replace(' AND NOT ', ' NOT ')
     query = query_util.replace_search_term_enclosures(query, '"', '"')
 
-    url = f'{BASE_URL}/api/v1/search/articles?querytext={query}&format=json&apikey={api_token}&max_records={MAX_ENTRIES_PER_PAGE}'
+    url = f'{BASE_URL}/api/v1/search/articles?querytext=({query})&format=json&apikey={api_token}&max_records={MAX_ENTRIES_PER_PAGE}'
 
     if search.since is not None:
         url += f'&start_year={search.since.year}'

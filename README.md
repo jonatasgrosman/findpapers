@@ -50,7 +50,7 @@ First of all, we need to know how to build the search queries. The search querie
 
 You can use some wildcards in the query too. Use question mark (?) to replace exactly one character, and use an asterisk (*) to replace zero or more characters:
 
-- **[son?]** will match song, sons, ...
+- **[son?]** will match song, sons, ... (But won't match "son")
 
 - **[son\*]** will match son, song, sons, sonic, songwriting, ...
 

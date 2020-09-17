@@ -121,7 +121,8 @@ class Publication():
             self.snip = publication.snip
 
         for subject_area in publication.subject_areas:
-            self.subject_areas.add(subject_area)
+            if subject_area is not None and len(subject_area.strip()) > 0:
+                self.subject_areas.add(subject_area.strip())
 
     @classmethod
     def from_dict(cls, publication_dict: dict) -> Publication:

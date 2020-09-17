@@ -106,12 +106,6 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
 
         for url in urls:
 
-            if paper.title is not None and paper.abstract is not None and paper.publication is not None \
-                and len(paper.authors) > 0 and len(paper.keywords) > 0 and paper.publication.issn is not None \
-                and paper.publication.category is not None:
-                # skipping enrichment if the main values are already filled
-                break
-
             if 'pdf' in url: # trying to skip PDF links
                 continue
 
@@ -119,21 +113,36 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
 
             if paper_metadata is not None and 'citation_title' in paper_metadata:
 
-                paper_title = _force_single_metadata_value_by_key(paper_metadata, 'citation_title')
+                # when some paper data is present on page's metadata, force to use it. In most of the cases this data is more relyable
 
+                paper_title = _force_single_metadata_value_by_key(paper_metadata, 'citation_title')
+                
                 if paper_title is None or len(paper_title) == 0:
                     continue
 
+                paper.title = paper_title
+
                 paper_doi = _force_single_metadata_value_by_key(paper_metadata, 'citation_doi')
+                if paper_doi is not None and len(paper_doi) > 0:
+                    paper.doi = paper_doi
+
                 paper_abstract = _force_single_metadata_value_by_key(paper_metadata, 'citation_abstract')
+                if paper_abstract is not None and len(paper_abstract) > 0:
+                    paper.abstract = paper_abstract
                 
                 paper_authors = paper_metadata.get('citation_author', None)
                 if paper_authors is not None and not isinstance(paper_authors, list): # there is only one author
                     paper_authors = [paper_authors]
 
+                if paper_authors is not None and len(paper_authors) > 0:
+                    paper.authors = paper_authors
+
                 paper_keywords = _force_single_metadata_value_by_key(paper_metadata, 'keywords')
                 if paper_keywords is not None:
                     paper_keywords = set(paper_keywords.split(','))
+
+                if paper_keywords is not None and len(paper_keywords) > 0:
+                    paper.keywords = paper_keywords
                 
                 publication = None
                 publication_title = None
@@ -156,9 +165,11 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
 
                     publication = Publication(publication_title, publication_isbn, publication_issn, publication_publisher, publication_category)
                     
-                new_paper = Paper(paper_title, paper_abstract, paper_authors, publication, None, set(), paper_doi, keywords=paper_keywords)
-                paper.enrich(new_paper)
-                
+                    if paper.publication is None:
+                        paper.publication = publication
+                    else:
+                        paper.publication.enrich(publication)
+
                 paper_pdf_url = _force_single_metadata_value_by_key(paper_metadata, 'citation_pdf_url')
                 if paper_pdf_url is not None: 
                     paper.add_url(paper_pdf_url)

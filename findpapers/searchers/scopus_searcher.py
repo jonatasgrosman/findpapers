@@ -304,7 +304,9 @@ def enrich_publication_data(search: Search, api_token: str):
                     publication.publisher = publication_publisher
 
                 for subject_area in publication_entry.get('subject-area', []):
-                    publication.subject_areas.add(subject_area.get('$'))
+                    subject_area_value = subject_area.get('$', '').strip()
+                    if len(subject_area_value) > 0:
+                        publication.subject_areas.add(subject_area_value)
 
                 publication_cite_score = common_util.try_success(lambda x=publication_entry: float(
                     x.get('citeScoreYearInfoList').get('citeScoreCurrentMetric')))

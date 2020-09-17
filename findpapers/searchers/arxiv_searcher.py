@@ -261,11 +261,13 @@ def _get_publication(paper_entry: dict) -> Publication:
         if 'category' in paper_entry:
             if isinstance(paper_entry.get('category'), list):
                 for category in paper_entry.get('category'):
-                    subject_areas.add(
-                        SUBJECT_AREA_BY_KEY.get(category.get('@term')))
+                    subject_area = SUBJECT_AREA_BY_KEY.get(category.get('@term'), None)
+                    if subject_area is not None:
+                        subject_areas.add(subject_area)
             else:
-                subject_areas.add(SUBJECT_AREA_BY_KEY.get(
-                    paper_entry.get('category').get('@term')))
+                subject_area = SUBJECT_AREA_BY_KEY.get(paper_entry.get('category').get('@term'), None)
+                if subject_area is not None:
+                    subject_areas.add(subject_area)
 
         publication = Publication(
             publication_title, subject_areas=subject_areas)

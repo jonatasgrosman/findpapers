@@ -264,8 +264,9 @@ class Search():
             paper_2 = self.paper_by_key.get(paper_2_key)
 
             if (paper_1.publication_date is None or paper_2.publication_date is None) or \
-                (paper_1.publication_date.year != paper_2.publication_date.year): 
-                # We cannot merge paper from different years or without a year defined
+                (paper_1.publication_date.year != paper_2.publication_date.year) or \
+                (paper_1.doi is not None and paper_2.doi is not None and paper_1.doi != paper_2.doi):
+                # We cannot merge paper from different years or without a year defined or different DOI
                 break
 
             max_title_length = max(len(paper_1.title), len(paper_2.title))
