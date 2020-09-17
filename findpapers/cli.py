@@ -317,5 +317,14 @@ def bibtex(
         raise typer.Exit(code=1)
 
 
+@app.command("version")
+def version():
+    """
+    Show current findpapers version
+    """
+
+    typer.echo(f"findpapers {findpapers.__version__}")
+    
+
 def main():
     app()
