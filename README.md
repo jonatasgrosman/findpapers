@@ -16,6 +16,20 @@ In summary, this tool will help you to perform the process below:
 $ pip install findpapers
 ```
 
+The latest version of the tool is **0.2.3**. 
+
+You can check your findpapers version running:
+
+```console
+$ findpapers version
+```
+
+If you have an old version of the tool and wanna upgrade it run the following command:
+
+```console
+$ pip install findpapers --upgrade
+```
+
 # How to use it?
 
 All application actions are command-line based. The available commands are 
