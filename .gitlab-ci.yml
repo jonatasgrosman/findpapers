@@ -25,5 +25,6 @@ publish-package:
     rules:
         - if: '$CI_COMMIT_TAG != null'
     script:
+        - echo $TEST_ENV
         - echo FINDPAPERS_PYPI_API_TOKEN=$FINDPAPERS_PYPI_API_TOKEN > .env
         - make publish
