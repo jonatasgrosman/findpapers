@@ -2,6 +2,7 @@ default:
     image: python:3.7.3
     before_script:
         - pip install poetry
+        - touch .env
         - make setup
 
 cache:
