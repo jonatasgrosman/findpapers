@@ -1,8 +1,11 @@
 # Findpapers
 
-[![PyPI version](https://badge.fury.io/py/findpapers.svg)](https://badge.fury.io/py/findpapers)
-[![pipeline status](https://gitlab.com/jonatasgrosman/findpapers/badges/master/pipeline.svg)](https://gitlab.com/jonatasgrosman/findpapers/-/commits/master)
+![PyPI - License](https://img.shields.io/pypi/l/findpapers)
+[![PyPI](https://img.shields.io/pypi/v/findpapers)](https://pypi.org/project/findpapers)
 [![coverage report](https://gitlab.com/jonatasgrosman/findpapers/badges/master/coverage.svg)](https://gitlab.com/jonatasgrosman/findpapers/-/commits/master)
+[![pipeline status](https://gitlab.com/jonatasgrosman/findpapers/badges/master/pipeline.svg)](https://gitlab.com/jonatasgrosman/findpapers/-/commits/master)
+
+
 
 Findpapers is an application that helps researchers who are looking for references for their research. The application will perform searches in several databases (currently ACM, arXiv, IEEE, PubMed, and Scopus) from a user-defined search query.
 
