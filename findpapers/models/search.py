@@ -367,6 +367,8 @@ class Search():
         for paper in search.papers:
             papers.append(Paper.to_dict(paper))
 
+        papers = sorted(papers, key=lambda x: x.get('publication_date', '1900'), reverse=True)
+
         number_of_papers_by_database = {}
         for database, items in search.papers_by_database.items():
             number_of_papers_by_database[database] = len(items)
