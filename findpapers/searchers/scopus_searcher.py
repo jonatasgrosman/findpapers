@@ -251,7 +251,7 @@ def _get_search_results(search: Search, api_token: str, url: Optional[str] = Non
     # is url is not None probably this is a recursive call to the next url of a pagination
     if url is None:
         query = _get_query(search)
-        url = f'{BASE_URL}/content/search/scopus?&sort=citedby-count,relevancy,pubyear&apiKey={api_token}&query={query}'
+        url = f'{BASE_URL}/content/search/scopus?&sort=coverDate&apiKey={api_token}&query={query}'
 
     headers = {'Accept': 'application/json'}
 

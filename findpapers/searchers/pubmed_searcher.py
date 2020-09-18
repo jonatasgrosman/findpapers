@@ -52,7 +52,7 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     if start_record is not None:
         url += f'&retstart={start_record}'
 
-    url += f'&retmax={MAX_ENTRIES_PER_PAGE}'
+    url += f'&retmax={MAX_ENTRIES_PER_PAGE}&sort=pub+date'
 
     return url
 

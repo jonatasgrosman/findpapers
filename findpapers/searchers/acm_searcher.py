@@ -55,7 +55,8 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
         'expand': 'all',
         'AllField': query,
         'pageSize': MAX_ENTRIES_PER_PAGE,
-        'startPage': start_record
+        'startPage': start_record,
+        'sortBy': 'Ppub'
     }
 
     if search.since is not None:
