@@ -1,6 +1,6 @@
 # Findpapers
 
-![PyPI - License](https://img.shields.io/pypi/l/findpapers)
+[![PyPI - License](https://img.shields.io/pypi/l/findpapers)](https://gitlab.com/jonatasgrosman/findpapers/-/blob/master/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/findpapers)](https://pypi.org/project/findpapers)
 [![coverage report](https://gitlab.com/jonatasgrosman/findpapers/badges/master/coverage.svg)](https://gitlab.com/jonatasgrosman/findpapers/-/commits/master)
 [![pipeline status](https://gitlab.com/jonatasgrosman/findpapers/badges/master/pipeline.svg)](https://gitlab.com/jonatasgrosman/findpapers/-/commits/master)
