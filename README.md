@@ -1,5 +1,9 @@
 # Findpapers
 
+[![PyPI version](https://badge.fury.io/py/findpapers.svg)](https://badge.fury.io/py/findpapers)
+[![pipeline status](https://gitlab.com/jonatasgrosman/findpapers/badges/master/pipeline.svg)](https://gitlab.com/jonatasgrosman/findpapers/-/commits/master)
+[![coverage report](https://gitlab.com/jonatasgrosman/findpapers/badges/master/coverage.svg)](https://gitlab.com/jonatasgrosman/findpapers/-/commits/master)
+
 Findpapers is an application that helps researchers who are looking for references for their research. The application will perform searches in several databases (currently ACM, arXiv, IEEE, PubMed, and Scopus) from a user-defined search query.
 
 In summary, this tool will help you to perform the process below:
@@ -15,8 +19,6 @@ In summary, this tool will help you to perform the process below:
 ```console
 $ pip install findpapers
 ```
-
-The latest version of the tool is **0.2.4**. 
 
 You can check your findpapers version running:
 
