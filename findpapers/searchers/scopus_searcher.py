@@ -287,46 +287,51 @@ def enrich_publication_data(search: Search, api_token: str):
 
         if publication.issn is not None:
 
-            publication_entry = _get_publication_entry(
-                publication.issn, api_token)
+            try:
 
-            if publication_entry is not None:
+                publication_entry = _get_publication_entry(
+                    publication.issn, api_token)
 
-                publication_category = publication_entry.get(
-                    'prism:aggregationType', None)
-                if publication_category is not None and publication.category is None:
-                    publication.category = publication_category
+                if publication_entry is not None:
 
-                publication_publisher = publication_entry.get(
-                    'dc:publisher', None)
+                    publication_category = publication_entry.get(
+                        'prism:aggregationType', None)
+                    if publication_category is not None and publication.category is None:
+                        publication.category = publication_category
 
-                if publication_publisher is not None:
-                    publication.publisher = publication_publisher
+                    publication_publisher = publication_entry.get(
+                        'dc:publisher', None)
 
-                for subject_area in publication_entry.get('subject-area', []):
-                    subject_area_value = subject_area.get('$', '').strip()
-                    if len(subject_area_value) > 0:
-                        publication.subject_areas.add(subject_area_value)
+                    if publication_publisher is not None:
+                        publication.publisher = publication_publisher
 
-                publication_cite_score = common_util.try_success(lambda x=publication_entry: float(
-                    x.get('citeScoreYearInfoList').get('citeScoreCurrentMetric')))
+                    for subject_area in publication_entry.get('subject-area', []):
+                        subject_area_value = subject_area.get('$', '').strip()
+                        if len(subject_area_value) > 0:
+                            publication.subject_areas.add(subject_area_value)
 
-                if publication_cite_score is not None:
-                    publication.cite_score = publication_cite_score
+                    publication_cite_score = common_util.try_success(lambda x=publication_entry: float(
+                        x.get('citeScoreYearInfoList').get('citeScoreCurrentMetric')))
 
-                if 'SJRList' in publication_entry and len(publication_entry.get('SJRList').get('SJR')) > 0:
-                    publication_sjr = common_util.try_success(lambda x=publication_entry: float(
-                        x.get('SJRList').get('SJR')[0].get('$')))
+                    if publication_cite_score is not None:
+                        publication.cite_score = publication_cite_score
 
-                if publication_sjr is not None:
-                    publication.sjr = publication_sjr
+                    if 'SJRList' in publication_entry and len(publication_entry.get('SJRList').get('SJR')) > 0:
+                        publication_sjr = common_util.try_success(lambda x=publication_entry: float(
+                            x.get('SJRList').get('SJR')[0].get('$')))
 
-                if 'SNIPList' in publication_entry and len(publication_entry.get('SNIPList').get('SNIP')) > 0:
-                    publication_snip = common_util.try_success(lambda x=publication_entry: float(
-                        x.get('SNIPList').get('SNIP')[0].get('$')))
+                    if publication_sjr is not None:
+                        publication.sjr = publication_sjr
 
-                if publication_snip is not None:
-                    publication.snip = publication_snip
+                    if 'SNIPList' in publication_entry and len(publication_entry.get('SNIPList').get('SNIP')) > 0:
+                        publication_snip = common_util.try_success(lambda x=publication_entry: float(
+                            x.get('SNIPList').get('SNIP')[0].get('$')))
+
+                    if publication_snip is not None:
+                        publication.snip = publication_snip
+
+            except Exception:  # pragma: no cover
+                pass
 
 
 def run(search: Search, api_token: str, url: Optional[str] = None, papers_count: Optional[int] = 0):

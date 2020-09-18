@@ -98,81 +98,87 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
         i += 1
         logging.info(f'({i}/{total}) Enriching paper: {paper.title}')
 
-        urls = set()
-        if paper.doi is not None:
-            urls.add(f'http://doi.org/{paper.doi}')
-        else:
-            urls = copy.copy(paper.urls)
+        try:
 
-        for url in urls:
+            urls = set()
+            if paper.doi is not None:
+                urls.add(f'http://doi.org/{paper.doi}')
+            else:
+                urls = copy.copy(paper.urls)
 
-            if 'pdf' in url: # trying to skip PDF links
-                continue
+            for url in urls:
 
-            paper_metadata = _get_paper_metadata_by_url(url)
-
-            if paper_metadata is not None and 'citation_title' in paper_metadata:
-
-                # when some paper data is present on page's metadata, force to use it. In most of the cases this data is more relyable
-
-                paper_title = _force_single_metadata_value_by_key(paper_metadata, 'citation_title')
-                
-                if paper_title is None or len(paper_title) == 0:
+                if 'pdf' in url: # trying to skip PDF links
                     continue
 
-                paper.title = paper_title
+                paper_metadata = _get_paper_metadata_by_url(url)
 
-                paper_doi = _force_single_metadata_value_by_key(paper_metadata, 'citation_doi')
-                if paper_doi is not None and len(paper_doi) > 0:
-                    paper.doi = paper_doi
+                if paper_metadata is not None and 'citation_title' in paper_metadata:
 
-                paper_abstract = _force_single_metadata_value_by_key(paper_metadata, 'citation_abstract')
-                if paper_abstract is not None and len(paper_abstract) > 0:
-                    paper.abstract = paper_abstract
-                
-                paper_authors = paper_metadata.get('citation_author', None)
-                if paper_authors is not None and not isinstance(paper_authors, list): # there is only one author
-                    paper_authors = [paper_authors]
+                    # when some paper data is present on page's metadata, force to use it. In most of the cases this data is more relyable
 
-                if paper_authors is not None and len(paper_authors) > 0:
-                    paper.authors = paper_authors
-
-                paper_keywords = _force_single_metadata_value_by_key(paper_metadata, 'keywords')
-                if paper_keywords is not None:
-                    paper_keywords = set(paper_keywords.split(','))
-
-                if paper_keywords is not None and len(paper_keywords) > 0:
-                    paper.keywords = paper_keywords
-                
-                publication = None
-                publication_title = None
-                publication_category = None
-                if 'citation_journal_title' in paper_metadata:
-                    publication_title = _force_single_metadata_value_by_key(paper_metadata, 'citation_journal_title')
-                    publication_category = 'Journal'
-                elif 'citation_conference_title' in paper_metadata:
-                    publication_title = _force_single_metadata_value_by_key(paper_metadata, 'citation_conference_title')
-                    publication_category = 'Conference Proceedings'
-                elif 'citation_book_title' in paper_metadata:
-                    publication_title = _force_single_metadata_value_by_key(paper_metadata, 'citation_book_title')
-                    publication_category = 'Book'
-
-                if publication_title is not None and len(publication_title) > 0:
-                
-                    publication_issn = _force_single_metadata_value_by_key(paper_metadata, 'citation_issn')
-                    publication_isbn = _force_single_metadata_value_by_key(paper_metadata, 'citation_isbn')
-                    publication_publisher = _force_single_metadata_value_by_key(paper_metadata, 'citation_publisher')
-
-                    publication = Publication(publication_title, publication_isbn, publication_issn, publication_publisher, publication_category)
+                    paper_title = _force_single_metadata_value_by_key(paper_metadata, 'citation_title')
                     
-                    if paper.publication is None:
-                        paper.publication = publication
-                    else:
-                        paper.publication.enrich(publication)
+                    if paper_title is None or len(paper_title.strip()) == 0:
+                        continue
 
-                paper_pdf_url = _force_single_metadata_value_by_key(paper_metadata, 'citation_pdf_url')
-                if paper_pdf_url is not None: 
-                    paper.add_url(paper_pdf_url)
+                    paper.title = paper_title
+
+                    paper_doi = _force_single_metadata_value_by_key(paper_metadata, 'citation_doi')
+                    if paper_doi is not None and len(paper_doi.strip()) > 0:
+                        paper.doi = paper_doi
+
+                    paper_abstract = _force_single_metadata_value_by_key(paper_metadata, 'citation_abstract')
+                    if paper_abstract is not None and len(paper_abstract.strip()) > 0:
+                        paper.abstract = paper_abstract
+                    
+                    paper_authors = paper_metadata.get('citation_author', None)
+                    if paper_authors is not None and not isinstance(paper_authors, list): # there is only one author
+                        paper_authors = [paper_authors]
+
+                    if paper_authors is not None and len(paper_authors) > 0:
+                        paper.authors = paper_authors
+
+                    paper_keywords = _force_single_metadata_value_by_key(paper_metadata, 'keywords')
+                    if paper_keywords is not None and len(paper_keywords.strip()) > 0:
+                        paper_keywords = set(paper_keywords.split(','))
+
+                    if paper_keywords is not None and len(paper_keywords) > 0:
+                        paper.keywords = paper_keywords
+                    
+                    publication = None
+                    publication_title = None
+                    publication_category = None
+                    if 'citation_journal_title' in paper_metadata:
+                        publication_title = _force_single_metadata_value_by_key(paper_metadata, 'citation_journal_title')
+                        publication_category = 'Journal'
+                    elif 'citation_conference_title' in paper_metadata:
+                        publication_title = _force_single_metadata_value_by_key(paper_metadata, 'citation_conference_title')
+                        publication_category = 'Conference Proceedings'
+                    elif 'citation_book_title' in paper_metadata:
+                        publication_title = _force_single_metadata_value_by_key(paper_metadata, 'citation_book_title')
+                        publication_category = 'Book'
+
+                    if publication_title is not None and len(publication_title) > 0:
+                    
+                        publication_issn = _force_single_metadata_value_by_key(paper_metadata, 'citation_issn')
+                        publication_isbn = _force_single_metadata_value_by_key(paper_metadata, 'citation_isbn')
+                        publication_publisher = _force_single_metadata_value_by_key(paper_metadata, 'citation_publisher')
+
+                        publication = Publication(publication_title, publication_isbn, publication_issn, publication_publisher, publication_category)
+                        
+                        if paper.publication is None:
+                            paper.publication = publication
+                        else:
+                            paper.publication.enrich(publication)
+
+                    paper_pdf_url = _force_single_metadata_value_by_key(paper_metadata, 'citation_pdf_url')
+                    
+                    if paper_pdf_url is not None: 
+                        paper.add_url(paper_pdf_url)
+
+        except Exception:  # pragma: no cover
+            pass
 
     if scopus_api_token is not None:
 
