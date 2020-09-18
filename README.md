@@ -144,7 +144,7 @@ This advanced usage documentation can be a bit boring to read (and write), so I 
 $ export QUERY="([artificial intelligence] OR [AI] OR [machine learning] OR [ML] OR [deep learning] OR [DL]) AND ([music] OR [song])"
 ```
 
-*Dr. McCartney is interested in testing his query, so he decides to collect only 20 papers to test whether the query is suitable for his research.*
+*Dr. McCartney is interested in testing his query, so he decides to collect only 20 papers to test whether the query is suitable for his research (the Findpapers results are sorted by publication date in descending order).*
 
 ```console
 $ findpapers search /some/path/search_paul.json --query "$QUERY" --limit 20
