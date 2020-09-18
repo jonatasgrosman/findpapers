@@ -1,0 +1,27 @@
+default:
+    image: python:3.7.3
+    before_script:
+        - pip install poetry
+        - make setup
+
+cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - dist
+
+stages:
+    - test
+    - release
+
+test-package:
+    stage: test
+    script:
+        - make setup
+        - make test
+
+publish-package:
+    stage: release
+    rules:
+        - if: '$CI_COMMIT_TAG != null'
+    script:
+        - make publish
