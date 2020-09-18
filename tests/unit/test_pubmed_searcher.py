@@ -70,7 +70,7 @@ def test_get_search_url(search: Search):
 
     url = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term={query} AND has abstract [FILT] AND "journal article"[Publication Type]'
     url += f' AND {search.since.strftime("%Y/%m/%d")}:{search.until.strftime("%Y/%m/%d")}[Date - Publication]'
-    url += f'&retstart={start_record}&retmax=50'
+    url += f'&retstart={start_record}&retmax=50&sort=pub+date'
 
     assert pubmed_searcher._get_search_url(search, start_record) == url
 
