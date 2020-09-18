@@ -8,7 +8,7 @@ default:
 cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
-      - /root/.cache/pypoetry/virtualenvs/
+      - .venv
       - dist
 
 stages:
@@ -24,7 +24,7 @@ publish-package:
     stage: release
     rules:
         - if: '$CI_COMMIT_TAG != null'
+    variables:
+        FINDPAPERS_PYPI_API_TOKEN: $FINDPAPERS_PYPI_API_TOKEN
     script:
-        - echo $TEST_ENV
-        - echo FINDPAPERS_PYPI_API_TOKEN=$FINDPAPERS_PYPI_API_TOKEN > .env
         - make publish

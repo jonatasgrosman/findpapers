@@ -5,7 +5,7 @@
 dist
 
 # Env
-venv
+.venv
 .env
 
 # Build
