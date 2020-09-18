@@ -1,2 +1,2 @@
 [virtualenvs]
-path = "venv"
+path = ".venv"
