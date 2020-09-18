@@ -3,7 +3,7 @@ default:
     before_script:
         - pip install poetry
         - touch .env
-        - make setup
+        - touch pyproject.toml # force make setup to run
 
 cache:
     key: ${CI_COMMIT_REF_SLUG}
@@ -17,7 +17,6 @@ stages:
 test-package:
     stage: test
     script:
-        - make setup
         - make test
 
 publish-package:

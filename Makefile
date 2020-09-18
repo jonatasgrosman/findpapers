@@ -18,7 +18,7 @@ help:
 
 setup: poetry.lock
 poetry.lock: pyproject.toml
-	@poetry install
+	poetry install -vvv
 	@touch poetry.lock
 
 clean:
