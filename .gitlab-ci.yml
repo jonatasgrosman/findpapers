@@ -8,7 +8,6 @@ default:
 cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
-      - .venv
       - dist
 
 stages:
