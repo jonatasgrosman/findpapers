@@ -135,8 +135,12 @@ def refine(
         False, "-s", "--selected", show_default=True,
         help="If only the selected papers will be refined"
     ),
+    only_removed_papers: bool = typer.Option(
+        False, "-r", "--removed", show_default=True,
+        help="If only the removed papers will be refined"
+    ),
     read_only: bool = typer.Option(
-        False, "-r", "--read-only", show_default=True,
+        False, "-l", "--list", show_default=True,
         help="If this flag is present, this function call will only list the papers"
     ),
     verbose: bool = typer.Option(
@@ -179,7 +183,7 @@ def refine(
             facet = string_split[0].strip()
             categories_by_facet[facet] = [x.strip() for x in string_split[1].split(',')]
 
-        findpapers.refine(filepath, categories_by_facet, highlights, show_abstract, show_extra_info, only_selected_papers, read_only)
+        findpapers.refine(filepath, categories_by_facet, highlights, show_abstract, show_extra_info, only_selected_papers, only_removed_papers, read_only)
     except Exception as e:
         if verbose:
             logging.debug(e, exc_info=True)

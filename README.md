@@ -29,7 +29,7 @@ You can check your findpapers version running:
 $ findpapers version
 ```
 
-If you have an old version of the tool and wanna upgrade it run the following command:
+If you have an old version of the tool and want to upgrade it run the following command:
 
 ```console
 $ pip install findpapers --upgrade
@@ -176,7 +176,7 @@ $ export SCOPUS_TOKEN=SOME_SUPER_SECRET_TOKEN
 $ findpapers search /some/path/search_paul.json --query "$QUERY" --limit-db 4 --token-ieee "$IEEE_TOKEN" --token-scopus "$SCOPUS_TOKEN"
 ```
 
-*Now everything is working as he expected, so it's time to do the final papers search. So he defines that he wanna collect only works published between 2000 and 2020. He also decides that he only wants papers collected from ACM, IEEE, and Scopus.*
+*Now everything is working as he expected, so it's time to do the final papers search. So he defines that he wants to collect only works published between 2000 and 2020. He also decides that he only wants papers collected from ACM, IEEE, and Scopus.*
 
 ```console
 $ findpapers search /some/path/search_paul.json --query "$QUERY" --token-ieee "$IEEE_TOKEN" --token-scopus "$SCOPUS_TOKEN" --since 2000-01-01 --until 2020-12-31 --databases "acm,ieee,scopus"
@@ -209,10 +209,16 @@ $ findpapers refine /some/path/search_paul.json --selected --abstract --extra-in
 An interesting point to stand out from the tool is that it automatically prevents duplication of papers, merging their information when the same paper is found in different databases. You can see this in the image above, where the Findpapers found the same work on the IEEE and Scopus databases (see "Paper found in" value) and merged the paper information on a single record.
 
 
-*Now that Dr. McCartney has selected all the papers he wanted, he wanna see all of them.*
+*Now that Dr. McCartney has selected all the papers he wanted, he wants to see all of them.*
 
 ```console
-$ findpapers refine /some/path/search_paul.json --selected --abstract --extra-info --read-only
+$ findpapers refine /some/path/search_paul.json --selected --abstract --extra-info --list
+```
+
+*He wants to see all the removed papers too.*
+
+```console
+$ findpapers refine /some/path/search_paul.json --removed --abstract --extra-info --list
 ```
 
 *Then, he decides to download the full-text from all the selected papers which have a "Model" or "Tool" as a contribution.*
@@ -269,7 +275,7 @@ You don't even need to know how to code to contribute to the project. Even the i
 
 If this project has been useful for you, please share it with your friends. This project could be helpful for them too.
 
-And, if you like this project and wanna motivate the maintainers, give us a :star:. This kind of recognition will make us very happy with the work that we've done :heart:
+If you like this project and want to motivate the maintainers, give us a :star:. This kind of recognition will make us very happy with the work that we've done :heart:
 
 ---
 

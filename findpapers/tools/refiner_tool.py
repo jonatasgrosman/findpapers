@@ -88,25 +88,6 @@ def _print_paper_details(paper: Paper, highlights: List[str], show_abstract: boo
         print('\n')
 
 
-def _get_wanna_re_refine_papers_input():  # pragma: no cover
-    """
-    Private method that prompts a question about the paper selection
-
-    Returns
-    -------
-    str
-        User provided input
-    """
-    REFINE_TEXT = 'Show me the not yet refined papers'
-    REREFINE_TEXT = 'Show me the already refined papers'
-    questions = [
-        inquirer.List('answer',
-                      message='What would you like to do now?',
-                      choices=[REFINE_TEXT, REREFINE_TEXT])
-    ]
-    return inquirer.prompt(questions).get('answer') == REREFINE_TEXT
-
-
 def _get_select_question_input():  # pragma: no cover
     """
     Private method that prompts a question about the paper selection
@@ -163,7 +144,8 @@ def _get_category_question_input(categories: dict):  # pragma: no cover
 
 
 def refine(search_path: str, categories: Optional[dict] = None, highlights: Optional[list] = None, show_abstract: Optional[bool] = False, 
-           show_extra_info: Optional[bool] = False, only_selected_papers: Optional[bool] = False, read_only: Optional[bool] = False):
+           show_extra_info: Optional[bool] = False, only_selected_papers: Optional[bool] = False, only_removed_papers: Optional[bool] = False,
+           read_only: Optional[bool] = False):
     """
     When you have a search result and wanna refine it, this is the method that you'll need to call.
     This method will iterate through all the papers showing their collected data, 
@@ -193,6 +175,8 @@ def refine(search_path: str, categories: Optional[dict] = None, highlights: Opti
         A flag to indicate if the paper's extra info should be shown or not, by default False
     only_selected_papers : bool, False by default
         If only the selected papers will be refined, by default False
+    only_removed_papers : bool, False by default
+        If only the removed papers will be refined, by default False
     read_only : bool, optional
         If true, this method will only list the papers, by default False
     """
@@ -213,23 +197,22 @@ def refine(search_path: str, categories: Optional[dict] = None, highlights: Opti
         if paper.selected is not None:
             has_already_refined_papers = True
             break
-
-    # wanna_re_refine_papers = False
-    # if has_already_refined_papers:
-    #     wanna_re_refine_papers = _get_wanna_re_refine_papers_input()
-
+    
     todo_papers = []
     done_papers = []
+
     for paper in search.papers:
         #if wanna_re_refine_papers:
-        if only_selected_papers:
-            if paper.selected:
+        if (only_selected_papers or only_removed_papers):
+            if paper.selected is not None and ((only_selected_papers and paper.selected) or (only_removed_papers and not paper.selected)):
                 todo_papers.append(paper)
         else:
-            if paper.selected is None:
+            if paper.selected is None or read_only:
                 todo_papers.append(paper)
             else:
                 done_papers.append(paper)
+
+    todo_papers = sorted(todo_papers, key=lambda x: x.publication_date, reverse=True)
 
     for i, paper in enumerate(todo_papers):
         
@@ -258,4 +241,7 @@ def refine(search_path: str, categories: Optional[dict] = None, highlights: Opti
             
             done_papers.append(paper)
 
-    persistence_util.save(search, search_path)
+    if read_only:
+        print(f'\n{Fore.CYAN}{len(todo_papers)} papers\n')
+    else:
+        persistence_util.save(search, search_path)
