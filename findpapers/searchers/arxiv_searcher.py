@@ -241,7 +241,7 @@ def _get_publication(paper_entry: dict) -> Publication:
     Parameters
     ----------
     paper_entry : dict
-        A paper entry retrived from arXiv API
+        A paper entry retrieved from arXiv API
 
     Returns
     -------
@@ -282,7 +282,7 @@ def _get_paper(paper_entry: dict, paper_publication_date: datetime.date, publica
     Parameters
     ----------
     paper_entry : dict
-        A paper entry retrived from arXiv API
+        A paper entry retrieved from arXiv API
     paper_publication_date : datetime.date
         The paper publication date
     publication : Publication

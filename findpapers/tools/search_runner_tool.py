@@ -93,7 +93,7 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
 
     i = 0
     total = len(search.papers)
-    for paper in copy.copy(search.papers):
+    for paper in list(search.papers):
 
         i += 1
         logging.info(f'({i}/{total}) Enriching paper: {paper.title}')
@@ -187,6 +187,26 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
         except Exception:  # pragma: no cover
             logging.debug(
                 'Error while fetching data from Scopus database', exc_info=True)
+
+
+def _filter(search: Search):
+    """
+    Private method that filter the search results
+
+    Parameters
+    ----------
+    search : Search
+        A search instance
+    """
+
+    if search.publication_types is not None:
+        for paper in list(search.papers):
+            try:
+                if (paper.publication is not None and paper.publication.category.lower() not in search.publication_types) or \
+                    (paper.publication is None and 'other' not in search.publication_types):
+                    search.remove_paper(paper)
+            except Exception:
+                pass
 
 
 def _database_safe_run(function: callable, search: Search, database_label: str):
@@ -303,7 +323,7 @@ def _is_query_ok(query: str) -> bool:
 
 def search(outputpath: str, query: Optional[str] = None, since: Optional[datetime.date] = None, until: Optional[datetime.date] = None,
         limit: Optional[int] = None, limit_per_database: Optional[int] = None, databases: Optional[List[str]] = None,
-        scopus_api_token: Optional[str] = None, ieee_api_token: Optional[str] = None):
+        publication_types: Optional[List[str]] = None, scopus_api_token: Optional[str] = None, ieee_api_token: Optional[str] = None):
     """
     When you have a query and needs to get papers using it, this is the method that you'll need to call.
     This method will find papers from some databases based on the provided query.
@@ -344,6 +364,10 @@ def search(outputpath: str, query: Optional[str] = None, since: Optional[datetim
     databases : List[str], optional
         List of databases where the search should be performed, if not specified all databases will be used, by default None
 
+    publication_types : List[str], optional
+        List of publication list of publication types to filter when searching, if not specified all the publication types 
+        will be collected (this parameter is case insensitive). The available publication types are: journal, conference proceedings, book, other, by default None
+
     scopus_api_token : Optional[str], optional
         A API token used to fetch data from Scopus database. If you don't have one go to https://dev.elsevier.com and get it, by default None
 
@@ -356,6 +380,12 @@ def search(outputpath: str, query: Optional[str] = None, since: Optional[datetim
 
     if databases is not None:
         databases = [x.lower() for x in databases]
+    
+    if publication_types is not None:
+        publication_types = [x.lower().strip() for x in publication_types]
+        for publication_type in publication_types:
+            if publication_type not in ['journal', 'conference proceedings', 'book', 'other']:
+                raise ValueError(f'Invalid publication type: {publication_type}')
 
     if query is None:
         query = os.getenv('FINDPAPERS_QUERY')
@@ -371,7 +401,7 @@ def search(outputpath: str, query: Optional[str] = None, since: Optional[datetim
     if scopus_api_token is None:
         scopus_api_token = os.getenv('FINDPAPERS_SCOPUS_API_TOKEN')
 
-    search = Search(query, since, until, limit, limit_per_database)
+    search = Search(query, since, until, limit, limit_per_database, databases=databases, publication_types=publication_types)
 
     if databases is None or arxiv_searcher.DATABASE_LABEL.lower() in databases:
         _database_safe_run(lambda: arxiv_searcher.run(search),
@@ -399,14 +429,18 @@ def search(outputpath: str, query: Optional[str] = None, since: Optional[datetim
     else:
         logging.info('Scopus API token not found, skipping search on this database')
 
-    logging.info('Enriching data...')
+    logging.info('Enriching results...')
 
     _enrich(search, scopus_api_token)
+
+    logging.info('Filtering results...')
+
+    _filter(search)
 
     logging.info('Finding and merging duplications...')
 
     search.merge_duplications()
 
-    logging.info(f'It\'s finally over! Good luck with your research :)')
+    logging.info(f'It\'s finally over! {len(search.papers)} papers retrieved. Good luck with your research :)')
 
     persistence_util.save(search, outputpath)

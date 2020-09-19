@@ -43,6 +43,23 @@ def _get_query(search: Search) -> str:
     if search.until is not None:
         query += f' AND PUBYEAR < {search.until.year + 1}'
 
+    if search.publication_types is not None:
+
+        publication_types = set()
+
+        if 'conference proceedings' in search.publication_types:
+            publication_types.add('p') # Conference Proceeding
+        if 'journal' in search.publication_types:
+            publication_types.add('j') # Journal
+        if 'book' in search.publication_types:
+            publication_types.add('b') # Book
+            publication_types.add('k') # Book Series
+        if 'other' in search.publication_types:
+            publication_types.add('r') # Report
+            publication_types.add('d') # Trade Publication
+        
+        query += f' AND SRCTYPE({" OR ".join(publication_types)})'
+
     return query
 
 
@@ -79,7 +96,7 @@ def _get_publication(paper_entry: dict, api_token: str) -> Publication:
     Parameters
     ----------
     paper_entry : dict
-        A paper entry retrived from scopus API
+        A paper entry retrieved from scopus API
     api_token : str
         A Scopus API token
 
@@ -138,7 +155,7 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
     Parameters
     ----------
     paper_entry : dict
-        A paper entry retrived from scopus API
+        A paper entry retrieved from scopus API
     publication : Publication
         A publication instance that will be associated with the paper
 

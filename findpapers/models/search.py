@@ -14,7 +14,7 @@ class Search():
 
     def __init__(self, query: str, since: Optional[datetime.date] = None, until: Optional[datetime.date] = None,
                  limit: Optional[int] = None, limit_per_database: Optional[int] = None, processed_at: Optional[datetime.datetime] = None,
-                 papers: Optional[set] = None):
+                 databases: Optional[List[str]] = None, publication_types: Optional[List[str]] = None, papers: Optional[set] = None):
         """
         Class constructor
 
@@ -34,6 +34,10 @@ class Search():
             when the limit is not provided the search will retrieve all the papers that it can, by default None
         processed_at : datetime.datetime, optional
             The datetime when the search was performed
+        databases : List[str], optional
+            List of databases where the search should be performed, if not specified all databases will be used. by default None
+        publication_types : List[str], optional
+            List of publication list of publication types to filter when searching, if not specified all publication types will be used. By default None
         papers : set, optional
             A list of papers already collected
         """
@@ -44,16 +48,21 @@ class Search():
         self.limit = limit
         self.limit_per_database = limit_per_database
         self.processed_at = processed_at if processed_at is not None else datetime.datetime.utcnow()
-        self.papers = set()
+        self.databases = databases
+        self.publication_types = publication_types
 
         self.paper_by_key = {}
         self.publication_by_key = {}
         self.paper_by_doi = {}
         self.papers_by_database = {}
 
+        self.papers = set()
         if papers is not None:
             for paper in papers:
-                self.add_paper(paper)
+                try:
+                    self.add_paper(paper)
+                except Exception:
+                    pass
 
     def get_paper_key(self, paper_title: str, publication_date: datetime.date, paper_doi: Optional[str] = None) -> str:
         """
@@ -127,9 +136,10 @@ class Search():
                 'Paper cannot be added to search without at least one defined database')
 
         for database in paper.databases:
+            if self.databases is not None and database.lower() not in self.databases:
+                raise ValueError(f'Database {database} isn\'t in databases list')
             if self.reached_its_limit(database):
-                raise OverflowError(
-                    'When the papers limit is provided, you cannot exceed it')
+                raise OverflowError('When the papers limit is provided, you cannot exceed it')
 
         if database not in self.papers_by_database:
             self.papers_by_database[database] = set()
@@ -341,11 +351,14 @@ class Search():
         if processed_at is not None:
             processed_at = datetime.datetime.strptime(processed_at, '%Y-%m-%d %H:%M:%S')
 
+        databases = search_dict.get('databases')
+        publication_types = search_dict.get('publication_types')
+
         papers = set()
         for paper in search_dict.get('papers', []):
             papers.add(Paper.from_dict(paper))
 
-        return cls(query, since, until, limit, limit_per_database, processed_at, papers)
+        return cls(query, since, until, limit, limit_per_database, processed_at, databases, publication_types, papers)
 
     @staticmethod
     def to_dict(search: Search) -> dict:
@@ -380,6 +393,8 @@ class Search():
             'limit': search.limit,
             'limit_per_database': search.limit_per_database,
             'processed_at': search.processed_at.strftime('%Y-%m-%d %H:%M:%S') if search.processed_at is not None else None,
+            'databases': search.databases,
+            'publication_types': search.publication_types,
             'number_of_papers': len(papers),
             'number_of_papers_by_database': number_of_papers_by_database,
             'papers': papers

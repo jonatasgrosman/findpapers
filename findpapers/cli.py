@@ -20,6 +20,10 @@ def search(
         None, "-q", "--query", show_default=True,
         help='A query string that will be used to perform the papers search (If not provided it will be loaded from the environment variable FINDPAPERS_QUERY). E.g. [term A] AND ([term B] OR [term C]) AND NOT [term D]'
     ),
+    query_filepath: str = typer.Option(
+        None, "-f", "--query-file", show_default=True,
+        help='A file path that contains the query string that will be used to perform the papers search'
+    ),
     since: datetime = typer.Option(
         None, "-s", "--since", show_default=True,
         help="A lower bound (inclusive) date that will be used to filter the search results. Following the pattern YYYY-MM-DD. E.g. 2020-12-31",
@@ -41,6 +45,10 @@ def search(
     databases: str = typer.Option(
         None, "-d", "--databases", show_default=True,
         help="A comma-separated list of databases where the search should be performed, if not specified all databases will be used (this parameter is case insensitive)"
+    ),
+    publication_types: str = typer.Option(
+        None, "-p", "--publication-types", show_default=True,
+        help="A comma-separated list of publication types to filter when searching, if not specified all the publication types will be collected (this parameter is case insensitive). The available publication types are: journal, conference proceedings, book, other"
     ),
     scopus_api_token: str = typer.Option(
         None, "-ts", "--token-scopus", show_default=True,
@@ -81,8 +89,8 @@ def search(
         You can constraint the search by date using the -s (or --since) and -u (or --until) arguments
         following the pattern YYYY-MM-DD (E.g. 2020-12-31). 
         
-        You can restrict the max number of retrived papers by using -l (or --limit).
-        And, restrict the max number of retrived papers by database using -ld (or --limit_per_database) argument.
+        You can restrict the max number of retrieved papers by using -l (or --limit).
+        And, restrict the max number of retrieved papers by database using -ld (or --limit_per_database) argument.
 
         You can control which databases you would like to use in your search by the -d (or --databases) option. This parameter
         accepts a comma-separated list of database names, and is case-insensitive. Nowadays the available databases are
@@ -92,6 +100,15 @@ def search(
         --databases "scopus,arxiv,acm"
         --databases "ieee,ACM,PubMed"
 
+        You can control which publication types you would like to fetch in your search by the -p (or --publication-types) option. This parameter
+        accepts a comma-separated list of database names, and is case-insensitive. Nowadays the available publication types are
+        journal, conference proceedings, book, other. 
+        When a particular publication does not fit into any of the other types it is classified as "other", e.g., magazines, newsletters, unpublished manuscripts.
+
+        E.g.:
+        --publication-types "journal,conference proceedings,BOOK,other"
+        --publication-types "Journal,book"
+
         You can control the command logging verbosity by the -v (or --verbose) argument.
     """
 
@@ -99,9 +116,16 @@ def search(
         since = since.date() if since is not None else None
         until = until.date() if until is not None else None
         databases = [x.strip() for x in databases.split(',')] if databases is not None else None
+        publication_types = [x.strip() for x in publication_types.split(',')] if publication_types is not None else None
+
         common_util.logging_initialize(verbose)
-        findpapers.search(outputpath, query, since, until, limit,
-                          limit_per_database, databases, scopus_api_token, ieee_api_token)
+
+        if query is None and query_filepath is not None:
+            with open(query_filepath, 'r') as f:
+                query = f.read().strip()
+
+        findpapers.search(outputpath, query, since, until, limit, limit_per_database,
+                          databases, publication_types, scopus_api_token, ieee_api_token)
     except Exception as e:
         if verbose:
             logging.debug(e, exc_info=True)

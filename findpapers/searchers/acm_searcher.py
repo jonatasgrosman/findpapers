@@ -149,7 +149,7 @@ def _get_paper(paper_page: html.HtmlElement, paper_doi: str, paper_url: str) -> 
     Parameters
     ----------
     paper_page : html.HtmlElement
-        A paper page retrived from ACM
+        A paper page retrieved from ACM
     paper_doi : str
         The paper DOI
     paper_url : str

@@ -106,7 +106,7 @@ def _get_publication(paper_entry: dict) -> Publication:
     Parameters
     ----------
     paper_entry : dict
-        A paper entry retrived from PubMed API
+        A paper entry retrieved from PubMed API
 
     Returns
     -------
@@ -137,7 +137,7 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
     Parameters
     ----------
     paper_entry : dict
-        A paper entry retrived from IEEE API
+        A paper entry retrieved from IEEE API
     publication : Publication
         A publication instance that will be associated with the paper
 
@@ -242,9 +242,12 @@ def run(search: Search):
         - The API token cannot be null
     """
 
+    if search.publication_types is not None and 'journal' not in search.publication_types:
+        logging.info('Skiping PubMed search, journal publication type not in filters. Nowadays the PubMed only retrieves papers published on journals.')
+        return
+
     papers_count = 0
     result = _get_api_result(search)
-
 
     if result.get('eSearchResult').get('ErrorList', None) is not None:
         total_papers = 0

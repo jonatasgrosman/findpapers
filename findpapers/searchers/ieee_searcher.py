@@ -53,6 +53,24 @@ def _get_search_url(search: Search, api_token: str, start_record: Optional[int] 
     if start_record is not None:
         url += f'&start_record={start_record}'
 
+    if search.publication_types is not None:
+
+        content_types = set()
+
+        if 'conference proceedings' in search.publication_types:
+            content_types.add('Conferences')
+        if 'journal' in search.publication_types:
+            content_types.add('Journals')
+        if 'book' in search.publication_types:
+            content_types.add('Books')
+        if 'other' in search.publication_types:
+            content_types.add('Courses')
+            content_types.add('Early Access')
+            content_types.add('Magazines')
+            content_types.add('Standards')
+            
+        url += f'&content_type={",".join(content_types)}'
+
     return url
 
 
@@ -87,7 +105,7 @@ def _get_publication(paper_entry: dict) -> Publication:
     Parameters
     ----------
     paper_entry : dict
-        A paper entry retrived from IEEE API
+        A paper entry retrieved from IEEE API
 
     Returns
     -------
@@ -118,7 +136,7 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
     Parameters
     ----------
     paper_entry : dict
-        A paper entry retrived from IEEE API
+        A paper entry retrieved from IEEE API
     publication : Publication
         A publication instance that will be associated with the paper
 
