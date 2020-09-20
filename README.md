@@ -141,7 +141,7 @@ This advanced usage documentation can be a bit boring to read (and write), so I 
 *Let's take a look at Dr. McCartney's research. He's a computer scientist interested in AI and music, so he created a search query to collect papers that can help with his research and exported this query to an environment variable.*
 
 ```console
-$ export QUERY="([artificial intelligence] OR [AI] OR [machine learning] OR [ML] OR [deep learning] OR [DL]) AND ([music] OR [song])"
+$ export QUERY="([artificial intelligence] OR [AI] OR [machine learning] OR [ML] OR [deep learning] OR [DL]) AND ([music] OR [s?ng])"
 ```
 
 *Dr. McCartney is interested in testing his query, so he decides to collect only 20 papers to test whether the query is suitable for his research (the Findpapers results are sorted by publication date in descending order).*
@@ -154,16 +154,18 @@ $ findpapers search /some/path/search_paul.json --query "$QUERY" --limit 20
  - *Only one database was used to collect all the 20 papers*
  - *Some collected papers were about drums, but he doesn't like drums or drummers*
 
-*So he decides to solve these problems by reformulating his query.*
+*So he decides to solve these problems by:*
+- *Reformulating his query, and also placing it inside a file to make his life easier.*
 
-```console
-$ export QUERY="([artificial intelligence] OR [AI] OR [machine learning] OR [ML] OR [deep learning] OR [DL]) AND ([music] OR [song]) AND NOT [drum*]"
+```/some/path/query.txt```
+```
+([artificial intelligence] OR [AI] OR [machine learning] OR [ML] OR [deep learning] OR [DL]) AND ([music] OR [s?ng]) AND NOT [drum*]
 ```
 
-*He will also perform the search limiting the number of papers that can be collected by each database.*
+- *Performing the search limiting the number of papers that can be collected by each database.*
 
 ```console
-$ findpapers search /some/path/search_paul.json --query "$QUERY" --limit-db 4
+$ findpapers search /some/path/search_paul.json --query-file /some/path/query.txt --limit-db 4
 ```
 
 *Now his query returned the papers he wanted, but he realized one thing, no papers were collected from Scopus or IEEE databases. Then he noticed that he needed to pass his Scopus and IEEE API access keys when calling the search command. So he went to https://dev.elsevier.com and https://developer.ieee.org, generated the access keys, and used them in the search.*
@@ -173,13 +175,13 @@ $ export IEEE_TOKEN=SOME_SUPER_SECRET_TOKEN
 
 $ export SCOPUS_TOKEN=SOME_SUPER_SECRET_TOKEN
 
-$ findpapers search /some/path/search_paul.json --query "$QUERY" --limit-db 4 --token-ieee "$IEEE_TOKEN" --token-scopus "$SCOPUS_TOKEN"
+$ findpapers search /some/path/search_paul.json --query-file /some/path/query.txt --limit-db 4 --token-ieee "$IEEE_TOKEN" --token-scopus "$SCOPUS_TOKEN"
 ```
 
-*Now everything is working as he expected, so it's time to do the final papers search. So he defines that he wants to collect only works published between 2000 and 2020. He also decides that he only wants papers collected from ACM, IEEE, and Scopus.*
+*Now everything is working as he expected, so it's time to do the final papers search. So he defines that he wants to collect only works published between 2000 and 2020. He also decides that he only wants papers collected from ACM, IEEE, and Scopus. And he only wants to papers published on a journal or conference proceedings (Tip: The available publication types on Findpapers are: journal, conference proceedings, book, other. When a particular publication does not fit into any of the other types it is classified as "other", e.g., magazines, newsletters, unpublished manuscripts)*
 
 ```console
-$ findpapers search /some/path/search_paul.json --query "$QUERY" --token-ieee "$IEEE_TOKEN" --token-scopus "$SCOPUS_TOKEN" --since 2000-01-01 --until 2020-12-31 --databases "acm,ieee,scopus"
+$ findpapers search /some/path/search_paul.json --query-file /some/path/query.txt --token-ieee "$IEEE_TOKEN" --token-scopus "$SCOPUS_TOKEN" --since 2000-01-01 --until 2020-12-31 --databases "acm,ieee,scopus" --publication-types "journal,conference proceedings"
 ```
 
 *The searching process took a long time, but after many cups of coffee, Dr. McCartney finally has a good list of papers with the potential to help in his research. All the information collected is in the ```search_paul.json``` file. He could access this file now and manually filter which works are most interesting for him, but he prefers to use the Findpapers ```refine``` command for this.*
@@ -276,6 +278,18 @@ You don't even need to know how to code to contribute to the project. Even the i
 If this project has been useful for you, please share it with your friends. This project could be helpful for them too.
 
 If you like this project and want to motivate the maintainers, give us a :star:. This kind of recognition will make us very happy with the work that we've done :heart:
+
+
+# Want to cite us?
+
+```bibtex
+@misc{findpapers,
+    title = "Findpapers",
+    author = "Jonatas Grosman",
+    howpublished = "\url{https://gitlab.com/jonatasgrosman/findpapers}",
+    year = 2020
+}
+```
 
 ---
 

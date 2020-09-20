@@ -3,6 +3,7 @@
 import os
 import json
 import random
+import datetime
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib_venn import venn2, venn2_circles
@@ -11,7 +12,19 @@ import matplotlib.cm as cmap
 
 BASEDIR = os.path.dirname(os.path.abspath(__file__))
 
-def show_db_venn(papers):
+
+def autolabel(rects, ax):
+    """Attach a text label above each bar in *rects*, displaying its height."""
+    for rect in rects:
+        height = rect.get_height()
+        ax.annotate('{}'.format(height),
+                    xy=(rect.get_x() + rect.get_width() / 2, height),
+                    xytext=(0, 3),  # 3 points vertical offset
+                    textcoords="offset points",
+                    ha='center', va='bottom')
+
+
+def databases_venn_chart(papers):
 
     #(Abc, aBc, ABc, abC, AbC, aBC, ABC)
     all_papers_count = {'Scopus': 0, 'ACM': 0, 'Scopus-ACM': 0, 'IEEE': 0, 'Scopus-IEEE': 0, 'ACM-IEEE': 0, 'all': 0}
@@ -43,7 +56,7 @@ def show_db_venn(papers):
         # for circle in circles:
         #     circle.set_lw(1.0)
 
-        plt.title(plot_title)
+        #plt.title(plot_title)
 
         plt.show()
         f.savefig(os.path.join(BASEDIR, filename), bbox_inches='tight')
@@ -72,14 +85,13 @@ def show_db_venn(papers):
         else:
             print(paper)
 
-    plot_papers_count(all_papers_count, 'Collected papers count', 'db_venn.pdf')
-    plot_papers_count(selected_papers_count, 'Selected papers count', 'db_venn_selected.pdf')
+    plot_papers_count(all_papers_count, 'Collected papers count', 'databases_venn.pdf')
+    plot_papers_count(selected_papers_count, 'Selected papers count', 'databases_venn_selected.pdf')
 
 
-def show_categories_headmap(papers, category_facet):
+def categories_headmap_chart(papers, category_facet):
 
     papers_count_by_year_and_category = {}
-    years = set()
     categories = set()
 
     for paper in papers:
@@ -93,7 +105,6 @@ def show_categories_headmap(papers, category_facet):
 
             if year not in papers_count_by_year_and_category:
                 papers_count_by_year_and_category[year] = {}
-                years.add(year)
             
             if category not in papers_count_by_year_and_category[year]:
                 papers_count_by_year_and_category[year][category] = 0
@@ -101,7 +112,7 @@ def show_categories_headmap(papers, category_facet):
 
             papers_count_by_year_and_category[year][category] += 1
 
-    years = list(years)
+    years = list(papers_count_by_year_and_category.keys())
     years.sort()
     categories = list(categories)
     categories.sort()
@@ -126,6 +137,8 @@ def show_categories_headmap(papers, category_facet):
     # ... and label them with the respective list entries
     ax.set_xticklabels(years)
     ax.set_yticklabels(categories)
+    ax.set_ylabel(category_facet)
+    ax.set_xlabel('Year')
 
     # Rotate the tick labels and set their alignment.
     plt.setp(ax.get_xticklabels(), rotation=90, ha="right", rotation_mode="anchor")
@@ -138,11 +151,86 @@ def show_categories_headmap(papers, category_facet):
             text = ax.text(j, i, value_matrix[i, j],
                         ha="center", va="center", color=textcolors[int(value_matrix[i, j] > threshold)])
 
-    ax.set_title(f"Selected papers count ({category_facet}/year)", pad=20)
+    #ax.set_title(f"Selected papers count ({category_facet}/year)", pad=20)
     fig.tight_layout()
 
     plt.show()
-    fig.savefig(os.path.join(BASEDIR, 'categories.pdf'), bbox_inches='tight')
+    fig.savefig(os.path.join(BASEDIR, 'categories_headmap.pdf'), bbox_inches='tight')
+
+
+def papers_selection_chart(papers):
+
+    selected_paper_by_year = {}
+    removed_paper_by_year = {}
+
+    for paper in papers:
+        year = paper['publication_date'].split('-')[0]
+
+        if year not in selected_paper_by_year:
+            selected_paper_by_year[year] = 0
+            removed_paper_by_year[year] = 0
+
+        if paper['selected']:
+            selected_paper_by_year[year] += 1
+        else:
+            removed_paper_by_year[year] += 1
+
+    years = list(selected_paper_by_year.keys())
+    years.sort()
+    selected_papers = []
+    removed_papers = []
+    for year in years:
+        selected_papers.append(selected_paper_by_year[year])
+        removed_papers.append(removed_paper_by_year[year])
+
+    x = np.arange(len(years))  # the label locations
+    width = 0.35  # the width of the bars
+
+    fig, ax = plt.subplots()
+    rects1 = ax.bar(x - width, selected_papers, width, label='Selected', color='green', alpha=0.4)
+    rects2 = ax.bar(x, removed_papers, width, label='Removed', color='red', alpha=0.4)
+
+    # Add some text for labels, title and custom x-axis tick labels, etc.
+    ax.set_ylabel('Papers count')
+    ax.set_xlabel('Year')
+    #ax.set_title('Papers count', pad=20)
+    ax.set_xticks(x)
+    ax.set_xticklabels(years)
+    ax.legend()
+
+    autolabel(rects1, ax)
+    autolabel(rects2, ax)
+
+    fig.tight_layout()
+
+    plt.show()
+    fig.savefig(os.path.join(BASEDIR, 'papers_selection.pdf'), bbox_inches='tight')
+
+
+def papers_citations_chart(papers):
+
+    selected_papers = [x for x in papers if x['selected']]
+    selected_papers_citations = [x['citations'] for x in selected_papers]
+    selected_papers_publication_date = [datetime.datetime.strptime(x['publication_date'], '%Y-%m-%d').date() for x in selected_papers]
+
+    removed_papers = [x for x in papers if not x['selected']]
+    removed_papers_citations = [x['citations'] for x in removed_papers]
+    removed_papers_publication_date = [datetime.datetime.strptime(x['publication_date'], '%Y-%m-%d').date() for x in removed_papers]
+
+    fig, ax = plt.subplots()
+    ax.scatter(selected_papers_publication_date, selected_papers_citations, color='green', label='Selected', s=50, alpha=0.4)
+    ax.scatter(removed_papers_publication_date, removed_papers_citations, color='red', label='Removed', s=50, alpha=0.4)
+
+    # Add some text for labels, title and custom x-axis tick labels, etc.
+    ax.set_ylabel('Papers citations')
+    ax.set_xlabel('Publication date')
+    #ax.set_title('Papers citations', pad=20)
+    ax.legend()
+
+    fig.tight_layout()
+
+    plt.show()
+    fig.savefig(os.path.join(BASEDIR, 'papers_citations.pdf'), bbox_inches='tight')
 
 
 # loadging data
@@ -155,9 +243,11 @@ for paper in SEARCH_RESULTS['papers']:
     paper['selected'] = random.choice([True, False])
     if paper['selected']:
         paper['categories'] = {
-            'Contribution': random.sample(['Metric','Tool','Model','Method'], 2)
+            'Contribution': random.sample(['Metric','Tool','Model','Method'], 1)
         }
 
 
-show_db_venn(SEARCH_RESULTS['papers'])
-show_categories_headmap(SEARCH_RESULTS['papers'], 'Contribution')
+databases_venn_chart(SEARCH_RESULTS['papers'])
+categories_headmap_chart(SEARCH_RESULTS['papers'], 'Contribution')
+papers_selection_chart(SEARCH_RESULTS['papers'])
+papers_citations_chart(SEARCH_RESULTS['papers'])
