@@ -2,7 +2,7 @@
 
 [![PyPI - License](https://img.shields.io/pypi/l/findpapers)](https://gitlab.com/jonatasgrosman/findpapers/-/blob/master/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/findpapers)](https://pypi.org/project/findpapers)
-[![coverage report](https://gitlab.com/jonatasgrosman/findpapers/badges/master/coverage.svg)](https://gitlab.com/jonatasgrosman/findpapers/-/commits/master)
+<!--[![coverage report](https://gitlab.com/jonatasgrosman/findpapers/badges/master/coverage.svg)](https://gitlab.com/jonatasgrosman/findpapers/-/commits/master)-->
 [![pipeline status](https://gitlab.com/jonatasgrosman/findpapers/badges/master/pipeline.svg)](https://gitlab.com/jonatasgrosman/findpapers/-/commits/master)
 
 
@@ -279,17 +279,6 @@ If this project has been useful for you, please share it with your friends. This
 
 If you like this project and want to motivate the maintainers, give us a :star:. This kind of recognition will make us very happy with the work that we've done :heart:
 
-
-# Want to cite us?
-
-```bibtex
-@misc{findpapers,
-    title = "Findpapers",
-    author = "Jonatas Grosman",
-    howpublished = "\url{https://gitlab.com/jonatasgrosman/findpapers}",
-    year = 2020
-}
-```
 
 ---
 
