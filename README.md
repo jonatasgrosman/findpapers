@@ -242,7 +242,7 @@ $ findpapers bibtex /some/path/search_paul.json /some/path/mybib.bib --selected 
 *But he discovers two things that could save him from this mess. First, the university provides a proxy for tunneling requests. Second, Findpapers accepts the configuration of a proxy URL. And of course, he'll use this feature.*
 
 ```console
-export PROXY_URL="https://mccartney:super_secret_pass@liverpool.ac.uk:1234"
+$ export PROXY_URL="https://mccartney:super_secret_pass@liverpool.ac.uk:1234"
 
 $ findpapers download /some/path/search_paul.json /some/path/papers --selected --categories "Contribution:Tool,Model" --proxy "$PROXY_URL"
 ```
