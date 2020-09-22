@@ -14,7 +14,6 @@ from findpapers.models.publication import Publication
 from findpapers.utils.requests_util import DefaultSession
 
 
-DEFAULT_SESSION = DefaultSession()
 DATABASE_LABEL = 'arXiv'
 BASE_URL = 'http://export.arxiv.org'
 MAX_ENTRIES_PER_PAGE = 200
@@ -231,7 +230,7 @@ def _get_api_result(search: Search, start_record: Optional[int] = 0) -> dict: # 
 
     url = _get_search_url(search, start_record)
 
-    return common_util.try_success(lambda: xmltodict.parse(DEFAULT_SESSION.get(url).content), 2, pre_delay=1)
+    return common_util.try_success(lambda: xmltodict.parse(DefaultSession().get(url).content), 2, pre_delay=1)
 
 
 def _get_publication(paper_entry: dict) -> Publication:

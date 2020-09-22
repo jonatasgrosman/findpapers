@@ -13,11 +13,8 @@ from findpapers.models.search import Search
 from findpapers.utils.requests_util import DefaultSession
 
 
-DEFAULT_SESSION = DefaultSession()
-
-
 def download(search_path: str, output_directory: str, only_selected_papers: Optional[bool] = False,
-             categories_filter: Optional[dict] = None):
+             categories_filter: Optional[dict] = None, proxy: Optional[str] = None):
     """
     If you've done your search, (probably made the search refinement too) and wanna download the papers, 
     this is the method that you need to call. This method will try to download the PDF version of the papers to
@@ -43,7 +40,12 @@ def download(search_path: str, output_directory: str, only_selected_papers: Opti
         If only the selected papers will be downloaded
     categories_filter : dict, None by default
         A dict of categories to be used to filter which papers will be downloaded
+    proxy : Optional[str], optional
+        proxy URL that can be used during requests. This can be also defined by an environment variable FINDPAPERS_PROXY. By default None
     """
+
+    if proxy is not None:
+        os.environ['FINDPAPERS_PROXY'] = proxy
 
     search = persistence_util.load(search_path)
 
@@ -86,7 +88,7 @@ def download(search_path: str, output_directory: str, only_selected_papers: Opti
                 logging.info(f'Fetching data from: {url}')
 
                 response = common_util.try_success(
-                    lambda url=url: DEFAULT_SESSION.get(url), 2)
+                    lambda url=url: DefaultSession().get(url), 2)
 
                 if response is None:
                     continue
@@ -188,7 +190,7 @@ def download(search_path: str, output_directory: str, only_selected_papers: Opti
                     if pdf_url is not None:
 
                         response = common_util.try_success(
-                            lambda url=pdf_url: DEFAULT_SESSION.get(url), 2)
+                            lambda url=pdf_url: DefaultSession().get(url), 2)
 
                 if 'application/pdf' in response.headers.get('content-type').lower():
                     with open(output_filepath, 'wb') as fp:

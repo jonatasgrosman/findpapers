@@ -13,7 +13,6 @@ from findpapers.models.publication import Publication
 from findpapers.utils.requests_util import DefaultSession
 
 
-DEFAULT_SESSION = DefaultSession()
 DATABASE_LABEL = 'ACM'
 BASE_URL = 'https://dl.acm.org'
 MAX_ENTRIES_PER_PAGE = 100
@@ -91,7 +90,7 @@ def _get_result(search: Search, start_record: Optional[int] = 0) -> dict:  # pra
 
     url = _get_search_url(search, start_record)
 
-    response = common_util.try_success(lambda: DEFAULT_SESSION.get(url), 2)
+    response = common_util.try_success(lambda: DefaultSession().get(url), 2)
     return html.fromstring(response.content)
 
 
@@ -110,7 +109,7 @@ def _get_paper_page(url: str) -> html.HtmlElement:  # pragma: no cover
         A HTML element representing the paper given by the provided URL
     """
 
-    response = common_util.try_success(lambda: DEFAULT_SESSION.get(url), 2)
+    response = common_util.try_success(lambda: DefaultSession().get(url), 2)
     return html.fromstring(response.content)
 
 
@@ -135,7 +134,7 @@ def _get_paper_metadata(doi: str) -> dict:  # pragma: no cover
         'format': 'bibTex'
     }
 
-    response = common_util.try_success(lambda: DEFAULT_SESSION.post(
+    response = common_util.try_success(lambda: DefaultSession().post(
         f'{BASE_URL}/action/exportCiteProcCitation', data=form).json(), 2)
 
     if response is not None and response.get('items', None) is not None and len(response.get('items')) > 0:

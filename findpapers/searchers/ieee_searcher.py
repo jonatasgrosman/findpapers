@@ -13,7 +13,6 @@ from findpapers.models.publication import Publication
 from findpapers.utils.requests_util import DefaultSession
 
 
-DEFAULT_SESSION = DefaultSession()
 DATABASE_LABEL = 'IEEE'
 BASE_URL = 'http://ieeexploreapi.ieee.org'
 MAX_ENTRIES_PER_PAGE = 200
@@ -95,7 +94,7 @@ def _get_api_result(search: Search, api_token: str, start_record: Optional[int] 
 
     url = _get_search_url(search, api_token, start_record)
 
-    return common_util.try_success(lambda: DEFAULT_SESSION.get(url).json(), 2)
+    return common_util.try_success(lambda: DefaultSession().get(url).json(), 2)
 
 
 def _get_publication(paper_entry: dict) -> Publication:

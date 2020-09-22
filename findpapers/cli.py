@@ -58,6 +58,10 @@ def search(
         None, "-ti", "--token-ieee", show_default=True,
         help="A API token used to fetch data from IEEE database. If you don't have one go to https://developer.ieee.org and get it. (If not provided it will be loaded from the environment variable FINDPAPERS_IEEE_API_TOKEN)"
     ),
+    proxy: str = typer.Option(
+        None, "-x", "--proxy", show_default=True,
+        help="proxy URL that can be used during requests"
+    ),
     verbose: bool = typer.Option(
         False, "-v", "--verbose", show_default=True,
         help="If you wanna a verbose mode logging"
@@ -125,7 +129,7 @@ def search(
                 query = f.read().strip()
 
         findpapers.search(outputpath, query, since, until, limit, limit_per_database,
-                          databases, publication_types, scopus_api_token, ieee_api_token)
+                          databases, publication_types, scopus_api_token, ieee_api_token, proxy)
     except Exception as e:
         if verbose:
             logging.debug(e, exc_info=True)
@@ -232,6 +236,10 @@ def download(
         [], "-c", "--categories", show_default=True,
         help="A comma-separated list of categories (categorization can be done on refine command) that will be used to filter which papers will be downloaded, using the following pattern: <facet>:<term_b>,<term_c>,..."
     ),
+    proxy: str = typer.Option(
+        None, "-x", "--proxy", show_default=True,
+        help="proxy URL that can be used during requests"
+    ),
     verbose: bool = typer.Option(
         False, "-v", "--verbose", show_default=True,
         help="If you wanna a verbose mode logging"
@@ -278,7 +286,7 @@ def download(
             facet = string_split[0].strip()
             categories_by_facet[facet] = [x.strip() for x in string_split[1].split(',')]
 
-        findpapers.download(filepath, outputpath, only_selected_papers, categories_by_facet)
+        findpapers.download(filepath, outputpath, only_selected_papers, categories_by_facet, proxy)
     except Exception as e:
         if verbose:
             logging.debug(e, exc_info=True)
