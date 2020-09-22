@@ -259,7 +259,7 @@ $ findpapers bibtex /some/path/search_paul.json /some/path/mybib.bib --selected
 
 *That's all, folks! We have reached the end of our journey. I hope Dr. McCartney can continue his research and publish his work without any major problems now.*
 
-As you could see, all the information collected and enriched by the Findpapers is persisted in a single JSON file. From this file, it is possible to create interesting visualizations about the collected data ...
+As you could see, all the information collected and enriched by the Findpapers is placed in a single JSON file. From this file, it is possible to create interesting visualizations about the collected data ...
 
 ![charts](docs/charts.png)
 
