@@ -205,6 +205,9 @@ def _get_paper(paper_page: html.HtmlElement, paper_doi: str, paper_url: str) -> 
             paper_publication_date = datetime.date(
                 date_parts[0], date_parts[1], date_parts[2])
 
+    if paper_publication_date is None:
+        return None
+
     paper_keywords = set()
     if paper_metadata.get('keyword', None) is not None:
         paper_keywords = set([x.strip()

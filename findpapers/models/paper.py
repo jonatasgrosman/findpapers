@@ -59,6 +59,9 @@ class Paper():
         if title is None or len(title) == 0:
             raise(ValueError('Paper\'s title cannot be null'))
 
+        if publication_date is None:
+            raise(ValueError('Paper\'s publication_date cannot be null'))
+
         self.title = title
         self.abstract = abstract
         self.authors = authors

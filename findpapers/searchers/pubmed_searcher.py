@@ -199,6 +199,9 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
         paper_publication_date = datetime.date(
             int(paper_publication_date_year), 1, 1)
 
+    if paper_publication_date is None:
+        return None
+
     paper_authors = []
     for author in article.get('AuthorList').get('Author'):
         if isinstance(author, str):

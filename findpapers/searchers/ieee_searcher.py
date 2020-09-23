@@ -180,6 +180,9 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
         paper_publication_date = datetime.date(
             paper_entry.get('publication_year'), 1, 1)
 
+    if paper_publication_date is None:
+        return None
+
     paper_authors = []
     for author in paper_entry.get('authors').get('authors'):
         paper_authors.append(author.get('full_name'))

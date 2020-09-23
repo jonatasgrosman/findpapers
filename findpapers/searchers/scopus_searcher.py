@@ -192,6 +192,9 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
         paper_publication_date = datetime.date(
             int(date_split[0]), int(date_split[1]), int(date_split[2]))
 
+    if paper_publication_date is None:
+        return None
+
     if paper_citations is not None:
         paper_citations = int(paper_citations)
 
