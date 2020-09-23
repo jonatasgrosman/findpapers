@@ -287,7 +287,7 @@ class Search():
 
             # calculating the edit distance between the titles
             titles_edit_distance = edlib.align(
-                paper_1.title, paper_2.title)['editDistance']
+                paper_1.title.lower(), paper_2.title.lower())['editDistance']
 
             if (paper_1.doi is not None and paper_1.doi == paper_2.doi) or (titles_edit_distance <= max_edit_distance):
 
