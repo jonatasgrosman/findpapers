@@ -250,7 +250,7 @@ $ findpapers download /some/path/search_paul.json /some/path/papers --selected -
 *And at the end of it, he decides to download the full-text from all the selected works (regardless of their categorization) and generate their BibTeX file too.*
 
 ```console
-$ findpapers download /some/path/search_paul.json /some/path/papers --selected
+$ findpapers download /some/path/search_paul.json /some/path/papers --selected --proxy "https://mccartney:super_secret_pass@liverpool.ac.uk:1234"
 
 $ findpapers bibtex /some/path/search_paul.json /some/path/mybib.bib --selected
 ```
