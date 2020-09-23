@@ -239,7 +239,7 @@ $ findpapers bibtex /some/path/search_paul.json /some/path/mybib.bib --selected 
 
 *So when he opened the ```/some/path/papers/download.log``` file, he could see the URL of all papers that weren't downloaded correctly. After accessing these links, he noticed that some of them weren't downloaded due to some limitations of Findpapers (currently, the tool has a set of heuristics to perform the download that may not work in all cases). However, the vast majority of papers weren't downloaded because they were behind a paywall. But, Dr. McCartney has access to these papers when he's connected to the network at the university where he works, but unfortunately, he is at home right now.*
 
-*But he discovers two things that could save him from this mess. First, the university provides a proxy for tunneling requests. Second, Findpapers accepts the configuration of a proxy URL. And of course, he'll use this feature.*
+*But he discovers two things that could save him from this mess. First, the university provides a proxy for tunneling requests. Second, Findpapers accepts the configuration of a proxy URL. And of course, he'll use this feature (see the "--proxy" argument on the command bellow).*
 
 ```console
 $ findpapers download /some/path/search_paul.json /some/path/papers --selected --categories "Contribution:Tool,Model" --proxy "https://mccartney:super_secret_pass@liverpool.ac.uk:1234"
