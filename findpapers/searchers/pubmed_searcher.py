@@ -203,7 +203,13 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
         return None
 
     paper_authors = []
-    for author in article.get('AuthorList').get('Author'):
+    retrived_authors = []
+    if isinstance(article.get('AuthorList').get('Author'), dict): # only one author
+        retrived_authors = [article.get('AuthorList').get('Author')]
+    else:
+        retrived_authors = article.get('AuthorList').get('Author')
+
+    for author in retrived_authors:
         if isinstance(author, str):
             paper_authors.append(author)
         elif isinstance(author, dict):
