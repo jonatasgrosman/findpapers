@@ -64,3 +64,12 @@ def test_query_format():
     assert not search_runner_tool._is_query_ok('[ ] AND [term b]')
     assert not search_runner_tool._is_query_ok('[ ]')
     assert not search_runner_tool._is_query_ok('[')
+
+
+def test_query_sanitize():
+
+    assert search_runner_tool._sanitize_query('[term a]    OR     [term b]') == '[term a] OR [term b]'
+    assert search_runner_tool._sanitize_query('[term a]    AND     [term b]') == '[term a] AND [term b]'
+    assert search_runner_tool._sanitize_query('([term a]    OR     [term b]) AND [term *]') == '([term a] OR [term b]) AND [term *]'
+    assert search_runner_tool._sanitize_query('([term a]\nOR\t[term b]) AND [term *]') == '([term a] OR [term b]) AND [term *]'
+    assert search_runner_tool._sanitize_query('([term a]\n\n\n\nOR\n\n\n\n[term b]) AND [term *]') == '([term a] OR [term b]) AND [term *]'

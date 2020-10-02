@@ -3,6 +3,7 @@ import datetime
 import logging
 import requests
 import copy
+import re
 from lxml import html
 from typing import Optional, List
 from findpapers.models.search import Search
@@ -231,6 +232,26 @@ def _database_safe_run(function: callable, search: Search, database_label: str):
                 f'Error while fetching papers from {database_label} database', exc_info=True)
 
 
+def _sanitize_query(query: str) -> str:
+    """
+    Remove some invalid characters from the query
+
+    Parameters
+    ----------
+    query : str
+        A search query to be sanitized
+
+    Returns
+    -------
+    str
+        A sanitized query
+    """
+
+    query = re.sub(r'\s+', ' ', query)
+
+    return query
+
+
 def _is_query_ok(query: str) -> bool:
     """
     Checking a search query, it will return True if it's valid or False otherwise.
@@ -396,6 +417,9 @@ def search(outputpath: str, query: Optional[str] = None, since: Optional[datetim
 
     if query is None:
         query = os.getenv('FINDPAPERS_QUERY')
+
+    if query is not None:
+        query = _sanitize_query(query)
 
     if query is None or not _is_query_ok(query):
         raise ValueError('Invalid query format')

@@ -59,7 +59,7 @@ First of all, we need to know how to build the search queries. The search querie
 
 - The query can contain boolean operators, but they must be uppercase. The allowed operators are AND, OR, and NOT. E.g., **[term a] AND [term b]**
 
-- All the operators must have one and only one whitespace before and after them. E.g., **[term a] OR [term b] OR [term c]**
+- All the operators must have at least one whitespace before and after them (tabs or newlines can be valid too). E.g., **[term a] OR [term b] OR [term c]**
 
 - The NOT operator must always be preceded by an AND operator E.g., **[term a] AND NOT [term b]**
 
@@ -94,7 +94,6 @@ Let's see some examples of valid and invalid queries:
 | [term a] AND NOT ([term b] OR [term c])  |  Yes  |
 | [term a] OR ([term b] AND ([term\*] OR [t?rm]))  |  Yes |
 | [term a]OR[term b]   |  **No** (no whitespace between terms and boolean operator)  |
-| [term a] &nbsp;&nbsp;OR&nbsp;&nbsp; [term b]  |  **No** (more than 1 whitespace between terms and boolean operator)  |
 | ([term a] OR [term b]  |  **No** (missing parentheses)  |
 | [term a] or [term b]  |  **No** (lowercase boolean operator)  |
 | term a OR [term b]  |  **No** (missing square brackets)  |
@@ -155,11 +154,19 @@ $ findpapers search /some/path/search_paul.json --query "$QUERY" --limit 20
  - *Some collected papers were about drums, but he doesn't like drums or drummers*
 
 *So he decides to solve these problems by:*
-- *Reformulating his query, and also placing it inside a file to make his life easier.*
+- *Reformulating his query, and also placing it inside a file to make his life easier (Note that in a text file, you can split your query search into multiple lines. Is it much more comfortable to read, right?).*
 
 ```/some/path/query.txt```
 ```
-([artificial intelligence] OR [AI] OR [machine learning] OR [ML] OR [deep learning] OR [DL]) AND ([music] OR [s?ng]) AND NOT [drum*]
+([artificial intelligence] OR [AI] OR [machine learning] OR [ML] OR [deep learning] OR [DL]) 
+
+AND 
+
+([music] OR [s?ng]) 
+
+AND NOT 
+
+[drum*]
 ```
 
 - *Performing the search limiting the number of papers that can be collected by each database.*
