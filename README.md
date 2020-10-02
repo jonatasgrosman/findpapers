@@ -7,7 +7,7 @@
 
 
 
-Findpapers is an application that helps researchers who are looking for references for their research. The application will perform searches in several databases (currently ACM, arXiv, IEEE, PubMed, and Scopus) from a user-defined search query.
+Findpapers is an application that helps researchers who are looking for references for their work. The application will perform searches in several databases (currently ACM, arXiv, IEEE, PubMed, and Scopus) from a user-defined search query.
 
 In summary, this tool will help you to perform the process below:
 
