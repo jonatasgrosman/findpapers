@@ -268,7 +268,7 @@ As you could see, all the information collected and enriched by the Findpapers i
 
 ![charts](docs/charts.png)
 
-... so, use your imagination! (the above visualization was made by the [samples/charts.py](https://gitlab.com/jonatasgrosman/findpapers/-/blob/master/samples/charts.py) script)
+... So, use your imagination! (The [samples/charts.py](https://gitlab.com/jonatasgrosman/findpapers/-/blob/master/samples/charts.py) script made the visualization above).
 
 With the story above, we cover all the commands available in Findpapers. I know this documentation is unconventional, but I haven't had time to write a more formal version of the documentation. But you can help us to improve this, take a look at the next section and see how you can do that.
 
