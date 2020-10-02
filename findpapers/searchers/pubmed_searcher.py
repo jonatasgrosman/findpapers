@@ -187,7 +187,7 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
         paper_abstract = paper_abstract_entry if isinstance(paper_abstract_entry, str) else paper_abstract_entry.get('#text')
 
     try:
-        paper_keywords = set([x.get('#text') for x in paper_entry.get('PubmedArticleSet').get(
+        paper_keywords = set([x.get('#text').strip() for x in paper_entry.get('PubmedArticleSet').get(
             'PubmedArticle').get('MedlineCitation').get('KeywordList').get('Keyword')])
     except Exception:
         paper_keywords = set()

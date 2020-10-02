@@ -159,8 +159,8 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
     paper_number_of_pages = None
 
     try:
-        paper_keywords = set(paper_entry.get(
-            'index_terms').get('author_terms').get('terms'))
+        paper_keywords = set([ x.strip() for x in paper_entry.get(
+            'index_terms').get('author_terms').get('terms')])
     except Exception as e:
         paper_keywords = set()
 
