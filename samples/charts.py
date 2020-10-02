@@ -17,11 +17,15 @@ def autolabel(rects, ax):
     """Attach a text label above each bar in *rects*, displaying its height."""
     for rect in rects:
         height = rect.get_height()
-        ax.annotate('{}'.format(height),
-                    xy=(rect.get_x() + rect.get_width() / 2, height),
-                    xytext=(0, 3),  # 3 points vertical offset
-                    textcoords="offset points",
-                    ha='center', va='bottom')
+        width = rect.get_width()
+        x = rect.get_x()
+        y = rect.get_y()
+        if height > 0:
+            ax.annotate('{}'.format(height),
+                        xy=(x + width/2, y + height/2),
+                        xytext=(0, -5),  # 5 points vertical offset
+                        textcoords="offset points",
+                        ha='center', va='bottom')
 
 
 def databases_venn_chart(papers):
@@ -158,7 +162,7 @@ def categories_headmap_chart(papers, category_facet):
     fig.savefig(os.path.join(BASEDIR, 'categories_headmap.pdf'), bbox_inches='tight')
 
 
-def papers_selection_chart(papers):
+def papers_selection_chart(papers, stacked=False):
 
     selected_paper_by_year = {}
     removed_paper_by_year = {}
@@ -184,11 +188,16 @@ def papers_selection_chart(papers):
         removed_papers.append(removed_paper_by_year[year])
 
     x = np.arange(len(years))  # the label locations
-    width = 0.35  # the width of the bars
-
     fig, ax = plt.subplots()
-    rects1 = ax.bar(x - width, selected_papers, width, label='Selected', color='green', alpha=0.4)
-    rects2 = ax.bar(x, removed_papers, width, label='Removed', color='red', alpha=0.4)
+
+    if stacked:
+        width = 0.8
+        rects1 = ax.bar(x, selected_papers, width, label='Selected', color='green', alpha=0.4)
+        rects2 = ax.bar(x, removed_papers, width, label='Removed', color='red', alpha=0.4, bottom=selected_papers)
+    else:
+        width = 0.4
+        rects1 = ax.bar(x - width, selected_papers, width, label='Selected', color='green', alpha=0.4)
+        rects2 = ax.bar(x, removed_papers, width, label='Removed', color='red', alpha=0.4)
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
     ax.set_ylabel('Papers count')
@@ -249,5 +258,5 @@ for paper in SEARCH_RESULTS['papers']:
 
 databases_venn_chart(SEARCH_RESULTS['papers'])
 categories_headmap_chart(SEARCH_RESULTS['papers'], 'Contribution')
-papers_selection_chart(SEARCH_RESULTS['papers'])
+papers_selection_chart(SEARCH_RESULTS['papers'], stacked=True)
 papers_citations_chart(SEARCH_RESULTS['papers'])
