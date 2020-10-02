@@ -1,11 +1,12 @@
 import logging
+import datetime
 from typing import Optional
 import findpapers.utils.persistence_util as persistence_util
 import findpapers.utils.common_util as common_util
 
 
 def generate_bibtex(search_path: str, outputpath: str, only_selected_papers: Optional[bool] = False,
-                    categories_filter: Optional[dict] = None):
+                    categories_filter: Optional[dict] = None, add_findpapers_citation: Optional[bool] = False):
     """
     Method used to generate a BibTeX file from a search result
 
@@ -19,6 +20,8 @@ def generate_bibtex(search_path: str, outputpath: str, only_selected_papers: Opt
         If you only want to generate a BibTeX file for selected papers, by default False
     categories_filter : dict, None by default
         A dict of categories to be used to filter which papers will be downloaded
+    add_findpapers_citation : bool, optional
+        If you want to add an entry for Findpapers in your BibTeX output file, by default False
     """
 
     search = persistence_util.load(search_path)
@@ -26,6 +29,19 @@ def generate_bibtex(search_path: str, outputpath: str, only_selected_papers: Opt
 
     default_tab = ' ' * 4
     bibtex_output = ''
+
+    today = datetime.datetime.now().strftime('%Y/%m/%d')
+    year = datetime.datetime.now().year
+
+    if add_findpapers_citation:
+        bibtex_output = '\n'.join([
+            '@misc{findpapers',
+            '\ttitle = {Findpapers},',
+            '\tauthor = {Jonatas Grosman},',
+            '\thowpublished = {Available at https://gitlab.com/jonatasgrosman/findpapers ('+today+')},',
+            f'\tyear = {{{year}}}',
+            '}\n\n'
+        ])
 
     for paper in search.papers:
 

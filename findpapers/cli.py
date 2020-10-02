@@ -311,6 +311,10 @@ def bibtex(
         [], "-c", "--categories", show_default=True,
         help="A comma-separated list of categories (categorization can be done on refine command) that will be used to filter which papers will be used for bibtex generation, using the following pattern: <facet>:<term_b>,<term_c>,..."
     ),
+    add_findpapers_citation: bool = typer.Option(
+        False, "-f", "--findpapers", show_default=True,
+        help="A flag to indicate if you want to add an entry for Findpapers in your BibTeX output file"
+    ),
     verbose: bool = typer.Option(
         False, "-v", "--verbose", show_default=True,
         help="If you wanna a verbose mode logging"
@@ -344,7 +348,7 @@ def bibtex(
             facet = string_split[0].strip()
             categories_by_facet[facet] = [x.strip() for x in string_split[1].split(',')]
         
-        findpapers.generate_bibtex(filepath, outputpath, only_selected_papers, categories_by_facet)
+        findpapers.generate_bibtex(filepath, outputpath, only_selected_papers, categories_by_facet, add_findpapers_citation)
     except Exception as e:
         if verbose:
             logging.debug(e, exc_info=True)

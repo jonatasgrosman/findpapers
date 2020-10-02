@@ -23,7 +23,7 @@ In summary, this tool will help you to perform the process below:
 $ pip install findpapers
 ```
 
-You can check your findpapers version running:
+You can check your Findpapers version running:
 
 ```console
 $ findpapers version
@@ -49,7 +49,7 @@ All application actions are command-line based. The available commands are
 
 You can control the commands logging verbosity by the **-v** (or **--verbose**) argument.
 
-In the following sections, we will show how to use the findpapers commands. However, all the commands have the **--help** argument to display some summary about their usage, E.g., ```findpapers search --help```.
+In the following sections, we will show how to use the Findpapers commands. However, all the commands have the **--help** argument to display some summary about their usage, E.g., ```findpapers search --help```.
 
 ## Search query construction
 
@@ -254,12 +254,12 @@ $ findpapers download /some/path/search_paul.json /some/path/papers --selected -
 
 *Now the vast majority of the papers he has access have been downloaded correctly.*
 
-*And at the end of it, he decides to download the full-text from all the selected works (regardless of their categorization) and generate their BibTeX file too.*
+*And at the end of it, he decides to download the full-text from all the selected works (regardless of their categorization) and generate their BibTeX file too. And, as he is very happy with the results, he also wants to include a Findpapers entry in the BibTeX file to cite in his work.*
 
 ```console
 $ findpapers download /some/path/search_paul.json /some/path/papers --selected --proxy "https://mccartney:super_secret_pass@liverpool.ac.uk:1234"
 
-$ findpapers bibtex /some/path/search_paul.json /some/path/mybib.bib --selected
+$ findpapers bibtex /some/path/search_paul.json /some/path/mybib.bib --selected --findpapers
 ```
 
 *That's all, folks! We have reached the end of our journey. I hope Dr. McCartney can continue his research and publish his work without any major problems now.*
