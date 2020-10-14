@@ -113,12 +113,15 @@ class DefaultSession(requests.Session, metaclass=common_util.ThreadSafeSingleton
             }
 
         self.headers.update({'User-Agent': random.choice(USER_AGENTS)})
+        self.default_timeout = 20
 
     def request(self, method, url, **kwargs):
         """
         This is just a common request, the only difference is that when proxies are provided
         and a response isn't ok, we'll try one more time without using the proxies
         """
+
+        kwargs['timeout'] = kwargs.get('timeout', self.default_timeout)
 
         try:
             response = super().request(method, url, **kwargs)
