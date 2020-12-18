@@ -193,10 +193,10 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     """
 
     transformed_query = search.query.replace(' AND NOT ', ' ANDNOT ')
+    transformed_query = transformed_query.replace('-', ' ') # the arXiv search engine doesn't support hyphens properly
     if transformed_query[0] == '"':
         transformed_query = ' ' + transformed_query
-    transformed_query = transformed_query.replace(' [', ' FIELD_TYPE:[')
-    transformed_query = transformed_query.replace('([', '(FIELD_TYPE:[')
+    transformed_query = transformed_query.replace('[', 'FIELD_TYPE:[')
 
     # when a wildcard is present, the search term cannot be enclosed in quotes
     transformed_query = query_util.replace_search_term_enclosures(transformed_query, '', '', True)
