@@ -262,7 +262,7 @@ $ findpapers download /some/path/search_paul.json /some/path/papers --selected -
 $ findpapers bibtex /some/path/search_paul.json /some/path/mybib.bib --selected --findpapers
 ```
 
-*That's all, folks! We have reached the end of our journey. I hope Dr. McCartney can continue his research and publish his work without any major problems now.*
+*That's all, folks! We have reached the end of our journey. I hope Dr. McCartney can continue his research and publish his work without any major problems now. You can use findpapers in a more scriptable way. Check out the [search_paul.py](https://gitlab.com/jonatasgrosman/findpapers/-/blob/master/samples/search_paul.py) file to see how you can do that.*
 
 As you could see, all the information collected and enriched by the Findpapers is placed in a single JSON file. From this file, it is possible to create interesting visualizations about the collected data ...
 

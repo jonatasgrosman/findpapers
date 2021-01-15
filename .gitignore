@@ -12,6 +12,7 @@ __pycache__
 *.egg-info/
 
 # Test
+playground
 samples/test.py
 tests.xml
 coverage.xml
