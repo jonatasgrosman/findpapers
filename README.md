@@ -7,7 +7,7 @@
 
 
 
-Findpapers is an application that helps researchers who are looking for references for their work. The application will perform searches in several databases (currently ACM, arXiv, IEEE, PubMed, and Scopus) from a user-defined search query.
+Findpapers is an application that helps researchers who are looking for references for their work. The application will perform searches in several databases (currently ACM, arXiv, bioRxiv, IEEE, medRxiv, PubMed, and Scopus) from a user-defined search query.
 
 In summary, this tool will help you to perform the process below:
 
@@ -67,6 +67,16 @@ First of all, we need to know how to build the search queries. The search querie
 
 - The composition of terms is only allowed through boolean operators. Queries like "**[term a] [term b]**" are invalid
 
+We still have a few more rules that are only applicable on **bioRxiv** and **medRxiv** databases:
+
+- On subqueries with parentheses, only 1-level grouping is supported, i.e., queries with 2-level grouping like **[term a] OR (([term b] OR [term c]) AND [term d])** are considered invalid
+
+- Only "OR" connectors are allowed between parentheses, i.e., queries like **([term a] OR [term b]) AND ([term c] OR [term d])** are considered invalid
+
+- Only "OR" and "AND" connectors are allowed, i.e., queries like **[term a] AND NOT [term b]** are considered invalid
+
+- Mixed connectors are not allowed on queries (or subqueries when parentheses are used), i.e., queries like **[term a] OR [term b] AND [term b]** are considered invalid. But queries like **[term a] OR [term b] OR [term b]** are considered invalid
+
 You can use some wildcards in the query too. Use question mark (?) to replace exactly one character, and use an asterisk (*) to replace zero or more characters:
 
 - **[son?]** will match song, sons, ... (But won't match "son")
@@ -81,7 +91,7 @@ There are some rules that you'll need to follow when using wildcards:
 - Can be used only in single terms;
 - Only one wildcard can be included in a search term.
 
-Note: The IEEE and PubMed databases don't support the "?" wildcard.
+Note: The bioRxiv and medRxiv databases don't support any wildcards, and the IEEE and PubMed databases only support the "*" wildcard.
 
 Let's see some examples of valid and invalid queries:
 
@@ -262,7 +272,7 @@ $ findpapers download /some/path/search_paul.json /some/path/papers --selected -
 $ findpapers bibtex /some/path/search_paul.json /some/path/mybib.bib --selected --findpapers
 ```
 
-*That's all, folks! We have reached the end of our journey. I hope Dr. McCartney can continue his research and publish his work without any major problems now. You can use findpapers in a more scriptable way. Check out the [search_paul.py](https://gitlab.com/jonatasgrosman/findpapers/-/blob/master/samples/search_paul.py) file to see how you can do that.*
+*That's all, folks! We have reached the end of our journey. I hope Dr. McCartney can continue his research and publish his work without any major problems now. You can use findpapers in a more scriptable way too. Check out the [search_paul.py](https://gitlab.com/jonatasgrosman/findpapers/-/blob/master/samples/search_paul.py) file to see how you can do that.*
 
 As you could see, all the information collected and enriched by the Findpapers is placed in a single JSON file. From this file, it is possible to create interesting visualizations about the collected data ...
 
