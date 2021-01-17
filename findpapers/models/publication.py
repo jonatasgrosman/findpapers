@@ -10,7 +10,7 @@ class Publication():
 
     def __init__(self, title: str, isbn: Optional[str] = None, issn: Optional[str] = None, publisher: Optional[str] = None,
                  category: Optional[str] = None, cite_score: Optional[float] = None, sjr: Optional[float] = None,
-                 snip: Optional[float] = None, subject_areas: Optional[set] = None):
+                 snip: Optional[float] = None, subject_areas: Optional[set] = None, is_potentially_predatory: Optional[bool] = False):
         """
         Paper class constructor
 
@@ -36,6 +36,8 @@ class Publication():
             expected for the serial’s subject field, by default None
         subject_areas : float, optional
             Publication subjects areas, by default None
+        is_potentially_predatory : bool, optional
+            Flag that indicates whether the publication is a potencial predatory one, by default False
         Raises
         ------
         ValueError
@@ -54,6 +56,7 @@ class Publication():
         self.sjr = sjr
         self.snip = snip
         self.subject_areas = subject_areas if subject_areas is not None else set()
+        self.is_potentially_predatory = is_potentially_predatory
 
     @property
     def category(self):
@@ -119,10 +122,13 @@ class Publication():
 
         if self.snip is None:
             self.snip = publication.snip
-
+        
         for subject_area in publication.subject_areas:
             if subject_area is not None and len(subject_area.strip()) > 0:
                 self.subject_areas.add(subject_area.strip())
+
+        if not self.is_potentially_predatory and publication.is_potentially_predatory:
+            self.is_potentially_predatory = publication.is_potentially_predatory
 
     @classmethod
     def from_dict(cls, publication_dict: dict) -> Publication:
@@ -149,8 +155,9 @@ class Publication():
         sjr = publication_dict.get('sjr')
         snip = publication_dict.get('snip')
         subject_areas = set(publication_dict.get('subject_areas'))
+        is_potentially_predatory = publication_dict.get('is_potentially_predatory')
 
-        return cls(title, isbn, issn, publisher, category, cite_score, sjr, snip, subject_areas)
+        return cls(title, isbn, issn, publisher, category, cite_score, sjr, snip, subject_areas, is_potentially_predatory)
 
     @staticmethod
     def to_dict(publication: Publication) -> dict:
@@ -177,5 +184,6 @@ class Publication():
             'cite_score': publication.cite_score,
             'sjr': publication.sjr,
             'snip': publication.snip,
-            'subject_areas': list(publication.subject_areas)
+            'subject_areas': list(publication.subject_areas),
+            'is_potentially_predatory': publication.is_potentially_predatory
         }

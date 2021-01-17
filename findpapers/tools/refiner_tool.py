@@ -58,6 +58,7 @@ def _print_paper_details(paper: Paper, highlights: List[str], show_abstract: boo
 
         if paper.publication is not None:
             print(f'{Style.BRIGHT}Publication name:{Style.NORMAL} {paper.publication.title}')
+            print(f'{Style.BRIGHT}Publication is potentially predatory:{Style.NORMAL} {paper.publication.is_potentially_predatory}')
             if paper.publication.category is not None:
                 print(f'{Style.BRIGHT}Publication category:{Style.NORMAL} {paper.publication.category}')
             if len(paper.publication.subject_areas) > 0:

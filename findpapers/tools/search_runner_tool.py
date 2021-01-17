@@ -4,11 +4,13 @@ import logging
 import requests
 import copy
 import re
+from urllib.parse import urlparse
 from lxml import html
 from typing import Optional, List
 from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
+from findpapers.utils.requests_util import DefaultSession
 import findpapers.searchers.scopus_searcher as scopus_searcher
 import findpapers.searchers.ieee_searcher as ieee_searcher
 import findpapers.searchers.pubmed_searcher as pubmed_searcher
@@ -18,6 +20,7 @@ import findpapers.searchers.medrxiv_searcher as medrxiv_searcher
 import findpapers.searchers.biorxiv_searcher as biorxiv_searcher
 import findpapers.utils.common_util as common_util
 import findpapers.utils.persistence_util as persistence_util
+import findpapers.utils.publication_util as publication_util
 
 
 def _get_paper_metadata_by_url(url: str):
@@ -217,6 +220,39 @@ def _filter(search: Search):
                     search.remove_paper(paper)
             except Exception:
                 pass
+
+
+def _flag_potentially_predatory_publications(search: Search):
+    """
+    Flag all the potentially predatory publications
+
+    Parameters
+    ----------
+    search : Search
+        A search instance
+    """
+
+    for paper in list(search.papers):
+        try:
+
+            if paper.publication is not None:
+                publication_name = paper.publication.title.lower()
+                publication_host = None
+            
+                if paper.doi is not None:
+                    url = f'http://doi.org/{paper.doi}'
+                    response = common_util.try_success(lambda url=url: DefaultSession().get(url), 2)
+
+                    if response is not None:
+                        publication_host = urlparse(response.url).netloc.replace("www.", "")
+
+                if publication_name in publication_util.POTENTIAL_PREDATORY_JOURNALS_NAMES \
+                    or publication_host in publication_util.POTENTIAL_PREDATORY_JOURNALS_HOSTS:
+
+                    paper.publication.is_potentially_predatory = True
+
+        except Exception:
+            pass
 
 
 def _database_safe_run(function: callable, search: Search, database_label: str):
@@ -488,6 +524,10 @@ def search(outputpath: str, query: Optional[str] = None, since: Optional[datetim
     logging.info('Finding and merging duplications...')
 
     search.merge_duplications()
+
+    logging.info('Flagging potentially predatory publications...')
+
+    _flag_potentially_predatory_publications(search)
 
     logging.info(f'It\'s finally over! {len(search.papers)} papers retrieved. Good luck with your research :)')
 

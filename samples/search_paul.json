@@ -25,6 +25,7 @@
       "number_of_pages": 10,
       "pages": "2352-2361",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": 36.3,
         "isbn": "978-1-7281-3294-5",
@@ -64,6 +65,7 @@
       "number_of_pages": 11,
       "pages": "501-511",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": null,
@@ -105,6 +107,7 @@
       "number_of_pages": 6,
       "pages": "968-973",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "978-1-4244-0973-0",
@@ -145,6 +148,7 @@
       "number_of_pages": 8,
       "pages": "45523-45530",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Journal",
         "cite_score": 3.9,
         "isbn": null,
@@ -186,6 +190,7 @@
       "number_of_pages": 13,
       "pages": "522-534",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Book",
         "cite_score": 1.9,
         "isbn": "3540009760",
@@ -221,6 +226,7 @@
       "number_of_pages": 14,
       "pages": "616-629",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Journal",
         "cite_score": null,
         "isbn": null,
@@ -258,6 +264,7 @@
       "number_of_pages": 6,
       "pages": "614-619",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "9780615248493",
@@ -302,6 +309,7 @@
       "number_of_pages": 16,
       "pages": "979-994",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Journal",
         "cite_score": null,
         "isbn": null,
@@ -338,6 +346,7 @@
       "number_of_pages": null,
       "pages": null,
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Journal",
         "cite_score": 7.2,
         "isbn": null,
@@ -383,6 +392,7 @@
       "number_of_pages": 5,
       "pages": "1-5",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "978-1-5386-7990-6",
@@ -415,6 +425,7 @@
       "number_of_pages": 9,
       "pages": "158-166",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Journal",
         "cite_score": 0.9,
         "isbn": null,
@@ -451,6 +462,7 @@
       "number_of_pages": 6,
       "pages": "1-6",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "978-1-4673-8695-1",
@@ -487,6 +499,7 @@
       "number_of_pages": 7,
       "pages": "71-77",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "1601320620",
@@ -520,6 +533,7 @@
       "number_of_pages": 1,
       "pages": "24",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "9789604742318",
@@ -558,6 +572,7 @@
       "number_of_pages": 5,
       "pages": "1-5",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "978-1-7281-4611-9",
@@ -602,6 +617,7 @@
       "number_of_pages": 16,
       "pages": "135524-135539",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Journal",
         "cite_score": 3.9,
         "isbn": null,
@@ -637,6 +653,7 @@
       "number_of_pages": 6,
       "pages": "331-336",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "9780615248493",
@@ -672,6 +689,7 @@
       "number_of_pages": 4,
       "pages": "320-323",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "9781450362979",
@@ -721,6 +739,7 @@
       "number_of_pages": 4,
       "pages": "8-11",
       "publication": {
+        "is_potentially_predatory": false,
         "category": null,
         "cite_score": null,
         "isbn": null,
@@ -759,6 +778,7 @@
       "number_of_pages": 12,
       "pages": "15-26",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Book",
         "cite_score": 1.9,
         "isbn": "3540009760",
@@ -802,6 +822,7 @@
       "number_of_pages": 15,
       "pages": "397-411",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Book",
         "cite_score": 1.9,
         "isbn": "3540009760",
@@ -846,6 +867,7 @@
       "number_of_pages": 4,
       "pages": "106-109",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "978-1-5386-7408-6",
@@ -883,6 +905,7 @@
       "number_of_pages": 11,
       "pages": "669-679",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Book",
         "cite_score": 1.9,
         "isbn": "3540009760",
@@ -918,6 +941,7 @@
       "number_of_pages": null,
       "pages": null,
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Book",
         "cite_score": 0.9,
         "isbn": "9789811518836",
@@ -959,6 +983,7 @@
       "number_of_pages": 9,
       "pages": "267-275",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Journal",
         "cite_score": 12.1,
         "isbn": null,
@@ -994,6 +1019,7 @@
       "number_of_pages": 8,
       "pages": "23-30",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "9789811151798",
@@ -1028,6 +1054,7 @@
       "number_of_pages": 9,
       "pages": "1063-1071",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Book",
         "cite_score": 1.9,
         "isbn": "3540009760",
@@ -1065,6 +1092,7 @@
       "number_of_pages": 10,
       "pages": "167-176",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Book",
         "cite_score": 1.9,
         "isbn": "3540009760",
@@ -1100,6 +1128,7 @@
       "number_of_pages": 5,
       "pages": "34-38",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": null,
@@ -1141,6 +1170,7 @@
       "number_of_pages": 9,
       "pages": "123-131",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Journal",
         "cite_score": 0.1,
         "isbn": null,
@@ -1186,6 +1216,7 @@
       "number_of_pages": 4,
       "pages": "1-4",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "978-1-7281-0730-1",
@@ -1226,6 +1257,7 @@
       "number_of_pages": 8,
       "pages": "173-180",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "1581139403",
@@ -1265,6 +1297,7 @@
       "number_of_pages": 5,
       "pages": "1-5",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "978-1-5386-6134-5",
@@ -1303,6 +1336,7 @@
       "number_of_pages": 5,
       "pages": "98-102",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "9781538620304",
@@ -1338,6 +1372,7 @@
       "number_of_pages": null,
       "pages": null,
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Journal",
         "cite_score": 6.3,
         "isbn": null,
@@ -1382,6 +1417,7 @@
       "number_of_pages": 4,
       "pages": "85-88",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "978-1-5386-8179-4",
@@ -1425,6 +1461,7 @@
       "number_of_pages": 5,
       "pages": "1-5",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "978-1-5386-6836-8",
@@ -1468,6 +1505,7 @@
       "number_of_pages": 1,
       "pages": "1-1",
       "publication": {
+        "is_potentially_predatory": false,
         "category": null,
         "cite_score": null,
         "isbn": null,
@@ -1506,6 +1544,7 @@
       "number_of_pages": null,
       "pages": null,
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Journal",
         "cite_score": 7.4,
         "isbn": null,
@@ -1550,6 +1589,7 @@
       "number_of_pages": 18,
       "pages": "1869-1886",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Journal",
         "cite_score": 1.4,
         "isbn": null,
@@ -1595,6 +1635,7 @@
       "number_of_pages": 5,
       "pages": "39-43",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "978-0-7695-4919-4",
@@ -1634,6 +1675,7 @@
       "number_of_pages": 11,
       "pages": "41-51",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Journal",
         "cite_score": null,
         "isbn": null,
@@ -1678,6 +1720,7 @@
       "number_of_pages": 12,
       "pages": "58817-58828",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Journal",
         "cite_score": 3.9,
         "isbn": null,
@@ -1726,6 +1769,7 @@
       "number_of_pages": null,
       "pages": null,
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Journal",
         "cite_score": 3.2,
         "isbn": null,
@@ -1760,6 +1804,7 @@
       "number_of_pages": 8,
       "pages": "1344-1351",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "9781617387739",
@@ -1794,6 +1839,7 @@
       "number_of_pages": 4,
       "pages": "664-667",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "978-1-4799-2571-1",
@@ -1825,6 +1871,7 @@
       "number_of_pages": 27,
       "pages": "775-801",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Journal",
         "cite_score": 0.2,
         "isbn": null,
@@ -1858,6 +1905,7 @@
       "number_of_pages": 5,
       "pages": "1196-1200",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "0780378660",
@@ -1897,6 +1945,7 @@
       "number_of_pages": 6,
       "pages": "5138-5143",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Journal",
         "cite_score": null,
         "isbn": null,
@@ -1937,6 +1986,7 @@
       "number_of_pages": 5,
       "pages": "446-450",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "978-1-4244-4247-8",
@@ -1974,6 +2024,7 @@
       "number_of_pages": 14,
       "pages": "321-334",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Journal",
         "cite_score": 2.6,
         "isbn": null,
@@ -2013,6 +2064,7 @@
       "number_of_pages": null,
       "pages": null,
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "9781450353731",
@@ -2053,6 +2105,7 @@
       "number_of_pages": 8,
       "pages": "128-135",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "978-1-5386-6332-5",
@@ -2091,6 +2144,7 @@
       "number_of_pages": 4,
       "pages": "524-527",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Journal",
         "cite_score": 1.5,
         "isbn": null,
@@ -2131,6 +2185,7 @@
       "number_of_pages": 7,
       "pages": "205-211",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Journal",
         "cite_score": 3.7,
         "isbn": null,
@@ -2180,6 +2235,7 @@
       "number_of_pages": 6,
       "pages": "1-6",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "978-1-5386-5539-9",
@@ -2222,6 +2278,7 @@
       "number_of_pages": 6,
       "pages": "1-6",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "978-1-4799-7847-2",
@@ -2261,6 +2318,7 @@
       "number_of_pages": 6,
       "pages": "397-402",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "978-1-4799-3580-2",
@@ -2307,6 +2365,7 @@
       "number_of_pages": 4,
       "pages": "124-127",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "978-1-5386-9270-7",
@@ -2346,6 +2405,7 @@
       "number_of_pages": 10,
       "pages": "47-56",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "9781450312288",
@@ -2385,6 +2445,7 @@
       "number_of_pages": 4,
       "pages": "321-324",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "9780769551449",
@@ -2418,6 +2479,7 @@
       "number_of_pages": 2,
       "pages": "13-14",
       "publication": {
+        "is_potentially_predatory": false,
         "category": "Conference Proceedings",
         "cite_score": null,
         "isbn": "9789604742868",

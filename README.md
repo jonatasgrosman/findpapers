@@ -67,7 +67,7 @@ First of all, we need to know how to build the search queries. The search querie
 
 - The composition of terms is only allowed through boolean operators. Queries like "**[term a] [term b]**" are invalid
 
-We still have a few more rules that are only applicable on **bioRxiv** and **medRxiv** databases:
+We still have a few more rules that are **only applicable on bioRxiv and medRxiv databases**:
 
 - On subqueries with parentheses, only 1-level grouping is supported, i.e., queries with 2-level grouping like **[term a] OR (([term b] OR [term c]) AND [term d])** are considered invalid
 
@@ -212,6 +212,8 @@ $ findpapers refine /some/path/search_paul.json
 ![refine-01](docs/refine-01.jpeg)
 
 *After completing the first round filtering of the collected papers, he decides to do new filtering on the selected ones looking at the paper's extra info (citations, DOI, publication name, etc.) and abstract now. He also chooses to perform some classification while doing this further filtering (tip: he'll need to use spacebar for categories selection). And to help in this process, he also decides to highlight some keywords contained in the abstract.*
+
+*Another interesting information given by Findpapers (based on [Beall's List](https://beallslist.net/)) is whether a collected paper was published by a [predatory publisher](https://en.wikipedia.org/wiki/Predatory_publishing). Dr. McCartney really liked this feature, because there is a lot of [scientific misinformation](https://www.the-scientist.com/critic-at-large/opinion-using-pokmon-to-detect-scientific-misinformation-68098) out there.*
 
 ```console
 $ export CATEGORIES_CONTRIBUTION="Contribution:Metric,Tool,Model,Method"

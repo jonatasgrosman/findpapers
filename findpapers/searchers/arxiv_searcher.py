@@ -4,6 +4,7 @@ import logging
 import re
 import math
 import xmltodict
+import time
 from lxml import html
 from typing import Optional
 import findpapers.utils.common_util as common_util
@@ -351,7 +352,7 @@ def run(search: Search):
 
     while(papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL)):
 
-        for paper_entry in result.get('feed').get('entry'):
+        for paper_entry in result.get('feed', {}).get('entry', []):
 
             if papers_count >= total_papers or search.reached_its_limit(DATABASE_LABEL):
                 break
@@ -387,4 +388,5 @@ def run(search: Search):
                 logging.debug(e, exc_info=True)
 
         if papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL):
-            result=_get_api_result(search, papers_count)
+            time.sleep(1) # sleep for 1 second to avoid server blocking
+            result = _get_api_result(search, papers_count)
