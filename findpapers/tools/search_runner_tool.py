@@ -14,6 +14,8 @@ import findpapers.searchers.ieee_searcher as ieee_searcher
 import findpapers.searchers.pubmed_searcher as pubmed_searcher
 import findpapers.searchers.arxiv_searcher as arxiv_searcher
 import findpapers.searchers.acm_searcher as acm_searcher
+import findpapers.searchers.medrxiv_searcher as medrxiv_searcher
+import findpapers.searchers.biorxiv_searcher as biorxiv_searcher
 import findpapers.utils.common_util as common_util
 import findpapers.utils.persistence_util as persistence_util
 
@@ -140,9 +142,16 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
                     if paper_authors is not None and len(paper_authors) > 0:
                         paper.authors = paper_authors
 
-                    paper_keywords = _force_single_metadata_value_by_key(paper_metadata, 'keywords')
+                    paper_keywords = _force_single_metadata_value_by_key(paper_metadata, 'citation_keywords')
+                    if paper_keywords is None or len(paper_keywords.strip()) > 0:
+                        paper_keywords = _force_single_metadata_value_by_key(paper_metadata, 'keywords')
+
                     if paper_keywords is not None and len(paper_keywords.strip()) > 0:
-                        paper_keywords = set(paper_keywords.split(','))
+                        if ',' in paper_keywords:
+                            paper_keywords = paper_keywords.split(',')
+                        elif ';' in paper_keywords:
+                            paper_keywords = paper_keywords.split(';')
+                        paper_keywords = set([x.strip() for x in paper_keywords])
 
                     if paper_keywords is not None and len(paper_keywords) > 0:
                         paper.keywords = paper_keywords
@@ -160,7 +169,7 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
                         publication_title = _force_single_metadata_value_by_key(paper_metadata, 'citation_book_title')
                         publication_category = 'Book'
 
-                    if publication_title is not None and len(publication_title) > 0:
+                    if publication_title is not None and len(publication_title) > 0 and publication_title.lower() not in ['biorxiv', 'medrxiv', 'arxiv']:
                     
                         publication_issn = _force_single_metadata_value_by_key(paper_metadata, 'citation_issn')
                         publication_isbn = _force_single_metadata_value_by_key(paper_metadata, 'citation_isbn')
@@ -459,6 +468,14 @@ def search(outputpath: str, query: Optional[str] = None, since: Optional[datetim
                 search, scopus_api_token), search, scopus_searcher.DATABASE_LABEL)
     else:
         logging.info('Scopus API token not found, skipping search on this database')
+
+    if databases is None or medrxiv_searcher.DATABASE_LABEL.lower() in databases:
+        _database_safe_run(lambda: medrxiv_searcher.run(search),
+                        search, medrxiv_searcher.DATABASE_LABEL)
+
+    if databases is None or biorxiv_searcher.DATABASE_LABEL.lower() in databases:
+        _database_safe_run(lambda: biorxiv_searcher.run(search),
+                        search, biorxiv_searcher.DATABASE_LABEL)
 
     logging.info('Enriching results...')
 
