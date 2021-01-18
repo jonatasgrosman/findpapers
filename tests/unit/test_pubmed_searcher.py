@@ -111,7 +111,7 @@ def test_get_paper(publication: Publication):
 
     paper = pubmed_searcher._get_paper(alternative_paper_entry, publication)
     assert paper.publication_date == datetime.date(2020, 2, 1)
-    assert paper.abstract == 'fake paper abstract'
+    assert paper.abstract == 'fake paper abstract\n'
 
     alternative_paper_entry = copy.deepcopy(paper_entry)
     alternative_paper_entry['PubmedArticleSet']['PubmedArticle'][
