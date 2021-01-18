@@ -195,7 +195,7 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
     paper_ids = paper_entry.get('PubmedArticleSet').get('PubmedArticle').get(
         'PubmedData').get('ArticleIdList').get('ArticleId')
     for paper_id in paper_ids:
-        if paper_id.get('@IdType') == 'doi':
+        if type(paper_id) == dict and paper_id.get('@IdType', None) == 'doi':
             paper_doi = paper_id.get('#text')
             break
 
@@ -214,13 +214,14 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
             'PubmedArticle').get('MedlineCitation').get('KeywordList').get('Keyword')])
     except Exception:
         paper_keywords = set()
-
+    
+    paper_publication_date = None
     try:
         paper_publication_date = datetime.date(int(paper_publication_date_year), int(
             paper_publication_date_month), int(paper_publication_date_day))
     except Exception:
-        paper_publication_date = datetime.date(
-            int(paper_publication_date_year), 1, 1)
+        if paper_publication_date_year is not None:
+            paper_publication_date = datetime.date(int(paper_publication_date_year), 1, 1)
 
     if paper_publication_date is None:
         return None
