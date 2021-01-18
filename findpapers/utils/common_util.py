@@ -9,7 +9,7 @@ from typing import Optional
 from pathlib import Path
 
 
-def get_numeric_month_by_string(string: str) -> str:
+def get_numeric_month_by_string(string: str, fallback_month: Optional[str] = '01') -> str:
     """
     Get a numeric month representation given a month string representation
 
@@ -17,6 +17,8 @@ def get_numeric_month_by_string(string: str) -> str:
     ----------
     string : str
        Month string representation (e.g., jan, january, Jan, Feb, December)
+    fallback_month : str
+       Month string representation to be returned on any error, default is '01'
 
     Returns
     -------
@@ -27,8 +29,18 @@ def get_numeric_month_by_string(string: str) -> str:
     months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
               'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
 
-    return str(months.index(string[:3].lower()) + 1).zfill(2)
+    try:
+        if string is not None and type(string) == str:
+            if string.isdigit():
+                if int(string) >= 1 and int(string) <= 12:
+                    return string.zfill(2)
+            else:
+                return str(months.index(string[:3].lower()) + 1).zfill(2)
+    except Exception:
+        pass
 
+    return fallback_month
+    
 
 def try_success(function, attempts: Optional[int] = 1, pre_delay: Optional[int] = 0, next_try_delay: Optional[int] = 3):
     """

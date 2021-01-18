@@ -129,6 +129,32 @@ def _get_publication(paper_entry: dict) -> Publication:
     return publication
 
 
+def _get_text_recursively(text_entry) -> str:
+    """
+    Get the text given a arbitrary object
+
+    Parameters
+    ----------
+    text_entry : any
+        A arbitrary object that contains some text
+
+    Returns
+    -------
+    str
+        The extracted text
+    """
+    if text_entry is None:
+        return ''
+    if type(text_entry) == str:
+        return text_entry
+    else:
+        text = []
+        items = text_entry if type(text_entry) == list else [x for k, x in text_entry.items()]
+        for item in items:
+            text.append(_get_text_recursively(item))
+        return ' '.join(text)
+
+
 def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
     """
     Using a paper entry provided, this method builds a paper instance
@@ -149,12 +175,10 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
     article = paper_entry.get('PubmedArticleSet').get(
         'PubmedArticle').get('MedlineCitation').get('Article')
 
-    paper_title = article.get('ArticleTitle', None)
+    paper_title = _get_text_recursively(article.get('ArticleTitle', None))
 
     if paper_title is None or len(paper_title) == 0:
         return None
-
-    paper_title = paper_title if isinstance(paper_title, str) else paper_title.get('#text')
 
     if 'ArticleDate' in article:
         paper_publication_date_day = article.get('ArticleDate').get('Day')
@@ -181,13 +205,12 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
         raise ValueError('Paper abstract is empty')
 
     if isinstance(paper_abstract_entry, list):
-        paper_abstract = '\n'.join(
-            [x.get('#text') for x in paper_abstract_entry if x.get('#text') is not None])
+        paper_abstract = '\n'.join([_get_text_recursively(x) for x in paper_abstract_entry])
     else:
-        paper_abstract = paper_abstract_entry if isinstance(paper_abstract_entry, str) else paper_abstract_entry.get('#text')
+        paper_abstract = _get_text_recursively(paper_abstract_entry)
 
     try:
-        paper_keywords = set([x.get('#text').strip() for x in paper_entry.get('PubmedArticleSet').get(
+        paper_keywords = set([_get_text_recursively(x).strip() for x in paper_entry.get('PubmedArticleSet').get(
             'PubmedArticle').get('MedlineCitation').get('KeywordList').get('Keyword')])
     except Exception:
         paper_keywords = set()
@@ -281,6 +304,8 @@ def run(search: Search):
 
                     paper_title = paper_entry.get('PubmedArticleSet').get('PubmedArticle').get(
                         'MedlineCitation').get('Article').get('ArticleTitle')
+
+                    paper_title = _get_text_recursively(paper_title)
 
                     logging.info(f'({papers_count}/{total_papers}) Fetching PubMed paper: {paper_title}')
 
