@@ -255,6 +255,9 @@ def run(search: Search, database: str):
 
     for i, url in enumerate(urls):
 
+        if search.reached_its_limit(database):
+            break
+
         logging.info(f'{database}: Requesting for papers...')
 
         data = _get_data(url)
@@ -266,21 +269,24 @@ def run(search: Search, database: str):
         logging.info(f'{database}: {total_papers} papers to fetch from {i+1}/{len(urls)} papers requests')
 
         papers_count = 0
-        for datum in data:
-            for doi in datum.get('dois'):
-                try:
-                    papers_count += 1
-                    paper_metadata = _get_paper_metadata(doi, database)
+        dois = sum([d.get('dois') for d in [x for x in data]], [])
 
-                    paper_title = paper_metadata.get('title')
-                    
-                    logging.info(f'({papers_count}/{total_papers}) Fetching {database} paper: {paper_title}')
-                    
-                    paper = _get_paper(paper_metadata)
-                    
-                    paper.add_database(database)
+        for doi in dois:
+            if papers_count >= total_papers or search.reached_its_limit(database):
+                break
+            try:
+                papers_count += 1
+                paper_metadata = _get_paper_metadata(doi, database)
 
-                    search.add_paper(paper)
+                paper_title = paper_metadata.get('title')
+                
+                logging.info(f'({papers_count}/{total_papers}) Fetching {database} paper: {paper_title}')
+                
+                paper = _get_paper(paper_metadata)
+                
+                paper.add_database(database)
 
-                except Exception as e:  # pragma: no cover
-                    logging.debug(e, exc_info=True)
+                search.add_paper(paper)
+
+            except Exception as e:  # pragma: no cover
+                logging.debug(e, exc_info=True)

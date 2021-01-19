@@ -219,20 +219,26 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
             if len(paper_abstract) > 0:
                 paper_abstract = re.sub(
                     '\xa0', ' ', ''.join(paper_abstract)).strip()
+            else:
+                paper_abstract = None
 
             authors = paper_page.xpath(
                 '//*[@id="authorlist"]/ul/li/span[@class="previewTxt"]')
-            paper_authors = []
-            for author in authors:
-                paper_authors.append(author.text.strip())
+            
+            if len(authors) > 0:
+                paper_authors = []
+                for author in authors:
+                    paper_authors.append(author.text.strip())
 
             keywords = paper_page.xpath('//*[@id="authorKeywords"]/span')
             for keyword in keywords:
                 paper_keywords.add(keyword.text.strip())
 
             try:
-                paper_pages = paper_page.xpath(
-                    '//span[@id="journalInfo"]')[0].text.split('Pages')[1].strip()
+                paper_pages = paper_entry.get('prism:pageRange', None)
+                if paper_pages is None:
+                    paper_pages = paper_page.xpath(
+                        '//span[@id="journalInfo"]')[0].text.split('Pages')[1].strip()
                 if paper_pages.isdigit():  # pragma: no cover
                     paper_number_of_pages = 1
                 else:
@@ -325,9 +331,10 @@ def enrich_publication_data(search: Search, api_token: str):
                         publication.publisher = publication_publisher
 
                     for subject_area in publication_entry.get('subject-area', []):
-                        subject_area_value = subject_area.get('$', '').strip()
-                        if len(subject_area_value) > 0:
-                            publication.subject_areas.add(subject_area_value)
+                        if subject_area is not None:
+                            subject_area_value = subject_area.get('$', '').strip()
+                            if len(subject_area_value) > 0:
+                                publication.subject_areas.add(subject_area_value)
 
                     publication_cite_score = common_util.try_success(lambda x=publication_entry: float(
                         x.get('citeScoreYearInfoList').get('citeScoreCurrentMetric')))

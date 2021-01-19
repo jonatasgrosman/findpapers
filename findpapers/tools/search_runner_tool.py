@@ -60,7 +60,7 @@ def _get_paper_metadata_by_url(url: str):
                 else:
                     paper_metadata[meta_name] = meta_content
 
-        return paper_metadata
+        return paper_metadata, response.url
 
 
 def _force_single_metadata_value_by_key(metadata_entry: dict, metadata_key: str):
@@ -97,12 +97,9 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
         A API token used to fetch data from Scopus database. If you don't have one go to https://dev.elsevier.com and get it, by default None
     """
 
-    i = 0
-    total = len(search.papers)
-    for paper in list(search.papers):
+    for i, paper in enumerate(search.papers):
 
-        i += 1
-        logging.info(f'({i}/{total}) Enriching paper: {paper.title}')
+        logging.info(f'({i+1}/{len(search.papers)}) Enriching paper: {paper.title}')
 
         try:
 
@@ -117,7 +114,7 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
                 if 'pdf' in url: # trying to skip PDF links
                     continue
 
-                paper_metadata = _get_paper_metadata_by_url(url)
+                paper_metadata, paper_url = _get_paper_metadata_by_url(url)
 
                 if paper_metadata is not None and 'citation_title' in paper_metadata:
 
@@ -135,9 +132,14 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
                         paper.doi = paper_doi
 
                     paper_abstract = _force_single_metadata_value_by_key(paper_metadata, 'citation_abstract')
+                    if paper_abstract is None:
+                        paper_abstract = _force_single_metadata_value_by_key(paper_metadata, 'DC.Description')
+                    if paper_abstract is None:
+                        paper_abstract = _force_single_metadata_value_by_key(paper_metadata, 'description')
+
                     if paper_abstract is not None and len(paper_abstract.strip()) > 0:
                         paper.abstract = paper_abstract
-                    
+
                     paper_authors = paper_metadata.get('citation_author', None)
                     if paper_authors is not None and not isinstance(paper_authors, list): # there is only one author
                         paper_authors = [paper_authors]
@@ -232,22 +234,27 @@ def _flag_potentially_predatory_publications(search: Search):
         A search instance
     """
 
-    for paper in list(search.papers):
+    for i, paper in enumerate(search.papers):
+
+        logging.info(f'({i+1}/{len(search.papers)}) Checking paper: {paper.title}')
+
         try:
 
             if paper.publication is not None:
                 publication_name = paper.publication.title.lower()
-                publication_host = None
+                publisher_name = paper.publication.publisher.lower() if paper.publication.publisher is not None else None
+                publisher_host = None
             
                 if paper.doi is not None:
                     url = f'http://doi.org/{paper.doi}'
                     response = common_util.try_success(lambda url=url: DefaultSession().get(url), 2)
 
                     if response is not None:
-                        publication_host = urlparse(response.url).netloc.replace("www.", "")
+                        publisher_host = urlparse(response.url).netloc.replace("www.", "")
 
                 if publication_name in publication_util.POTENTIAL_PREDATORY_JOURNALS_NAMES \
-                    or publication_host in publication_util.POTENTIAL_PREDATORY_JOURNALS_HOSTS:
+                    or publisher_name in publication_util.POTENTIAL_PREDATORY_PUBLISHERS_NAMES \
+                    or publisher_host in publication_util.POTENTIAL_PREDATORY_PUBLISHERS_HOSTS:
 
                     paper.publication.is_potentially_predatory = True
 
