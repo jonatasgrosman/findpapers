@@ -6,7 +6,8 @@ import findpapers.utils.common_util as common_util
 
 
 def generate_bibtex(search_path: str, outputpath: str, only_selected_papers: Optional[bool] = False,
-                    categories_filter: Optional[dict] = None, add_findpapers_citation: Optional[bool] = False):
+                    categories_filter: Optional[dict] = None, add_findpapers_citation: Optional[bool] = False, 
+                    verbose: Optional[bool] = False):
     """
     Method used to generate a BibTeX file from a search result
 
@@ -22,7 +23,11 @@ def generate_bibtex(search_path: str, outputpath: str, only_selected_papers: Opt
         A dict of categories to be used to filter which papers will be downloaded
     add_findpapers_citation : bool, optional
         If you want to add an entry for Findpapers in your BibTeX output file, by default False
+    verbose : Optional[bool], optional
+        If you wanna a verbose logging
     """
+
+    common_util.logging_initialize(verbose)
 
     search = persistence_util.load(search_path)
     common_util.check_write_access(outputpath)

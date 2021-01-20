@@ -14,7 +14,7 @@ from findpapers.utils.requests_util import DefaultSession
 
 
 def download(search_path: str, output_directory: str, only_selected_papers: Optional[bool] = False,
-             categories_filter: Optional[dict] = None, proxy: Optional[str] = None):
+             categories_filter: Optional[dict] = None, proxy: Optional[str] = None, verbose: Optional[bool] = False):
     """
     If you've done your search, (probably made the search refinement too) and wanna download the papers, 
     this is the method that you need to call. This method will try to download the PDF version of the papers to
@@ -42,7 +42,11 @@ def download(search_path: str, output_directory: str, only_selected_papers: Opti
         A dict of categories to be used to filter which papers will be downloaded
     proxy : Optional[str], optional
         proxy URL that can be used during requests. This can be also defined by an environment variable FINDPAPERS_PROXY. By default None
+    verbose : Optional[bool], optional
+        If you wanna a verbose logging
     """
+
+    common_util.logging_initialize(verbose)
 
     if proxy is not None:
         os.environ['FINDPAPERS_PROXY'] = proxy

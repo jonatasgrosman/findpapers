@@ -397,7 +397,7 @@ def _is_query_ok(query: str) -> bool:
 def search(outputpath: str, query: Optional[str] = None, since: Optional[datetime.date] = None, until: Optional[datetime.date] = None,
         limit: Optional[int] = None, limit_per_database: Optional[int] = None, databases: Optional[List[str]] = None,
         publication_types: Optional[List[str]] = None, scopus_api_token: Optional[str] = None, ieee_api_token: Optional[str] = None,
-        proxy: Optional[str] = None):
+        proxy: Optional[str] = None, verbose: Optional[bool] = False):
     """
     When you have a query and needs to get papers using it, this is the method that you'll need to call.
     This method will find papers from some databases based on the provided query.
@@ -451,7 +451,11 @@ def search(outputpath: str, query: Optional[str] = None, since: Optional[datetim
     proxy : Optional[str], optional
         proxy URL that can be used during requests. This can be also defined by an environment variable FINDPAPERS_PROXY. By default None
 
+    verbose : Optional[bool], optional
+        If you wanna a verbose logging
     """
+
+    common_util.logging_initialize(verbose)
 
     if proxy is not None:
         os.environ['FINDPAPERS_PROXY'] = proxy

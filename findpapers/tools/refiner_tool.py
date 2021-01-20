@@ -146,7 +146,7 @@ def _get_category_question_input(categories: dict):  # pragma: no cover
 
 def refine(search_path: str, categories: Optional[dict] = None, highlights: Optional[list] = None, show_abstract: Optional[bool] = False, 
            show_extra_info: Optional[bool] = False, only_selected_papers: Optional[bool] = False, only_removed_papers: Optional[bool] = False,
-           read_only: Optional[bool] = False):
+           read_only: Optional[bool] = False, verbose: Optional[bool] = False):
     """
     When you have a search result and wanna refine it, this is the method that you'll need to call.
     This method will iterate through all the papers showing their collected data, 
@@ -180,8 +180,11 @@ def refine(search_path: str, categories: Optional[dict] = None, highlights: Opti
         If only the removed papers will be refined, by default False
     read_only : bool, optional
         If true, this method will only list the papers, by default False
+    verbose : Optional[bool], optional
+        If you wanna a verbose logging
     """
 
+    common_util.logging_initialize(verbose)
     common_util.check_write_access(search_path)
 
     init(autoreset=True)  # colorama initializer

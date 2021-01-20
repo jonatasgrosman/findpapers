@@ -5,7 +5,6 @@ import logging
 from datetime import datetime
 from typing import Tuple, List
 import findpapers
-import findpapers.utils.common_util as common_util
 
 
 app = typer.Typer()
@@ -122,14 +121,12 @@ def search(
         databases = [x.strip() for x in databases.split(',')] if databases is not None else None
         publication_types = [x.strip() for x in publication_types.split(',')] if publication_types is not None else None
 
-        common_util.logging_initialize(verbose)
-
         if query is None and query_filepath is not None:
             with open(query_filepath, 'r') as f:
                 query = f.read().strip()
 
         findpapers.search(outputpath, query, since, until, limit, limit_per_database,
-                          databases, publication_types, scopus_api_token, ieee_api_token, proxy)
+                          databases, publication_types, scopus_api_token, ieee_api_token, proxy, verbose)
     except Exception as e:
         if verbose:
             logging.debug(e, exc_info=True)
@@ -202,7 +199,6 @@ def refine(
     """
 
     try:
-        common_util.logging_initialize(verbose)
         highlights = [x.strip() for x in highlights.split(',')] if highlights is not None else None
         
         categories_by_facet = {} if len(categories) > 0 else None
@@ -211,7 +207,7 @@ def refine(
             facet = string_split[0].strip()
             categories_by_facet[facet] = [x.strip() for x in string_split[1].split(',')]
 
-        findpapers.refine(filepath, categories_by_facet, highlights, show_abstract, show_extra_info, only_selected_papers, only_removed_papers, read_only)
+        findpapers.refine(filepath, categories_by_facet, highlights, show_abstract, show_extra_info, only_selected_papers, only_removed_papers, read_only, verbose)
     except Exception as e:
         if verbose:
             logging.debug(e, exc_info=True)
@@ -278,15 +274,13 @@ def download(
     """
 
     try:
-        common_util.logging_initialize(verbose)
-
         categories_by_facet = {} if len(categories) > 0 else None
         for categories_string in categories:
             string_split = categories_string.split(':')
             facet = string_split[0].strip()
             categories_by_facet[facet] = [x.strip() for x in string_split[1].split(',')]
 
-        findpapers.download(filepath, outputpath, only_selected_papers, categories_by_facet, proxy)
+        findpapers.download(filepath, outputpath, only_selected_papers, categories_by_facet, proxy, verbose)
     except Exception as e:
         if verbose:
             logging.debug(e, exc_info=True)
@@ -340,15 +334,13 @@ def bibtex(
     """
 
     try:
-        common_util.logging_initialize(verbose)
-
         categories_by_facet = {} if len(categories) > 0 else None
         for categories_string in categories:
             string_split = categories_string.split(':')
             facet = string_split[0].strip()
             categories_by_facet[facet] = [x.strip() for x in string_split[1].split(',')]
         
-        findpapers.generate_bibtex(filepath, outputpath, only_selected_papers, categories_by_facet, add_findpapers_citation)
+        findpapers.generate_bibtex(filepath, outputpath, only_selected_papers, categories_by_facet, add_findpapers_citation, verbose)
     except Exception as e:
         if verbose:
             logging.debug(e, exc_info=True)
