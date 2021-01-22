@@ -352,7 +352,11 @@ def run(search: Search):
 
     while(papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL)):
 
-        for paper_entry in result.get('feed', {}).get('entry', []):
+        entries = result.get('feed', {}).get('entry', [])
+        if type(entries) != list: # if there's only one entry the result is not a list just a dict
+            entries = [entries]
+
+        for paper_entry in entries:
 
             if papers_count >= total_papers or search.reached_its_limit(DATABASE_LABEL):
                 break
