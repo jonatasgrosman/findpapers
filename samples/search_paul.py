@@ -22,17 +22,16 @@ categories = {
     ]
 }
 highlights = ["propose", "achiev", "accuracy", "method", "metric", "result", "limitation", "state of the art"]
-
-findpapers.utils.common_util.logging_initialize(True) #verbose
+verbose = False
 
 # search
-findpapers.search(search_file, query, since, until, limit, limit_per_database, databases, publication_types, scopus_api_token, ieee_api_token)
+findpapers.search(search_file, query, since, until, limit, limit_per_database, databases, publication_types, scopus_api_token, ieee_api_token, verbose=verbose)
 
 # refine
-findpapers.refine(search_file, categories, highlights, show_abstract=True, show_extra_info=True)
+findpapers.refine(search_file, categories, highlights, show_abstract=True, show_extra_info=True, verbose=verbose)
 
 # download
-findpapers.download(search_file, output_dir, only_selected_papers=True, proxy=proxy)
+findpapers.download(search_file, output_dir, only_selected_papers=True, proxy=proxy, verbose=verbose)
 
 # generate bibtex
-findpapers.generate_bibtex(search_file, output_dir, only_selected_papers=True, add_findpapers_citation=True)
+findpapers.generate_bibtex(search_file, output_dir, only_selected_papers=True, add_findpapers_citation=True, verbose=verbose)
