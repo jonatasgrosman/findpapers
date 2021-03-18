@@ -213,8 +213,6 @@ $ findpapers refine /some/path/search_paul.json
 
 *After completing the first round filtering of the collected papers, he decides to do new filtering on the selected ones looking at the paper's extra info (citations, DOI, publication name, etc.) and abstract now. He also chooses to perform some classification while doing this further filtering (tip: he'll need to use spacebar for categories selection). And to help in this process, he also decides to highlight some keywords contained in the abstract.*
 
-*Another interesting information given by Findpapers (based on [Beall's List](https://beallslist.net/)) is whether a collected paper was published by a [predatory publisher](https://en.wikipedia.org/wiki/Predatory_publishing). Dr. McCartney really liked this feature, because there is a lot of [scientific misinformation](https://www.the-scientist.com/critic-at-large/opinion-using-pokmon-to-detect-scientific-misinformation-68098) out there.*
-
 ```console
 $ export CATEGORIES_CONTRIBUTION="Contribution:Metric,Tool,Model,Method"
 
@@ -229,6 +227,7 @@ $ findpapers refine /some/path/search_paul.json --selected --abstract --extra-in
 
 An interesting point to stand out from the tool is that it automatically prevents duplication of papers, merging their information when the same paper is found in different databases. You can see this in the image above, where the Findpapers found the same work on the IEEE and Scopus databases (see "Paper found in" value) and merged the paper information on a single record.
 
+Another interesting extra information given by Findpapers (based on [Beall's List](https://beallslist.net/)) is whether a collected paper was published by a [predatory publisher](https://en.wikipedia.org/wiki/Predatory_publishing) (see "Publication is potentially predatory" value). That is a really good feature, because there is a lot of [scientific misinformation](https://www.the-scientist.com/critic-at-large/opinion-using-pokmon-to-detect-scientific-misinformation-68098) out there.
 
 *Now that Dr. McCartney has selected all the papers he wanted, he wants to see all of them.*
 
