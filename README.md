@@ -5,8 +5,6 @@
 [![pipeline status](https://gitlab.com/jonatasgrosman/findpapers/badges/master/pipeline.svg)](https://gitlab.com/jonatasgrosman/findpapers/-/commits/master)
 <!--[![coverage report](https://gitlab.com/jonatasgrosman/findpapers/badges/master/coverage.svg)](https://gitlab.com/jonatasgrosman/findpapers/-/commits/master)-->
 
-
-
 Findpapers is an application that helps researchers who are looking for references for their work. The application will perform searches in several databases (currently ACM, arXiv, bioRxiv, IEEE, medRxiv, PubMed, and Scopus) from a user-defined search query.
 
 In summary, this tool will help you to perform the process below:
@@ -283,7 +281,6 @@ As you could see, all the information collected and enriched by the Findpapers i
 
 With the story above, we cover all the commands available in Findpapers. I know this documentation is unconventional, but I haven't had time to write a more formal version of the documentation. But you can help us to improve this, take a look at the next section and see how you can do that.
 
-
 # Want to help?
 
 See the [contribution guidelines](https://gitlab.com/jonatasgrosman/findpapers/-/blob/master/CONTRIBUTING.md)
@@ -295,8 +292,15 @@ If this project has been useful for you, please share it with your friends. This
 
 If you like this project and want to motivate the maintainers, give us a :star:. This kind of recognition will make us very happy with the work that we've done :heart:
 
+## BibTeX
+If you want to cite the tool you can use this:
 
----
-
-**Note**: If you're seen this project from GitHub, this is just a mirror, 
-the official project source code is hosted [here](https://gitlab.com/jonatasgrosman/findpapers) on GitLab.
+```bibtex
+@article{2020Findpapers,
+  title={Findpapers},
+  author={Jonatas Grosman},
+  journal={GitHub. Note: https://github.com/jonatasgrosman/findpapers},
+  volume={1},
+  year={2020}
+}
+```

@@ -35,16 +35,13 @@ def generate_bibtex(search_path: str, outputpath: str, only_selected_papers: Opt
     default_tab = ' ' * 4
     bibtex_output = ''
 
-    today = datetime.datetime.now().strftime('%Y/%m/%d')
-    year = datetime.datetime.now().year
-
     if add_findpapers_citation:
         bibtex_output = '\n'.join([
-            '@misc{findpapers',
+            '@article{2020Findpapers',
             '\ttitle = {Findpapers},',
             '\tauthor = {Jonatas Grosman},',
-            '\thowpublished = {Available at https://gitlab.com/jonatasgrosman/findpapers ('+today+')},',
-            f'\tyear = {{{year}}}',
+            '\tjournal={GitHub. Note: https://github.com/jonatasgrosman/findpapers},',
+            '\tyear = {2020}',
             '}\n\n'
         ])
 
