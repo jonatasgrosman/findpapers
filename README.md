@@ -290,7 +290,7 @@ You don't even need to know how to code to contribute to the project. Even the i
 
 If this project has been useful for you, please share it with your friends. This project could be helpful for them too.
 
-If you like this project and want to motivate the maintainers, give us a :star:. This kind of recognition will make us very happy with the work that we've done :heart:
+If you like this project and want to motivate the maintainers, give us a :star:. This kind of recognition will make us very happy with the work that we've done with :heart:
 
 ## BibTeX
 If you want to cite the tool you can use this:
