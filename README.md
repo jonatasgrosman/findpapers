@@ -1,6 +1,6 @@
 # Findpapers
 
-[![PyPI - License](https://img.shields.io/pypi/l/findpapers)](https://gitlab.com/jonatasgrosman/findpapers/-/blob/master/LICENSE)
+[![PyPI - License](https://img.shields.io/pypi/l/findpapers)](https://github.com/jonatasgrosman/findpapers/blob/master/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/findpapers)](https://pypi.org/project/findpapers)
 [![pipeline status](https://gitlab.com/jonatasgrosman/findpapers/badges/master/pipeline.svg)](https://gitlab.com/jonatasgrosman/findpapers/-/commits/master)
 <!--[![coverage report](https://gitlab.com/jonatasgrosman/findpapers/badges/master/coverage.svg)](https://gitlab.com/jonatasgrosman/findpapers/-/commits/master)-->
@@ -9,7 +9,7 @@ Findpapers is an application that helps researchers who are looking for referenc
 
 In summary, this tool will help you to perform the process below:
 
-![Workflow](https://gitlab.com/jonatasgrosman/findpapers/-/raw/master/docs/workflow.png)
+![Workflow](https://github.com/jonatasgrosman/findpapers/raw/master/docs/workflow.png)
 
 # Requirements
 
@@ -207,7 +207,7 @@ $ findpapers search /some/path/search_paul.json --query-file /some/path/query.tx
 $ findpapers refine /some/path/search_paul.json
 ```
 
-![refine-01](https://gitlab.com/jonatasgrosman/findpapers/-/raw/master/docs/refine-01.jpeg)
+![refine-01](https://github.com/jonatasgrosman/findpapers/raw/master/docs/refine-01.jpeg)
 
 *After completing the first round filtering of the collected papers, he decides to do new filtering on the selected ones looking at the paper's extra info (citations, DOI, publication name, etc.) and abstract now. He also chooses to perform some classification while doing this further filtering (tip: he'll need to use spacebar for categories selection). And to help in this process, he also decides to highlight some keywords contained in the abstract.*
 
@@ -221,7 +221,7 @@ $ export HIGHLIGHTS="propose, achiev, accuracy, method, metric, result, limitati
 $ findpapers refine /some/path/search_paul.json --selected --abstract --extra-info --categories "$CATEGORIES_CONTRIBUTION" --categories "$CATEGORIES_RESEARCH_TYPE" --highlights "$HIGHLIGHTS"
 ```
 
-![refine-02](https://gitlab.com/jonatasgrosman/findpapers/-/raw/master/docs/refine-02.jpeg)
+![refine-02](https://github.com/jonatasgrosman/findpapers/raw/master/docs/refine-02.jpeg)
 
 An interesting point to stand out from the tool is that it automatically prevents duplication of papers, merging their information when the same paper is found in different databases. You can see this in the image above, where the Findpapers found the same work on the IEEE and Scopus databases (see "Paper found in" value) and merged the paper information on a single record.
 
@@ -271,19 +271,19 @@ $ findpapers download /some/path/search_paul.json /some/path/papers --selected -
 $ findpapers bibtex /some/path/search_paul.json /some/path/mybib.bib --selected --findpapers
 ```
 
-*That's all, folks! We have reached the end of our journey. I hope Dr. McCartney can continue his research and publish his work without any major problems now. You can use findpapers in a more scriptable way too. Check out the [search_paul.py](https://gitlab.com/jonatasgrosman/findpapers/-/blob/master/samples/search_paul.py) file to see how you can do that.*
+*That's all, folks! We have reached the end of our journey. I hope Dr. McCartney can continue his research and publish his work without any major problems now. You can use findpapers in a more scriptable way too. Check out the [search_paul.py](https://github.com/jonatasgrosman/findpapers/blob/master/samples/search_paul.py) file to see how you can do that.*
 
 As you could see, all the information collected and enriched by the Findpapers is placed in a single JSON file. From this file, it is possible to create interesting visualizations about the collected data ...
 
-![charts](https://gitlab.com/jonatasgrosman/findpapers/-/raw/master/docs/charts.png)
+![charts](https://github.com/jonatasgrosman/findpapers/raw/master/docs/charts.png)
 
-... So, use your imagination! (The [samples/charts.py](https://gitlab.com/jonatasgrosman/findpapers/-/blob/master/samples/charts.py) script made the visualization above).
+... So, use your imagination! (The [samples/charts.py](https://github.com/jonatasgrosman/findpapers/blob/master/samples/charts.py) script made the visualization above).
 
 With the story above, we cover all the commands available in Findpapers. I know this documentation is unconventional, but I haven't had time to write a more formal version of the documentation. But you can help us to improve this, take a look at the next section and see how you can do that.
 
 # Want to help?
 
-See the [contribution guidelines](https://gitlab.com/jonatasgrosman/findpapers/-/blob/master/CONTRIBUTING.md)
+See the [contribution guidelines](https://github.com/jonatasgrosman/findpapers/blob/master/CONTRIBUTING.md)
 if you'd like to contribute to Findpapers project.
 
 You don't even need to know how to code to contribute to the project. Even the improvement of our documentation is an outstanding contribution.
@@ -296,11 +296,12 @@ If you like this project and want to motivate the maintainers, give us a :star:.
 If you want to cite the tool you can use this:
 
 ```bibtex
-@article{2020Findpapers,
+@misc{grosman2020findpapers,
   title={Findpapers},
-  author={Jonatas Grosman},
-  journal={GitHub. Note: https://github.com/jonatasgrosman/findpapers},
-  volume={1},
+  author={Grosman, Jonatas},
+  publisher={GitHub},
+  journal={GitHub repository},
+  howpublished={\url{https://github.com/jonatasgrosman/findpapers}},
   year={2020}
 }
 ```
