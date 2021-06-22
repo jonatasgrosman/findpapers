@@ -14,23 +14,23 @@ today! As a contributor, here are the guidelines we would like you to follow:
 ## <a name="coc"></a> Code of Conduct
 Help us keep the project open and inclusive. Please read and follow our Code of Conduct.
 
-As contributors and maintainers of the project, we pledge to respect everyone who contributes by posting issues, updating documentation, submitting merge requests, providing feedback in comments, and any other activities.
+As contributors and maintainers of the project, we pledge to respect everyone who contributes by posting issues, updating documentation, submitting pull requests, providing feedback in comments, and any other activities.
 
 The contributors and maintainers communication must be constructive and never resort to personal attacks, trolling, public or private harassment, insults, or other unprofessional conduct.
 
 We promise to extend courtesy and respect to everyone involved in this project regardless of gender, gender identity, sexual orientation, disability, age, race, ethnicity, religion, or level of experience. We expect anyone contributing to the project to do the same.
 
-If any member of the community violates this code of conduct, the maintainers of the project may take action, removing issues, comments, and merge requests or blocking accounts as deemed appropriate.
+If any member of the community violates this code of conduct, the maintainers of the project may take action, removing issues, comments, and pull requests or blocking accounts as deemed appropriate.
 
 If you are subject to or witness unacceptable behavior, or have any other concerns, please send a message to the maintainers of the project.
 
 ## <a name="issue"></a> Found a Bug?
 If you find a bug in the source code, you can help us by
-[submitting an issue](#submit-issue) to our [GitLab Repository](https://gitlab.com/jonatasgrosman/findpapers). Even better, you can
-[submit a Merge Request](#submit-mr) with a fix.
+[submitting an issue](#submit-issue) to our [GitHub Repository](https://github.com/jonatasgrosman/findpapers). Even better, you can
+[submit a Pull Request](#submit-pr) with a fix.
 
 ## <a name="feature"></a> Missing a Feature?
-You can *request* a new feature by [submitting an issue](#submit-issue) to our GitLab
+You can *request* a new feature by [submitting an issue](#submit-issue) to our GitHub
 Repository. If you would like to *implement* a new feature, please submit an issue with
 a proposal for your work first, to be sure that we can use it.
 Please consider what kind of change it is:
@@ -38,7 +38,7 @@ Please consider what kind of change it is:
 * For a **Major Feature**, first open an issue and outline your proposal so that it can be
 discussed. This will also allow us to better coordinate our efforts, prevent duplication of work,
 and help you to craft the change so that it is successfully accepted into the project.
-* **Small Features** can be crafted and directly [submitted as a Merge Request](#submit-mr).
+* **Small Features** can be crafted and directly [submitted as a Pull Request](#submit-pr).
 
 ## <a name="submit"></a> Submission Guidelines
 
@@ -58,13 +58,13 @@ We will be insisting on a minimal reproduce scenario in order to save maintainer
 
 Unfortunately, we are not able to investigate/fix bugs without a minimal reproduction, so if we don't hear back from you we are going to close an issue that doesn't have enough info to be reproduced.
 
-You can file new issues by filling out our [new issue form](https://gitlab.com/jonatasgrosman/findpapers/-/issues/new).
+You can file new issues by filling out our [new issue form](https://github.com/jonatasgrosman/findpapers/issues/new).
 
 
-### <a name="submit-mr"></a> Submitting a Merge Request (PR)
-Before you submit your Merge Request (MR) consider the following guidelines:
+### <a name="submit-pr"></a> Submitting a Pull Request (PR)
+Before you submit your Pull Request (PR) consider the following guidelines:
 
-1. Search [GitLab](https://gitlab.com/jonatasgrosman/findpapers/-/merge_requests) for an open or closed MR
+1. Search [GitHub](https://github.com/jonatasgrosman/findpapers/pulls) for an open or closed PR
   that relates to your submission. You don't want to duplicate effort.
 1. Fork the jonatasgrosman/findpapers repo.
 1. Make your changes in a new git branch:
@@ -86,17 +86,17 @@ Before you submit your Merge Request (MR) consider the following guidelines:
      ```
     Note: the optional commit `-a` command line option will automatically "add" and "rm" edited files.
 
-1. Push your branch to GitLab:
+1. Push your branch to GitHub:
 
     ```shell
     git push origin my-fix-branch
     ```
 
-1. In GitLab, send a merge request to `findpapers:master`.
+1. In GitHub, send a pull request to `findpapers:master`.
 * If we suggest changes then:
   * Make the required updates.
   * Re-run the test suites to ensure tests are still passing.
-  * Rebase your branch and force push to your GitLab repository (this will update your Merge Request):
+  * Rebase your branch and force push to your GitHub repository (this will update your Pull Request):
 
     ```shell
     git rebase master -i
@@ -105,12 +105,12 @@ Before you submit your Merge Request (MR) consider the following guidelines:
 
 That's it! Thank you for your contribution!
 
-#### After your merge request is merged
+#### After your pull request is merged
 
-After your merge request is merged, you can safely delete your branch and pull the changes
+After your pull request is merged, you can safely delete your branch and pull the changes
 from the main (upstream) repository:
 
-* Delete the remote branch on GitLab either through the GitLab web UI or your local shell as follows:
+* Delete the remote branch on GitHub either through the GitHub web UI or your local shell as follows:
 
     ```shell
     git push origin --delete my-fix-branch
@@ -165,7 +165,7 @@ The **header** is mandatory.
 Any line of the commit message cannot be longer 100 characters! This allows the message to be easier
 to read in various git tools.
 
-The footer should contain a [closing reference to an issue](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically) if any.
+The footer should contain a [closing reference to an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-issues/linking-a-pull-request-to-an-issue) if any.
 
 ```
 docs: update changelog to 0.2
@@ -205,13 +205,13 @@ The body should include the motivation for the change and contrast this with pre
 
 ### Footer
 The footer should contain any information about **Breaking Changes** and is also the place to
-reference GitLab issues that this commit **Closes**.
+reference GitHub issues that this commit **Closes**.
 
 **Breaking Changes** should start with the words `BREAKING CHANGE:` with a space or two newlines. The rest of the commit message is then used for this.
 
 ## <a name="dev"></a> Building and Testing
 
-Let's see what needs to be done in your machine before [submit a Merge Request](#submit-mr) 
+Let's see what needs to be done in your machine before [submit a Pull Request](#submit-pr) 
 
 ## Prerequisite Software
 
@@ -228,21 +228,21 @@ following products on your development machine:
 
 Fork and clone the Findpapers repository:
 
-1. Login to your GitLab account or create one [here](https://gitlab.com).
-2. [Fork](https://docs.gitlab.com/ee/user/project/repository/forking_workflow.html#creating-a-fork) the [Findpapers
-   repository](https://gitlab.com/jonatasgrosman/findpapers).
+1. Login to your GitHub account or create one [here](https://github.com).
+2. [Fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the [Findpapers
+   repository](https://github.com/jonatasgrosman/findpapers).
 3. Clone your fork of the Findpapers repository and define an `upstream` remote pointing back to
    the Findpapers repository that you forked in the first place.
 
 ```shell
-# Clone your GitLab repository:
-git clone git@gitlab.com:<gitlab username>/findpapers.git
+# Clone your GitHub repository:
+git clone git@github.com:<github username>/findpapers.git
 
 # Go to the Findpapers directory:
 cd findpapers
 
 # Add the Findpapers repository as an upstream remote to your repository:
-git remote add upstream https://gitlab.com/jonatasgrosman/findpapers.git
+git remote add upstream https://github.com/jonatasgrosman/findpapers.git
 ```
 
 ## Initial config
@@ -267,7 +267,7 @@ make setup
 make test
 ```
 
-**Note**: All the tests are executed on our Continuous Integration infrastructure after a commit push. MRs can only be merged if the code is formatted properly and all tests are passing.
+**Note**: All the tests are executed on our Continuous Integration infrastructure after a commit push. PRs can only be merged if the code is formatted properly and all tests are passing.
 
 ## Linting/verifying your Source Code
 
