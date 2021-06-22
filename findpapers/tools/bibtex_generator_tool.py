@@ -42,7 +42,7 @@ def generate_bibtex(search_path: str, outputpath: str, only_selected_papers: Opt
             '\tauthor = {Grosman, Jonatas},',
             '\tpublisher = {GitHub},',
             '\tjournal = {GitHub repository},',
-            '\thowpublished = {\url{https://github.com/jonatasgrosman/findpapers}},',
+            '\thowpublished = {\\url{https://github.com/jonatasgrosman/findpapers}},',
             '\tyear = {2020}',
             '}\n\n'
         ])
