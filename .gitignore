@@ -1,13 +1,11 @@
 # IDE
 .vscode
 
-# Build
-dist
-
 # Env
 .env
 
 # Build
+dist
 __pycache__
 *.egg-info/
 
