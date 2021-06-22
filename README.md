@@ -73,7 +73,7 @@ We still have a few more rules that are **only applicable on bioRxiv and medRxiv
 
 - Only "OR" and "AND" connectors are allowed, i.e., queries like **[term a] AND NOT [term b]** are considered invalid
 
-- Mixed connectors are not allowed on queries (or subqueries when parentheses are used), i.e., queries like **[term a] OR [term b] AND [term b]** are considered invalid. But queries like **[term a] OR [term b] OR [term b]** are considered invalid
+- Mixed connectors are not allowed on queries (or subqueries when parentheses are used), i.e., queries like **[term a] OR [term b] AND [term b]** are considered invalid. But queries like **[term a] OR [term b] OR [term b]** are considered valid
 
 You can use some wildcards in the query too. Use question mark (?) to replace exactly one character, and use an asterisk (*) to replace zero or more characters:
 
@@ -151,7 +151,7 @@ This advanced usage documentation can be a bit boring to read (and write), so I 
 $ export QUERY="([artificial intelligence] OR [AI] OR [machine learning] OR [ML] OR [deep learning] OR [DL]) AND ([music] OR [s?ng])"
 ```
 
-*Dr. McCartney is interested in testing his query, so he decides to collect only 20 papers to test whether the query is suitable for his research (the Findpapers results are sorted by publication date in descending order. One important disclaimer about publication date is that some papers just have the publication year defined, in those cases the publication date will set to 01-01-year by Findpapers).*
+*Dr. McCartney is interested in testing his query, so he decides to collect only 20 papers to test whether the query is suitable for his research (the Findpapers results are sorted by publication date in descending order. An important disclaimer about publication dates is that some papers just have the publication year defined. In those cases, the publication date will be set to 01-01-year by Findpapers).*
 
 ```console
 $ findpapers search /some/path/search_paul.json --query "$QUERY" --limit 20
@@ -292,7 +292,7 @@ If this project has been useful for you, please share it with your friends. This
 
 If you like this project and want to motivate the maintainers, give us a :star:. This kind of recognition will make us very happy with the work that we've done with :heart:
 
-## BibTeX
+## Citation
 If you want to cite the tool you can use this:
 
 ```bibtex
