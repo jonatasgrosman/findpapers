@@ -292,6 +292,8 @@ If this project has been useful for you, please share it with your friends. This
 
 If you like this project and want to motivate the maintainers, give us a :star:. This kind of recognition will make us very happy with the work that we've done with :heart:
 
+You can also [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png)](https://www.buymeacoffee.com/jonatasgrosman)
+
 # Citation
 If you want to cite the tool you can use this:
 
