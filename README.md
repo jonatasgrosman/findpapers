@@ -301,8 +301,6 @@ If you want to cite the tool you can use this:
 @misc{grosman2020findpapers,
   title={Findpapers},
   author={Grosman, Jonatas},
-  publisher={GitHub},
-  journal={GitHub repository},
   howpublished={\url{https://github.com/jonatasgrosman/findpapers}},
   year={2020}
 }
