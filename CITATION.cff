@@ -4,7 +4,7 @@ authors:
 - family-names: Grosman
   given-names: Jonatas
 title: "Findpapers: A tool for helping researchers who are looking for related works"
-date-released: 2022
+date-released: 2020
 url: "https://github.com/jonatasgrosman/findpapers"
 preferred-citation:
   type: generic
@@ -12,5 +12,5 @@ preferred-citation:
   - family-names: Grosman
     given-names: Jonatas
   title: "Findpapers: A tool for helping researchers who are looking for related works"
-  year: 2022
+  year: 2020
   url: "https://github.com/jonatasgrosman/findpapers"
