@@ -299,7 +299,7 @@ If you want to cite the tool you can use this:
 
 ```bibtex
 @misc{grosman2020findpapers,
-  title={Findpapers},
+  title={{Findpapers: A tool for helping researchers who are looking for related works}},
   author={Grosman, Jonatas},
   howpublished={\url{https://github.com/jonatasgrosman/findpapers}},
   year={2020}
