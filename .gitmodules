@@ -1,0 +1,4 @@
+[submodule "packages/edlib"]
+	path = packages/edlib
+	url = https://github.com/Martinsos/edlib.git
+	branch = master
