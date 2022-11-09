@@ -81,7 +81,18 @@ def _force_single_metadata_value_by_key(metadata_entry: dict, metadata_key: str)
         A single value
     """
 
-    return metadata_entry.get(metadata_key, None) if not isinstance(metadata_entry.get(metadata_key, None), list) else metadata_entry.get(metadata_key)[0]
+    if isinstance(metadata_entry.get(metadata_key, None), list):
+
+        metadata_value = None
+        for entry in metadata_entry.get(metadata_key):
+            if metadata_value is None or len(metadata_value) < entry: # keeping the most informative entry
+                metadata_value = entry
+
+        return metadata_value
+
+    else:
+
+        return metadata_entry.get(metadata_key, None)
 
 
 
@@ -116,12 +127,19 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
 
                 paper_metadata, paper_url = _get_paper_metadata_by_url(url)
 
-                if paper_metadata is not None and 'citation_title' in paper_metadata:
+                if paper_metadata is not None:
 
                     # when some paper data is present on page's metadata, force to use it. In most of the cases this data is more relyable
 
-                    paper_title = _force_single_metadata_value_by_key(paper_metadata, 'citation_title')
-                    
+                    paper_title = None
+
+                    title_metadata_keys = ['citation_title', 'DC.Title', 'DC.title', 'DC.TITLE', 'dc.title']
+
+                    for title_metadata_key in title_metadata_keys:
+                        paper_title = _force_single_metadata_value_by_key(paper_metadata, title_metadata_key)
+                        if paper_title is not None:
+                            break
+
                     if paper_title is None or len(paper_title.strip()) == 0:
                         continue
 
@@ -131,11 +149,13 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
                     if paper_doi is not None and len(paper_doi.strip()) > 0:
                         paper.doi = paper_doi
 
-                    paper_abstract = _force_single_metadata_value_by_key(paper_metadata, 'citation_abstract')
-                    if paper_abstract is None:
-                        paper_abstract = _force_single_metadata_value_by_key(paper_metadata, 'DC.Description')
-                    if paper_abstract is None:
-                        paper_abstract = _force_single_metadata_value_by_key(paper_metadata, 'description')
+                    abstract_metadata_keys = ['citation_abstract', 'DC.Description', 'DC.description', 'DC.DESCRIPTION', 
+                                              'dc.description', 'description']
+
+                    for abstract_metadata_key in abstract_metadata_keys:
+                        paper_abstract = _force_single_metadata_value_by_key(paper_metadata, abstract_metadata_key)
+                        if paper_abstract is not None:
+                            break
 
                     if paper_abstract is not None and len(paper_abstract.strip()) > 0:
                         paper.abstract = paper_abstract
@@ -299,7 +319,7 @@ def _sanitize_query(query: str) -> str:
         A sanitized query
     """
 
-    query = re.sub(r'\s+', ' ', query)
+    query = re.sub(r'\s+', ' ', query).strip()
 
     return query
 

@@ -160,11 +160,10 @@ def _get_paper(paper_page: html.HtmlElement, paper_doi: str, paper_url: str) -> 
         A paper instance
     """
 
-    paper_abstract = paper_page.xpath(
-        '//*[contains(@class, "abstractSection")]/p')[0].text
+    paper_abstract = paper_page.xpath('//*[contains(@class, "abstractSection")]//p')[-1].text_content()
 
-    citation_elements = paper_page.xpath(
-        '//*[contains(@class, "article-metric citation")]//span')
+    citation_elements = paper_page.xpath('//*[contains(@class, "article-metric citation")]//span')
+    
     paper_citations = None
     if len(citation_elements) == 1:
         paper_citations = int(citation_elements[0].text)
@@ -185,7 +184,7 @@ def _get_paper(paper_page: html.HtmlElement, paper_doi: str, paper_url: str) -> 
         publication_category = paper_metadata.get('type', None)
 
         publication = Publication(publication_title, publication_isbn,
-                                publication_issn, publication_publisher, publication_category)
+                                  publication_issn, publication_publisher, publication_category)
 
     paper_title = paper_metadata.get('title', None)
 
@@ -247,7 +246,7 @@ def run(search: Search):
 
     try:
         total_papers = int(result.xpath(
-            '//*[@class="hitsLength"]')[0].text.strip())
+            '//*[@class="hitsLength"]')[0].text.strip().replace(",", ""))
     except Exception:  # pragma: no cover
         total_papers = 0
 
@@ -257,7 +256,10 @@ def run(search: Search):
     while(papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL)):
 
         papers_urls = [BASE_URL+x.attrib['href']
-                       for x in result.xpath('//*[@class="hlFld-Title"]/a')]
+                       for x in result.xpath('//*[@class="issue-item__title"]//a')]
+
+        if len(papers_urls) == 0:
+            break
 
         for paper_url in papers_urls:
 

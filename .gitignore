@@ -24,3 +24,6 @@ coverage.xml
 *.pdf
 *.log
 *.bib
+
+# ignore pattern
+_ignore*
