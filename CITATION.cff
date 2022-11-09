@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: Grosman
+  given-names: Jonatas
+title: "Findpapers: A tool for helping researchers who are looking for related works"
+date-released: 2020
+url: "https://github.com/jonatasgrosman/findpapers"
+preferred-citation:
+  type: generic
+  authors:
+  - family-names: Grosman
+    given-names: Jonatas
+  title: "Findpapers: A tool for helping researchers who are looking for related works"
+  year: 2020
+  url: "https://github.com/jonatasgrosman/findpapers"
