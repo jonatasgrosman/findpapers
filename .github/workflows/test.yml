@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7, 3.8, 3.9]
+        python-version: [3.7, 3.8]
       fail-fast: false
 
     steps:
@@ -40,6 +40,6 @@ jobs:
       - name: Install Dependencies
         run: python -m poetry install
       - name: Test
-        run: python -m poetry run pytest --cov=huggingsound 
+        run: python -m poetry run pytest --cov=findpapers 
       - name: Upload coverage
         uses: codecov/codecov-action@v1

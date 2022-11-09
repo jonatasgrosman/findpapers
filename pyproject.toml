@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Findpapers"
-version = "0.6.6"
+version = "0.6.7"
 description = "Findpapers is an application that helps researchers who are looking for references for their work."
 authors = ["Jonatas Grosman <jonatasgrosman@gmail.com>"]
 maintainers = ["Jonatas Grosman <jonatasgrosman@gmail.com>"]
