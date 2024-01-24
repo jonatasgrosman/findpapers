@@ -103,6 +103,7 @@ class DefaultSession(requests.Session, metaclass=common_util.ThreadSafeSingleton
 
         super(DefaultSession, self).__init__()
 
+        self.proxies = None
         PROXY = os.getenv('FINDPAPERS_PROXY')
 
         if PROXY is not None:
@@ -120,6 +121,7 @@ class DefaultSession(requests.Session, metaclass=common_util.ThreadSafeSingleton
         This is just a common request, the only difference is that when proxies are provided
         and a response isn't ok, we'll try one more time without using the proxies
         """
+        kwargs['proxies'] = self.proxies
 
         kwargs['timeout'] = kwargs.get('timeout', self.default_timeout)
 

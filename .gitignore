@@ -27,3 +27,7 @@ coverage.xml
 
 # ignore pattern
 _ignore*
+
+# venv
+venv
+.venv

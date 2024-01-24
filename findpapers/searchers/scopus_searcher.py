@@ -2,7 +2,7 @@ import requests
 import datetime
 import logging
 import re
-from lxml import html
+from lxml import html, etree
 from typing import Optional
 import findpapers.utils.common_util as common_util
 import findpapers.utils.query_util as query_util
@@ -142,12 +142,12 @@ def _get_paper_page(url: str) -> object:  # pragma: no cover
     Object
         A HTML element representing the paper given by the provided URL
     """
-
+    
     response = common_util.try_success(lambda: DefaultSession().get(url), 2)
     return html.fromstring(response.content)
 
 
-def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
+def _get_paper(paper_entry: dict, publication: Publication, api_token: str) -> Paper:
     """
     Using a paper entry provided, this method builds a paper instance
 
@@ -212,42 +212,38 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
 
         try:
 
-            paper_page = _get_paper_page(paper_scopus_link)
+            paper_details_url = paper_entry["prism:url"] + "?apiKey=" + api_token
 
-            paper_abstract = paper_page.xpath(
-                '//section[@id="abstractSection"]//p//text()[normalize-space()]')
-            if len(paper_abstract) > 0:
-                paper_abstract = re.sub(
-                    '\xa0', ' ', ''.join(paper_abstract)).strip()
-            else:
-                paper_abstract = None
+            paper_details_response = common_util.try_success(lambda: DefaultSession().get(paper_details_url), 2)
 
-            authors = paper_page.xpath(
-                '//*[@id="authorlist"]/ul/li/span[@class="previewTxt"]')
-            
-            if len(authors) > 0:
-                paper_authors = []
-                for author in authors:
-                    paper_authors.append(author.text.strip())
+            paper_details_root = etree.fromstring(paper_details_response.content)
 
-            keywords = paper_page.xpath('//*[@id="authorKeywords"]/span')
-            for keyword in keywords:
-                paper_keywords.add(keyword.text.strip())
+            paper_abstract_element = paper_details_root.xpath("//ce:para", namespaces={'ce': 'http://www.elsevier.com/xml/ani/common'})
+            paper_abstract = None
+            if len(paper_abstract_element) > 0:
+                paper_abstract = paper_abstract_element[0].text
 
+            paper_authors = []
+
+            for author in [x.text for x in paper_details_root.xpath("//ce:indexed-name", namespaces={'ce': 'http://www.elsevier.com/xml/ani/common'})]:
+                if author not in paper_authors:
+                    paper_authors.append(author)
+
+            paper_keywords = [x.text for x in paper_details_root.xpath("//author-keyword")]
+
+            paper_pages_element = paper_details_root.xpath("//prism:pageRange", namespaces={'prism': 'http://prismstandard.org/namespaces/basic/2.0/'})
+            paper_pages = None
+            if len(paper_pages_element) > 0:
+                paper_pages = paper_pages_element[0].text
+
+            paper_number_of_pages = None
             try:
-                paper_pages = paper_entry.get('prism:pageRange', None)
-                if paper_pages is None:
-                    paper_pages = paper_page.xpath(
-                        '//span[@id="journalInfo"]')[0].text.split('Pages')[1].strip()
-                if paper_pages.isdigit():  # pragma: no cover
-                    paper_number_of_pages = 1
-                else:
-                    pages_split = paper_pages.split('-')
-                    paper_number_of_pages = abs(
-                        int(pages_split[0])-int(pages_split[1]))+1
-            except Exception:  # pragma: no cover
+                starting_page = int(paper_details_root.xpath("//prism:startingPage", namespaces={'prism': 'http://prismstandard.org/namespaces/basic/2.0/'})[0].text)
+                ending_page = int(paper_details_root.xpath("//prism:endingPage", namespaces={'prism': 'http://prismstandard.org/namespaces/basic/2.0/'})[0].text)
+                paper_number_of_pages = ending_page - starting_page + 1
+            except Exception:
                 pass
-
+        
         except Exception as e:
             logging.debug(e, exc_info=True)
 
@@ -405,7 +401,7 @@ def run(search: Search, api_token: str, url: Optional[str] = None, papers_count:
             logging.info(f'({papers_count}/{total_papers}) Fetching Scopus paper: {paper_title}')
 
             publication = _get_publication(paper_entry, api_token)
-            paper = _get_paper(paper_entry, publication)
+            paper = _get_paper(paper_entry, publication, api_token)
 
             if paper is not None:
                 paper.add_database(DATABASE_LABEL)
