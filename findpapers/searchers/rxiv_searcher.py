@@ -44,15 +44,11 @@ def _get_search_urls(search: Search, database: str) -> List[str]:
         raise ValueError('NOT connectors aren\'t supported')
     
     # Parentheses are used for URL splitting purposes and only 1-level grouping is supported with an OR connector between the groups
-    current_level = 0
-    for character in search.query:
-        if character == '(':
-            current_level += 1
-        elif character == ')':
-            current_level -= 1
-        
-        if current_level > 1:
-            raise ValueError('Max 1-level parentheses grouping exceeded')
+    
+    max_group_level = query_util.get_max_group_level(search.query)
+
+    if max_group_level > 1:
+        raise ValueError('Max 1-level parentheses grouping exceeded')
     
     if ') AND (' in search.query:
         raise ValueError('Only the OR connector can be used between the groups')
