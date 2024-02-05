@@ -101,6 +101,12 @@ def generate_bibtex(search_path: str, outputpath: str, only_selected_papers: Opt
             if paper.publication_date is not None:
                 bibtex_output += f'{default_tab}year = {{{paper.publication_date.year}}},\n'
 
+            if paper.doi is not None:
+                bibtex_output += f'{default_tab}doi = {{{paper.doi}}},\n'
+
+            if paper.abstract is not None:
+                bibtex_output += f'{default_tab}abstract = {{{paper.abstract}}},\n'
+
             if paper.pages is not None:
                 bibtex_output += f'{default_tab}pages = {{{paper.pages}}},\n'
 
@@ -112,5 +118,5 @@ def generate_bibtex(search_path: str, outputpath: str, only_selected_papers: Opt
         except Exception as e:
             logging.debug(e, exc_info=True)
 
-    with open(outputpath, 'w') as fp:
+    with open(outputpath, 'w', encoding='utf-8') as fp:
         fp.write(bibtex_output)
