@@ -33,7 +33,7 @@ class Publication():
             Citation weighting depends on subject field and prestige (SJR) of the citing serial, by default None
         snip : float, optional
             Source Normalized Impact per Paper measures actual citations received relative to citations 
-            expected for the serial’s subject field, by default None
+            expected for the serial's subject field, by default None
         subject_areas : float, optional
             Publication subjects areas, by default None
         is_potentially_predatory : bool, optional
@@ -45,7 +45,7 @@ class Publication():
         """
 
         if title is None or len(title) == 0:
-            raise(ValueError('Publication\'s title cannot be null'))
+            raise(ValueError("Publication's title cannot be null"))
 
         self.title = title
         self.isbn = isbn
@@ -77,12 +77,12 @@ class Publication():
         if value is not None:
 
             # trying to convert a provided invalid category to a valid one [Journal, Conference Proceedings, Book]
-            if 'journal' in value.lower():
-                value = 'Journal'
-            elif 'conference' in value.lower() or 'proceeding' in value.lower():
-                value = 'Conference Proceedings'
-            elif 'book' in value.lower():
-                value = 'Book'
+            if "journal" in value.lower():
+                value = "Journal"
+            elif "conference" in value.lower() or "proceeding" in value.lower():
+                value = "Conference Proceedings"
+            elif "book" in value.lower():
+                value = "Book"
             else:
                 value = None
 
@@ -146,16 +146,16 @@ class Publication():
             A Publication instance based on the provided dict object
         """
 
-        title = publication_dict.get('title')
-        isbn = publication_dict.get('isbn')
-        issn = publication_dict.get('issn')
-        publisher = publication_dict.get('publisher')
-        category = publication_dict.get('category')
-        cite_score = publication_dict.get('cite_score')
-        sjr = publication_dict.get('sjr')
-        snip = publication_dict.get('snip')
-        subject_areas = set(publication_dict.get('subject_areas'))
-        is_potentially_predatory = publication_dict.get('is_potentially_predatory')
+        title = publication_dict.get("title")
+        isbn = publication_dict.get("isbn")
+        issn = publication_dict.get("issn")
+        publisher = publication_dict.get("publisher")
+        category = publication_dict.get("category")
+        cite_score = publication_dict.get("cite_score")
+        sjr = publication_dict.get("sjr")
+        snip = publication_dict.get("snip")
+        subject_areas = set(publication_dict.get("subject_areas"))
+        is_potentially_predatory = publication_dict.get("is_potentially_predatory")
 
         return cls(title, isbn, issn, publisher, category, cite_score, sjr, snip, subject_areas, is_potentially_predatory)
 
@@ -176,14 +176,14 @@ class Publication():
         """
 
         return {
-            'title': publication.title,
-            'isbn': publication.isbn,
-            'issn': publication.issn,
-            'publisher': publication.publisher,
-            'category': publication.category,
-            'cite_score': publication.cite_score,
-            'sjr': publication.sjr,
-            'snip': publication.snip,
-            'subject_areas': list(publication.subject_areas),
-            'is_potentially_predatory': publication.is_potentially_predatory
+            "title": publication.title,
+            "isbn": publication.isbn,
+            "issn": publication.issn,
+            "publisher": publication.publisher,
+            "category": publication.category,
+            "cite_score": publication.cite_score,
+            "sjr": publication.sjr,
+            "snip": publication.snip,
+            "subject_areas": list(publication.subject_areas),
+            "is_potentially_predatory": publication.is_potentially_predatory
         }

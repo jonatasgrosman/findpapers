@@ -26,8 +26,8 @@ def replace_search_term_enclosures(query: str, open_replacement: str, close_repl
     if only_on_wildcards:
 
         def wildcards_apply(search_term):
-            if '?' in search_term or '*' in search_term:
-                return search_term.replace('[', open_replacement).replace(']', close_replacement)
+            if "?" in search_term or "*" in search_term:
+                return search_term.replace("[", open_replacement).replace("]", close_replacement)
             else:
                 return search_term
 
@@ -35,7 +35,7 @@ def replace_search_term_enclosures(query: str, open_replacement: str, close_repl
 
     else:
 
-        return query.replace('[', open_replacement).replace(']', close_replacement)
+        return query.replace("[", open_replacement).replace("]", close_replacement)
 
 
 def apply_on_each_term(query: str, function: Callable) -> str:
@@ -56,21 +56,21 @@ def apply_on_each_term(query: str, function: Callable) -> str:
     """
 
     is_inside_a_term = False
-    search_term = ''
-    final_query = ''
+    search_term = ""
+    final_query = ""
     for character in query:
 
-        if character == '[':
+        if character == "[":
             search_term += character
             is_inside_a_term = True
             continue
 
         if is_inside_a_term:
             search_term += character
-            if character == ']':
+            if character == "]":
                 search_term = function(search_term)
                 final_query += search_term
-                search_term = ''
+                search_term = ""
                 is_inside_a_term = False
         else:
             final_query += character
@@ -96,11 +96,11 @@ def get_max_group_level(query: str) -> int:
     current_level = 0
     max_level = 0
     for character in query:
-        if character == '(':
+        if character == "(":
             current_level += 1
             if current_level > max_level:
                 max_level = current_level
-        elif character == ')':
+        elif character == ")":
             current_level -= 1
 
     return max_level
@@ -161,7 +161,7 @@ def get_query_tree(query: str, parent: dict = None) -> dict:
 
     while current_character is not None:
 
-        if current_character == '(': # is a beginning of a group
+        if current_character == "(": # is a beginning of a group
 
             if current_connector is not None:
                 parent["children"].append({"node_type": "connector", "value": current_connector.strip()})
@@ -175,12 +175,12 @@ def get_query_tree(query: str, parent: dict = None) -> dict:
                 current_character = next(query_iterator, None)
 
                 if current_character is None:
-                    raise ValueError('Unbalanced parentheses')
+                    raise ValueError("Unbalanced parentheses")
 
-                if current_character == '(': # has a nested group
+                if current_character == "(": # has a nested group
                     subquery_group_level += 1
 
-                elif current_character == ')':
+                elif current_character == ")":
                     subquery_group_level -= 1
                     if subquery_group_level == 0: # end of the group
                         break
@@ -205,9 +205,9 @@ def get_query_tree(query: str, parent: dict = None) -> dict:
                 current_character = next(query_iterator, None)
 
                 if current_character is None:
-                    raise ValueError('Missing term closing bracket')
+                    raise ValueError("Missing term closing bracket")
                 
-                if current_character == ']':
+                if current_character == "]":
                     break
 
                 term_query += current_character

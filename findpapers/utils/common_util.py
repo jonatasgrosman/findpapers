@@ -9,7 +9,7 @@ from typing import Optional
 from pathlib import Path
 
 
-def get_numeric_month_by_string(string: str, fallback_month: Optional[str] = '01') -> str:
+def get_numeric_month_by_string(string: str, fallback_month: Optional[str] = "01") -> str:
     """
     Get a numeric month representation given a month string representation
 
@@ -18,16 +18,16 @@ def get_numeric_month_by_string(string: str, fallback_month: Optional[str] = '01
     string : str
        Month string representation (e.g., jan, january, Jan, Feb, December)
     fallback_month : str
-       Month string representation to be returned on any error, default is '01'
+       Month string representation to be returned on any error, default is "01"
 
     Returns
     -------
     str
        A month numeric representation (e.g. jan -> 01)
-        """
+    """
 
-    months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
-              'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
+    months = ["jan", "feb", "mar", "apr", "may", "jun",
+              "jul", "aug", "sep", "oct", "nov", "dec"]
 
     try:
         if string is not None and type(string) == str:
@@ -81,12 +81,12 @@ def clear(): # pragma: no cover
     """
     Clear the console
     """
-    if os.name in ('nt', 'dos'):
+    if os.name in ("nt", "dos"):
         subprocess.call("cls")
-    elif os.name in ('linux', 'osx', 'posix'):
+    elif os.name in ("linux", "osx", "posix"):
         subprocess.call("clear")
     else:
-        print('\n') * 120
+        print("\n") * 120
 
 
 def check_write_access(path: str):
@@ -105,9 +105,9 @@ def check_write_access(path: str):
     """
 
     try:
-        with open(path, 'a'): pass
+        with open(path, "a"): pass
     except Exception:
-        raise PermissionError('You can\'t write on the provided path')
+        raise PermissionError("You can't write on the provided path")
 
 
 def logging_initialize(verbose: Optional[bool] = False):
@@ -121,8 +121,8 @@ def logging_initialize(verbose: Optional[bool] = False):
         If the logging needs to be verbose, by default False
     """
 
-    logging.basicConfig(level=getattr(logging, 'DEBUG' if verbose else 'INFO'),
-                        format='%(asctime)s %(levelname)s: %(message)s')
+    logging.basicConfig(level=getattr(logging, "DEBUG" if verbose else "INFO"),
+                        format="%(asctime)s %(levelname)s: %(message)s")
 
 
 # Based on tornado.ioloop.IOLoop.instance() approach.

@@ -13,8 +13,8 @@ from findpapers.models.publication import Publication
 from findpapers.utils.requests_util import DefaultSession
 
 
-DATABASE_LABEL = 'ACM'
-BASE_URL = 'https://dl.acm.org'
+DATABASE_LABEL = "ACM"
+BASE_URL = "https://dl.acm.org"
 MAX_ENTRIES_PER_PAGE = 100
 
 
@@ -37,36 +37,36 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     """
     
     # when a wildcard is present, the search term cannot be enclosed in quotes
-    transformed_query = query_util.replace_search_term_enclosures(search.query, '', '', True)
+    transformed_query = query_util.replace_search_term_enclosures(search.query, "", "", True)
     
     # some additional query transformations
-    transformed_query = transformed_query.replace(' AND NOT ', ' NOT ')
-    transformed_query = query_util.replace_search_term_enclosures(transformed_query, '"', '"')
+    transformed_query = transformed_query.replace(" AND NOT ", " NOT ")
+    transformed_query = query_util.replace_search_term_enclosures(transformed_query, "\"", "\"")
 
-    query = f'Abstract:({transformed_query})'
+    query = f"Abstract:({transformed_query})"
 
     # the OR connector between the fields are not working properly, so we'll use only the abstract for now
-    #query += f' OR Keyword:({transformed_query})'
-    #query += f' OR Title:({transformed_query})'
+    #query += f" OR Keyword:({transformed_query})"
+    #query += f" OR Title:({transformed_query})"
 
     url_parameters = {
-        'fillQuickSearch': 'false',
-        'expand': 'all',
-        'AllField': query,
-        'pageSize': MAX_ENTRIES_PER_PAGE,
-        'startPage': start_record,
-        'sortBy': 'Ppub'
+        "fillQuickSearch": "false",
+        "expand": "all",
+        "AllField": query,
+        "pageSize": MAX_ENTRIES_PER_PAGE,
+        "startPage": start_record,
+        "sortBy": "Ppub"
     }
 
     if search.since is not None:
-        url_parameters['AfterMonth'] = search.since.month
-        url_parameters['AfterYear'] = search.since.year
+        url_parameters["AfterMonth"] = search.since.month
+        url_parameters["AfterYear"] = search.since.year
 
     if search.until is not None:
-        url_parameters['BeforeMonth'] = search.until.month
-        url_parameters['BeforeYear'] = search.until.year
+        url_parameters["BeforeMonth"] = search.until.month
+        url_parameters["BeforeYear"] = search.until.year
 
-    url = f'{BASE_URL}/action/doSearch?{urlencode(url_parameters)}'
+    url = f"{BASE_URL}/action/doSearch?{urlencode(url_parameters)}"
 
     return url
 
@@ -129,16 +129,16 @@ def _get_paper_metadata(doi: str) -> dict:  # pragma: no cover
     """
 
     form = {
-        'dois': doi,
-        'targetFile': 'custom-bibtex',
-        'format': 'bibTex'
+        "dois": doi,
+        "targetFile": "custom-bibtex",
+        "format": "bibTex"
     }
 
     response = common_util.try_success(lambda: DefaultSession().post(
-        f'{BASE_URL}/action/exportCiteProcCitation', data=form).json(), 2)
+        f"{BASE_URL}/action/exportCiteProcCitation", data=form).json(), 2)
 
-    if response is not None and response.get('items', None) is not None and len(response.get('items')) > 0:
-        return response['items'][0][doi]
+    if response is not None and response.get("items", None) is not None and len(response.get("items")) > 0:
+        return response["items"][0][doi]
 
 
 def _get_paper(paper_page: html.HtmlElement, paper_doi: str, paper_url: str) -> Paper:
@@ -160,9 +160,9 @@ def _get_paper(paper_page: html.HtmlElement, paper_doi: str, paper_url: str) -> 
         A paper instance
     """
 
-    paper_abstract = paper_page.xpath('//*[contains(@class, "abstractSection")]//p')[-1].text_content()
+    paper_abstract = paper_page.xpath("//*[contains(@class, \"abstractSection\")]//p")[-1].text_content()
 
-    citation_elements = paper_page.xpath('//*[contains(@class, "article-metric citation")]//span')
+    citation_elements = paper_page.xpath("//*[contains(@class, \"article-metric citation\")]//span")
     
     paper_citations = None
     if len(citation_elements) == 1:
@@ -174,30 +174,30 @@ def _get_paper(paper_page: html.HtmlElement, paper_doi: str, paper_url: str) -> 
         return None
 
     publication = None
-    publication_title = paper_metadata.get('container-title', None)
+    publication_title = paper_metadata.get("container-title", None)
 
     if publication_title is not None and len(publication_title) > 0:
 
-        publication_isbn = paper_metadata.get('ISBN', None)
-        publication_issn = paper_metadata.get('ISSN', None)
-        publication_publisher = paper_metadata.get('publisher', None)
-        publication_category = paper_metadata.get('type', None)
+        publication_isbn = paper_metadata.get("ISBN", None)
+        publication_issn = paper_metadata.get("ISSN", None)
+        publication_publisher = paper_metadata.get("publisher", None)
+        publication_category = paper_metadata.get("type", None)
 
         publication = Publication(publication_title, publication_isbn,
                                   publication_issn, publication_publisher, publication_category)
 
-    paper_title = paper_metadata.get('title', None)
+    paper_title = paper_metadata.get("title", None)
 
     if paper_title is None or len(paper_title) == 0:
         return None
 
-    paper_authors = paper_metadata.get('author', [])
-    paper_authors = ['{} {}'.format(
-        x.get('given'), x.get('family')) for x in paper_authors]
+    paper_authors = paper_metadata.get("author", [])
+    paper_authors = ["{} {}".format(
+        x.get("given"), x.get("family")) for x in paper_authors]
 
     paper_publication_date = None
-    if paper_metadata.get('issued', None) != None:
-        date_parts = paper_metadata['issued']['date-parts'][0]
+    if paper_metadata.get("issued", None) != None:
+        date_parts = paper_metadata["issued"]["date-parts"][0]
         if len(date_parts) == 1:  # only year
             paper_publication_date = datetime.date(date_parts[0], 1, 1)
         else:
@@ -208,20 +208,20 @@ def _get_paper(paper_page: html.HtmlElement, paper_doi: str, paper_url: str) -> 
         return None
 
     paper_keywords = set()
-    if paper_metadata.get('keyword', None) is not None:
+    if paper_metadata.get("keyword", None) is not None:
         paper_keywords = set([x.strip()
-                              for x in paper_metadata['keyword'].split(',')])
+                              for x in paper_metadata["keyword"].split(",")])
 
-    paper_pages = paper_metadata.get('page', None)
+    paper_pages = paper_metadata.get("page", None)
     if paper_pages is not None:
-        paper_pages = paper_pages.replace('\u2013', '-')
+        paper_pages = paper_pages.replace("\u2013", "-")
 
-    paper_number_of_pages = paper_metadata.get('number-of-pages', None)
+    paper_number_of_pages = paper_metadata.get("number-of-pages", None)
     if paper_number_of_pages is not None:
         paper_number_of_pages = int(paper_number_of_pages)
 
     if paper_doi is None:
-        paper_doi = paper_metadata.get('DOI')
+        paper_doi = paper_metadata.get("DOI")
 
     paper = Paper(paper_title, paper_abstract, paper_authors, publication,
                   paper_publication_date, {paper_url}, paper_doi,
@@ -246,17 +246,17 @@ def run(search: Search):
 
     try:
         total_papers = int(result.xpath(
-            '//*[@class="hitsLength"]')[0].text.strip().replace(",", ""))
+            "//*[@class=\"hitsLength\"]")[0].text.strip().replace(",", ""))
     except Exception:  # pragma: no cover
         total_papers = 0
 
-    logging.info(f'ACM: {total_papers} papers to fetch')
+    logging.info(f"ACM: {total_papers} papers to fetch")
 
     page_index = 0
     while(papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL)):
 
-        papers_urls = [BASE_URL+x.attrib['href']
-                       for x in result.xpath('//*[@class="issue-item__title"]//a')]
+        papers_urls = [BASE_URL+x.attrib["href"]
+                       for x in result.xpath("//*[@class=\"issue-item__title\"]//a")]
 
         if len(papers_urls) == 0:
             break
@@ -271,17 +271,17 @@ def run(search: Search):
 
                 paper_page = _get_paper_page(paper_url)
 
-                paper_title = paper_page.xpath('//*[@class="citation__title"]')[0].text
+                paper_title = paper_page.xpath("//*[@class=\"citation__title\"]")[0].text
 
-                logging.info(f'({papers_count}/{total_papers}) Fetching ACM paper: {paper_title}')
+                logging.info(f"({papers_count}/{total_papers}) Fetching ACM paper: {paper_title}")
                 
                 paper_doi = None
-                if '/abs/' in paper_url:
-                    paper_doi = paper_url.split('/abs/')[1]
-                elif '/book/' in paper_url:
-                    paper_doi = paper_url.split('/book/')[1]
+                if "/abs/" in paper_url:
+                    paper_doi = paper_url.split("/abs/")[1]
+                elif "/book/" in paper_url:
+                    paper_doi = paper_url.split("/book/")[1]
                 else:
-                    paper_doi = paper_url.split('/doi/')[1]
+                    paper_doi = paper_url.split("/doi/")[1]
 
                 paper = _get_paper(paper_page, paper_doi, paper_url)
 

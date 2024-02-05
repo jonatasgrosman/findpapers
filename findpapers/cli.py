@@ -13,15 +13,15 @@ app = typer.Typer()
 @app.command("search")
 def search(
     outputpath: str = typer.Argument(
-        ..., help='A valid file path where the search result JSON file will be placed'
+        ..., help="A valid file path where the search result JSON file will be placed"
     ),
     query: str = typer.Option(
         None, "-q", "--query", show_default=True,
-        help='A query string that will be used to perform the papers search (If not provided it will be loaded from the environment variable FINDPAPERS_QUERY). E.g. [term A] AND ([term B] OR [term C]) AND NOT [term D]'
+        help="A query string that will be used to perform the papers search (If not provided it will be loaded from the environment variable FINDPAPERS_QUERY). E.g. [term A] AND ([term B] OR [term C]) AND NOT [term D]"
     ),
     query_filepath: str = typer.Option(
         None, "-f", "--query-file", show_default=True,
-        help='A file path that contains the query string that will be used to perform the papers search'
+        help="A file path that contains the query string that will be used to perform the papers search"
     ),
     since: datetime = typer.Option(
         None, "-s", "--since", show_default=True,
@@ -69,7 +69,7 @@ def search(
     """
         Search for papers metadata using a query.
 
-        When you have a query and needs to get papers using it, this is the command that you'll need to call.
+        When you have a query and needs to get papers using it, this is the command that you"ll need to call.
         This command will find papers from some databases based on the provided query.
 
         All the query terms need to be enclosed by square brackets and can be associated using boolean operators,
@@ -80,9 +80,9 @@ def search(
 
         You can use some wildcards in the query too. Use ? to replace a single character or * to replace any number of characters.
 
-        E.g.: 'son?' -> will match song, sons, ...
+        E.g.: "son?" -> will match song, sons, ...
 
-        E.g.: 'son*' -> will match song, sons, sonar, songwriting, ...
+        E.g.: "son*" -> will match song, sons, sonar, songwriting, ...
 
         Nowadays, we search for papers on ACM, arXiv, IEEE, PubMed, and Scopus database.
         The searching on IEEE and Scopus requires an API token, that must to be provided
@@ -118,11 +118,11 @@ def search(
     try:
         since = since.date() if since is not None else None
         until = until.date() if until is not None else None
-        databases = [x.strip() for x in databases.split(',')] if databases is not None else None
-        publication_types = [x.strip() for x in publication_types.split(',')] if publication_types is not None else None
+        databases = [x.strip() for x in databases.split(",")] if databases is not None else None
+        publication_types = [x.strip() for x in publication_types.split(",")] if publication_types is not None else None
 
         if query is None and query_filepath is not None:
-            with open(query_filepath, 'r') as f:
+            with open(query_filepath, "r") as f:
                 query = f.read().strip()
 
         findpapers.search(outputpath, query, since, until, limit, limit_per_database,
@@ -138,7 +138,7 @@ def search(
 @app.command("refine")
 def refine(
     filepath: str = typer.Argument(
-        ..., help='A valid file path for the search result file'
+        ..., help="A valid file path for the search result file"
     ),
     categories: List[str] = typer.Option(
         [], "-c", "--categories", show_default=True,
@@ -176,7 +176,7 @@ def refine(
     """
     Refine the search results by selecting/classifying the papers.
 
-    When you have a search result and wanna refine it, this is the command that you'll need to call.
+    When you have a search result and wanna refine it, this is the command that you"ll need to call.
     This command will iterate through all the papers showing their collected data,
     then asking if you wanna select a particular paper or not
 
@@ -199,13 +199,13 @@ def refine(
     """
 
     try:
-        highlights = [x.strip() for x in highlights.split(',')] if highlights is not None else None
+        highlights = [x.strip() for x in highlights.split(",")] if highlights is not None else None
         
         categories_by_facet = {} if len(categories) > 0 else None
         for categories_string in categories:
-            string_split = categories_string.split(':')
+            string_split = categories_string.split(":")
             facet = string_split[0].strip()
-            categories_by_facet[facet] = [x.strip() for x in string_split[1].split(',')]
+            categories_by_facet[facet] = [x.strip() for x in string_split[1].split(",")]
 
         findpapers.refine(filepath, categories_by_facet, highlights, show_abstract, show_extra_info, only_selected_papers, only_removed_papers, read_only, verbose)
     except Exception as e:
@@ -219,10 +219,10 @@ def refine(
 @app.command("download")
 def download(
     filepath: str = typer.Argument(
-        ..., help='A valid file path for the search result file'
+        ..., help="A valid file path for the search result file"
     ),
     outputpath: str = typer.Argument(
-        ..., help='A valid directory path where the downloaded papers will be placed'
+        ..., help="A valid directory path where the downloaded papers will be placed"
     ),
     only_selected_papers: bool = typer.Option(
         False, "-s", "--selected", show_default=True,
@@ -244,7 +244,7 @@ def download(
     """
     Download full-text papers using the search results.
 
-    If you've done your search, (probably made the search refinement too) and wanna download the papers, 
+    If you"ve done your search, (probably made the search refinement too) and wanna download the papers, 
     this is the command that you need to call. This command will try to download the PDF version of the papers to
     the output directory path.
 
@@ -276,9 +276,9 @@ def download(
     try:
         categories_by_facet = {} if len(categories) > 0 else None
         for categories_string in categories:
-            string_split = categories_string.split(':')
+            string_split = categories_string.split(":")
             facet = string_split[0].strip()
-            categories_by_facet[facet] = [x.strip() for x in string_split[1].split(',')]
+            categories_by_facet[facet] = [x.strip() for x in string_split[1].split(",")]
 
         findpapers.download(filepath, outputpath, only_selected_papers, categories_by_facet, proxy, verbose)
     except Exception as e:
@@ -292,10 +292,10 @@ def download(
 @app.command("bibtex")
 def bibtex(
     filepath: str = typer.Argument(
-        ..., help='A valid file path for the search result file'
+        ..., help="A valid file path for the search result file"
     ),
     outputpath: str = typer.Argument(
-        ..., help='A valid directory path where the generated bibtex will be placed'
+        ..., help="A valid directory path where the generated bibtex will be placed"
     ),
     only_selected_papers: bool = typer.Option(
         False, "-s", "--selected", show_default=True,
@@ -336,9 +336,9 @@ def bibtex(
     try:
         categories_by_facet = {} if len(categories) > 0 else None
         for categories_string in categories:
-            string_split = categories_string.split(':')
+            string_split = categories_string.split(":")
             facet = string_split[0].strip()
-            categories_by_facet[facet] = [x.strip() for x in string_split[1].split(',')]
+            categories_by_facet[facet] = [x.strip() for x in string_split[1].split(",")]
         
         findpapers.generate_bibtex(filepath, outputpath, only_selected_papers, categories_by_facet, add_findpapers_citation, verbose)
     except Exception as e:

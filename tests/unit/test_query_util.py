@@ -2,7 +2,7 @@ import pytest
 import findpapers.utils.query_util as query_util
 
 
-@pytest.mark.parametrize('query, tree', [
+@pytest.mark.parametrize("query, tree", [
     ("[term A] OR [term B]", 
     {"node_type": "root", "children" : [
         {"node_type": "term", "value": "term A"}, 
@@ -69,7 +69,7 @@ def test_get_query_tree(query: str, tree: dict):
 
     assert query_tree == tree
 
-@pytest.mark.parametrize('query, max_group_level', [
+@pytest.mark.parametrize("query, max_group_level", [
     ("[term A] OR [term B] OR [term C] OR [term D]", 0),
     ("[term A] OR [term B] AND ([term C] OR [term D])", 1),
     ("[term A] OR [term B] AND ([term C] OR [term D] OR [term E] OR ([term F] AND [term G] AND NOT [term H])) AND NOT [term I]", 2),

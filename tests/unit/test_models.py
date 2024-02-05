@@ -8,29 +8,29 @@ from findpapers.models.search import Search
 
 def test_publication(publication: Publication):
 
-    assert publication.title == 'awesome publication title'
-    assert publication.isbn == 'isbn-X'
-    assert publication.issn == 'issn-X'
-    assert publication.publisher == 'that publisher'
-    assert publication.category == 'Journal'
+    assert publication.title == "awesome publication title"
+    assert publication.isbn == "isbn-X"
+    assert publication.issn == "issn-X"
+    assert publication.publisher == "that publisher"
+    assert publication.category == "Journal"
 
-    publication.category = 'book series'
-    assert publication.category == 'Book'
+    publication.category = "book series"
+    assert publication.category == "Book"
 
-    publication.category = 'journal article'
-    assert publication.category == 'Journal'
+    publication.category = "journal article"
+    assert publication.category == "Journal"
 
-    publication.category = 'Conference'
-    assert publication.category == 'Conference Proceedings'
+    publication.category = "Conference"
+    assert publication.category == "Conference Proceedings"
 
-    publication.category = 'newspaper article'
+    publication.category = "newspaper article"
     assert publication.category == None
 
-    another_publication = Publication('awesome publication title 2')
+    another_publication = Publication("awesome publication title 2")
     another_publication.cite_score = 1.0
     another_publication.sjr = 2.0
     another_publication.snip = 3.0
-    another_publication.subject_areas = {'area A'}
+    another_publication.subject_areas = {"area A"}
 
     publication.issn = None
     publication.isbn = None
@@ -47,44 +47,44 @@ def test_publication(publication: Publication):
     assert publication.isbn == another_publication.isbn
     assert publication.publisher == another_publication.publisher
     assert publication.category == another_publication.category
-    assert 'area A' in publication.subject_areas
+    assert "area A" in publication.subject_areas
 
 
 def test_paper(paper: Paper):
 
-    assert paper.title == 'awesome paper title'
-    assert paper.abstract == 'a long abstract'
-    assert paper.authors == ['Dr Paul', 'Dr John', 'Dr George', 'Dr Ringo']
+    assert paper.title == "awesome paper title"
+    assert paper.abstract == "a long abstract"
+    assert paper.authors == ["Dr Paul", "Dr John", "Dr George", "Dr Ringo"]
     assert len(paper.urls) == 1
     assert len(paper.databases) == 5
 
     paper.databases = set()
 
     with pytest.raises(ValueError):
-        paper.add_database('INVALID DATABASE')
+        paper.add_database("INVALID DATABASE")
 
-    paper.add_database('Scopus')
-    paper.add_database('Scopus')
+    paper.add_database("Scopus")
+    paper.add_database("Scopus")
     assert len(paper.databases) == 1
 
-    paper.add_database('ACM')
+    paper.add_database("ACM")
     assert len(paper.databases) == 2
 
     assert len(paper.urls) == 1
     paper.add_url(next(iter(paper.urls)))
     assert len(paper.urls) == 1
 
-    paper.add_url('another://url')
+    paper.add_url("another://url")
     assert len(paper.urls) == 2
 
     another_paper_citations = 10
-    another_doi = 'DOI-X'
-    another_keywords = {'key-A', 'key-B', 'key-C'}
-    another_comments = 'some comments'
+    another_doi = "DOI-X"
+    another_keywords = {"key-A", "key-B", "key-C"}
+    another_comments = "some comments"
 
-    another_paper = Paper('another awesome title paper', 'a long abstract', paper.authors, paper.publication,
+    another_paper = Paper("another awesome title paper", "a long abstract", paper.authors, paper.publication,
                           paper.publication_date, paper.urls, another_doi, another_paper_citations, another_keywords, another_comments)
-    another_paper.add_database('arXiv')
+    another_paper.add_database("arXiv")
 
     paper.publication_date = None
     paper.abstract = None
@@ -103,10 +103,10 @@ def test_paper(paper: Paper):
     assert paper.authors == another_paper.authors
     assert paper.keywords == another_paper.keywords
 
-    assert 'arXiv' in paper.databases
+    assert "arXiv" in paper.databases
     assert len(paper.databases) == 3
     assert paper.doi == another_doi
-    assert paper.citations == another_paper_citations # 'cause another_paper_citations was higher than paper_citations
+    assert paper.citations == another_paper_citations # "cause another_paper_citations was higher than paper_citations
     assert paper.keywords == another_keywords
     assert paper.comments == another_comments
 
@@ -116,7 +116,7 @@ def test_search(paper: Paper):
     
     paper.doi = None
 
-    search = Search('this AND that', datetime.date(
+    search = Search("this AND that", datetime.date(
         1969, 1, 30), datetime.date(1970, 4, 8), 2)
 
     assert len(search.papers) == 0
@@ -126,9 +126,9 @@ def test_search(paper: Paper):
     search.add_paper(paper)
     assert len(search.papers) == 1
 
-    another_paper = Paper('awesome paper title 2', 'a long abstract',
+    another_paper = Paper("awesome paper title 2", "a long abstract",
                           paper.authors, paper.publication,  paper.publication_date, paper.urls)
-    another_paper.add_database('arXiv')
+    another_paper.add_database("arXiv")
     
     search.add_paper(another_paper)
     assert len(search.papers) == 2
@@ -150,14 +150,14 @@ def test_search(paper: Paper):
     assert len(search.papers) == 2
 
     another_paper_2 = copy.deepcopy(paper)
-    another_paper_2.title = 'awesome paper title 3'
-    another_paper_2.abstract = 'a long abstract'
+    another_paper_2.title = "awesome paper title 3"
+    another_paper_2.abstract = "a long abstract"
     another_paper_2.databases = set()
 
     with pytest.raises(ValueError):
         search.add_paper(another_paper_2)
     
-    another_paper_2.add_database('arXiv')
+    another_paper_2.add_database("arXiv")
 
     with pytest.raises(OverflowError):
         search.add_paper(another_paper_2)
@@ -165,9 +165,9 @@ def test_search(paper: Paper):
     search.merge_duplications()
     assert len(search.papers) == 1
 
-    publication_title = 'FAKE-TITLE'
-    publication_issn = 'FAKE-ISSN'
-    publication_isbn = 'FAKE-ISBN'
-    assert search.get_publication_key(publication_title, publication_issn, publication_isbn) == f'ISBN-{publication_isbn.lower()}'
-    assert search.get_publication_key(publication_title, publication_issn) == f'ISSN-{publication_issn.lower()}'
-    assert search.get_publication_key(publication_title) == f'TITLE-{publication_title.lower()}'
+    publication_title = "FAKE-TITLE"
+    publication_issn = "FAKE-ISSN"
+    publication_isbn = "FAKE-ISBN"
+    assert search.get_publication_key(publication_title, publication_issn, publication_isbn) == f"ISBN-{publication_isbn.lower()}"
+    assert search.get_publication_key(publication_title, publication_issn) == f"ISSN-{publication_issn.lower()}"
+    assert search.get_publication_key(publication_title) == f"TITLE-{publication_title.lower()}"

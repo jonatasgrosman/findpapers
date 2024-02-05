@@ -84,9 +84,9 @@ class Search():
         """
 
         if paper_doi is not None:
-            return f'DOI-{paper_doi}'
+            return f"DOI-{paper_doi}"
         else:
-            return f'{paper_title.lower()}|{publication_date.year if publication_date is not None else ""}'
+            return f"{paper_title.lower()}|{publication_date.year if publication_date is not None else ''}"
 
     def get_publication_key(self, publication_title: str, publication_issn: Optional[str] = None, publication_isbn: Optional[str] = None) -> str:
         """
@@ -108,11 +108,11 @@ class Search():
         """
 
         if publication_issn is not None:
-            return f'ISSN-{publication_issn.lower()}'
+            return f"ISSN-{publication_issn.lower()}"
         elif publication_isbn is not None:
-            return f'ISBN-{publication_isbn.lower()}'
+            return f"ISBN-{publication_isbn.lower()}"
         else:
-            return f'TITLE-{publication_title.lower()}'
+            return f"TITLE-{publication_title.lower()}"
 
     def add_paper(self, paper: Paper):
         """
@@ -133,13 +133,13 @@ class Search():
 
         if len(paper.databases) == 0:
             raise ValueError(
-                'Paper cannot be added to search without at least one defined database')
+                "Paper cannot be added to search without at least one defined database")
 
         for database in paper.databases:
             if self.databases is not None and database.lower() not in self.databases:
-                raise ValueError(f'Database {database} isn\'t in databases list')
+                raise ValueError(f"Database {database} isn't in databases list")
             if self.reached_its_limit(database):
-                raise OverflowError('When the papers limit is provided, you cannot exceed it')
+                raise OverflowError("When the papers limit is provided, you cannot exceed it")
 
         if database not in self.papers_by_database:
             self.papers_by_database[database] = set()
@@ -287,7 +287,7 @@ class Search():
 
             # calculating the edit distance between the titles
             titles_edit_distance = edlib.align(
-                paper_1.title.lower(), paper_2.title.lower())['editDistance']
+                paper_1.title.lower(), paper_2.title.lower())["editDistance"]
 
             if (paper_1.doi is not None and paper_1.doi == paper_2.doi) or (titles_edit_distance <= max_edit_distance):
 
@@ -335,27 +335,27 @@ class Search():
             A Search instance based on the provided dict object
         """
 
-        query = search_dict.get('query')
-        limit = search_dict.get('limit')
-        limit_per_database = search_dict.get('limit_per_database')
+        query = search_dict.get("query")
+        limit = search_dict.get("limit")
+        limit_per_database = search_dict.get("limit_per_database")
 
-        since = search_dict.get('since')
+        since = search_dict.get("since")
         if since is not None:
-            since = datetime.datetime.strptime(since, '%Y-%m-%d').date()
+            since = datetime.datetime.strptime(since, "%Y-%m-%d").date()
 
-        until = search_dict.get('until')
+        until = search_dict.get("until")
         if until is not None:
-            until = datetime.datetime.strptime(until, '%Y-%m-%d').date()
+            until = datetime.datetime.strptime(until, "%Y-%m-%d").date()
 
-        processed_at = search_dict.get('processed_at')
+        processed_at = search_dict.get("processed_at")
         if processed_at is not None:
-            processed_at = datetime.datetime.strptime(processed_at, '%Y-%m-%d %H:%M:%S')
+            processed_at = datetime.datetime.strptime(processed_at, "%Y-%m-%d %H:%M:%S")
 
-        databases = search_dict.get('databases')
-        publication_types = search_dict.get('publication_types')
+        databases = search_dict.get("databases")
+        publication_types = search_dict.get("publication_types")
 
         papers = set()
-        for paper in search_dict.get('papers', []):
+        for paper in search_dict.get("papers", []):
             papers.add(Paper.from_dict(paper))
 
         return cls(query, since, until, limit, limit_per_database, processed_at, databases, publication_types, papers)
@@ -380,22 +380,22 @@ class Search():
         for paper in search.papers:
             papers.append(Paper.to_dict(paper))
 
-        papers = sorted(papers, key=lambda x: x.get('publication_date', '1900'), reverse=True)
+        papers = sorted(papers, key=lambda x: x.get("publication_date", "1900"), reverse=True)
 
         number_of_papers_by_database = {}
         for database, items in search.papers_by_database.items():
             number_of_papers_by_database[database] = len(items)
 
         return {
-            'query': search.query,
-            'since': search.since.strftime('%Y-%m-%d') if search.since is not None else None,
-            'until': search.until.strftime('%Y-%m-%d') if search.until is not None else None,
-            'limit': search.limit,
-            'limit_per_database': search.limit_per_database,
-            'processed_at': search.processed_at.strftime('%Y-%m-%d %H:%M:%S') if search.processed_at is not None else None,
-            'databases': search.databases,
-            'publication_types': search.publication_types,
-            'number_of_papers': len(papers),
-            'number_of_papers_by_database': number_of_papers_by_database,
-            'papers': papers
+            "query": search.query,
+            "since": search.since.strftime("%Y-%m-%d") if search.since is not None else None,
+            "until": search.until.strftime("%Y-%m-%d") if search.until is not None else None,
+            "limit": search.limit,
+            "limit_per_database": search.limit_per_database,
+            "processed_at": search.processed_at.strftime("%Y-%m-%d %H:%M:%S") if search.processed_at is not None else None,
+            "databases": search.databases,
+            "publication_types": search.publication_types,
+            "number_of_papers": len(papers),
+            "number_of_papers_by_database": number_of_papers_by_database,
+            "papers": papers
         }

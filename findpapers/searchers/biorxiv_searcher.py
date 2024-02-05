@@ -1,7 +1,7 @@
 from findpapers.models.search import Search
 import findpapers.searchers.rxiv_searcher as rxiv_searcher
 
-DATABASE_LABEL = 'bioRxiv'
+DATABASE_LABEL = "bioRxiv"
 
 def run(search: Search):
     """

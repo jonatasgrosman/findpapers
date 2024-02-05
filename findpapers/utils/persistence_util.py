@@ -16,7 +16,7 @@ def save(search: Search, outputpath: str):
         A valid file path used to save the search results
     """
 
-    with open(outputpath, 'w') as jsonfile:
+    with open(outputpath, "w") as jsonfile:
         json.dump(Search.to_dict(search), jsonfile, indent=2, sort_keys=True, ensure_ascii=False)
 
 
@@ -30,5 +30,5 @@ def load(search_path: str):
         A valid file path containing a JSON representation of the search results
     """
 
-    with open(search_path, 'r') as jsonfile:
+    with open(search_path, "r") as jsonfile:
         return Search.from_dict(json.load(jsonfile))
