@@ -27,7 +27,7 @@ class Search():
         until : datetime.date, optional
             The upper bound (inclusive) date of search, by default None
         limit : int, optional
-            The max number of papers that can be returned in the search, 
+            The max number of papers that can be returned in the search,
             when the limit is not provided the search will retrieve all the papers that it can, by default None
         limit_per_database : int, optional
             The max number of papers that can be returned in the search for each database
@@ -116,7 +116,7 @@ class Search():
 
     def add_paper(self, paper: Paper):
         """
-        Method that handle the action to add a paper to the list of already collected papers, 
+        Method that handle the action to add a paper to the list of already collected papers,
         dealing with possible paper's duplications
 
         Parameters
@@ -179,7 +179,6 @@ class Search():
             else:
                 self.papers_by_database[database].add(already_collected_paper)
                 already_collected_paper.enrich(paper)
-        
 
     def get_paper(self, paper_title: str, publication_date: str, paper_doi: Optional[str] = None) -> Paper:
         """
@@ -251,7 +250,7 @@ class Search():
 
     def merge_duplications(self, similarity_threshold: float = 0.95):
         """
-        In some cases, a same paper is represented with tiny differences between some databases, 
+        In some cases, a same paper is represented with tiny differences between some databases,
         this method try to deal with this situation merging those instances of the paper,
         using a similarity threshold, by default 0.95 (95%), i.e., if two papers titles
         are similar by 95% or more, and if the papers have the same year of publication
@@ -274,8 +273,8 @@ class Search():
             paper_2 = self.paper_by_key.get(paper_2_key)
 
             if (paper_1.publication_date is None or paper_2.publication_date is None) or \
-                (paper_1.publication_date.year != paper_2.publication_date.year) or \
-                (paper_1.doi is not None and paper_2.doi is not None and paper_1.doi != paper_2.doi):
+               (paper_1.publication_date.year != paper_2.publication_date.year) or \
+               (paper_1.doi is not None and paper_2.doi is not None and paper_1.doi != paper_2.doi):
                 # We cannot merge paper from different years or without a year defined or different DOI
                 break
 

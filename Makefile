@@ -1,7 +1,7 @@
 .PHONY: help clean setup test test_report
 
-include .env
-export $(shell sed 's/=.*//' .env)
+#include .env
+#export $(shell sed 's/=.*//' .env)
 
 help:
 	@echo "make clean"
@@ -15,7 +15,7 @@ help:
 
 setup: poetry.lock
 poetry.lock: pyproject.toml
-	@poetry install -vvv
+	@poetry install -vvv --with dev
 	@touch poetry.lock
 
 clean:
