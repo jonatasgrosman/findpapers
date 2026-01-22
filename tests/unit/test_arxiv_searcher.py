@@ -31,6 +31,20 @@ paper_entry = {
     }
 }
 
+
+@pytest.fixture
+def mixed_search():
+    return Search("[this] AND ([abs:that thing] OR [ti:something]) AND NOT [anything]", datetime.date(1969, 1, 30), datetime.date(2020, 12, 31), 100, 100)
+
+
+def test_mixed_search_url(mixed_search: Search):
+    start_record = 25
+    query = "all:\"this\" AND (abs:\"that thing\" OR ti:\"something\") ANDNOT all:\"anything\""
+    url = f"http://export.arxiv.org/api/query?search_query={query}&start={start_record}&sortBy=submittedDate&sortOrder=descending&max_results={arxiv_searcher.MAX_ENTRIES_PER_PAGE}"
+    res = arxiv_searcher._get_search_url(mixed_search, start_record)
+    assert res == url
+
+
 @pytest.mark.skip(reason="It needs some revision after some tool's refactoring")
 def test_get_search_url(search: Search):
 
@@ -103,8 +117,8 @@ def test_run(search: Search):
 
     search.limit = 20
     search.limit_per_database = None
-    search.since = datetime.date(2020,8,26)
-    search.until = datetime.date(2020,8,26)
+    search.since = datetime.date(2020, 8, 26)
+    search.until = datetime.date(2020, 8, 26)
 
     arxiv_searcher.run(search)
 

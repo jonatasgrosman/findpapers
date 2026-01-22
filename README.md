@@ -65,6 +65,16 @@ First of all, we need to know how to build the search queries. The search querie
 
 - The composition of terms is only allowed through boolean operators. Queries like "**[term a] [term b]**" are invalid
 
+**Only for arxiv** you can restrict the fields to search
+
+- The field must be defined before the term, inside the brackets. E.g, **[ti:erm a] OR [abs:term b]"
+
+- Only the [valid arxiv api fields](https://info.arxiv.org/help/api/user-manual.html#query_detail) are accepted.
+
+- If none of the fields are specified, the terms will be searched in title or abstract.
+
+- If at least one field are specified, the other terms will be searched in every fields 
+
 We still have a few more rules that are **only applicable on bioRxiv and medRxiv databases**:
 
 - On subqueries with parentheses, only 1-level grouping is supported, i.e., queries with 2-level grouping like **[term a] OR (([term b] OR [term c]) AND [term d])** are considered invalid
@@ -74,6 +84,7 @@ We still have a few more rules that are **only applicable on bioRxiv and medRxiv
 - Only "OR" and "AND" connectors are allowed, i.e., queries like **[term a] AND NOT [term b]** are considered invalid
 
 - Mixed connectors are not allowed on queries (or subqueries when parentheses are used), i.e., queries like **[term a] OR [term b] AND [term b]** are considered invalid. But queries like **[term a] OR [term b] OR [term b]** are considered valid
+
 
 You can use some wildcards in the query too. Use question mark (?) to replace exactly one character, and use an asterisk (*) to replace zero or more characters:
 

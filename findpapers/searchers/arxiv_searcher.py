@@ -1,11 +1,8 @@
-import requests
 import datetime
 import logging
 import re
-import math
 import xmltodict
 import time
-from lxml import html
 from typing import Optional
 import findpapers.utils.common_util as common_util
 import findpapers.utils.query_util as query_util
@@ -174,6 +171,17 @@ SUBJECT_AREA_BY_KEY = {
     "stat.TH": "Statistics Theory"
 }
 
+FIELD_PREFIX = {
+    "ti:",
+    "au:",
+    "abs:",
+    "co:",
+    "jr:",
+    "cat:",
+    "rn:",
+    "all:",
+}
+
 
 def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     """
@@ -194,18 +202,31 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     """
 
     transformed_query = search.query.replace(" AND NOT ", " ANDNOT ")
-    transformed_query = transformed_query.replace("-", " ") # the arXiv search engine doesn"t support hyphens properly
+    transformed_query = transformed_query.replace("-", " ")  # the arXiv search engine doesn"t support hyphens properly
     if transformed_query[0] == "\"":
         transformed_query = " " + transformed_query
+    valid_field_pattern = rf"\[({'|'.join(map(re.escape, FIELD_PREFIX))})"
+    nb_field_type = len(re.findall(valid_field_pattern, transformed_query))
+    transformed_query = re.sub(valid_field_pattern, r"\1[", transformed_query)
     transformed_query = transformed_query.replace("[", "FIELD_TYPE:[")
 
     # when a wildcard is present, the search term cannot be enclosed in quotes
     transformed_query = query_util.replace_search_term_enclosures(transformed_query, "", "", True)
     transformed_query = query_util.replace_search_term_enclosures(transformed_query, "\"", "\"").strip()
 
-    abstract_query = transformed_query.replace("FIELD_TYPE:", "abs:")
-    title_query = transformed_query.replace("FIELD_TYPE:", "ti:")
-    final_query = f"({title_query}) OR ({abstract_query})"
+    nb_all_terms = len(re.findall("FIELD_TYPE:", transformed_query))
+    if nb_field_type == 0:
+        # No categories have been defined
+        abstract_query = re.sub("FIELD_TYPE:", "abs:", transformed_query)
+        title_query = re.sub("FIELD_TYPE:", "ti:", transformed_query)
+        final_query = f"({title_query}) OR ({abstract_query})"
+    elif nb_field_type < nb_all_terms:
+        # Some categories have been defined we complement by all:
+        transformed_query = re.sub(":FIELD_TYPE:", ":", transformed_query)
+        final_query = re.sub("FIELD_TYPE:", "all:", transformed_query)
+    else:
+        # All keywords are defined along a category
+        final_query = transformed_query.replace("FIELD_TYPE:", "")
 
     url = f"{BASE_URL}/api/query?search_query={final_query}&start={start_record}&sortBy=submittedDate&sortOrder=descending&max_results={MAX_ENTRIES_PER_PAGE}"
 
