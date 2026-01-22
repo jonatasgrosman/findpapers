@@ -67,7 +67,7 @@ First of all, we need to know how to build the search queries. The search querie
 
 **Only for arxiv** you can restrict the fields to search
 
-- The field must be defined before the term. E.g, **ti:[term a] OR abs:[term b]"
+- The field must be defined before the term, inside the brackets. E.g, **[ti:erm a] OR [abs:term b]"
 
 - Only the [valid arxiv api fields](https://info.arxiv.org/help/api/user-manual.html#query_detail) are accepted.
 

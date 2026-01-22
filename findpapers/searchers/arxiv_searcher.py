@@ -205,24 +205,25 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     transformed_query = transformed_query.replace("-", " ")  # the arXiv search engine doesn"t support hyphens properly
     if transformed_query[0] == "\"":
         transformed_query = " " + transformed_query
+    valid_field_pattern = rf"\[({'|'.join(map(re.escape, FIELD_PREFIX))})"
+    nb_field_type = len(re.findall(valid_field_pattern, transformed_query))
+    transformed_query = re.sub(valid_field_pattern, r"\1[", transformed_query)
     transformed_query = transformed_query.replace("[", "FIELD_TYPE:[")
 
     # when a wildcard is present, the search term cannot be enclosed in quotes
     transformed_query = query_util.replace_search_term_enclosures(transformed_query, "", "", True)
     transformed_query = query_util.replace_search_term_enclosures(transformed_query, "\"", "\"").strip()
 
-    all_field_type = re.findall(r"FIELD_TYPE:", transformed_query)
-    valid_field_pattern = rf"({'|'.join(map(re.escape, FIELD_PREFIX))})FIELD_TYPE:"
-    valid_field_type = re.findall(valid_field_pattern, transformed_query)
-    if len(valid_field_type) == 0:
+    nb_all_terms = len(re.findall("FIELD_TYPE:", transformed_query))
+    if nb_field_type == 0:
         # No categories have been defined
         abstract_query = re.sub("FIELD_TYPE:", "abs:", transformed_query)
         title_query = re.sub("FIELD_TYPE:", "ti:", transformed_query)
         final_query = f"({title_query}) OR ({abstract_query})"
-    elif len(valid_field_type) < len(all_field_type):
+    elif nb_field_type < nb_all_terms:
         # Some categories have been defined we complement by all:
-        transformed_query = re.sub(valid_field_pattern, r"\1", transformed_query)
-        final_query = re.sub(r"FIELD_TYPE:", "all:", transformed_query)
+        transformed_query = re.sub(":FIELD_TYPE:", ":", transformed_query)
+        final_query = re.sub("FIELD_TYPE:", "all:", transformed_query)
     else:
         # All keywords are defined along a category
         final_query = transformed_query.replace("FIELD_TYPE:", "")

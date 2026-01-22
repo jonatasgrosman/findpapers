@@ -34,7 +34,7 @@ paper_entry = {
 
 @pytest.fixture
 def mixed_search():
-    return Search("[this] AND (abs:[that thing] OR ti:[something]) AND NOT [anything]", datetime.date(1969, 1, 30), datetime.date(2020, 12, 31), 100, 100)
+    return Search("[this] AND ([abs:that thing] OR [ti:something]) AND NOT [anything]", datetime.date(1969, 1, 30), datetime.date(2020, 12, 31), 100, 100)
 
 
 def test_mixed_search_url(mixed_search: Search):
