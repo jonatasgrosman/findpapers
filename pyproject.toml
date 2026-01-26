@@ -26,11 +26,11 @@ typer = "^0.3.2"
 importlib-metadata = {version = "^1.0", python = "<3.8"}
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
-pytest-cov = "^2.10.1"
-pytest-randomly = "^3.4.1"
+pytest = "^7.4.4"
+pytest-cov = "^4.1.0"
+pytest-randomly = "^3.15.0"
 Sphinx = "^3.2.1"
-coverage = {version = "^5.2.1", extras = ["toml"]}
+coverage = {version = "^7.4.4", extras = ["toml"]}
 
 [tool.poetry.urls]
 issues = "https://github.com/jonatasgrosman/findpapers/issues"

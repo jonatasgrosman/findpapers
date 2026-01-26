@@ -56,7 +56,7 @@ def test_paper(paper: Paper):
     assert paper.abstract == "a long abstract"
     assert paper.authors == ["Dr Paul", "Dr John", "Dr George", "Dr Ringo"]
     assert len(paper.urls) == 1
-    assert len(paper.databases) == 5
+    assert len(paper.databases) == 4
 
     paper.databases = set()
 
