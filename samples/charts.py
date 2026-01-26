@@ -31,8 +31,8 @@ def autolabel(rects, ax):
 def databases_venn_chart(papers):
 
     #(Abc, aBc, ABc, abC, AbC, aBC, ABC)
-    all_papers_count = {"Scopus": 0, "ACM": 0, "Scopus-ACM": 0, "IEEE": 0, "Scopus-IEEE": 0, "ACM-IEEE": 0, "all": 0}
-    selected_papers_count = {"Scopus": 0, "ACM": 0, "Scopus-ACM": 0, "IEEE": 0, "Scopus-IEEE": 0, "ACM-IEEE": 0, "all": 0}
+    all_papers_count = {"Scopus": 0, "arXiv": 0, "Scopus-arXiv": 0, "IEEE": 0, "Scopus-IEEE": 0, "arXiv-IEEE": 0, "all": 0}
+    selected_papers_count = {"Scopus": 0, "arXiv": 0, "Scopus-arXiv": 0, "IEEE": 0, "Scopus-IEEE": 0, "arXiv-IEEE": 0, "all": 0}
 
     def fill_papers_count(key):
         all_papers_count[key] += 1
@@ -46,15 +46,15 @@ def databases_venn_chart(papers):
 
         #(Abc, aBc, ABc, abC, AbC, aBC, ABC)
         Abc = values["Scopus"]
-        aBc = values["ACM"]
+        aBc = values["arXiv"]
         Abc = values["Scopus"]
-        ABc = values["Scopus-ACM"]
+        ABc = values["Scopus-arXiv"]
         abC = values["IEEE"]
         AbC = values["Scopus-IEEE"]
-        aBC = values["ACM-IEEE"]
+        aBC = values["arXiv-IEEE"]
         ABC = values["all"]
         
-        venn3(subsets = (Abc, aBc, ABc, abC, AbC, aBC, ABC), set_labels = ("Scopus", "ACM", "IEEE"))
+        venn3(subsets = (Abc, aBc, ABc, abC, AbC, aBC, ABC), set_labels = ("Scopus", "arXiv", "IEEE"))
         
         # circles = venn3_circles(subsets = (Abc, aBc, ABc, abC, AbC, aBC, ABC))
         # for circle in circles:
@@ -69,22 +69,22 @@ def databases_venn_chart(papers):
     for paper in papers:
 
         is_in_scopus = "Scopus" in paper["databases"]
-        is_in_acm = "ACM" in paper["databases"]
+        is_in_arxiv = "arXiv" in paper["databases"]
         is_in_IEEE = "IEEE" in paper["databases"]
 
-        if is_in_scopus and not is_in_acm and not is_in_IEEE:
+        if is_in_scopus and not is_in_arxiv and not is_in_IEEE:
             fill_papers_count("Scopus")
-        elif is_in_acm and not is_in_scopus and not is_in_IEEE:
-            fill_papers_count("ACM")
-        elif is_in_IEEE and not is_in_scopus and not is_in_acm:
+        elif is_in_arxiv and not is_in_scopus and not is_in_IEEE:
+            fill_papers_count("arXiv")
+        elif is_in_IEEE and not is_in_scopus and not is_in_arxiv:
             fill_papers_count("IEEE")
-        elif is_in_scopus and is_in_acm and not is_in_IEEE:
-            fill_papers_count("Scopus-ACM")
-        elif is_in_scopus and is_in_IEEE and not is_in_acm:
+        elif is_in_scopus and is_in_arxiv and not is_in_IEEE:
+            fill_papers_count("Scopus-arXiv")
+        elif is_in_scopus and is_in_IEEE and not is_in_arxiv:
             fill_papers_count("Scopus-IEEE")
-        elif is_in_acm and is_in_IEEE and not is_in_scopus:
-            fill_papers_count("ACM-IEEE")
-        elif is_in_scopus and is_in_acm and is_in_IEEE:
+        elif is_in_arxiv and is_in_IEEE and not is_in_scopus:
+            fill_papers_count("arXiv-IEEE")
+        elif is_in_scopus and is_in_arxiv and is_in_IEEE:
             fill_papers_count("all")
         else:
             print(paper)

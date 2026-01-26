@@ -67,7 +67,7 @@ def test_paper(paper: Paper):
     paper.add_database("Scopus")
     assert len(paper.databases) == 1
 
-    paper.add_database("ACM")
+    paper.add_database("PubMed")
     assert len(paper.databases) == 2
 
     assert len(paper.urls) == 1

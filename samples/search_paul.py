@@ -11,7 +11,7 @@ scopus_api_token = "SOME_SUPER_SECRET_TOKEN"
 ieee_api_token = "SOME_SUPER_SECRET_TOKEN"
 limit = 100
 limit_per_database = 4
-databases = ["acm", "ieee", "scopus"]
+databases = ["ieee", "scopus"]
 publication_types = ["journal", "conference proceedings"]
 categories = {
     "Research Type": [

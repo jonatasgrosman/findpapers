@@ -5,7 +5,7 @@
 <!--[![pipeline status](https://gitlab.com/jonatasgrosman/findpapers/badges/master/pipeline.svg)](https://gitlab.com/jonatasgrosman/findpapers/-/commits/master)-->
 <!--[![coverage report](https://gitlab.com/jonatasgrosman/findpapers/badges/master/coverage.svg)](https://gitlab.com/jonatasgrosman/findpapers/-/commits/master)-->
 
-Findpapers is an application that helps researchers who are looking for references for their work. The application will perform searches in several databases (currently ACM, arXiv, bioRxiv, IEEE, medRxiv, PubMed, and Scopus) from a user-defined search query.
+Findpapers is an application that helps researchers who are looking for references for their work. The application will perform searches in several databases (currently arXiv, bioRxiv, IEEE, medRxiv, PubMed, and Scopus) from a user-defined search query.
 
 In summary, this tool will help you to perform the process below:
 
@@ -193,10 +193,10 @@ $ export SCOPUS_TOKEN=SOME_SUPER_SECRET_TOKEN
 $ findpapers search /some/path/search_paul.json --query-file /some/path/query.txt --limit-db 4 --token-ieee "$IEEE_TOKEN" --token-scopus "$SCOPUS_TOKEN"
 ```
 
-*Now everything is working as he expected, so it's time to do the final papers search. So he defines that he wants to collect only works published between 2000 and 2020. He also decides that he only wants papers collected from ACM, IEEE, and Scopus. And he only wants to papers published on a journal or conference proceedings (Tip: The available publication types on Findpapers are: journal, conference proceedings, book, other. When a particular publication does not fit into any of the other types it is classified as "other", e.g., magazines, newsletters, unpublished manuscripts)*
+*Now everything is working as he expected, so it's time to do the final papers search. So he defines that he wants to collect only works published between 2000 and 2020. He also decides that he only wants papers collected from IEEE and Scopus. And he only wants to papers published on a journal or conference proceedings (Tip: The available publication types on Findpapers are: journal, conference proceedings, book, other. When a particular publication does not fit into any of the other types it is classified as "other", e.g., magazines, newsletters, unpublished manuscripts)*
 
 ```console
-$ findpapers search /some/path/search_paul.json --query-file /some/path/query.txt --token-ieee "$IEEE_TOKEN" --token-scopus "$SCOPUS_TOKEN" --since 2000-01-01 --until 2020-12-31 --databases "acm,ieee,scopus" --publication-types "journal,conference proceedings"
+$ findpapers search /some/path/search_paul.json --query-file /some/path/query.txt --token-ieee "$IEEE_TOKEN" --token-scopus "$SCOPUS_TOKEN" --since 2000-01-01 --until 2020-12-31 --databases "ieee,scopus" --publication-types "journal,conference proceedings"
 ```
 
 *The searching process took a long time, but after many cups of coffee, Dr. McCartney finally has a good list of papers with the potential to help in his research. All the information collected is in the ```search_paul.json``` file. He could access this file now and manually filter which works are most interesting for him, but he prefers to use the Findpapers ```refine``` command for this.*

@@ -9,7 +9,7 @@ readme = "README.md"
 homepage = "https://github.com/jonatasgrosman/findpapers"
 repository = "https://github.com/jonatasgrosman/findpapers"
 documentation = "https://github.com/jonatasgrosman/findpapers"
-keywords = ["academic", "academic publications", "academic publishing", "acm", "arxiv", "bibtex", "biorxiv", "collect papers", "crawler", "ieee", "medrxiv", "paper", "papers", "pubmed", "research", "scientific papers", "scientific publications", "scientific publishing", "scopus", "scraper", "systematic mapping", "systematic review"]
+keywords = ["academic", "academic publications", "academic publishing", "arxiv", "bibtex", "biorxiv", "collect papers", "crawler", "ieee", "medrxiv", "paper", "papers", "pubmed", "research", "scientific papers", "scientific publications", "scientific publishing", "scopus", "scraper", "systematic mapping", "systematic review"]
 
 [tool.poetry.scripts]
 findpapers = "findpapers.cli:main"

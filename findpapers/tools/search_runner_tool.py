@@ -15,7 +15,6 @@ import findpapers.searchers.scopus_searcher as scopus_searcher
 import findpapers.searchers.ieee_searcher as ieee_searcher
 import findpapers.searchers.pubmed_searcher as pubmed_searcher
 import findpapers.searchers.arxiv_searcher as arxiv_searcher
-import findpapers.searchers.acm_searcher as acm_searcher
 import findpapers.searchers.medrxiv_searcher as medrxiv_searcher
 import findpapers.searchers.biorxiv_searcher as biorxiv_searcher
 import findpapers.utils.common_util as common_util
@@ -517,10 +516,6 @@ def search(outputpath: str, query: Optional[str] = None, since: Optional[datetim
     if databases is None or pubmed_searcher.DATABASE_LABEL.lower() in databases:
         _database_safe_run(lambda: pubmed_searcher.run(search),
                         search, pubmed_searcher.DATABASE_LABEL)
-
-    if databases is None or acm_searcher.DATABASE_LABEL.lower() in databases:
-        _database_safe_run(lambda: acm_searcher.run(search),
-                        search, acm_searcher.DATABASE_LABEL)
 
     if ieee_api_token is not None:
         if databases is None or ieee_searcher.DATABASE_LABEL.lower() in databases:
