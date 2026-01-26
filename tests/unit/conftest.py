@@ -26,7 +26,7 @@ def paper(publication):
     comments = "some comments"
     number_of_pages = 4
     pages = "1-4"
-    databases = {"arXiv", "ACM", "IEEE", "PubMed", "Scopus"}
+    databases = {"arXiv", "IEEE", "PubMed", "Scopus"}
     selected = True
     categories = {"Facet A": ["Category A", "Category B"]}
 
