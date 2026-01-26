@@ -9,13 +9,13 @@ readme = "README.md"
 homepage = "https://github.com/jonatasgrosman/findpapers"
 repository = "https://github.com/jonatasgrosman/findpapers"
 documentation = "https://github.com/jonatasgrosman/findpapers"
-keywords = ["academic", "academic publications", "academic publishing", "acm", "arxiv", "bibtex", "biorxiv", "collect papers", "crawler", "ieee", "medrxiv", "paper", "papers", "pubmed", "research", "scientific papers", "scientific publications", "scientific publishing", "scopus", "scraper", "systematic mapping", "systematic review"]
+keywords = ["academic", "academic publications", "academic publishing", "arxiv", "bibtex", "biorxiv", "collect papers", "crawler", "ieee", "medrxiv", "paper", "papers", "pubmed", "research", "scientific papers", "scientific publications", "scientific publishing", "scopus", "scraper", "systematic mapping", "systematic review"]
 
 [tool.poetry.scripts]
 findpapers = "findpapers.cli:main"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.10"
 lxml = "^4.5.2"
 requests = "^2.24.0"
 colorama = "^0.4.3"
@@ -26,11 +26,11 @@ typer = "^0.3.2"
 importlib-metadata = {version = "^1.0", python = "<3.8"}
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
-pytest-cov = "^2.10.1"
-pytest-randomly = "^3.4.1"
+pytest = "^7.4.4"
+pytest-cov = "^4.1.0"
+pytest-randomly = "^3.15.0"
 Sphinx = "^3.2.1"
-coverage = {version = "^5.2.1", extras = ["toml"]}
+coverage = {version = "^7.4.4", extras = ["toml"]}
 
 [tool.poetry.urls]
 issues = "https://github.com/jonatasgrosman/findpapers/issues"

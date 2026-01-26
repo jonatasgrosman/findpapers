@@ -84,7 +84,7 @@ def search(
 
         E.g.: "son*" -> will match song, sons, sonar, songwriting, ...
 
-        Nowadays, we search for papers on ACM, arXiv, IEEE, PubMed, and Scopus database.
+        Nowadays, we search for papers on arXiv, IEEE, PubMed, and Scopus database.
         The searching on IEEE and Scopus requires an API token, that must to be provided
         by the user using the -ts (or --scopus_api_token) and -te (or --ieee_api_token) arguments.
         If these tokens are not provided the search on these databases will be skipped.
@@ -97,11 +97,11 @@ def search(
 
         You can control which databases you would like to use in your search by the -d (or --databases) option. This parameter
         accepts a comma-separated list of database names, and is case-insensitive. Nowadays the available databases are
-        ACM, arXiv, IEEE, PubMed, Scopus
+        arXiv, IEEE, PubMed, Scopus
 
         E.g.:
-        --databases "scopus,arxiv,acm"
-        --databases "ieee,ACM,PubMed"
+        --databases "scopus,arxiv,pubmed"
+        --databases "ieee,PubMed"
 
         You can control which publication types you would like to fetch in your search by the -p (or --publication-types) option. This parameter
         accepts a comma-separated list of database names, and is case-insensitive. Nowadays the available publication types are

@@ -90,7 +90,7 @@ class Paper():
         Raises
         ------
         ValueError
-            - Nowadays only ACM, arXiv, IEEE, PubMed or Scopus are valid database names
+            - Nowadays only arXiv, IEEE, PubMed or Scopus are valid database names
         """
 
         from findpapers.searchers import AVAILABLE_DATABASES
