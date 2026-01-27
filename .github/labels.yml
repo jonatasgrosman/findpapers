@@ -1,3 +1,5 @@
+sync: true
+
 - name: feat
   color: "0e8a16"
   description: "New features"
