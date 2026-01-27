@@ -9,6 +9,7 @@ on:
       - main
 
 
+jobs:
   semantic-pr-title:
     runs-on: ubuntu-latest
     steps:
