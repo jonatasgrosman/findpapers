@@ -27,11 +27,8 @@ def paper(publication):
     number_of_pages = 4
     pages = "1-4"
     databases = {"arXiv", "IEEE", "PubMed", "Scopus"}
-    selected = True
-    categories = {"Facet A": ["Category A", "Category B"]}
-
     paper = Paper(title, abstract, authors, publication, publication_date, urls, doi, citations, keywords,
-                  comments, number_of_pages, pages, databases, selected, categories)
+                  comments, number_of_pages, pages, databases)
 
     return paper
 

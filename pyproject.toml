@@ -11,18 +11,12 @@ repository = "https://github.com/jonatasgrosman/findpapers"
 documentation = "https://github.com/jonatasgrosman/findpapers"
 keywords = ["academic", "academic publications", "academic publishing", "arxiv", "bibtex", "biorxiv", "collect papers", "crawler", "ieee", "medrxiv", "paper", "papers", "pubmed", "research", "scientific papers", "scientific publications", "scientific publishing", "scopus", "scraper", "systematic mapping", "systematic review"]
 
-[tool.poetry.scripts]
-findpapers = "findpapers.cli:main"
-
 [tool.poetry.dependencies]
 python = "^3.10"
 lxml = "^4.5.2"
 requests = "^2.24.0"
-colorama = "^0.4.3"
-inquirer = "^2.7.0"
 edlib = "^1.3.8"
 xmltodict = "^0.12.0"
-typer = "^0.3.2"
 importlib-metadata = {version = "^1.0", python = "<3.8"}
 
 [tool.poetry.dev-dependencies]

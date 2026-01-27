@@ -13,8 +13,7 @@ class Paper():
     def __init__(self, title: str, abstract: str, authors: List[str], publication: Publication,
                  publication_date: datetime.date, urls: Set[str], doi: Optional[str] = None, citations: Optional[int] = None,
                  keywords: Optional[Set[str]] = None, comments: Optional[str] = None, number_of_pages: Optional[int] = None,
-                 pages: Optional[str] = None, databases: Optional[set] = None, selected: Optional[bool] = None,
-                 categories: Optional[bool] = None):
+                 pages: Optional[str] = None, databases: Optional[set] = None):
         """
         Paper class constructor
 
@@ -46,10 +45,6 @@ class Paper():
             Paper page number or range, by default None
         databases : set, optional
             The databases where the paper was found, by default None
-        selected : bool, optional
-            If a paper was selected by the user, by default None
-        categories : dict, optional
-            The defined paper categories by their facets, by default None
         Raises
         ------
         ValueError
@@ -75,8 +70,6 @@ class Paper():
         self.number_of_pages = number_of_pages
         self.pages = pages
         self.databases = databases if databases is not None else set()
-        self.selected = selected
-        self.categories = categories
 
     def add_database(self, database_name: str):
         """
@@ -185,28 +178,6 @@ class Paper():
 
         return citation_key
 
-    def has_category_match(self, categories: dict) -> bool:
-        """
-        Check is there is a match with provided categories
-
-        Parameters
-        ----------
-        categories : dict
-            The categories to match
-
-        Returns
-        -------
-        bool
-            if has a match with provided categories
-        """
-
-        if categories is not None and self.categories is not None:
-            for facet, facet_categories in categories.items():
-                for facet_category in facet_categories:
-                    if facet_category in self.categories.get(facet, []):
-                        return True
-
-        return False
 
     @classmethod
     def from_dict(cls, paper_dict: dict) -> Paper:
@@ -239,11 +210,8 @@ class Paper():
         number_of_pages = paper_dict.get("number_of_pages")
         pages = paper_dict.get("pages")
         databases = set(paper_dict.get("databases"))
-        selected = paper_dict.get("selected")
-        categories = paper_dict.get("categories")
-
         return cls(title, abstract, authors, publication, publication_date, urls, doi, citations, keywords,
-                   comments, number_of_pages, pages, databases, selected, categories)
+               comments, number_of_pages, pages, databases)
 
     @staticmethod
     def to_dict(paper: Paper) -> dict:
@@ -275,6 +243,4 @@ class Paper():
             "number_of_pages": paper.number_of_pages,
             "pages": paper.pages,
             "databases": list(paper.databases),
-            "selected": paper.selected,
-            "categories": paper.categories,
         }
