@@ -5,8 +5,7 @@ import findpapers.utils.persistence_util as persistence_util
 import findpapers.utils.common_util as common_util
 
 
-def generate_bibtex(search_path: str, outputpath: str, only_selected_papers: Optional[bool] = False,
-                    categories_filter: Optional[dict] = None, add_findpapers_citation: Optional[bool] = False, 
+def generate_bibtex(search_path: str, outputpath: str, add_findpapers_citation: Optional[bool] = False,
                     verbose: Optional[bool] = False):
     """
     Method used to generate a BibTeX file from a search result
@@ -17,10 +16,6 @@ def generate_bibtex(search_path: str, outputpath: str, only_selected_papers: Opt
         A valid file path containing a JSON representation of the search results
     outputpath : str
         A valid file path for the BibTeX output file
-    only_selected_papers : bool, optional
-        If you only want to generate a BibTeX file for selected papers, by default False
-    categories_filter : dict, None by default
-        A dict of categories to be used to filter which papers will be downloaded
     add_findpapers_citation : bool, optional
         If you want to add an entry for Findpapers in your BibTeX output file, by default False
     verbose : Optional[bool], optional
@@ -48,10 +43,6 @@ def generate_bibtex(search_path: str, outputpath: str, only_selected_papers: Opt
         ])
 
     for paper in search.papers:
-
-        if (only_selected_papers and not paper.selected) or \
-        (categories_filter is not None and (paper.categories is None or not paper.has_category_match(categories_filter))):
-            continue
 
         logging.info(f"Exporting bibtex for: {paper.title}")
 

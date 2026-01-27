@@ -13,8 +13,7 @@ from findpapers.models.search import Search
 from findpapers.utils.requests_util import DefaultSession
 
 
-def download(search_path: str, output_directory: str, only_selected_papers: Optional[bool] = False,
-             categories_filter: Optional[dict] = None, proxy: Optional[str] = None, verbose: Optional[bool] = False):
+def download(search_path: str, output_directory: str, proxy: Optional[str] = None, verbose: Optional[bool] = False):
     """
     If you've done your search and want to download the papers,
     this is the method that you need to call. This method will try to download the PDF version of the papers to
@@ -36,10 +35,6 @@ def download(search_path: str, output_directory: str, only_selected_papers: Opti
         A valid file path containing a JSON representation of the search results
     output_directory : str
         A valid file path of the directory where the downloaded papers will be placed
-    only_selected_papers : bool, False by default
-        If only the selected papers will be downloaded
-    categories_filter : dict, None by default
-        A dict of categories to be used to filter which papers will be downloaded
     proxy : Optional[str], optional
         proxy URL that can be used during requests. This can be also defined by an environment variable FINDPAPERS_PROXY. By default None
     verbose : Optional[bool], optional
@@ -68,10 +63,6 @@ def download(search_path: str, output_directory: str, only_selected_papers: Opti
     for i, paper in enumerate(search.papers):
 
         logging.info(f"({i+1}/{len(search.papers)}) {paper.title}")
-
-        if (only_selected_papers and not paper.selected) or \
-        (categories_filter is not None and (paper.categories is None or not paper.has_category_match(categories_filter))):
-            continue
 
         downloaded = False
         output_filename = f"{paper.publication_date.year}-{paper.title}"

@@ -125,8 +125,8 @@ search_file = "search.json"
 query = "[happiness] AND ([joy] OR [peace of mind]) AND NOT [stressful]"
 
 findpapers.search(search_file, query, since=datetime.date(2020, 1, 1))
-findpapers.download(search_file, "/some/path/papers", only_selected_papers=True)
-findpapers.generate_bibtex(search_file, "/some/path/mybib.bib", only_selected_papers=True)
+findpapers.download(search_file, "/some/path/papers")
+findpapers.generate_bibtex(search_file, "/some/path/mybib.bib")
 ```
 
 For a more complete script, see [samples/search_paul.py](https://github.com/jonatasgrosman/findpapers/blob/master/samples/search_paul.py).
