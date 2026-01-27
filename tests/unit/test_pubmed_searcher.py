@@ -1,9 +1,9 @@
 import copy
 import datetime
-import pytest
+
 import findpapers.searchers.pubmed_searcher as pubmed_searcher
-from findpapers.models.search import Search
 from findpapers.models.publication import Publication
+from findpapers.models.search import Search
 
 paper_entry = {
     "PubmedArticleSet": {
@@ -12,15 +12,8 @@ paper_entry = {
                 "Article": {
                     "Journal": {
                         "Title": "fake publication title",
-                        "ISSN": {
-                            "#text": "fake-issn"
-                        },
-                        "JournalIssue": {
-                            "PubDate": {
-                                "Month": "Feb",
-                                "Year": "2020"
-                            }
-                        }
+                        "ISSN": {"#text": "fake-issn"},
+                        "JournalIssue": {"PubDate": {"Month": "Feb", "Year": "2020"}},
                     },
                     "ArticleTitle": "fake paper title",
                     "ArticleDate": {
@@ -28,30 +21,21 @@ paper_entry = {
                         "Month": "02",
                         "Year": "2020",
                     },
-                    "Abstract": {
-                        "AbstractText": "fake paper abstract"
-                    },
+                    "Abstract": {"AbstractText": "fake paper abstract"},
                     "AuthorList": {
                         "Author": [
                             {"ForeName": "author", "LastName": "A"},
-                            {"ForeName": "author", "LastName": "B"}
+                            {"ForeName": "author", "LastName": "B"},
                         ]
-                    }
+                    },
                 },
-                "KeywordList": {
-                    "Keyword": [
-                        {"#text": "term A"},
-                        {"#text": "term B"}
-                    ]
-                }
+                "KeywordList": {"Keyword": [{"#text": "term A"}, {"#text": "term B"}]},
             },
             "PubmedData": {
                 "ArticleIdList": {
-                    "ArticleId": [
-                        {"@IdType": "doi", "#text": "fake-doi"}
-                    ]
+                    "ArticleId": [{"@IdType": "doi", "#text": "fake-doi"}]
                 }
-            }
+            },
         }
     }
 }
@@ -68,7 +52,7 @@ def test_get_search_url(search: Search):
 
     query = search.query.replace(" AND NOT ", " NOT ")
 
-    url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term={query} AND has abstract [FILT] AND \"journal article\"[Publication Type]"
+    url = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term={query} AND has abstract [FILT] AND "journal article"[Publication Type]'
     url += f" AND {search.since.strftime('%Y/%m/%d')}:{search.until.strftime('%Y/%m/%d')}[Date - Publication]"
     url += f"&retstart={start_record}&retmax=50&sort=pub+date"
 
@@ -104,18 +88,24 @@ def test_get_paper(publication: Publication):
     assert len(paper.urls) == 0
 
     alternative_paper_entry = copy.deepcopy(paper_entry)
-    del alternative_paper_entry["PubmedArticleSet"]["PubmedArticle"]["MedlineCitation"]["Article"]["ArticleDate"]
-    alternative_paper_entry["PubmedArticleSet"]["PubmedArticle"][
-        "MedlineCitation"]["Article"]["Abstract"]["AbstractText"] = [{"#text": "fake paper abstract"}, {"#text": None}]
-    del alternative_paper_entry["PubmedArticleSet"]["PubmedArticle"]["MedlineCitation"]["KeywordList"]
+    del alternative_paper_entry["PubmedArticleSet"]["PubmedArticle"]["MedlineCitation"][
+        "Article"
+    ]["ArticleDate"]
+    alternative_paper_entry["PubmedArticleSet"]["PubmedArticle"]["MedlineCitation"][
+        "Article"
+    ]["Abstract"]["AbstractText"] = [{"#text": "fake paper abstract"}, {"#text": None}]
+    del alternative_paper_entry["PubmedArticleSet"]["PubmedArticle"]["MedlineCitation"][
+        "KeywordList"
+    ]
 
     paper = pubmed_searcher._get_paper(alternative_paper_entry, publication)
     assert paper.publication_date == datetime.date(2020, 2, 1)
     assert paper.abstract == "fake paper abstract\n"
 
     alternative_paper_entry = copy.deepcopy(paper_entry)
-    alternative_paper_entry["PubmedArticleSet"]["PubmedArticle"][
-        "MedlineCitation"]["Article"]["ArticleDate"]["Month"] = "INVALID MONTH"
+    alternative_paper_entry["PubmedArticleSet"]["PubmedArticle"]["MedlineCitation"][
+        "Article"
+    ]["ArticleDate"]["Month"] = "INVALID MONTH"
 
     paper = pubmed_searcher._get_paper(alternative_paper_entry, publication)
     assert paper.publication_date == datetime.date(2020, 1, 1)

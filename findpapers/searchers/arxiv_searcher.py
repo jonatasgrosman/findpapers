@@ -1,19 +1,17 @@
-import requests
 import datetime
 import logging
 import re
-import math
-import xmltodict
 import time
-from lxml import html
 from typing import Optional
+
+import xmltodict
+
 import findpapers.utils.common_util as common_util
 import findpapers.utils.query_util as query_util
-from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
+from findpapers.models.search import Search
 from findpapers.utils.requests_util import DefaultSession
-
 
 DATABASE_LABEL = "arXiv"
 BASE_URL = "http://export.arxiv.org"
@@ -171,7 +169,7 @@ SUBJECT_AREA_BY_KEY = {
     "stat.ME": "Methodology",
     "stat.ML": "Machine Learning",
     "stat.OT": "Other Statistics",
-    "stat.TH": "Statistics Theory"
+    "stat.TH": "Statistics Theory",
 }
 
 
@@ -194,14 +192,20 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     """
 
     transformed_query = search.query.replace(" AND NOT ", " ANDNOT ")
-    transformed_query = transformed_query.replace("-", " ") # the arXiv search engine doesn"t support hyphens properly
-    if transformed_query[0] == "\"":
+    transformed_query = transformed_query.replace(
+        "-", " "
+    )  # the arXiv search engine doesn"t support hyphens properly
+    if transformed_query[0] == '"':
         transformed_query = " " + transformed_query
     transformed_query = transformed_query.replace("[", "FIELD_TYPE:[")
 
     # when a wildcard is present, the search term cannot be enclosed in quotes
-    transformed_query = query_util.replace_search_term_enclosures(transformed_query, "", "", True)
-    transformed_query = query_util.replace_search_term_enclosures(transformed_query, "\"", "\"").strip()
+    transformed_query = query_util.replace_search_term_enclosures(
+        transformed_query, "", "", True
+    )
+    transformed_query = query_util.replace_search_term_enclosures(
+        transformed_query, '"', '"'
+    ).strip()
 
     abstract_query = transformed_query.replace("FIELD_TYPE:", "abs:")
     title_query = transformed_query.replace("FIELD_TYPE:", "ti:")
@@ -212,7 +216,9 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     return url
 
 
-def _get_api_result(search: Search, start_record: Optional[int] = 0) -> dict: # pragma: no cover
+def _get_api_result(
+    search: Search, start_record: Optional[int] = 0
+) -> dict:  # pragma: no cover
     """
     This method return results from arXiv database using the provided search parameters
 
@@ -231,7 +237,9 @@ def _get_api_result(search: Search, start_record: Optional[int] = 0) -> dict: # 
 
     url = _get_search_url(search, start_record)
 
-    return common_util.try_success(lambda: xmltodict.parse(DefaultSession().get(url).content), 2, pre_delay=1)
+    return common_util.try_success(
+        lambda: xmltodict.parse(DefaultSession().get(url).content), 2, pre_delay=1
+    )
 
 
 def _get_publication(paper_entry: dict) -> Publication:
@@ -265,17 +273,20 @@ def _get_publication(paper_entry: dict) -> Publication:
                     if subject_area is not None:
                         subject_areas.add(subject_area)
             else:
-                subject_area = SUBJECT_AREA_BY_KEY.get(paper_entry.get("category").get("@term"), None)
+                subject_area = SUBJECT_AREA_BY_KEY.get(
+                    paper_entry.get("category").get("@term"), None
+                )
                 if subject_area is not None:
                     subject_areas.add(subject_area)
 
-        publication = Publication(
-            publication_title, subject_areas=subject_areas)
+        publication = Publication(publication_title, subject_areas=subject_areas)
 
         return publication
 
 
-def _get_paper(paper_entry: dict, paper_publication_date: datetime.date, publication: Publication) -> Paper:
+def _get_paper(
+    paper_entry: dict, paper_publication_date: datetime.date, publication: Publication
+) -> Paper:
     """
     Using a paper entry provided, this method builds a paper instance
 
@@ -299,11 +310,14 @@ def _get_paper(paper_entry: dict, paper_publication_date: datetime.date, publica
     if paper_title is None or len(paper_title) == 0:
         return None
 
-    paper_title = paper_title.replace("\n","") 
+    paper_title = paper_title.replace("\n", "")
     paper_title = re.sub(" +", " ", paper_title)
 
-    paper_doi = paper_entry.get("arxiv:doi").get(
-        "#text") if "arxiv:doi" in paper_entry else None
+    paper_doi = (
+        paper_entry.get("arxiv:doi").get("#text")
+        if "arxiv:doi" in paper_entry
+        else None
+    )
     paper_abstract = paper_entry.get("summary", None)
     paper_urls = set()
     paper_authors = []
@@ -324,8 +338,16 @@ def _get_paper(paper_entry: dict, paper_publication_date: datetime.date, publica
 
     paper_comments = paper_entry.get("arxiv:comment", {}).get("#text", None)
 
-    paper = Paper(paper_title, paper_abstract, paper_authors, publication,
-                  paper_publication_date, paper_urls, paper_doi, comments=paper_comments)
+    paper = Paper(
+        paper_title,
+        paper_abstract,
+        paper_authors,
+        publication,
+        paper_publication_date,
+        paper_urls,
+        paper_doi,
+        comments=paper_comments,
+    )
 
     return paper
 
@@ -345,15 +367,14 @@ def run(search: Search):
     papers_count = 0
     result = _get_api_result(search)
 
-    total_papers = int(result.get("feed").get(
-        "opensearch:totalResults").get("#text"))
+    total_papers = int(result.get("feed").get("opensearch:totalResults").get("#text"))
 
     logging.info(f"arXiv: {total_papers} papers to fetch")
 
-    while(papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL)):
+    while papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL):
 
         entries = result.get("feed", {}).get("entry", [])
-        if type(entries) != list: # if there"s only one entry the result is not a list just a dict
+        if not isinstance(entries, list):  # if there's only one entry the result is not a list just a dict
             entries = [entries]
 
         for paper_entry in entries:
@@ -366,19 +387,20 @@ def run(search: Search):
             try:
 
                 paper_title = paper_entry.get("title")
-                logging.info(f"({papers_count}/{total_papers}) Fetching arXiv paper: {paper_title}")
+                logging.info(
+                    f"({papers_count}/{total_papers}) Fetching arXiv paper: {paper_title}"
+                )
 
                 published_date = datetime.datetime.strptime(
-                    paper_entry.get("published")[:10], "%Y-%m-%d").date()
+                    paper_entry.get("published")[:10], "%Y-%m-%d"
+                ).date()
 
                 # nowadays we don't have a date filter on arXiv API, so we need to do it by ourselves
                 if search.since is not None and published_date < search.since:
-                    logging.info(
-                        "Skipping paper due to \"since\" date constraint")
+                    logging.info('Skipping paper due to "since" date constraint')
                     continue
                 elif search.until is not None and published_date > search.until:
-                    logging.info(
-                        "Skipping paper due to \"until\" date constraint")
+                    logging.info('Skipping paper due to "until" date constraint')
                     continue
 
                 publication = _get_publication(paper_entry)
@@ -392,5 +414,5 @@ def run(search: Search):
                 logging.debug(e, exc_info=True)
 
         if papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL):
-            time.sleep(1) # sleep for 1 second to avoid server blocking
+            time.sleep(1)  # sleep for 1 second to avoid server blocking
             result = _get_api_result(search, papers_count)

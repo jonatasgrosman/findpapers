@@ -1,10 +1,10 @@
-import json
 import copy
 import tempfile
+
 import findpapers
-from findpapers.models.search import Search
-from findpapers.models.paper import Paper
 import findpapers.utils.persistence_util as persistence_util
+from findpapers.models.paper import Paper
+from findpapers.models.search import Search
 
 
 def test_output(search: Search, paper: Paper):
@@ -34,7 +34,7 @@ def test_output(search: Search, paper: Paper):
 
     search_path = tempfile.NamedTemporaryFile().name
     outputpath = tempfile.NamedTemporaryFile().name
-    
+
     persistence_util.save(search, search_path)
 
     findpapers.generate_bibtex(search_path, outputpath)
@@ -50,4 +50,3 @@ def test_output(search: Search, paper: Paper):
     assert inproceedings_header in generated_bibtex
     assert book_header in generated_bibtex
     assert unpublished in generated_bibtex
-

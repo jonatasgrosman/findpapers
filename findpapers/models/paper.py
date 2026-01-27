@@ -1,19 +1,33 @@
 from __future__ import annotations
+
 import datetime
 import re
-from typing import List, Set, Optional
+from typing import List, Optional, Set
+
 from findpapers.models.publication import Publication
 
 
-class Paper():
+class Paper:
     """
     Class that represents a paper instance
     """
 
-    def __init__(self, title: str, abstract: str, authors: List[str], publication: Publication,
-                 publication_date: datetime.date, urls: Set[str], doi: Optional[str] = None, citations: Optional[int] = None,
-                 keywords: Optional[Set[str]] = None, comments: Optional[str] = None, number_of_pages: Optional[int] = None,
-                 pages: Optional[str] = None, databases: Optional[set] = None):
+    def __init__(
+        self,
+        title: str,
+        abstract: str,
+        authors: List[str],
+        publication: Publication,
+        publication_date: datetime.date,
+        urls: Set[str],
+        doi: Optional[str] = None,
+        citations: Optional[int] = None,
+        keywords: Optional[Set[str]] = None,
+        comments: Optional[str] = None,
+        number_of_pages: Optional[int] = None,
+        pages: Optional[str] = None,
+        databases: Optional[set] = None,
+    ):
         """
         Paper class constructor
 
@@ -52,10 +66,10 @@ class Paper():
         """
 
         if title is None or len(title) == 0:
-            raise(ValueError("Paper's title cannot be null"))
+            raise (ValueError("Paper's title cannot be null"))
 
         if publication_date is None:
-            raise(ValueError("Paper's publication_date cannot be null"))
+            raise (ValueError("Paper's publication_date cannot be null"))
 
         self.title = title
         self.abstract = abstract
@@ -90,7 +104,8 @@ class Paper():
 
         if database_name not in AVAILABLE_DATABASES:
             raise ValueError(
-                f"Invalid database name \"{database_name}\". Nowadays only {', '.join(AVAILABLE_DATABASES)} are valid database names")
+                f"Invalid database name \"{database_name}\". Nowadays only {', '.join(AVAILABLE_DATABASES)} are valid database names"
+            )
 
         self.databases.add(database_name)
 
@@ -121,26 +136,41 @@ class Paper():
 
         if self.doi is None:
             self.doi = paper.doi
-        
-        if self.abstract is None or (paper.abstract is not None and len(paper.abstract) > len(self.abstract)):
+
+        if self.abstract is None or (
+            paper.abstract is not None and len(paper.abstract) > len(self.abstract)
+        ):
             self.abstract = paper.abstract
 
-        if self.authors is None or (paper.authors is not None and len(paper.authors) > len(self.authors)):
+        if self.authors is None or (
+            paper.authors is not None and len(paper.authors) > len(self.authors)
+        ):
             self.authors = paper.authors
 
-        if self.citations is None or (paper.citations is not None and paper.citations > self.citations):
+        if self.citations is None or (
+            paper.citations is not None and paper.citations > self.citations
+        ):
             self.citations = paper.citations
 
-        if self.keywords is None or (paper.keywords is not None and len(paper.keywords) > len(self.keywords)):
+        if self.keywords is None or (
+            paper.keywords is not None and len(paper.keywords) > len(self.keywords)
+        ):
             self.keywords = paper.keywords
 
-        if self.comments is None or (paper.comments is not None and len(paper.comments) > len(self.comments)):
+        if self.comments is None or (
+            paper.comments is not None and len(paper.comments) > len(self.comments)
+        ):
             self.comments = paper.comments
 
-        if self.number_of_pages is None or (paper.number_of_pages is not None and paper.number_of_pages > self.number_of_pages):
+        if self.number_of_pages is None or (
+            paper.number_of_pages is not None
+            and paper.number_of_pages > self.number_of_pages
+        ):
             self.number_of_pages = paper.number_of_pages
 
-        if self.pages is None or (paper.pages is not None and len(paper.pages) > len(self.pages)):
+        if self.pages is None or (
+            paper.pages is not None and len(paper.pages) > len(self.pages)
+        ):
             self.pages = paper.pages
 
         for url in paper.urls:
@@ -163,21 +193,22 @@ class Paper():
         str
             A citation key folowing the pattern <FIRST_AUTHOR><YEAR><TITLE_FIRST_WORD>
         """
-        
+
         author_key = "unknown"
         if len(self.authors) > 0:
-            author_key = self.authors[0].lower().replace(" ", "").replace(",","")
-        
+            author_key = self.authors[0].lower().replace(" ", "").replace(",", "")
+
         year_key = "XXXX"
         if self.publication_date is not None:
             year_key = self.publication_date.year
-        
+
         title_key = self.title.split(" ")[0].lower()
 
-        citation_key = re.sub(r"[^\w\d]", "", f"{author_key}{year_key}{title_key}") # keeping only letters, numbers
+        citation_key = re.sub(
+            r"[^\w\d]", "", f"{author_key}{year_key}{title_key}"
+        )  # keeping only letters, numbers
 
         return citation_key
-
 
     @classmethod
     def from_dict(cls, paper_dict: dict) -> Paper:
@@ -198,10 +229,14 @@ class Paper():
         title = paper_dict.get("title")
         abstract = paper_dict.get("abstract")
         authors = paper_dict.get("authors")
-        publication = Publication.from_dict(paper_dict.get(
-            "publication")) if paper_dict.get("publication") is not None else None
+        publication = (
+            Publication.from_dict(paper_dict.get("publication"))
+            if paper_dict.get("publication") is not None
+            else None
+        )
         publication_date = datetime.datetime.strptime(
-            paper_dict.get("publication_date"), "%Y-%m-%d").date()
+            paper_dict.get("publication_date"), "%Y-%m-%d"
+        ).date()
         urls = set(paper_dict.get("urls"))
         doi = paper_dict.get("doi")
         citations = paper_dict.get("citations")
@@ -210,8 +245,21 @@ class Paper():
         number_of_pages = paper_dict.get("number_of_pages")
         pages = paper_dict.get("pages")
         databases = set(paper_dict.get("databases"))
-        return cls(title, abstract, authors, publication, publication_date, urls, doi, citations, keywords,
-               comments, number_of_pages, pages, databases)
+        return cls(
+            title,
+            abstract,
+            authors,
+            publication,
+            publication_date,
+            urls,
+            doi,
+            citations,
+            keywords,
+            comments,
+            number_of_pages,
+            pages,
+            databases,
+        )
 
     @staticmethod
     def to_dict(paper: Paper) -> dict:
@@ -233,7 +281,11 @@ class Paper():
             "title": paper.title,
             "abstract": paper.abstract,
             "authors": paper.authors,
-            "publication": Publication.to_dict(paper.publication) if paper.publication is not None else None,
+            "publication": (
+                Publication.to_dict(paper.publication)
+                if paper.publication is not None
+                else None
+            ),
             "publication_date": paper.publication_date.strftime("%Y-%m-%d"),
             "urls": list(paper.urls),
             "doi": paper.doi,

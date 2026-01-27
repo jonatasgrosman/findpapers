@@ -1,22 +1,18 @@
-import datetime
 import copy
+import datetime
+
 import pytest
+
 import findpapers.searchers.arxiv_searcher as arxiv_searcher
-from findpapers.models.search import Search
 from findpapers.models.publication import Publication
+from findpapers.models.search import Search
 
 paper_entry = {
     "title": "title fake",
     "published": "2020-02-27T13:35:26Z",
-    "arxiv:journal_ref": {
-        "#text": "fake publication name"
-    },
-    "category": [  # can be a single value
-        {"@term": "astro-ph"}
-    ],
-    "arxiv:doi": {
-        "#text": "fake-doi"
-    },
+    "arxiv:journal_ref": {"#text": "fake publication name"},
+    "category": [{"@term": "astro-ph"}],  # can be a single value
+    "arxiv:doi": {"#text": "fake-doi"},
     "summary": "a long abstract",
     "link": [  # can be a single value
         {"@href": "http://fake-url-A"},
@@ -26,10 +22,9 @@ paper_entry = {
         {"name": "author A"},
         {"name": "author B"},
     ],
-    "arxiv:comment": {
-        "#text": "fake comment"
-    }
+    "arxiv:comment": {"#text": "fake comment"},
 }
+
 
 @pytest.mark.skip(reason="It needs some revision after some tool's refactoring")
 def test_get_search_url(search: Search):
@@ -51,8 +46,7 @@ def test_get_publication():
 
     publication = arxiv_searcher._get_publication(paper_entry)
 
-    assert publication.title == paper_entry.get(
-        "arxiv:journal_ref").get("#text")
+    assert publication.title == paper_entry.get("arxiv:journal_ref").get("#text")
     assert publication.isbn is None
     assert publication.issn is None
     assert publication.publisher is None
@@ -72,8 +66,7 @@ def test_get_paper(publication: Publication):
 
     publication_date = datetime.date(2020, 2, 27)
 
-    paper = arxiv_searcher._get_paper(
-        paper_entry, publication_date, publication)
+    paper = arxiv_searcher._get_paper(paper_entry, publication_date, publication)
 
     assert paper.publication == publication
     assert paper.title == paper_entry.get("title")
@@ -92,7 +85,8 @@ def test_get_paper(publication: Publication):
     alternative_paper_entry["author"] = paper_entry.get("author")[0]
 
     paper = arxiv_searcher._get_paper(
-        alternative_paper_entry, publication_date, publication)
+        alternative_paper_entry, publication_date, publication
+    )
     assert len(paper.urls) == 1
     assert "http://fake-url-A" in paper.urls
     assert len(paper.authors) == 1
@@ -103,8 +97,8 @@ def test_run(search: Search):
 
     search.limit = 20
     search.limit_per_database = None
-    search.since = datetime.date(2020,8,26)
-    search.until = datetime.date(2020,8,26)
+    search.since = datetime.date(2020, 8, 26)
+    search.until = datetime.date(2020, 8, 26)
 
     arxiv_searcher.run(search)
 

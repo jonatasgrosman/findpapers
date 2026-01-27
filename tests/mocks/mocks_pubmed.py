@@ -1,8 +1,10 @@
+import datetime
 import os
+import random
+
 import pytest
 import xmltodict
-import random
-import datetime
+
 import findpapers.searchers.pubmed_searcher as pubmed_searcher
 
 
@@ -28,14 +30,17 @@ def mock_pubmed_get_paper_entry(monkeypatch):
         with open(filename) as f:
             data = xmltodict.parse(f.read())
 
-        data["PubmedArticleSet"]["PubmedArticle"]["MedlineCitation"][
-            "Article"]["ArticleTitle"] = f"FAKE-TITLE-{datetime.datetime.now()}"
+        data["PubmedArticleSet"]["PubmedArticle"]["MedlineCitation"]["Article"][
+            "ArticleTitle"
+        ] = f"FAKE-TITLE-{datetime.datetime.now()}"
         data["PubmedArticleSet"]["PubmedArticle"]["PubmedData"]["ArticleIdList"][
-            "ArticleId"][1]["#text"] = f"FAKE-DOI-{datetime.datetime.now()}"
+            "ArticleId"
+        ][1]["#text"] = f"FAKE-DOI-{datetime.datetime.now()}"
 
         if random.random() > 0.5:
-            data["PubmedArticleSet"]["PubmedArticle"]["MedlineCitation"][
-            "Article"]["Pagination"]["MedlinePgn"] = f"{random.randint(1,100)}-{random.randint(1,100)}"
+            data["PubmedArticleSet"]["PubmedArticle"]["MedlineCitation"]["Article"][
+                "Pagination"
+            ]["MedlinePgn"] = f"{random.randint(1,100)}-{random.randint(1,100)}"
 
         return data
 

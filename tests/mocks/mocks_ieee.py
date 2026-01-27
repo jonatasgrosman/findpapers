@@ -1,8 +1,9 @@
-import os
-import pytest
-import json
 import datetime
-from lxml import html
+import json
+import os
+
+import pytest
+
 import findpapers.searchers.ieee_searcher as ieee_searcher
 
 

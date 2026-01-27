@@ -1,5 +1,6 @@
-import findpapers
 import datetime
+
+import findpapers
 
 search_file = "search_paul.json"
 output_dir = "/some/valid/dir"
@@ -16,10 +17,24 @@ publication_types = ["journal", "conference proceedings"]
 verbose = False
 
 # search
-findpapers.search(search_file, query, since, until, limit, limit_per_database, databases, publication_types, scopus_api_token, ieee_api_token, verbose=verbose)
+findpapers.search(
+    search_file,
+    query,
+    since,
+    until,
+    limit,
+    limit_per_database,
+    databases,
+    publication_types,
+    scopus_api_token,
+    ieee_api_token,
+    verbose=verbose,
+)
 
 # download
 findpapers.download(search_file, output_dir, proxy=proxy, verbose=verbose)
 
 # generate bibtex
-findpapers.generate_bibtex(search_file, output_dir, add_findpapers_citation=True, verbose=verbose)
+findpapers.generate_bibtex(
+    search_file, output_dir, add_findpapers_citation=True, verbose=verbose
+)

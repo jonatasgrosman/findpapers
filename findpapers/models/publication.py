@@ -1,16 +1,26 @@
 from __future__ import annotations
-from typing import List, Optional
-import json
+
+from typing import Optional
 
 
-class Publication():
+class Publication:
     """
     Class that represents a publication (journal, conference proceedings, book) instance
     """
 
-    def __init__(self, title: str, isbn: Optional[str] = None, issn: Optional[str] = None, publisher: Optional[str] = None,
-                 category: Optional[str] = None, cite_score: Optional[float] = None, sjr: Optional[float] = None,
-                 snip: Optional[float] = None, subject_areas: Optional[set] = None, is_potentially_predatory: Optional[bool] = False):
+    def __init__(
+        self,
+        title: str,
+        isbn: Optional[str] = None,
+        issn: Optional[str] = None,
+        publisher: Optional[str] = None,
+        category: Optional[str] = None,
+        cite_score: Optional[float] = None,
+        sjr: Optional[float] = None,
+        snip: Optional[float] = None,
+        subject_areas: Optional[set] = None,
+        is_potentially_predatory: Optional[bool] = False,
+    ):
         """
         Paper class constructor
 
@@ -29,10 +39,10 @@ class Publication():
         cite_score : float, optional
             CiteScore measures average citations received per document published in the serial, by default None
         sjr : float, optional
-            SCImago Journal Rank measures weighted citations received by the serial. 
+            SCImago Journal Rank measures weighted citations received by the serial.
             Citation weighting depends on subject field and prestige (SJR) of the citing serial, by default None
         snip : float, optional
-            Source Normalized Impact per Paper measures actual citations received relative to citations 
+            Source Normalized Impact per Paper measures actual citations received relative to citations
             expected for the serial's subject field, by default None
         subject_areas : float, optional
             Publication subjects areas, by default None
@@ -45,13 +55,15 @@ class Publication():
         """
 
         if title is None or len(title) == 0:
-            raise(ValueError("Publication's title cannot be null"))
+            raise (ValueError("Publication's title cannot be null"))
 
         self.title = title
         self.isbn = isbn
         self.issn = issn
         self.publisher = publisher
-        self.category = category if category is not None else title # trying to figure out what is the category by publication title
+        self.category = (
+            category if category is not None else title
+        )  # trying to figure out what is the category by publication title
         self.cite_score = cite_score
         self.sjr = sjr
         self.snip = snip
@@ -65,7 +77,7 @@ class Publication():
     @category.setter
     def category(self, value: str):
         """
-        Category value setter, this method also try to convert a provided invalid category 
+        Category value setter, this method also try to convert a provided invalid category
         to a valid one [Journal, Conference Proceedings, Book]
 
         Parameters
@@ -99,7 +111,9 @@ class Publication():
             A duplication of the "self" publication
         """
 
-        if self.title is None or (publication.title is not None and len(self.title) < len(publication.title)):
+        if self.title is None or (
+            publication.title is not None and len(self.title) < len(publication.title)
+        ):
             self.title = publication.title
 
         if self.isbn is None:
@@ -122,7 +136,7 @@ class Publication():
 
         if self.snip is None:
             self.snip = publication.snip
-        
+
         for subject_area in publication.subject_areas:
             if subject_area is not None and len(subject_area.strip()) > 0:
                 self.subject_areas.add(subject_area.strip())
@@ -157,7 +171,18 @@ class Publication():
         subject_areas = set(publication_dict.get("subject_areas"))
         is_potentially_predatory = publication_dict.get("is_potentially_predatory")
 
-        return cls(title, isbn, issn, publisher, category, cite_score, sjr, snip, subject_areas, is_potentially_predatory)
+        return cls(
+            title,
+            isbn,
+            issn,
+            publisher,
+            category,
+            cite_score,
+            sjr,
+            snip,
+            subject_areas,
+            is_potentially_predatory,
+        )
 
     @staticmethod
     def to_dict(publication: Publication) -> dict:
@@ -185,5 +210,5 @@ class Publication():
             "sjr": publication.sjr,
             "snip": publication.snip,
             "subject_areas": list(publication.subject_areas),
-            "is_potentially_predatory": publication.is_potentially_predatory
+            "is_potentially_predatory": publication.is_potentially_predatory,
         }

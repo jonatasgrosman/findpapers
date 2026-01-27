@@ -1,14 +1,11 @@
-#pip install matplotlib matplotlib_venn
+# pip install matplotlib matplotlib_venn
 
-import os
-import json
-import random
 import datetime
-import numpy as np
+import json
+import os
+
 from matplotlib import pyplot as plt
-from matplotlib_venn import venn2, venn2_circles
-from matplotlib_venn import venn3, venn3_circles
-import matplotlib.cm as cmap
+from matplotlib_venn import venn3
 
 BASEDIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -21,27 +18,37 @@ def autolabel(rects, ax):
         x = rect.get_x()
         y = rect.get_y()
         if height > 0:
-            ax.annotate("{}".format(height),
-                        xy=(x + width/2, y + height/2),
-                        xytext=(0, -5),  # 5 points vertical offset
-                        textcoords="offset points",
-                        ha="center", va="bottom")
+            ax.annotate(
+                "{}".format(height),
+                xy=(x + width / 2, y + height / 2),
+                xytext=(0, -5),  # 5 points vertical offset
+                textcoords="offset points",
+                ha="center",
+                va="bottom",
+            )
 
 
 def databases_venn_chart(papers):
 
-    #(Abc, aBc, ABc, abC, AbC, aBC, ABC)
-    all_papers_count = {"Scopus": 0, "arXiv": 0, "Scopus-arXiv": 0, "IEEE": 0, "Scopus-IEEE": 0, "arXiv-IEEE": 0, "all": 0}
+    # (Abc, aBc, ABc, abC, AbC, aBC, ABC)
+    all_papers_count = {
+        "Scopus": 0,
+        "arXiv": 0,
+        "Scopus-arXiv": 0,
+        "IEEE": 0,
+        "Scopus-IEEE": 0,
+        "arXiv-IEEE": 0,
+        "all": 0,
+    }
 
     def fill_papers_count(key):
         all_papers_count[key] += 1
 
-
     def plot_papers_count(values, plot_title, filename):
 
-        f = plt.figure(figsize=(4,4))
+        f = plt.figure(figsize=(4, 4))
 
-        #(Abc, aBc, ABc, abC, AbC, aBC, ABC)
+        # (Abc, aBc, ABc, abC, AbC, aBC, ABC)
         Abc = values["Scopus"]
         aBc = values["arXiv"]
         Abc = values["Scopus"]
@@ -50,18 +57,20 @@ def databases_venn_chart(papers):
         AbC = values["Scopus-IEEE"]
         aBC = values["arXiv-IEEE"]
         ABC = values["all"]
-        
-        venn3(subsets = (Abc, aBc, ABc, abC, AbC, aBC, ABC), set_labels = ("Scopus", "arXiv", "IEEE"))
-        
+
+        venn3(
+            subsets=(Abc, aBc, ABc, abC, AbC, aBC, ABC),
+            set_labels=("Scopus", "arXiv", "IEEE"),
+        )
+
         # circles = venn3_circles(subsets = (Abc, aBc, ABc, abC, AbC, aBC, ABC))
         # for circle in circles:
         #     circle.set_lw(1.0)
 
-        #plt.title(plot_title)
+        # plt.title(plot_title)
 
         plt.show()
         f.savefig(os.path.join(BASEDIR, filename), bbox_inches="tight")
-
 
     for paper in papers:
 
@@ -91,7 +100,9 @@ def databases_venn_chart(papers):
 
 def papers_citations_chart(papers):
 
-    papers_citations = [x["citations"] for x in papers if x.get("citations") is not None]
+    papers_citations = [
+        x["citations"] for x in papers if x.get("citations") is not None
+    ]
     papers_publication_date = [
         datetime.datetime.strptime(x["publication_date"], "%Y-%m-%d").date()
         for x in papers
@@ -104,7 +115,7 @@ def papers_citations_chart(papers):
     # Add some text for labels, title and custom x-axis tick labels, etc.
     ax.set_ylabel("Papers citations")
     ax.set_xlabel("Publication date")
-    #ax.set_title("Papers citations", pad=20)
+    # ax.set_title("Papers citations", pad=20)
 
     fig.tight_layout()
 

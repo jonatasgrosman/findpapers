@@ -1,16 +1,15 @@
-import requests
 import datetime
 import logging
-import re
-from lxml import html, etree
 from typing import Optional
+
+from lxml import etree, html
+
 import findpapers.utils.common_util as common_util
 import findpapers.utils.query_util as query_util
-from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
+from findpapers.models.search import Search
 from findpapers.utils.requests_util import DefaultSession
-
 
 DATABASE_LABEL = "Scopus"
 BASE_URL = "https://api.elsevier.com"
@@ -32,7 +31,7 @@ def _get_query(search: Search) -> str:
         The translated query
     """
 
-    query = query_util.replace_search_term_enclosures(search.query, "\"", "\"", True)
+    query = query_util.replace_search_term_enclosures(search.query, '"', '"', True)
     query = query_util.replace_search_term_enclosures(query, "{", "}")
 
     query = f"TITLE-ABS-KEY({query})"
@@ -47,22 +46,24 @@ def _get_query(search: Search) -> str:
         publication_types = set()
 
         if "conference proceedings" in search.publication_types:
-            publication_types.add("p") # Conference Proceeding
+            publication_types.add("p")  # Conference Proceeding
         if "journal" in search.publication_types:
-            publication_types.add("j") # Journal
+            publication_types.add("j")  # Journal
         if "book" in search.publication_types:
-            publication_types.add("b") # Book
-            publication_types.add("k") # Book Series
+            publication_types.add("b")  # Book
+            publication_types.add("k")  # Book Series
         if "other" in search.publication_types:
-            publication_types.add("r") # Report
-            publication_types.add("d") # Trade Publication
-        
+            publication_types.add("r")  # Report
+            publication_types.add("d")  # Trade Publication
+
         query += f" AND SRCTYPE({' OR '.join(publication_types)})"
 
     return query
 
 
-def _get_publication_entry(publication_issn: str, api_token: str) -> dict:  # pragma: no cover
+def _get_publication_entry(
+    publication_issn: str, api_token: str
+) -> dict:  # pragma: no cover
     """
     Get publication entry by publication ISSN
 
@@ -81,8 +82,13 @@ def _get_publication_entry(publication_issn: str, api_token: str) -> dict:  # pr
 
     url = f"{BASE_URL}/content/serial/title/issn/{publication_issn}?apiKey={api_token}"
     headers = {"Accept": "application/json"}
-    response = common_util.try_success(lambda: DefaultSession().get(
-        url, headers=headers).json().get("serial-metadata-response", None), 2)
+    response = common_util.try_success(
+        lambda: DefaultSession()
+        .get(url, headers=headers)
+        .json()
+        .get("serial-metadata-response", None),
+        2,
+    )
 
     if response is not None and "entry" in response and len(response.get("entry")) > 0:
         return response.get("entry")[0]
@@ -122,8 +128,13 @@ def _get_publication(paper_entry: dict, api_token: str) -> Publication:
     if isinstance(publication_issn, list):
         publication_issn = publication_issn[0].get("$")
 
-    publication = Publication(publication_title, publication_isbn,
-                              publication_issn, None, publication_category)
+    publication = Publication(
+        publication_title,
+        publication_isbn,
+        publication_issn,
+        None,
+        publication_category,
+    )
 
     return publication
 
@@ -142,7 +153,7 @@ def _get_paper_page(url: str) -> object:  # pragma: no cover
     Object
         A HTML element representing the paper given by the provided URL
     """
-    
+
     response = common_util.try_success(lambda: DefaultSession().get(url), 2)
     return html.fromstring(response.content)
 
@@ -190,7 +201,8 @@ def _get_paper(paper_entry: dict, publication: Publication, api_token: str) -> P
     if paper_publication_date is not None:
         date_split = paper_publication_date.split("-")
         paper_publication_date = datetime.date(
-            int(date_split[0]), int(date_split[1]), int(date_split[2]))
+            int(date_split[0]), int(date_split[1]), int(date_split[2])
+        )
 
     if paper_publication_date is None:
         return None
@@ -214,47 +226,89 @@ def _get_paper(paper_entry: dict, publication: Publication, api_token: str) -> P
 
             paper_details_url = paper_entry["prism:url"] + "?apiKey=" + api_token
 
-            paper_details_response = common_util.try_success(lambda: DefaultSession().get(paper_details_url), 2)
+            paper_details_response = common_util.try_success(
+                lambda: DefaultSession().get(paper_details_url), 2
+            )
 
             paper_details_root = etree.fromstring(paper_details_response.content)
 
-            paper_abstract_element = paper_details_root.xpath("//ce:para", namespaces={"ce": "http://www.elsevier.com/xml/ani/common"})
+            paper_abstract_element = paper_details_root.xpath(
+                "//ce:para", namespaces={"ce": "http://www.elsevier.com/xml/ani/common"}
+            )
             paper_abstract = None
             if len(paper_abstract_element) > 0:
                 paper_abstract = paper_abstract_element[0].text
 
             paper_authors = []
 
-            for author in [x.text for x in paper_details_root.xpath("//ce:indexed-name", namespaces={"ce": "http://www.elsevier.com/xml/ani/common"})]:
+            for author in [
+                x.text
+                for x in paper_details_root.xpath(
+                    "//ce:indexed-name",
+                    namespaces={"ce": "http://www.elsevier.com/xml/ani/common"},
+                )
+            ]:
                 if author not in paper_authors:
                     paper_authors.append(author)
 
-            paper_keywords = [x.text for x in paper_details_root.xpath("//author-keyword")]
+            paper_keywords = [
+                x.text for x in paper_details_root.xpath("//author-keyword")
+            ]
 
-            paper_pages_element = paper_details_root.xpath("//prism:pageRange", namespaces={"prism": "http://prismstandard.org/namespaces/basic/2.0/"})
+            paper_pages_element = paper_details_root.xpath(
+                "//prism:pageRange",
+                namespaces={"prism": "http://prismstandard.org/namespaces/basic/2.0/"},
+            )
             paper_pages = None
             if len(paper_pages_element) > 0:
                 paper_pages = paper_pages_element[0].text
 
             paper_number_of_pages = None
             try:
-                starting_page = int(paper_details_root.xpath("//prism:startingPage", namespaces={"prism": "http://prismstandard.org/namespaces/basic/2.0/"})[0].text)
-                ending_page = int(paper_details_root.xpath("//prism:endingPage", namespaces={"prism": "http://prismstandard.org/namespaces/basic/2.0/"})[0].text)
+                starting_page = int(
+                    paper_details_root.xpath(
+                        "//prism:startingPage",
+                        namespaces={
+                            "prism": "http://prismstandard.org/namespaces/basic/2.0/"
+                        },
+                    )[0].text
+                )
+                ending_page = int(
+                    paper_details_root.xpath(
+                        "//prism:endingPage",
+                        namespaces={
+                            "prism": "http://prismstandard.org/namespaces/basic/2.0/"
+                        },
+                    )[0].text
+                )
                 paper_number_of_pages = ending_page - starting_page + 1
             except Exception:
                 pass
-        
+
         except Exception as e:
             logging.debug(e, exc_info=True)
 
-    paper = Paper(paper_title, paper_abstract, paper_authors, publication,
-                  paper_publication_date, paper_urls, paper_doi, paper_citations, paper_keywords,
-                  None, paper_number_of_pages, paper_pages)
+    paper = Paper(
+        paper_title,
+        paper_abstract,
+        paper_authors,
+        publication,
+        paper_publication_date,
+        paper_urls,
+        paper_doi,
+        paper_citations,
+        paper_keywords,
+        None,
+        paper_number_of_pages,
+        paper_pages,
+    )
 
     return paper
 
 
-def _get_search_results(search: Search, api_token: str, url: Optional[str] = None) -> dict:  # pragma: no cover
+def _get_search_results(
+    search: Search, api_token: str, url: Optional[str] = None
+) -> dict:  # pragma: no cover
     """
     This method fetch papers from Scopus database using the provided search parameters
 
@@ -265,7 +319,7 @@ def _get_search_results(search: Search, api_token: str, url: Optional[str] = Non
     api_token : str
         The API key used to fetch data from Scopus database,
     url : Optional[str]
-        A predefined URL to be used for the search execution, 
+        A predefined URL to be used for the search execution,
         this is usually used for make the next recursive call on a result pagination
     """
 
@@ -276,7 +330,9 @@ def _get_search_results(search: Search, api_token: str, url: Optional[str] = Non
 
     headers = {"Accept": "application/json"}
 
-    return common_util.try_success(lambda: DefaultSession().get(url, headers=headers).json()["search-results"], 2)
+    return common_util.try_success(
+        lambda: DefaultSession().get(url, headers=headers).json()["search-results"], 2
+    )
 
 
 def enrich_publication_data(search: Search, api_token: str):
@@ -298,11 +354,11 @@ def enrich_publication_data(search: Search, api_token: str):
 
     if api_token is None or len(api_token.strip()) == 0:
         raise AttributeError("The API token cannot be null")
-    
+
     i = 0
     total = len(search.publication_by_key.items())
     for publication_key, publication in search.publication_by_key.items():
-        
+
         i += 1
         logging.info(f"({i}/{total}) Enriching publication: {publication.title}")
 
@@ -310,18 +366,20 @@ def enrich_publication_data(search: Search, api_token: str):
 
             try:
 
-                publication_entry = _get_publication_entry(
-                    publication.issn, api_token)
+                publication_entry = _get_publication_entry(publication.issn, api_token)
 
                 if publication_entry is not None:
 
                     publication_category = publication_entry.get(
-                        "prism:aggregationType", None)
-                    if publication_category is not None and publication.category is None:
+                        "prism:aggregationType", None
+                    )
+                    if (
+                        publication_category is not None
+                        and publication.category is None
+                    ):
                         publication.category = publication_category
 
-                    publication_publisher = publication_entry.get(
-                        "dc:publisher", None)
+                    publication_publisher = publication_entry.get("dc:publisher", None)
 
                     if publication_publisher is not None:
                         publication.publisher = publication_publisher
@@ -332,22 +390,37 @@ def enrich_publication_data(search: Search, api_token: str):
                             if len(subject_area_value) > 0:
                                 publication.subject_areas.add(subject_area_value)
 
-                    publication_cite_score = common_util.try_success(lambda x=publication_entry: float(
-                        x.get("citeScoreYearInfoList").get("citeScoreCurrentMetric")))
+                    publication_cite_score = common_util.try_success(
+                        lambda x=publication_entry: float(
+                            x.get("citeScoreYearInfoList").get("citeScoreCurrentMetric")
+                        )
+                    )
 
                     if publication_cite_score is not None:
                         publication.cite_score = publication_cite_score
 
-                    if "SJRList" in publication_entry and len(publication_entry.get("SJRList").get("SJR")) > 0:
-                        publication_sjr = common_util.try_success(lambda x=publication_entry: float(
-                            x.get("SJRList").get("SJR")[0].get("$")))
+                    if (
+                        "SJRList" in publication_entry
+                        and len(publication_entry.get("SJRList").get("SJR")) > 0
+                    ):
+                        publication_sjr = common_util.try_success(
+                            lambda x=publication_entry: float(
+                                x.get("SJRList").get("SJR")[0].get("$")
+                            )
+                        )
 
                     if publication_sjr is not None:
                         publication.sjr = publication_sjr
 
-                    if "SNIPList" in publication_entry and len(publication_entry.get("SNIPList").get("SNIP")) > 0:
-                        publication_snip = common_util.try_success(lambda x=publication_entry: float(
-                            x.get("SNIPList").get("SNIP")[0].get("$")))
+                    if (
+                        "SNIPList" in publication_entry
+                        and len(publication_entry.get("SNIPList").get("SNIP")) > 0
+                    ):
+                        publication_snip = common_util.try_success(
+                            lambda x=publication_entry: float(
+                                x.get("SNIPList").get("SNIP")[0].get("$")
+                            )
+                        )
 
                     if publication_snip is not None:
                         publication.snip = publication_snip
@@ -356,7 +429,12 @@ def enrich_publication_data(search: Search, api_token: str):
                 pass
 
 
-def run(search: Search, api_token: str, url: Optional[str] = None, papers_count: Optional[int] = 0):
+def run(
+    search: Search,
+    api_token: str,
+    url: Optional[str] = None,
+    papers_count: Optional[int] = 0,
+):
     """
     This method fetch papers from Scopus database using the provided search parameters
     After fetch the data from Scopus, the collected papers are added to the provided search instance
@@ -368,7 +446,7 @@ def run(search: Search, api_token: str, url: Optional[str] = None, papers_count:
     api_token : str
         The API key used to fetch data from Scopus database,
     url : Optional[str]
-        A predefined URL to be used for the search execution, 
+        A predefined URL to be used for the search execution,
         this is usually used for make the next recursive call on a result pagination
     papers_count : Optional[int]
         Papers count used on recursion calls
@@ -398,7 +476,9 @@ def run(search: Search, api_token: str, url: Optional[str] = None, papers_count:
         try:
 
             paper_title = paper_entry.get("dc:title")
-            logging.info(f"({papers_count}/{total_papers}) Fetching Scopus paper: {paper_title}")
+            logging.info(
+                f"({papers_count}/{total_papers}) Fetching Scopus paper: {paper_title}"
+            )
 
             publication = _get_publication(paper_entry, api_token)
             paper = _get_paper(paper_entry, publication, api_token)
@@ -418,5 +498,9 @@ def run(search: Search, api_token: str, url: Optional[str] = None, papers_count:
 
     # If there is a next url, the API provided response was paginated and we need to process the next url
     # We"ll make a recursive call for it
-    if papers_count < total_papers and next_url is not None and not search.reached_its_limit(DATABASE_LABEL):
+    if (
+        papers_count < total_papers
+        and next_url is not None
+        and not search.reached_its_limit(DATABASE_LABEL)
+    ):
         run(search, api_token, next_url, papers_count)
