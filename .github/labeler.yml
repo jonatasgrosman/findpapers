@@ -1,15 +1,23 @@
 feat:
-  - "findpapers/**"
+  - changed-files:
+      - any-glob-to-any-file: 'findpapers/**'
 fix:
-  - "findpapers/**"
+  - changed-files:
+      - any-glob-to-any-file: 'findpapers/**'
 perf:
-  - "findpapers/**"
+  - changed-files:
+      - any-glob-to-any-file: 'findpapers/**'
 docs:
-  - "docs/**"
-  - "README.md"
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs/**'
+          - 'README.md'
 test:
-  - "tests/**"
+  - changed-files:
+      - any-glob-to-any-file: 'tests/**'
 chore:
-  - ".github/**"
-  - "pyproject.toml"
-  - "poetry.lock"
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/**'
+          - 'pyproject.toml'
+          - 'poetry.lock'
