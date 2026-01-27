@@ -35,19 +35,19 @@ $ pip install findpapers --upgrade
 
 # How to use it?
 
-All application actions are command-line based. The available commands are 
+Findpapers is designed to be used as a Python library.
 
-- ```findpapers search```: Search for papers metadata using a query. This search will be made by matching the query with the paper's title, abstract, and keywords.
+```python
+import findpapers
+import datetime
 
-- ```findpapers refine```: Refine the search results by selecting/classifying the papers
+search_file = "search.json"
+query = "[happiness] AND ([joy] OR [peace of mind]) AND NOT [stressful]"
+since = datetime.date(2020, 1, 1)
+until = datetime.date(2024, 12, 31)
 
-- ```findpapers download```: Download full-text papers using the search results
-
-- ```findpapers bibtex```: Generate a BibTeX file from the search results
-
-You can control the commands logging verbosity by the **-v** (or **--verbose**) argument.
-
-In the following sections, we will show how to use the Findpapers commands. However, all the commands have the **--help** argument to display some summary about their usage, E.g., ```findpapers search --help```.
+findpapers.search(search_file, query, since=since, until=until)
+```
 
 ## Search query construction
 
@@ -115,163 +115,21 @@ Let's see some examples of valid and invalid queries:
 |[ter*s]  |  **No** (the asterisk wildcard can only be used at the end of a search term)  |
 |[t?rm?]  |  **No** (only one wildcard can be included in a search term)  |
 
-## Basic example (TL;DR)
+## Examples
 
-- Searching for papers:
+```python
+import findpapers
+import datetime
 
-```console
-$ findpapers search /some/path/search.json -q "[happiness] AND ([joy] OR [peace of mind]) AND NOT [stressful]"
+search_file = "search.json"
+query = "[happiness] AND ([joy] OR [peace of mind]) AND NOT [stressful]"
+
+findpapers.search(search_file, query, since=datetime.date(2020, 1, 1))
+findpapers.download(search_file, "/some/path/papers", only_selected_papers=True)
+findpapers.generate_bibtex(search_file, "/some/path/mybib.bib", only_selected_papers=True)
 ```
 
-- Refining search results:
-
-```console
-$ findpapers refine /some/path/search.json
-```
-
-- Downloading full-text from selected papers:
-
-```console
-$ findpapers download /some/path/search.json /some/path/papers/ -s
-```
-
-- Generating BibTeX file from selected papers:
-
-```console
-$ findpapers bibtex /some/path/search.json /some/path/mybib.bib -s
-```
-
-## Advanced example
-
-This advanced usage documentation can be a bit boring to read (and write), so I think it's better to go for a storytelling approach here.
-
-*Let's take a look at Dr. McCartney's research. He's a computer scientist interested in AI and music, so he created a search query to collect papers that can help with his research and exported this query to an environment variable.*
-
-```console
-$ export QUERY="([artificial intelligence] OR [AI] OR [machine learning] OR [ML] OR [deep learning] OR [DL]) AND ([music] OR [s?ng])"
-```
-
-*Dr. McCartney is interested in testing his query, so he decides to collect only 20 papers to test whether the query is suitable for his research (the Findpapers results are sorted by publication date in descending order. An important disclaimer about publication dates is that some papers just have the publication year defined. In those cases, the publication date will be set to 01-01-year by Findpapers).*
-
-```console
-$ findpapers search /some/path/search_paul.json --query "$QUERY" --limit 20
-```
-
-*But after taking a look at the results contained in the ```search_paul.json``` file, he notices two problems:*
- - *Only one database was used to collect all the 20 papers*
- - *Some collected papers were about drums, but he doesn't like drums or drummers*
-
-*So he decides to solve these problems by:*
-- *Reformulating his query, and also placing it inside a file to make his life easier (Note that in a text file, you can split your query search into multiple lines. Is it much more comfortable to read, right?).*
-
-```/some/path/query.txt```
-```
-([artificial intelligence] OR [AI] OR [machine learning] OR [ML] OR [deep learning] OR [DL]) 
-
-AND 
-
-([music] OR [s?ng]) 
-
-AND NOT 
-
-[drum*]
-```
-
-- *Performing the search limiting the number of papers that can be collected by each database.*
-
-```console
-$ findpapers search /some/path/search_paul.json --query-file /some/path/query.txt --limit-db 4
-```
-
-*Now his query returned the papers he wanted, but he realized one thing, no papers were collected from Scopus or IEEE databases. Then he noticed that he needed to pass his Scopus and IEEE API access keys when calling the search command. So he went to https://dev.elsevier.com and https://developer.ieee.org, generated the access keys, and used them in the search.*
-
-```console
-$ export IEEE_TOKEN=SOME_SUPER_SECRET_TOKEN
-
-$ export SCOPUS_TOKEN=SOME_SUPER_SECRET_TOKEN
-
-$ findpapers search /some/path/search_paul.json --query-file /some/path/query.txt --limit-db 4 --token-ieee "$IEEE_TOKEN" --token-scopus "$SCOPUS_TOKEN"
-```
-
-*Now everything is working as he expected, so it's time to do the final papers search. So he defines that he wants to collect only works published between 2000 and 2020. He also decides that he only wants papers collected from IEEE and Scopus. And he only wants to papers published on a journal or conference proceedings (Tip: The available publication types on Findpapers are: journal, conference proceedings, book, other. When a particular publication does not fit into any of the other types it is classified as "other", e.g., magazines, newsletters, unpublished manuscripts)*
-
-```console
-$ findpapers search /some/path/search_paul.json --query-file /some/path/query.txt --token-ieee "$IEEE_TOKEN" --token-scopus "$SCOPUS_TOKEN" --since 2000-01-01 --until 2020-12-31 --databases "ieee,scopus" --publication-types "journal,conference proceedings"
-```
-
-*The searching process took a long time, but after many cups of coffee, Dr. McCartney finally has a good list of papers with the potential to help in his research. All the information collected is in the ```search_paul.json``` file. He could access this file now and manually filter which works are most interesting for him, but he prefers to use the Findpapers ```refine``` command for this.*
-
-*First, he wants to filter the papers looking only at their basic information.*
-
-```console
-$ findpapers refine /some/path/search_paul.json
-```
-
-![refine-01](https://github.com/jonatasgrosman/findpapers/raw/master/docs/refine-01.jpeg)
-
-*After completing the first round filtering of the collected papers, he decides to do new filtering on the selected ones looking at the paper's extra info (citations, DOI, publication name, etc.) and abstract now. He also chooses to perform some classification while doing this further filtering (tip: he'll need to use spacebar for categories selection). And to help in this process, he also decides to highlight some keywords contained in the abstract.*
-
-```console
-$ export CATEGORIES_CONTRIBUTION="Contribution:Metric,Tool,Model,Method"
-
-$ export CATEGORIES_RESEARCH_TYPE="Research Type:Validation Research,Solution Proposal,Philosophical,Opinion,Experience,Other"
-
-$ export HIGHLIGHTS="propose, achiev, accuracy, method, metric, result, limitation, state of the art"
-
-$ findpapers refine /some/path/search_paul.json --selected --abstract --extra-info --categories "$CATEGORIES_CONTRIBUTION" --categories "$CATEGORIES_RESEARCH_TYPE" --highlights "$HIGHLIGHTS"
-```
-
-![refine-02](https://github.com/jonatasgrosman/findpapers/raw/master/docs/refine-02.jpeg)
-
-An interesting point to stand out from the tool is that it automatically prevents duplication of papers, merging their information when the same paper is found in different databases. You can see this in the image above, where the Findpapers found the same work on the IEEE and Scopus databases (see "Paper found in" value) and merged the paper information on a single record.
-
-Another interesting extra information given by Findpapers (based on [Beall's List](https://beallslist.net/)) is whether a collected paper was published by a [predatory publisher](https://en.wikipedia.org/wiki/Predatory_publishing) (see "Publication is potentially predatory" value). That is a really good feature, because there is a lot of [scientific misinformation](https://www.the-scientist.com/critic-at-large/opinion-using-pokmon-to-detect-scientific-misinformation-68098) out there.
-
-*Now that Dr. McCartney has selected all the papers he wanted, he wants to see all of them.*
-
-```console
-$ findpapers refine /some/path/search_paul.json --selected --abstract --extra-info --list
-```
-
-*He wants to see all the removed papers too.*
-
-```console
-$ findpapers refine /some/path/search_paul.json --removed --abstract --extra-info --list
-```
-
-*Then, he decides to download the full-text from all the selected papers which have a "Model" or "Tool" as a contribution.*
-
-```console
-$ findpapers download /some/path/search_paul.json /some/path/papers --selected --categories "Contribution:Tool,Model"
-```
-
-*He also wants to generate the BibTeX file from these papers.*
-
-```console
-$ findpapers bibtex /some/path/search_paul.json /some/path/mybib.bib --selected --categories "Contribution:Tool,Model"
-```
-
-*But when he compared the papers' data in the ```/some/path/mybib.bib```  and PDF files in the ```/some/path/papers``` folder, he noticed that many papers had not been downloaded.*
-
-*So when he opened the ```/some/path/papers/download.log``` file, he could see the URL of all papers that weren't downloaded correctly. After accessing these links, he noticed that some of them weren't downloaded due to some limitations of Findpapers (currently, the tool has a set of heuristics to perform the download that may not work in all cases). However, the vast majority of papers weren't downloaded because they were behind a paywall. But, Dr. McCartney has access to these papers when he's connected to the network at the university where he works, but unfortunately, he is at home right now.*
-
-*But he discovers two things that could save him from this mess. First, the university provides a proxy for tunneling requests. Second, Findpapers accepts the configuration of a proxy URL. And of course, he'll use this feature (see the "--proxy" argument on the command bellow).*
-
-```console
-$ findpapers download /some/path/search_paul.json /some/path/papers --selected --categories "Contribution:Tool,Model" --proxy "https://mccartney:super_secret_pass@liverpool.ac.uk:1234"
-```
-
-*Now the vast majority of the papers he has access have been downloaded correctly.*
-
-*And at the end of it, he decides to download the full-text from all the selected works (regardless of their categorization) and generate their BibTeX file too. And, as he is very happy with the results, he also wants to include a Findpapers entry in the BibTeX file to cite in his work.*
-
-```console
-$ findpapers download /some/path/search_paul.json /some/path/papers --selected --proxy "https://mccartney:super_secret_pass@liverpool.ac.uk:1234"
-
-$ findpapers bibtex /some/path/search_paul.json /some/path/mybib.bib --selected --findpapers
-```
-
-*That's all, folks! We have reached the end of our journey. I hope Dr. McCartney can continue his research and publish his work without any major problems now. You can use findpapers in a more scriptable way too. Check out the [search_paul.py](https://github.com/jonatasgrosman/findpapers/blob/master/samples/search_paul.py) file to see how you can do that.*
+For a more complete script, see [samples/search_paul.py](https://github.com/jonatasgrosman/findpapers/blob/master/samples/search_paul.py).
 
 As you could see, all the information collected and enriched by the Findpapers is placed in a single JSON file. From this file, it is possible to create interesting visualizations about the collected data ...
 
@@ -279,7 +137,7 @@ As you could see, all the information collected and enriched by the Findpapers i
 
 ... So, use your imagination! (The [samples/charts.py](https://github.com/jonatasgrosman/findpapers/blob/master/samples/charts.py) script made the visualization above).
 
-With the story above, we cover all the commands available in Findpapers. I know this documentation is unconventional, but I haven't had time to write a more formal version of the documentation. But you can help us to improve this, take a look at the next section and see how you can do that.
+With the examples above, we cover the core library usage. I know this documentation is unconventional, but I haven't had time to write a more formal version of the documentation. But you can help us to improve this, take a look at the next section and see how you can do that.
 
 # Want to help?
 

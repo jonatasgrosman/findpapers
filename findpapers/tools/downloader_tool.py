@@ -16,7 +16,7 @@ from findpapers.utils.requests_util import DefaultSession
 def download(search_path: str, output_directory: str, only_selected_papers: Optional[bool] = False,
              categories_filter: Optional[dict] = None, proxy: Optional[str] = None, verbose: Optional[bool] = False):
     """
-    If you've done your search, (probably made the search refinement too) and wanna download the papers, 
+    If you've done your search and want to download the papers,
     this is the method that you need to call. This method will try to download the PDF version of the papers to
     the output directory path.
 

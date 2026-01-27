@@ -27,9 +27,6 @@ verbose = False
 # search
 findpapers.search(search_file, query, since, until, limit, limit_per_database, databases, publication_types, scopus_api_token, ieee_api_token, verbose=verbose)
 
-# refine
-findpapers.refine(search_file, categories, highlights, show_abstract=True, show_extra_info=True, verbose=verbose)
-
 # download
 findpapers.download(search_file, output_dir, only_selected_papers=True, proxy=proxy, verbose=verbose)
 
