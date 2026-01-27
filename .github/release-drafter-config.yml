@@ -1,0 +1,18 @@
+name-template: 'v$NEXT_PATCH'
+categories:
+  - title: '🚀 Features'
+    labels:
+      - feat
+  - title: '🐛 Bug Fixes'
+    labels:
+      - fix
+  - title: '⚡ Performance'
+    labels:
+      - perf
+  - title: '🧾 Documentation'
+    labels:
+      - docs
+  - title: '🧰 Maintenance'
+    labels:
+      - chore
+change-template: '- $TITLE (#$NUMBER) @$AUTHOR'

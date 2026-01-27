@@ -1,0 +1,15 @@
+feat:
+  - "findpapers/**"
+fix:
+  - "findpapers/**"
+perf:
+  - "findpapers/**"
+docs:
+  - "docs/**"
+  - "README.md"
+test:
+  - "tests/**"
+chore:
+  - ".github/**"
+  - "pyproject.toml"
+  - "poetry.lock"

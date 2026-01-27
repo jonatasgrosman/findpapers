@@ -179,18 +179,14 @@ Closes #10
 ```
 
 ### Type
-Must be one of the following:
+We use a concise set of commit types. Use one of the following in the commit header:
 
-* **build**: Changes that affect the build system or external dependencies
-* **ci**: Changes to our CI configuration files and scripts
-* **doc**: Documentation only changes
 * **feat**: A new feature
 * **fix**: A bug fix
-* **perf**: A code change that improves performance
-* **refact**: A code change that neither fixes a bug, adds a feature nor improves code performance
-* **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
-* **test**: Adding missing tests or correcting existing tests
-* **revert**: Reverts some previous commit, in this case the reverted commit hash needs to be present in the commit message
+* **perf**: Performance improvements
+* **docs**: Documentation changes
+* **test**: Tests and related changes
+* **chore**: Maintenance, build, CI, or refactor tasks
 
 ### Subject
 The subject contains a succinct description of the change:
