@@ -84,9 +84,7 @@ def test_get_paper(publication: Publication):
     alternative_paper_entry["link"] = paper_entry.get("link")[0]
     alternative_paper_entry["author"] = paper_entry.get("author")[0]
 
-    paper = arxiv_searcher._get_paper(
-        alternative_paper_entry, publication_date, publication
-    )
+    paper = arxiv_searcher._get_paper(alternative_paper_entry, publication_date, publication)
     assert len(paper.urls) == 1
     assert "http://fake-url-A" in paper.urls
     assert len(paper.authors) == 1

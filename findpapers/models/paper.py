@@ -163,14 +163,11 @@ class Paper:
             self.comments = paper.comments
 
         if self.number_of_pages is None or (
-            paper.number_of_pages is not None
-            and paper.number_of_pages > self.number_of_pages
+            paper.number_of_pages is not None and paper.number_of_pages > self.number_of_pages
         ):
             self.number_of_pages = paper.number_of_pages
 
-        if self.pages is None or (
-            paper.pages is not None and len(paper.pages) > len(self.pages)
-        ):
+        if self.pages is None or (paper.pages is not None and len(paper.pages) > len(self.pages)):
             self.pages = paper.pages
 
         for url in paper.urls:
@@ -282,9 +279,7 @@ class Paper:
             "abstract": paper.abstract,
             "authors": paper.authors,
             "publication": (
-                Publication.to_dict(paper.publication)
-                if paper.publication is not None
-                else None
+                Publication.to_dict(paper.publication) if paper.publication is not None else None
             ),
             "publication_date": paper.publication_date.strftime("%Y-%m-%d"),
             "urls": list(paper.urls),

@@ -6,9 +6,7 @@ import time
 from typing import Optional
 
 
-def get_numeric_month_by_string(
-    string: str, fallback_month: Optional[str] = "01"
-) -> str:
+def get_numeric_month_by_string(string: str, fallback_month: Optional[str] = "01") -> str:
     """
     Get a numeric month representation given a month string representation
 
@@ -156,7 +154,7 @@ class ThreadSafeSingletonMetaclass(type):
         if cls not in cls._instances:
             with cls._singleton_lock:
                 if cls not in cls._instances:
-                    cls._instances[cls] = super(
-                        ThreadSafeSingletonMetaclass, cls
-                    ).__call__(*args, **kwargs)
+                    cls._instances[cls] = super(ThreadSafeSingletonMetaclass, cls).__call__(
+                        *args, **kwargs
+                    )
         return cls._instances[cls]

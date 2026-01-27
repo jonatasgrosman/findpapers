@@ -14,9 +14,7 @@ BASE_URL = "http://ieeexploreapi.ieee.org"
 MAX_ENTRIES_PER_PAGE = 200
 
 
-def _get_search_url(
-    search: Search, api_token: str, start_record: Optional[int] = 1
-) -> str:
+def _get_search_url(search: Search, api_token: str, start_record: Optional[int] = 1) -> str:
     """
     This method return the URL to be used to retrieve data from IEEE database
     See https://developer.ieee.org/docs/read/Metadata_API_details for query tips
@@ -165,10 +163,7 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
 
     try:
         paper_keywords = set(
-            [
-                x.strip()
-                for x in paper_entry.get("index_terms").get("author_terms").get("terms")
-            ]
+            [x.strip() for x in paper_entry.get("index_terms").get("author_terms").get("terms")]
         )
     except Exception:
         paper_keywords = set()
@@ -177,9 +172,7 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
         try:
             paper_publication_date_split = paper_publication_date.split(" ")
             day = int(paper_publication_date_split[0].split("-")[0])
-            month = int(
-                common_util.get_numeric_month_by_string(paper_publication_date_split[1])
-            )
+            month = int(common_util.get_numeric_month_by_string(paper_publication_date_split[1]))
             year = int(paper_publication_date_split[2])
 
             paper_publication_date = datetime.date(year, month, day)
@@ -187,9 +180,7 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
             pass
 
     if not isinstance(paper_publication_date, datetime.date):
-        paper_publication_date = datetime.date(
-            paper_entry.get("publication_year"), 1, 1
-        )
+        paper_publication_date = datetime.date(paper_entry.get("publication_year"), 1, 1)
 
     if paper_publication_date is None:
         return None
@@ -203,15 +194,9 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
 
     if start_page is not None and end_page is not None:
         try:
-            paper_pages = (
-                f"{paper_entry.get('start_page')}-{paper_entry.get('end_page')}"
-            )
+            paper_pages = f"{paper_entry.get('start_page')}-{paper_entry.get('end_page')}"
             paper_number_of_pages = (
-                abs(
-                    int(paper_entry.get("start_page"))
-                    - int(paper_entry.get("end_page"))
-                )
-                + 1
+                abs(int(paper_entry.get("start_page")) - int(paper_entry.get("end_page"))) + 1
             )
         except Exception:  # pragma: no cover
             pass

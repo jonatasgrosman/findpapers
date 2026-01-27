@@ -94,9 +94,7 @@ USER_AGENTS = [
 ]
 
 
-class DefaultSession(
-    requests.Session, metaclass=common_util.ThreadSafeSingletonMetaclass
-):
+class DefaultSession(requests.Session, metaclass=common_util.ThreadSafeSingletonMetaclass):
     """
     Session class with singleton feature and custom headers config
     """

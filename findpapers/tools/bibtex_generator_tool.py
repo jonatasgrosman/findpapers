@@ -83,13 +83,9 @@ def generate_bibtex(
                     note += paper.comments if len(note) == 0 else f" | {paper.comments}"
                 bibtex_output += f"{default_tab}note = {{{note}}},\n"
             elif citation_type == "@article":
-                bibtex_output += (
-                    f"{default_tab}journal = {{{paper.publication.title}}},\n"
-                )
+                bibtex_output += f"{default_tab}journal = {{{paper.publication.title}}},\n"
             elif citation_type == "@inproceedings":
-                bibtex_output += (
-                    f"{default_tab}booktitle = {{{paper.publication.title}}},\n"
-                )
+                bibtex_output += f"{default_tab}booktitle = {{{paper.publication.title}}},\n"
             elif (
                 citation_type == "@misc"
                 and len(paper.urls) > 0
@@ -97,22 +93,13 @@ def generate_bibtex(
             ):
                 date = paper.publication_date.strftime("%Y/%m/%d")
                 url = list(paper.urls)[0]
-                bibtex_output += (
-                    f"{default_tab}howpublished = {{Available at {url} ({date})}},\n"
-                )
+                bibtex_output += f"{default_tab}howpublished = {{Available at {url} ({date})}},\n"
 
-            if (
-                paper.publication is not None
-                and paper.publication.publisher is not None
-            ):
-                bibtex_output += (
-                    f"{default_tab}publisher = {{{paper.publication.publisher}}},\n"
-                )
+            if paper.publication is not None and paper.publication.publisher is not None:
+                bibtex_output += f"{default_tab}publisher = {{{paper.publication.publisher}}},\n"
 
             if paper.publication_date is not None:
-                bibtex_output += (
-                    f"{default_tab}year = {{{paper.publication_date.year}}},\n"
-                )
+                bibtex_output += f"{default_tab}year = {{{paper.publication_date.year}}},\n"
 
             if paper.pages is not None:
                 bibtex_output += f"{default_tab}pages = {{{paper.pages}}},\n"

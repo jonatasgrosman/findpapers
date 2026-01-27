@@ -31,9 +31,7 @@ def replace_search_term_enclosures(
 
         def wildcards_apply(search_term):
             if "?" in search_term or "*" in search_term:
-                return search_term.replace("[", open_replacement).replace(
-                    "]", close_replacement
-                )
+                return search_term.replace("[", open_replacement).replace("]", close_replacement)
             else:
                 return search_term
 

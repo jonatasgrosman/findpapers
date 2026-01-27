@@ -33,14 +33,14 @@ def mock_pubmed_get_paper_entry(monkeypatch):
         data["PubmedArticleSet"]["PubmedArticle"]["MedlineCitation"]["Article"][
             "ArticleTitle"
         ] = f"FAKE-TITLE-{datetime.datetime.now()}"
-        data["PubmedArticleSet"]["PubmedArticle"]["PubmedData"]["ArticleIdList"][
-            "ArticleId"
-        ][1]["#text"] = f"FAKE-DOI-{datetime.datetime.now()}"
+        data["PubmedArticleSet"]["PubmedArticle"]["PubmedData"]["ArticleIdList"]["ArticleId"][1][
+            "#text"
+        ] = f"FAKE-DOI-{datetime.datetime.now()}"
 
         if random.random() > 0.5:
-            data["PubmedArticleSet"]["PubmedArticle"]["MedlineCitation"]["Article"][
-                "Pagination"
-            ]["MedlinePgn"] = f"{random.randint(1,100)}-{random.randint(1,100)}"
+            data["PubmedArticleSet"]["PubmedArticle"]["MedlineCitation"]["Article"]["Pagination"][
+                "MedlinePgn"
+            ] = f"{random.randint(1,100)}-{random.randint(1,100)}"
 
         return data
 

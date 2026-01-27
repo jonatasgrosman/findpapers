@@ -35,6 +35,4 @@ findpapers.search(
 findpapers.download(search_file, output_dir, proxy=proxy, verbose=verbose)
 
 # generate bibtex
-findpapers.generate_bibtex(
-    search_file, output_dir, add_findpapers_citation=True, verbose=verbose
-)
+findpapers.generate_bibtex(search_file, output_dir, add_findpapers_citation=True, verbose=verbose)

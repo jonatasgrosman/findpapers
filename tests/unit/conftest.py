@@ -9,9 +9,7 @@ from findpapers.models.search import Search
 
 @pytest.fixture
 def publication():
-    return Publication(
-        "awesome publication title", "isbn-X", "issn-X", "that publisher", "Journal"
-    )
+    return Publication("awesome publication title", "isbn-X", "issn-X", "that publisher", "Journal")
 
 
 @pytest.fixture

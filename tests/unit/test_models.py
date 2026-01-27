@@ -130,9 +130,7 @@ def test_search(paper: Paper):
 
     paper.doi = None
 
-    search = Search(
-        "this AND that", datetime.date(1969, 1, 30), datetime.date(1970, 4, 8), 2
-    )
+    search = Search("this AND that", datetime.date(1969, 1, 30), datetime.date(1970, 4, 8), 2)
 
     assert len(search.papers) == 0
 
@@ -191,16 +189,11 @@ def test_search(paper: Paper):
     publication_issn = "FAKE-ISSN"
     publication_isbn = "FAKE-ISBN"
     assert (
-        search.get_publication_key(
-            publication_title, publication_issn, publication_isbn
-        )
+        search.get_publication_key(publication_title, publication_issn, publication_isbn)
         == f"ISBN-{publication_isbn.lower()}"
     )
     assert (
         search.get_publication_key(publication_title, publication_issn)
         == f"ISSN-{publication_issn.lower()}"
     )
-    assert (
-        search.get_publication_key(publication_title)
-        == f"TITLE-{publication_title.lower()}"
-    )
+    assert search.get_publication_key(publication_title) == f"TITLE-{publication_title.lower()}"

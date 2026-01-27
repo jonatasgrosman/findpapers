@@ -200,9 +200,7 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     transformed_query = transformed_query.replace("[", "FIELD_TYPE:[")
 
     # when a wildcard is present, the search term cannot be enclosed in quotes
-    transformed_query = query_util.replace_search_term_enclosures(
-        transformed_query, "", "", True
-    )
+    transformed_query = query_util.replace_search_term_enclosures(transformed_query, "", "", True)
     transformed_query = query_util.replace_search_term_enclosures(
         transformed_query, '"', '"'
     ).strip()
@@ -216,9 +214,7 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     return url
 
 
-def _get_api_result(
-    search: Search, start_record: Optional[int] = 0
-) -> dict:  # pragma: no cover
+def _get_api_result(search: Search, start_record: Optional[int] = 0) -> dict:  # pragma: no cover
     """
     This method return results from arXiv database using the provided search parameters
 
@@ -313,11 +309,7 @@ def _get_paper(
     paper_title = paper_title.replace("\n", "")
     paper_title = re.sub(" +", " ", paper_title)
 
-    paper_doi = (
-        paper_entry.get("arxiv:doi").get("#text")
-        if "arxiv:doi" in paper_entry
-        else None
-    )
+    paper_doi = paper_entry.get("arxiv:doi").get("#text") if "arxiv:doi" in paper_entry else None
     paper_abstract = paper_entry.get("summary", None)
     paper_urls = set()
     paper_authors = []
@@ -374,7 +366,9 @@ def run(search: Search):
     while papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL):
 
         entries = result.get("feed", {}).get("entry", [])
-        if not isinstance(entries, list):  # if there's only one entry the result is not a list just a dict
+        if not isinstance(
+            entries, list
+        ):  # if there's only one entry the result is not a list just a dict
             entries = [entries]
 
         for paper_entry in entries:
@@ -387,9 +381,7 @@ def run(search: Search):
             try:
 
                 paper_title = paper_entry.get("title")
-                logging.info(
-                    f"({papers_count}/{total_papers}) Fetching arXiv paper: {paper_title}"
-                )
+                logging.info(f"({papers_count}/{total_papers}) Fetching arXiv paper: {paper_title}")
 
                 published_date = datetime.datetime.strptime(
                     paper_entry.get("published")[:10], "%Y-%m-%d"

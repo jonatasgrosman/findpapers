@@ -32,9 +32,7 @@ paper_entry = {
                 "KeywordList": {"Keyword": [{"#text": "term A"}, {"#text": "term B"}]},
             },
             "PubmedData": {
-                "ArticleIdList": {
-                    "ArticleId": [{"@IdType": "doi", "#text": "fake-doi"}]
-                }
+                "ArticleIdList": {"ArticleId": [{"@IdType": "doi", "#text": "fake-doi"}]}
             },
         }
     }
@@ -88,12 +86,12 @@ def test_get_paper(publication: Publication):
     assert len(paper.urls) == 0
 
     alternative_paper_entry = copy.deepcopy(paper_entry)
-    del alternative_paper_entry["PubmedArticleSet"]["PubmedArticle"]["MedlineCitation"][
-        "Article"
-    ]["ArticleDate"]
-    alternative_paper_entry["PubmedArticleSet"]["PubmedArticle"]["MedlineCitation"][
-        "Article"
-    ]["Abstract"]["AbstractText"] = [{"#text": "fake paper abstract"}, {"#text": None}]
+    del alternative_paper_entry["PubmedArticleSet"]["PubmedArticle"]["MedlineCitation"]["Article"][
+        "ArticleDate"
+    ]
+    alternative_paper_entry["PubmedArticleSet"]["PubmedArticle"]["MedlineCitation"]["Article"][
+        "Abstract"
+    ]["AbstractText"] = [{"#text": "fake paper abstract"}, {"#text": None}]
     del alternative_paper_entry["PubmedArticleSet"]["PubmedArticle"]["MedlineCitation"][
         "KeywordList"
     ]
@@ -103,9 +101,9 @@ def test_get_paper(publication: Publication):
     assert paper.abstract == "fake paper abstract\n"
 
     alternative_paper_entry = copy.deepcopy(paper_entry)
-    alternative_paper_entry["PubmedArticleSet"]["PubmedArticle"]["MedlineCitation"][
-        "Article"
-    ]["ArticleDate"]["Month"] = "INVALID MONTH"
+    alternative_paper_entry["PubmedArticleSet"]["PubmedArticle"]["MedlineCitation"]["Article"][
+        "ArticleDate"
+    ]["Month"] = "INVALID MONTH"
 
     paper = pubmed_searcher._get_paper(alternative_paper_entry, publication)
     assert paper.publication_date == datetime.date(2020, 1, 1)

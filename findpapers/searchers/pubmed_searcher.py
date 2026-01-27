@@ -52,9 +52,7 @@ def _get_search_url(search: Search, start_record: Optional[int] = 0) -> str:
     return url
 
 
-def _get_api_result(
-    search: Search, start_record: Optional[int] = 0
-) -> dict:  # pragma: no cover
+def _get_api_result(search: Search, start_record: Optional[int] = 0) -> dict:  # pragma: no cover
     """
     This method return results from PubMed database using the provided search parameters
 
@@ -129,9 +127,7 @@ def _get_publication(paper_entry: dict) -> Publication:
 
     publication_issn = article.get("Journal").get("ISSN").get("#text")
 
-    publication = Publication(
-        publication_title, None, publication_issn, None, "Journal"
-    )
+    publication = Publication(publication_title, None, publication_issn, None, "Journal")
 
     return publication
 
@@ -156,11 +152,7 @@ def _get_text_recursively(text_entry) -> str:
         return text_entry
     else:
         text = []
-        items = (
-            text_entry
-            if isinstance(text_entry, list)
-            else [x for k, x in text_entry.items()]
-        )
+        items = text_entry if isinstance(text_entry, list) else [x for k, x in text_entry.items()]
         for item in items:
             text.append(_get_text_recursively(item))
         return " ".join(text)
@@ -227,9 +219,7 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
         raise ValueError("Paper abstract is empty")
 
     if isinstance(paper_abstract_entry, list):
-        paper_abstract = "\n".join(
-            [_get_text_recursively(x) for x in paper_abstract_entry]
-        )
+        paper_abstract = "\n".join([_get_text_recursively(x) for x in paper_abstract_entry])
     else:
         paper_abstract = _get_text_recursively(paper_abstract_entry)
 
@@ -256,9 +246,7 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
         )
     except Exception:
         if paper_publication_date_year is not None:
-            paper_publication_date = datetime.date(
-                int(paper_publication_date_year), 1, 1
-            )
+            paper_publication_date = datetime.date(int(paper_publication_date_year), 1, 1)
 
     if paper_publication_date is None:
         return None
@@ -280,9 +268,7 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
     paper_number_of_pages = None
     try:
         paper_pages = article.get("Pagination").get("MedlinePgn")
-        if (
-            not paper_pages.isdigit()
-        ):  # if it's a digit, the paper pages range is invalid
+        if not paper_pages.isdigit():  # if it's a digit, the paper pages range is invalid
             pages_split = paper_pages.split("-")
             paper_number_of_pages = abs(int(pages_split[0]) - int(pages_split[1])) + 1
     except Exception:  # pragma: no cover
@@ -324,10 +310,7 @@ def run(search: Search):
         - The API token cannot be null
     """
 
-    if (
-        search.publication_types is not None
-        and "journal" not in search.publication_types
-    ):
+    if search.publication_types is not None and "journal" not in search.publication_types:
         logging.info(
             "Skiping PubMed search, journal publication type not in filters. Nowadays the PubMed only retrieves papers published on journals."
         )

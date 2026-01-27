@@ -7951,17 +7951,12 @@ POTENTIAL_PREDATORY_JOURNALS = [
 ]
 
 POTENTIAL_PREDATORY_PUBLISHERS_HOSTS = set(
-    [
-        urlparse(x.get("url")).netloc.replace("www.", "")
-        for x in POTENTIAL_PREDATORY_PUBLISHERS
-    ]
+    [urlparse(x.get("url")).netloc.replace("www.", "") for x in POTENTIAL_PREDATORY_PUBLISHERS]
 )
 POTENTIAL_PREDATORY_PUBLISHERS_NAMES = set(
     [x.get("name").lower() for x in POTENTIAL_PREDATORY_PUBLISHERS]
 )
-POTENTIAL_PREDATORY_JOURNALS_URLS = set(
-    [x.get("url") for x in POTENTIAL_PREDATORY_JOURNALS]
-)
+POTENTIAL_PREDATORY_JOURNALS_URLS = set([x.get("url") for x in POTENTIAL_PREDATORY_JOURNALS])
 POTENTIAL_PREDATORY_JOURNALS_NAMES = set(
     [x.get("name").lower() for x in POTENTIAL_PREDATORY_JOURNALS]
 )

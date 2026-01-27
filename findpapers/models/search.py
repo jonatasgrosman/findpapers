@@ -59,9 +59,7 @@ class Search:
         self.until = until
         self.limit = limit
         self.limit_per_database = limit_per_database
-        self.processed_at = (
-            processed_at if processed_at is not None else datetime.datetime.utcnow()
-        )
+        self.processed_at = processed_at if processed_at is not None else datetime.datetime.utcnow()
         self.databases = databases
         self.publication_types = publication_types
 
@@ -164,9 +162,7 @@ class Search:
             if self.databases is not None and database.lower() not in self.databases:
                 raise ValueError(f"Database {database} isn't in databases list")
             if self.reached_its_limit(database):
-                raise OverflowError(
-                    "When the papers limit is provided, you cannot exceed it"
-                )
+                raise OverflowError("When the papers limit is provided, you cannot exceed it")
 
         if database not in self.papers_by_database:
             self.papers_by_database[database] = set()
@@ -176,9 +172,7 @@ class Search:
             publication_key = self.get_publication_key(
                 paper.publication.title, paper.publication.issn, paper.publication.isbn
             )
-            already_collected_publication = self.publication_by_key.get(
-                publication_key, None
-            )
+            already_collected_publication = self.publication_by_key.get(publication_key, None)
 
             if already_collected_publication is not None:
                 already_collected_publication.enrich(paper.publication)
@@ -320,9 +314,9 @@ class Search:
             max_edit_distance = int(max_title_length * (1 - similarity_threshold))
 
             # calculating the edit distance between the titles
-            titles_edit_distance = edlib.align(
-                paper_1.title.lower(), paper_2.title.lower()
-            )["editDistance"]
+            titles_edit_distance = edlib.align(paper_1.title.lower(), paper_2.title.lower())[
+                "editDistance"
+            ]
 
             if (paper_1.doi is not None and paper_1.doi == paper_2.doi) or (
                 titles_edit_distance <= max_edit_distance
@@ -349,9 +343,7 @@ class Search:
             a flag that says if the search has reached its limit
         """
 
-        reached_general_limit = (
-            self.limit is not None and len(self.papers) >= self.limit
-        )
+        reached_general_limit = self.limit is not None and len(self.papers) >= self.limit
         reached_database_limit = (
             self.limit_per_database is not None
             and database in self.papers_by_database
@@ -431,9 +423,7 @@ class Search:
         for paper in search.papers:
             papers.append(Paper.to_dict(paper))
 
-        papers = sorted(
-            papers, key=lambda x: x.get("publication_date", "1900"), reverse=True
-        )
+        papers = sorted(papers, key=lambda x: x.get("publication_date", "1900"), reverse=True)
 
         number_of_papers_by_database = {}
         for database, items in search.papers_by_database.items():
@@ -441,12 +431,8 @@ class Search:
 
         return {
             "query": search.query,
-            "since": (
-                search.since.strftime("%Y-%m-%d") if search.since is not None else None
-            ),
-            "until": (
-                search.until.strftime("%Y-%m-%d") if search.until is not None else None
-            ),
+            "since": (search.since.strftime("%Y-%m-%d") if search.since is not None else None),
+            "until": (search.until.strftime("%Y-%m-%d") if search.until is not None else None),
             "limit": search.limit,
             "limit_per_database": search.limit_per_database,
             "processed_at": (

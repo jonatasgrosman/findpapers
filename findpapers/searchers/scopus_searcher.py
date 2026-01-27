@@ -61,9 +61,7 @@ def _get_query(search: Search) -> str:
     return query
 
 
-def _get_publication_entry(
-    publication_issn: str, api_token: str
-) -> dict:  # pragma: no cover
+def _get_publication_entry(publication_issn: str, api_token: str) -> dict:  # pragma: no cover
     """
     Get publication entry by publication ISSN
 
@@ -251,9 +249,7 @@ def _get_paper(paper_entry: dict, publication: Publication, api_token: str) -> P
                 if author not in paper_authors:
                     paper_authors.append(author)
 
-            paper_keywords = [
-                x.text for x in paper_details_root.xpath("//author-keyword")
-            ]
+            paper_keywords = [x.text for x in paper_details_root.xpath("//author-keyword")]
 
             paper_pages_element = paper_details_root.xpath(
                 "//prism:pageRange",
@@ -268,17 +264,13 @@ def _get_paper(paper_entry: dict, publication: Publication, api_token: str) -> P
                 starting_page = int(
                     paper_details_root.xpath(
                         "//prism:startingPage",
-                        namespaces={
-                            "prism": "http://prismstandard.org/namespaces/basic/2.0/"
-                        },
+                        namespaces={"prism": "http://prismstandard.org/namespaces/basic/2.0/"},
                     )[0].text
                 )
                 ending_page = int(
                     paper_details_root.xpath(
                         "//prism:endingPage",
-                        namespaces={
-                            "prism": "http://prismstandard.org/namespaces/basic/2.0/"
-                        },
+                        namespaces={"prism": "http://prismstandard.org/namespaces/basic/2.0/"},
                     )[0].text
                 )
                 paper_number_of_pages = ending_page - starting_page + 1
@@ -370,13 +362,8 @@ def enrich_publication_data(search: Search, api_token: str):
 
                 if publication_entry is not None:
 
-                    publication_category = publication_entry.get(
-                        "prism:aggregationType", None
-                    )
-                    if (
-                        publication_category is not None
-                        and publication.category is None
-                    ):
+                    publication_category = publication_entry.get("prism:aggregationType", None)
+                    if publication_category is not None and publication.category is None:
                         publication.category = publication_category
 
                     publication_publisher = publication_entry.get("dc:publisher", None)
@@ -476,9 +463,7 @@ def run(
         try:
 
             paper_title = paper_entry.get("dc:title")
-            logging.info(
-                f"({papers_count}/{total_papers}) Fetching Scopus paper: {paper_title}"
-            )
+            logging.info(f"({papers_count}/{total_papers}) Fetching Scopus paper: {paper_title}")
 
             publication = _get_publication(paper_entry, api_token)
             paper = _get_paper(paper_entry, publication, api_token)

@@ -42,10 +42,7 @@ def _get_paper_metadata_by_url(url: str):
         lambda url=url: requests.get(url, allow_redirects=True), 2, 2
     )
 
-    if (
-        response is not None
-        and "text/html" in response.headers.get("content-type").lower()
-    ):
+    if response is not None and "text/html" in response.headers.get("content-type").lower():
 
         page = html.fromstring(response.content)
         meta_list = page.xpath("//meta")
@@ -158,9 +155,7 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
 
                     paper.title = paper_title
 
-                    paper_doi = _force_single_metadata_value_by_key(
-                        paper_metadata, "citation_doi"
-                    )
+                    paper_doi = _force_single_metadata_value_by_key(paper_metadata, "citation_doi")
                     if paper_doi is not None and len(paper_doi.strip()) > 0:
                         paper.doi = paper_doi
 
@@ -232,8 +227,7 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
                     if (
                         publication_title is not None
                         and len(publication_title) > 0
-                        and publication_title.lower()
-                        not in ["biorxiv", "medrxiv", "arxiv"]
+                        and publication_title.lower() not in ["biorxiv", "medrxiv", "arxiv"]
                     ):
 
                         publication_issn = _force_single_metadata_value_by_key(
@@ -274,9 +268,7 @@ def _enrich(search: Search, scopus_api_token: Optional[str] = None):
         try:
             scopus_searcher.enrich_publication_data(search, scopus_api_token)
         except Exception:  # pragma: no cover
-            logging.debug(
-                "Error while fetching data from Scopus database", exc_info=True
-            )
+            logging.debug("Error while fetching data from Scopus database", exc_info=True)
 
 
 def _filter(search: Search):
@@ -294,12 +286,8 @@ def _filter(search: Search):
             try:
                 if (
                     paper.publication is not None
-                    and paper.publication.category.lower()
-                    not in search.publication_types
-                ) or (
-                    paper.publication is None
-                    and "other" not in search.publication_types
-                ):
+                    and paper.publication.category.lower() not in search.publication_types
+                ) or (paper.publication is None and "other" not in search.publication_types):
                     search.remove_paper(paper)
             except Exception:
                 pass
@@ -332,22 +320,15 @@ def _flag_potentially_predatory_publications(search: Search):
 
                 if paper.doi is not None:
                     url = f"http://doi.org/{paper.doi}"
-                    response = common_util.try_success(
-                        lambda url=url: DefaultSession().get(url), 2
-                    )
+                    response = common_util.try_success(lambda url=url: DefaultSession().get(url), 2)
 
                     if response is not None:
-                        publisher_host = urlparse(response.url).netloc.replace(
-                            "www.", ""
-                        )
+                        publisher_host = urlparse(response.url).netloc.replace("www.", "")
 
                 if (
-                    publication_name
-                    in publication_util.POTENTIAL_PREDATORY_JOURNALS_NAMES
-                    or publisher_name
-                    in publication_util.POTENTIAL_PREDATORY_PUBLISHERS_NAMES
-                    or publisher_host
-                    in publication_util.POTENTIAL_PREDATORY_PUBLISHERS_HOSTS
+                    publication_name in publication_util.POTENTIAL_PREDATORY_JOURNALS_NAMES
+                    or publisher_name in publication_util.POTENTIAL_PREDATORY_PUBLISHERS_NAMES
+                    or publisher_host in publication_util.POTENTIAL_PREDATORY_PUBLISHERS_HOSTS
                 ):
 
                     paper.publication.is_potentially_predatory = True
@@ -479,10 +460,7 @@ def _is_query_ok(query: str) -> bool:
                     current_keyword += character
         else:
             if character == "[":  # opening a search term
-                if (
-                    current_operator is not None
-                    and current_operator not in valid_operators
-                ):
+                if current_operator is not None and current_operator not in valid_operators:
                     query_ok = False
                     break
                 current_operator = None

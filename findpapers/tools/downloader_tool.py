@@ -80,15 +80,11 @@ def download(
         if paper.doi is not None:
             paper.urls.add(f"http://doi.org/{paper.doi}")
 
-        for (
-            url
-        ) in paper.urls:  # we"ll try to download the PDF file of the paper by its URLs
+        for url in paper.urls:  # we"ll try to download the PDF file of the paper by its URLs
             try:
                 logging.info(f"Fetching data from: {url}")
 
-                response = common_util.try_success(
-                    lambda url=url: DefaultSession().get(url), 2
-                )
+                response = common_util.try_success(lambda url=url: DefaultSession().get(url), 2)
 
                 if response is None:
                     continue
@@ -131,9 +127,7 @@ def download(
                         else:
                             continue
 
-                        pdf_url = (
-                            f"{host_url}/stampPDF/getPDF.jsp?tp=&arnumber={document_id}"
-                        )
+                        pdf_url = f"{host_url}/stampPDF/getPDF.jsp?tp=&arnumber={document_id}"
 
                     elif host_url in [
                         "https://www.sciencedirect.com",
@@ -145,9 +139,7 @@ def download(
 
                     elif host_url in ["https://pubs.rsc.org"]:
 
-                        pdf_url = response.url.replace(
-                            "/articlelanding/", "/articlepdf/"
-                        )
+                        pdf_url = response.url.replace("/articlelanding/", "/articlepdf/")
 
                     elif host_url in [
                         "https://www.tandfonline.com",
@@ -167,9 +159,7 @@ def download(
                     elif host_url in ["https://link.springer.com"]:
 
                         pdf_url = (
-                            response.url.replace("/article/", "/content/pdf/").replace(
-                                "%2F", "/"
-                            )
+                            response.url.replace("/article/", "/content/pdf/").replace("%2F", "/")
                             + ".pdf"
                         )
 
@@ -191,27 +181,18 @@ def download(
 
                     elif host_url in ["https://www.pnas.org"]:
 
-                        pdf_url = (
-                            response.url.replace("/content/", "/content/pnas/")
-                            + ".full.pdf"
-                        )
+                        pdf_url = response.url.replace("/content/", "/content/pnas/") + ".full.pdf"
 
                     elif host_url in ["https://www.jneurosci.org"]:
 
                         pdf_url = (
-                            response.url.replace("/content/", "/content/jneuro/")
-                            + ".full.pdf"
+                            response.url.replace("/content/", "/content/jneuro/") + ".full.pdf"
                         )
 
                     elif host_url in ["https://www.ijcai.org"]:
 
                         paper_id = response.url.split("/")[-1].zfill(4)
-                        pdf_url = (
-                            "/".join(response.url.split("/")[:-1])
-                            + "/"
-                            + paper_id
-                            + ".pdf"
-                        )
+                        pdf_url = "/".join(response.url.split("/")[:-1]) + "/" + paper_id + ".pdf"
 
                     elif host_url in ["https://asmp-eurasipjournals.springeropen.com"]:
 

@@ -34,9 +34,7 @@ def _get_search_urls(search: Search, database: str) -> List[str]:
 
     # The databases don"t support wildcards properly nowadays
     if "?" in search.query or "*" in search.query:
-        raise ValueError(
-            "Queries with wildcards are not supported by medRxiv/bioRxiv database"
-        )
+        raise ValueError("Queries with wildcards are not supported by medRxiv/bioRxiv database")
 
     # NOT connectors aren"t supported
     if " AND NOT " in search.query:
@@ -60,11 +58,7 @@ def _get_search_urls(search: Search, database: str) -> List[str]:
     urls = []
 
     date_pattern = "%Y-%m-%d"
-    since = (
-        search.since.strftime(date_pattern)
-        if search.since is not None
-        else "1970-01-01"
-    )
+    since = search.since.strftime(date_pattern) if search.since is not None else "1970-01-01"
     until = (
         search.until.strftime(date_pattern)
         if search.until is not None
@@ -152,9 +146,7 @@ def _get_result_page_data(result_page: html.HtmlElement) -> dict:
         )
         dois = [x.strip().replace("https://doi.org/", "") for x in dois]
 
-        next_page_elements = result_page.xpath(
-            '//*[@class="link-icon link-icon-after"]'
-        )
+        next_page_elements = result_page.xpath('//*[@class="link-icon link-icon-after"]')
         if len(next_page_elements) > 0:
             next_page_url = next_page_elements[0].attrib["href"]
             next_page_url = BASE_URL + next_page_url

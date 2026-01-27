@@ -91,9 +91,7 @@ def test_get_paper(publication: Publication):
     assert paper_entry.get("link")[0].get("@href") in paper.urls
 
 
-def test_get_paper_exceptions(
-    publication: Publication, mock_scopus_get_paper_page_error
-):
+def test_get_paper_exceptions(publication: Publication, mock_scopus_get_paper_page_error):
 
     paper_entry = {
         "dc:title": "fake paper title",

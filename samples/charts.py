@@ -100,9 +100,7 @@ def databases_venn_chart(papers):
 
 def papers_citations_chart(papers):
 
-    papers_citations = [
-        x["citations"] for x in papers if x.get("citations") is not None
-    ]
+    papers_citations = [x["citations"] for x in papers if x.get("citations") is not None]
     papers_publication_date = [
         datetime.datetime.strptime(x["publication_date"], "%Y-%m-%d").date()
         for x in papers
