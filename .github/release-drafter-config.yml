@@ -1,4 +1,5 @@
-name-template: 'v$NEXT_PATCH'
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
 categories:
   - title: '🚀 Features'
     labels:
@@ -16,3 +17,6 @@ categories:
     labels:
       - chore
 change-template: '- $TITLE (#$NUMBER) @$AUTHOR'
+template: |
+  ## What's Changed
+  $CHANGES

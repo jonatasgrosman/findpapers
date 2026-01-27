@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Sync repository labels
-        uses: repo-sync/labels@v3
+        uses: repo-sync/labels@v5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           config_path: .github/labels.yml
