@@ -1,0 +1,20 @@
+sync: true
+labels:
+  - name: feat
+    color: "0e8a16"
+    description: "New features"
+  - name: fix
+    color: "d73a4a"
+    description: "Bug fixes"
+  - name: perf
+    color: "a2eeef"
+    description: "Performance improvements"
+  - name: docs
+    color: "0366d6"
+    description: "Documentation changes"
+  - name: test
+    color: "fbca04"
+    description: "Tests and test updates"
+  - name: chore
+    color: "cfd3d7"
+    description: "Chores, build and maintenance"

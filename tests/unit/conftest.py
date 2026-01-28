@@ -1,9 +1,9 @@
-import pytest
 import datetime
-import requests
-import findpapers
-from findpapers.models.publication import Publication
+
+import pytest
+
 from findpapers.models.paper import Paper
+from findpapers.models.publication import Publication
 from findpapers.models.search import Search
 
 
@@ -27,15 +27,34 @@ def paper(publication):
     number_of_pages = 4
     pages = "1-4"
     databases = {"arXiv", "IEEE", "PubMed", "Scopus"}
-    paper = Paper(title, abstract, authors, publication, publication_date, urls, doi, citations, keywords,
-                  comments, number_of_pages, pages, databases)
+    paper = Paper(
+        title,
+        abstract,
+        authors,
+        publication,
+        publication_date,
+        urls,
+        doi,
+        citations,
+        keywords,
+        comments,
+        number_of_pages,
+        pages,
+        databases,
+    )
 
     return paper
 
 
 @pytest.fixture
 def search():
-    return Search("\"this\" AND (\"that thing\" OR \"something\") AND NOT \"anything\"", datetime.date(1969, 1, 30), datetime.date(2020, 12, 31), 100, 100)
+    return Search(
+        '"this" AND ("that thing" OR "something") AND NOT "anything"',
+        datetime.date(1969, 1, 30),
+        datetime.date(2020, 12, 31),
+        100,
+        100,
+    )
 
 
 @pytest.fixture(autouse=True)

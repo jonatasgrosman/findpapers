@@ -1,8 +1,9 @@
 import os
 import random
-import requests
-import findpapers.utils.common_util as common_util
 
+import requests
+
+import findpapers.utils.common_util as common_util
 
 # list of most common user agents (Last Updated: Wed, 09 Sep 2020)
 USER_AGENTS = [
@@ -94,7 +95,6 @@ USER_AGENTS = [
 
 
 class DefaultSession(requests.Session, metaclass=common_util.ThreadSafeSingletonMetaclass):
-
     """
     Session class with singleton feature and custom headers config
     """
@@ -108,10 +108,7 @@ class DefaultSession(requests.Session, metaclass=common_util.ThreadSafeSingleton
 
         if PROXY is not None:
 
-            self.proxies = {
-                "http": PROXY,
-                "https": PROXY
-            }
+            self.proxies = {"http": PROXY, "https": PROXY}
 
         self.headers.update({"User-Agent": random.choice(USER_AGENTS)})
         self.default_timeout = 20

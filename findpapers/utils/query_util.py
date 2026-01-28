@@ -1,8 +1,12 @@
-from typing import Optional, Callable
+from typing import Callable, Optional
 
 
-def replace_search_term_enclosures(query: str, open_replacement: str, close_replacement: str,
-                                   only_on_wildcards: Optional[bool] = False) -> str:
+def replace_search_term_enclosures(
+    query: str,
+    open_replacement: str,
+    close_replacement: str,
+    only_on_wildcards: Optional[bool] = False,
+) -> str:
     """
     Replace search term enclosures
 
@@ -110,22 +114,22 @@ def get_query_tree(query: str, parent: dict = None) -> dict:
     """
     Get the tree of a query
 
-    Given the following query: 
+    Given the following query:
     [term A] OR [term B] AND ([term C] OR [term D] OR [term E] OR ([term F] AND [term G] AND NOT [term H])) AND NOT [term I]
 
     The following tree will be returned:
     {"node_type": "root", "children" : [
-        {"node_type": "term", "value": "term A"}, 
-        {"node_type": "connector", "value": "OR"}, 
-        {"node_type": "term", "value": "term B"}, 
-        {"node_type": "connector", "value": "AND"}, 
+        {"node_type": "term", "value": "term A"},
+        {"node_type": "connector", "value": "OR"},
+        {"node_type": "term", "value": "term B"},
+        {"node_type": "connector", "value": "AND"},
         {"node_type": "group", "children": [
             {"node_type": "term", "value": "term C"},
-            {"node_type": "connector", "value": "OR"}, 
+            {"node_type": "connector", "value": "OR"},
             {"node_type": "term", "value": "term D"},
-            {"node_type": "connector", "value": "OR"}, 
+            {"node_type": "connector", "value": "OR"},
             {"node_type": "term", "value": "term E"},
-            {"node_type": "connector", "value": "OR"}, 
+            {"node_type": "connector", "value": "OR"},
             {"node_type": "group", "children": [
                 {"node_type": "term", "value": "term F"},
                 {"node_type": "connector", "value": "AND"},
@@ -149,7 +153,7 @@ def get_query_tree(query: str, parent: dict = None) -> dict:
     -------
     dict
         The query tree
-        
+
     """
 
     if parent is None:
@@ -161,12 +165,14 @@ def get_query_tree(query: str, parent: dict = None) -> dict:
 
     while current_character is not None:
 
-        if current_character == "(": # is a beginning of a group
+        if current_character == "(":  # is a beginning of a group
 
             if current_connector is not None:
-                parent["children"].append({"node_type": "connector", "value": current_connector.strip()})
+                parent["children"].append(
+                    {"node_type": "connector", "value": current_connector.strip()}
+                )
                 current_connector = None
-                
+
             subquery = ""
             subquery_group_level = 1
 
@@ -177,12 +183,12 @@ def get_query_tree(query: str, parent: dict = None) -> dict:
                 if current_character is None:
                     raise ValueError("Unbalanced parentheses")
 
-                if current_character == "(": # has a nested group
+                if current_character == "(":  # has a nested group
                     subquery_group_level += 1
 
                 elif current_character == ")":
                     subquery_group_level -= 1
-                    if subquery_group_level == 0: # end of the group
+                    if subquery_group_level == 0:  # end of the group
                         break
 
                 subquery += current_character
@@ -192,10 +198,12 @@ def get_query_tree(query: str, parent: dict = None) -> dict:
 
             get_query_tree(subquery, group_node)
 
-        elif current_character == "[": # is a beginning of a term
+        elif current_character == "[":  # is a beginning of a term
 
             if current_connector is not None:
-                parent["children"].append({"node_type": "connector", "value": current_connector.strip()})
+                parent["children"].append(
+                    {"node_type": "connector", "value": current_connector.strip()}
+                )
                 current_connector = None
 
             term_query = ""
@@ -206,7 +214,7 @@ def get_query_tree(query: str, parent: dict = None) -> dict:
 
                 if current_character is None:
                     raise ValueError("Missing term closing bracket")
-                
+
                 if current_character == "]":
                     break
 
@@ -214,7 +222,7 @@ def get_query_tree(query: str, parent: dict = None) -> dict:
 
             parent["children"].append({"node_type": "term", "value": term_query})
 
-        else: # is a connector
+        else:  # is a connector
 
             if current_connector is None:
                 current_connector = ""

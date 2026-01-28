@@ -1,8 +1,10 @@
-import os
-import pytest
-import json
 import datetime
+import json
+import os
+
+import pytest
 from lxml import html
+
 import findpapers.searchers.scopus_searcher as scopus_searcher
 
 
@@ -24,8 +26,7 @@ def mock_scopus_get_search_results(monkeypatch):
 
         return search_results
 
-    monkeypatch.setattr(
-        scopus_searcher, "_get_search_results", mocked_data)
+    monkeypatch.setattr(scopus_searcher, "_get_search_results", mocked_data)
 
 
 @pytest.fixture(autouse=True)
@@ -36,8 +37,7 @@ def mock_scopus_get_publication_entry(monkeypatch):
         filename = os.path.join(dirname, "../data/scopus-api-publication.json")
         return json.load(open(filename))["serial-metadata-response"]["entry"][0]
 
-    monkeypatch.setattr(
-        scopus_searcher, "_get_publication_entry", mocked_data)
+    monkeypatch.setattr(scopus_searcher, "_get_publication_entry", mocked_data)
 
 
 @pytest.fixture(autouse=True)

@@ -1,6 +1,5 @@
 import json
-import re
-from typing import Optional
+
 from findpapers.models.search import Search
 
 
@@ -17,7 +16,13 @@ def save(search: Search, outputpath: str):
     """
 
     with open(outputpath, "w") as jsonfile:
-        json.dump(Search.to_dict(search), jsonfile, indent=2, sort_keys=True, ensure_ascii=False)
+        json.dump(
+            Search.to_dict(search),
+            jsonfile,
+            indent=2,
+            sort_keys=True,
+            ensure_ascii=False,
+        )
 
 
 def load(search_path: str):

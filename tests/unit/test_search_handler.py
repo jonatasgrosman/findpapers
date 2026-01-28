@@ -1,11 +1,12 @@
 import os
-import json
-import findpapers
 import tempfile
+
 import pytest
-from findpapers.models.search import Search
-from findpapers.models.paper import Paper
+
+import findpapers
 import findpapers.tools.search_runner_tool as search_runner_tool
+from findpapers.models.paper import Paper
+from findpapers.models.search import Search
 
 
 @pytest.mark.skip(reason="It needs some revision after some tool's refactoring")
@@ -20,8 +21,8 @@ def test_run():
         fetched_papers_count += len(paper.databases)
 
     assert fetched_papers_count == 10
-    
-    
+
+
 @pytest.mark.skip(reason="It needs some revision after some tool's refactoring")
 def test_save_and_load(search: Search, paper: Paper):
 
@@ -29,7 +30,7 @@ def test_save_and_load(search: Search, paper: Paper):
     temp_filepath = os.path.join(temp_dirpath, "output.json")
 
     search.add_paper(paper)
-    
+
     findpapers.save(search, temp_filepath)
 
     loaded_search = findpapers.load(temp_filepath)
@@ -39,7 +40,9 @@ def test_save_and_load(search: Search, paper: Paper):
     assert loaded_search.until == search.until
     assert loaded_search.limit == search.limit
     assert loaded_search.limit_per_database == search.limit_per_database
-    assert loaded_search.processed_at.strftime("%Y-%m-%d %H:%M:%S") == search.processed_at.strftime("%Y-%m-%d %H:%M:%S")
+    assert loaded_search.processed_at.strftime("%Y-%m-%d %H:%M:%S") == search.processed_at.strftime(
+        "%Y-%m-%d %H:%M:%S"
+    )
     assert len(loaded_search.papers) == len(search.papers)
 
 
@@ -68,8 +71,22 @@ def test_query_format():
 
 def test_query_sanitize():
 
-    assert search_runner_tool._sanitize_query("[term a]    OR     [term b]") == "[term a] OR [term b]"
-    assert search_runner_tool._sanitize_query("[term a]    AND     [term b]") == "[term a] AND [term b]"
-    assert search_runner_tool._sanitize_query("([term a]    OR     [term b]) AND [term *]") == "([term a] OR [term b]) AND [term *]"
-    assert search_runner_tool._sanitize_query("([term a]\nOR\t[term b]) AND [term *]") == "([term a] OR [term b]) AND [term *]"
-    assert search_runner_tool._sanitize_query("([term a]\n\n\n\nOR\n\n\n\n[term b]) AND [term *]") == "([term a] OR [term b]) AND [term *]"
+    assert (
+        search_runner_tool._sanitize_query("[term a]    OR     [term b]") == "[term a] OR [term b]"
+    )
+    assert (
+        search_runner_tool._sanitize_query("[term a]    AND     [term b]")
+        == "[term a] AND [term b]"
+    )
+    assert (
+        search_runner_tool._sanitize_query("([term a]    OR     [term b]) AND [term *]")
+        == "([term a] OR [term b]) AND [term *]"
+    )
+    assert (
+        search_runner_tool._sanitize_query("([term a]\nOR\t[term b]) AND [term *]")
+        == "([term a] OR [term b]) AND [term *]"
+    )
+    assert (
+        search_runner_tool._sanitize_query("([term a]\n\n\n\nOR\n\n\n\n[term b]) AND [term *]")
+        == "([term a] OR [term b]) AND [term *]"
+    )

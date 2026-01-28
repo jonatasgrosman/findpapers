@@ -1,17 +1,13 @@
-import requests
 import datetime
 import logging
-import re
-import math
-from lxml import html
 from typing import Optional
+
 import findpapers.utils.common_util as common_util
 import findpapers.utils.query_util as query_util
-from findpapers.models.search import Search
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
+from findpapers.models.search import Search
 from findpapers.utils.requests_util import DefaultSession
-
 
 DATABASE_LABEL = "IEEE"
 BASE_URL = "http://ieeexploreapi.ieee.org"
@@ -39,7 +35,7 @@ def _get_search_url(search: Search, api_token: str, start_record: Optional[int] 
     """
 
     query = search.query.replace(" AND NOT ", " NOT ")
-    query = query_util.replace_search_term_enclosures(query, "\"Abstract\":\"", "\"")
+    query = query_util.replace_search_term_enclosures(query, '"Abstract":"', '"')
 
     url = f"{BASE_URL}/api/v1/search/articles?querytext=({query})&format=json&apikey={api_token}&max_records={MAX_ENTRIES_PER_PAGE}"
 
@@ -67,13 +63,15 @@ def _get_search_url(search: Search, api_token: str, start_record: Optional[int] 
             content_types.add("Early Access")
             content_types.add("Magazines")
             content_types.add("Standards")
-            
+
         url += f"&content_type={','.join(content_types)}"
 
     return url
 
 
-def _get_api_result(search: Search, api_token: str, start_record: Optional[int] = 1) -> dict:  # pragma: no cover
+def _get_api_result(
+    search: Search, api_token: str, start_record: Optional[int] = 1
+) -> dict:  # pragma: no cover
     """
     This method return results from IEEE database using the provided search parameters
 
@@ -122,8 +120,13 @@ def _get_publication(paper_entry: dict) -> Publication:
     publication_publisher = paper_entry.get("publisher", None)
     publication_category = paper_entry.get("content_type", None)
 
-    publication = Publication(publication_title, publication_isbn,
-                              publication_issn, publication_publisher, publication_category)
+    publication = Publication(
+        publication_title,
+        publication_isbn,
+        publication_issn,
+        publication_publisher,
+        publication_category,
+    )
 
     return publication
 
@@ -159,26 +162,25 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
     paper_number_of_pages = None
 
     try:
-        paper_keywords = set([ x.strip() for x in paper_entry.get(
-            "index_terms").get("author_terms").get("terms")])
-    except Exception as e:
+        paper_keywords = set(
+            [x.strip() for x in paper_entry.get("index_terms").get("author_terms").get("terms")]
+        )
+    except Exception:
         paper_keywords = set()
 
     if paper_publication_date is not None:
         try:
             paper_publication_date_split = paper_publication_date.split(" ")
             day = int(paper_publication_date_split[0].split("-")[0])
-            month = int(common_util.get_numeric_month_by_string(
-                paper_publication_date_split[1]))
+            month = int(common_util.get_numeric_month_by_string(paper_publication_date_split[1]))
             year = int(paper_publication_date_split[2])
 
             paper_publication_date = datetime.date(year, month, day)
-        except Exception as e:
+        except Exception:
             pass
 
     if not isinstance(paper_publication_date, datetime.date):
-        paper_publication_date = datetime.date(
-            paper_entry.get("publication_year"), 1, 1)
+        paper_publication_date = datetime.date(paper_entry.get("publication_year"), 1, 1)
 
     if paper_publication_date is None:
         return None
@@ -189,19 +191,30 @@ def _get_paper(paper_entry: dict, publication: Publication) -> Paper:
 
     start_page = paper_entry.get("start_page", None)
     end_page = paper_entry.get("end_page", None)
-    
 
     if start_page is not None and end_page is not None:
         try:
             paper_pages = f"{paper_entry.get('start_page')}-{paper_entry.get('end_page')}"
-            paper_number_of_pages = abs(
-                int(paper_entry.get("start_page"))-int(paper_entry.get("end_page")))+1
+            paper_number_of_pages = (
+                abs(int(paper_entry.get("start_page")) - int(paper_entry.get("end_page"))) + 1
+            )
         except Exception:  # pragma: no cover
             pass
 
-    paper = Paper(paper_title, paper_abstract, paper_authors, publication,
-                  paper_publication_date, paper_urls, paper_doi, paper_citations, 
-                  paper_keywords, None, paper_number_of_pages, paper_pages)
+    paper = Paper(
+        paper_title,
+        paper_abstract,
+        paper_authors,
+        publication,
+        paper_publication_date,
+        paper_urls,
+        paper_doi,
+        paper_citations,
+        paper_keywords,
+        None,
+        paper_number_of_pages,
+        paper_pages,
+    )
 
     return paper
 
@@ -233,18 +246,20 @@ def run(search: Search, api_token: str):
 
     logging.info(f"IEEE: {total_papers} papers to fetch")
 
-    while(papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL)):
+    while papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL):
 
         for paper_entry in result.get("articles"):
 
             if papers_count >= total_papers or search.reached_its_limit(DATABASE_LABEL):
                 break
-            
+
             papers_count += 1
 
             try:
 
-                logging.info(f"({papers_count}/{total_papers}) Fetching IEEE paper: {paper_entry.get('title')}")
+                logging.info(
+                    f"({papers_count}/{total_papers}) Fetching IEEE paper: {paper_entry.get('title')}"
+                )
 
                 publication = _get_publication(paper_entry)
                 paper = _get_paper(paper_entry, publication)
@@ -257,4 +272,4 @@ def run(search: Search, api_token: str):
                 logging.debug(e, exc_info=True)
 
         if papers_count < total_papers and not search.reached_its_limit(DATABASE_LABEL):
-            result = _get_api_result(search, api_token, papers_count+1)
+            result = _get_api_result(search, api_token, papers_count + 1)
