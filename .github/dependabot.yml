@@ -1,5 +1,6 @@
 version: 2
 updates:
+  # Dependabot uses "pip" for Poetry projects (pyproject.toml + poetry.lock).
   - package-ecosystem: "pip"
     directory: "/"
     schedule:

@@ -15,4 +15,4 @@ jobs:
         uses: repo-sync/labels@v5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          config_path: .github/labels.yml
+          config_path: .github/labels-config.yml
