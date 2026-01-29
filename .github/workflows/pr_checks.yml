@@ -3,11 +3,6 @@ name: PR Checks
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
-  push:
-    branches:
-      - develop
-      - main
-
 
 jobs:
   semantic-pr-title:
