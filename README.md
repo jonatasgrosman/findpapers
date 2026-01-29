@@ -2,14 +2,8 @@
 
 [![PyPI - License](https://img.shields.io/pypi/l/findpapers)](https://github.com/jonatasgrosman/findpapers/blob/master/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/findpapers)](https://pypi.org/project/findpapers)
-<!--[![pipeline status](https://gitlab.com/jonatasgrosman/findpapers/badges/master/pipeline.svg)](https://gitlab.com/jonatasgrosman/findpapers/-/commits/master)-->
-<!--[![coverage report](https://gitlab.com/jonatasgrosman/findpapers/badges/master/coverage.svg)](https://gitlab.com/jonatasgrosman/findpapers/-/commits/master)-->
 
 Findpapers is an application that helps researchers who are looking for references for their work. The application will perform searches in several databases (currently arXiv, bioRxiv, IEEE, medRxiv, PubMed, and Scopus) from a user-defined search query.
-
-In summary, this tool will help you to perform the process below:
-
-![Workflow](https://github.com/jonatasgrosman/findpapers/raw/master/docs/workflow.png)
 
 # Requirements
 
@@ -19,18 +13,6 @@ In summary, this tool will help you to perform the process below:
 
 ```console
 $ pip install findpapers
-```
-
-You can check your Findpapers version running:
-
-```console
-$ findpapers version
-```
-
-If you have an old version of the tool and want to upgrade it run the following command:
-
-```console
-$ pip install findpapers --upgrade
 ```
 
 # How to use it?
@@ -51,7 +33,7 @@ findpapers.search(search_file, query, since=since, until=until)
 
 ## Search query construction
 
-First of all, we need to know how to build the search queries. The search queries must follow the rules:
+The search queries must follow the rules:
 
 - All the query terms need to be not empty and enclosed by square brackets. E.g., **[term a]**
 
@@ -129,22 +111,12 @@ findpapers.download(search_file, "/some/path/papers")
 findpapers.generate_bibtex(search_file, "/some/path/mybib.bib")
 ```
 
-For a more complete script, see [samples/search_paul.py](https://github.com/jonatasgrosman/findpapers/blob/master/samples/search_paul.py).
-
-As you could see, all the information collected and enriched by the Findpapers is placed in a single JSON file. From this file, it is possible to create interesting visualizations about the collected data ...
-
-![charts](https://github.com/jonatasgrosman/findpapers/raw/master/docs/charts.png)
-
-... So, use your imagination! (The [samples/charts.py](https://github.com/jonatasgrosman/findpapers/blob/master/samples/charts.py) script made the visualization above).
-
-With the examples above, we cover the core library usage. I know this documentation is unconventional, but I haven't had time to write a more formal version of the documentation. But you can help us to improve this, take a look at the next section and see how you can do that.
-
 # Want to help?
 
 See the [contribution guidelines](https://github.com/jonatasgrosman/findpapers/blob/master/CONTRIBUTING.md)
 if you'd like to contribute to Findpapers project.
 
-You don't even need to know how to code to contribute to the project. Even the improvement of our documentation is an outstanding contribution.
+You don't need to know how to code to contribute to the project. Even the improvement of our documentation is an outstanding contribution.
 
 If this project has been useful for you, please share it with your friends. This project could be helpful for them too.
 
