@@ -1,5 +1,6 @@
-import findpapers
 import datetime
+
+import findpapers
 
 search_file = "search_paul.json"
 output_dir = "/some/valid/dir"
@@ -11,27 +12,27 @@ scopus_api_token = "SOME_SUPER_SECRET_TOKEN"
 ieee_api_token = "SOME_SUPER_SECRET_TOKEN"
 limit = 100
 limit_per_database = 4
-databases = ["acm", "ieee", "scopus"]
+databases = ["ieee", "scopus"]
 publication_types = ["journal", "conference proceedings"]
-categories = {
-    "Research Type": [
-        "Validation Research", "Evaluation Research", "Solution Proposal", "Philosophical", "Opinion", "Experience"
-    ],
-    "Contribution": [
-        "Metric", "Tool", "Model", "Method"
-    ]
-}
-highlights = ["propose", "achiev", "accuracy", "method", "metric", "result", "limitation", "state of the art"]
 verbose = False
 
 # search
-findpapers.search(search_file, query, since, until, limit, limit_per_database, databases, publication_types, scopus_api_token, ieee_api_token, verbose=verbose)
-
-# refine
-findpapers.refine(search_file, categories, highlights, show_abstract=True, show_extra_info=True, verbose=verbose)
+findpapers.search(
+    search_file,
+    query,
+    since,
+    until,
+    limit,
+    limit_per_database,
+    databases,
+    publication_types,
+    scopus_api_token,
+    ieee_api_token,
+    verbose=verbose,
+)
 
 # download
-findpapers.download(search_file, output_dir, only_selected_papers=True, proxy=proxy, verbose=verbose)
+findpapers.download(search_file, output_dir, proxy=proxy, verbose=verbose)
 
 # generate bibtex
-findpapers.generate_bibtex(search_file, output_dir, only_selected_papers=True, add_findpapers_citation=True, verbose=verbose)
+findpapers.generate_bibtex(search_file, output_dir, add_findpapers_citation=True, verbose=verbose)

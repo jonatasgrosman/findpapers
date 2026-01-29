@@ -1,8 +1,10 @@
 import datetime
+
 import pytest
+
 import findpapers.searchers.ieee_searcher as ieee_searcher
-from findpapers.models.search import Search
 from findpapers.models.publication import Publication
+from findpapers.models.search import Search
 
 paper_entry = {
     "title": "title fake",
@@ -16,15 +18,13 @@ paper_entry = {
     "publisher": "publisher X",
     "content_type": "journal",
     "pdf_url": "http://pdf_url",
-    "index_terms": {
-        "author_terms": {"terms": ["term A", "term B"]}
-    },
+    "index_terms": {"author_terms": {"terms": ["term A", "term B"]}},
     "authors": {
         "authors": [
             {"full_name": "author A"},
             {"full_name": "author B"},
         ]
-    }
+    },
 }
 
 

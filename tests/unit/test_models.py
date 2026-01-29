@@ -1,8 +1,10 @@
-import datetime
-import pytest
 import copy
-from findpapers.models.publication import Publication
+import datetime
+
+import pytest
+
 from findpapers.models.paper import Paper
+from findpapers.models.publication import Publication
 from findpapers.models.search import Search
 
 
@@ -24,7 +26,7 @@ def test_publication(publication: Publication):
     assert publication.category == "Conference Proceedings"
 
     publication.category = "newspaper article"
-    assert publication.category == None
+    assert publication.category is None
 
     another_publication = Publication("awesome publication title 2")
     another_publication.cite_score = 1.0
@@ -56,7 +58,7 @@ def test_paper(paper: Paper):
     assert paper.abstract == "a long abstract"
     assert paper.authors == ["Dr Paul", "Dr John", "Dr George", "Dr Ringo"]
     assert len(paper.urls) == 1
-    assert len(paper.databases) == 5
+    assert len(paper.databases) == 4
 
     paper.databases = set()
 
@@ -67,7 +69,7 @@ def test_paper(paper: Paper):
     paper.add_database("Scopus")
     assert len(paper.databases) == 1
 
-    paper.add_database("ACM")
+    paper.add_database("PubMed")
     assert len(paper.databases) == 2
 
     assert len(paper.urls) == 1
@@ -82,8 +84,18 @@ def test_paper(paper: Paper):
     another_keywords = {"key-A", "key-B", "key-C"}
     another_comments = "some comments"
 
-    another_paper = Paper("another awesome title paper", "a long abstract", paper.authors, paper.publication,
-                          paper.publication_date, paper.urls, another_doi, another_paper_citations, another_keywords, another_comments)
+    another_paper = Paper(
+        "another awesome title paper",
+        "a long abstract",
+        paper.authors,
+        paper.publication,
+        paper.publication_date,
+        paper.urls,
+        another_doi,
+        another_paper_citations,
+        another_keywords,
+        another_comments,
+    )
     another_paper.add_database("arXiv")
 
     paper.publication_date = None
@@ -106,18 +118,19 @@ def test_paper(paper: Paper):
     assert "arXiv" in paper.databases
     assert len(paper.databases) == 3
     assert paper.doi == another_doi
-    assert paper.citations == another_paper_citations # "cause another_paper_citations was higher than paper_citations
+    assert (
+        paper.citations == another_paper_citations
+    )  # "cause another_paper_citations was higher than paper_citations
     assert paper.keywords == another_keywords
     assert paper.comments == another_comments
 
 
 @pytest.mark.skip(reason="It needs some revision after some tool's refactoring")
 def test_search(paper: Paper):
-    
+
     paper.doi = None
 
-    search = Search("this AND that", datetime.date(
-        1969, 1, 30), datetime.date(1970, 4, 8), 2)
+    search = Search("this AND that", datetime.date(1969, 1, 30), datetime.date(1970, 4, 8), 2)
 
     assert len(search.papers) == 0
 
@@ -126,16 +139,23 @@ def test_search(paper: Paper):
     search.add_paper(paper)
     assert len(search.papers) == 1
 
-    another_paper = Paper("awesome paper title 2", "a long abstract",
-                          paper.authors, paper.publication,  paper.publication_date, paper.urls)
+    another_paper = Paper(
+        "awesome paper title 2",
+        "a long abstract",
+        paper.authors,
+        paper.publication,
+        paper.publication_date,
+        paper.urls,
+    )
     another_paper.add_database("arXiv")
-    
+
     search.add_paper(another_paper)
     assert len(search.papers) == 2
 
     assert paper == search.get_paper(paper.title, paper.publication_date, paper.doi)
     assert paper.publication == search.get_publication(
-        paper.publication.title, paper.publication.issn, paper.publication.isbn)
+        paper.publication.title, paper.publication.issn, paper.publication.isbn
+    )
 
     search.remove_paper(another_paper)
     assert len(search.papers) == 1
@@ -156,7 +176,7 @@ def test_search(paper: Paper):
 
     with pytest.raises(ValueError):
         search.add_paper(another_paper_2)
-    
+
     another_paper_2.add_database("arXiv")
 
     with pytest.raises(OverflowError):
@@ -168,6 +188,12 @@ def test_search(paper: Paper):
     publication_title = "FAKE-TITLE"
     publication_issn = "FAKE-ISSN"
     publication_isbn = "FAKE-ISBN"
-    assert search.get_publication_key(publication_title, publication_issn, publication_isbn) == f"ISBN-{publication_isbn.lower()}"
-    assert search.get_publication_key(publication_title, publication_issn) == f"ISSN-{publication_issn.lower()}"
+    assert (
+        search.get_publication_key(publication_title, publication_issn, publication_isbn)
+        == f"ISBN-{publication_isbn.lower()}"
+    )
+    assert (
+        search.get_publication_key(publication_title, publication_issn)
+        == f"ISSN-{publication_issn.lower()}"
+    )
     assert search.get_publication_key(publication_title) == f"TITLE-{publication_title.lower()}"

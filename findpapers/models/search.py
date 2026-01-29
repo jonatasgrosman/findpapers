@@ -1,20 +1,32 @@
 from __future__ import annotations
+
 import datetime
 import itertools
-import edlib
 from typing import List, Optional
+
+import edlib
+
 from findpapers.models.paper import Paper
 from findpapers.models.publication import Publication
 
 
-class Search():
+class Search:
     """
     Class that represents a search
     """
 
-    def __init__(self, query: str, since: Optional[datetime.date] = None, until: Optional[datetime.date] = None,
-                 limit: Optional[int] = None, limit_per_database: Optional[int] = None, processed_at: Optional[datetime.datetime] = None,
-                 databases: Optional[List[str]] = None, publication_types: Optional[List[str]] = None, papers: Optional[set] = None):
+    def __init__(
+        self,
+        query: str,
+        since: Optional[datetime.date] = None,
+        until: Optional[datetime.date] = None,
+        limit: Optional[int] = None,
+        limit_per_database: Optional[int] = None,
+        processed_at: Optional[datetime.datetime] = None,
+        databases: Optional[List[str]] = None,
+        publication_types: Optional[List[str]] = None,
+        papers: Optional[set] = None,
+    ):
         """
         Class constructor
 
@@ -27,7 +39,7 @@ class Search():
         until : datetime.date, optional
             The upper bound (inclusive) date of search, by default None
         limit : int, optional
-            The max number of papers that can be returned in the search, 
+            The max number of papers that can be returned in the search,
             when the limit is not provided the search will retrieve all the papers that it can, by default None
         limit_per_database : int, optional
             The max number of papers that can be returned in the search for each database
@@ -64,7 +76,12 @@ class Search():
                 except Exception:
                     pass
 
-    def get_paper_key(self, paper_title: str, publication_date: datetime.date, paper_doi: Optional[str] = None) -> str:
+    def get_paper_key(
+        self,
+        paper_title: str,
+        publication_date: datetime.date,
+        paper_doi: Optional[str] = None,
+    ) -> str:
         """
         We have a map called paper_by_key that is filled using the string this method returns
 
@@ -88,7 +105,12 @@ class Search():
         else:
             return f"{paper_title.lower()}|{publication_date.year if publication_date is not None else ''}"
 
-    def get_publication_key(self, publication_title: str, publication_issn: Optional[str] = None, publication_isbn: Optional[str] = None) -> str:
+    def get_publication_key(
+        self,
+        publication_title: str,
+        publication_issn: Optional[str] = None,
+        publication_isbn: Optional[str] = None,
+    ) -> str:
         """
         We have a map called publication_by_key that is filled using the string this method returns
 
@@ -116,7 +138,7 @@ class Search():
 
     def add_paper(self, paper: Paper):
         """
-        Method that handle the action to add a paper to the list of already collected papers, 
+        Method that handle the action to add a paper to the list of already collected papers,
         dealing with possible paper's duplications
 
         Parameters
@@ -133,7 +155,8 @@ class Search():
 
         if len(paper.databases) == 0:
             raise ValueError(
-                "Paper cannot be added to search without at least one defined database")
+                "Paper cannot be added to search without at least one defined database"
+            )
 
         for database in paper.databases:
             if self.databases is not None and database.lower() not in self.databases:
@@ -147,9 +170,9 @@ class Search():
         if paper.publication is not None:
 
             publication_key = self.get_publication_key(
-                paper.publication.title, paper.publication.issn, paper.publication.isbn)
-            already_collected_publication = self.publication_by_key.get(
-                publication_key, None)
+                paper.publication.title, paper.publication.issn, paper.publication.isbn
+            )
+            already_collected_publication = self.publication_by_key.get(publication_key, None)
 
             if already_collected_publication is not None:
                 already_collected_publication.enrich(paper.publication)
@@ -157,13 +180,13 @@ class Search():
             else:
                 self.publication_by_key[publication_key] = paper.publication
 
-        paper_key = self.get_paper_key(
-            paper.title, paper.publication_date, paper.doi)
+        paper_key = self.get_paper_key(paper.title, paper.publication_date, paper.doi)
 
         already_collected_paper = self.paper_by_key.get(paper_key, None)
 
-        if (self.since is None or paper.publication_date >= self.since) \
-                and (self.until is None or paper.publication_date <= self.until):
+        if (self.since is None or paper.publication_date >= self.since) and (
+            self.until is None or paper.publication_date <= self.until
+        ):
 
             if already_collected_paper is None:
                 self.papers.add(paper)
@@ -179,9 +202,10 @@ class Search():
             else:
                 self.papers_by_database[database].add(already_collected_paper)
                 already_collected_paper.enrich(paper)
-        
 
-    def get_paper(self, paper_title: str, publication_date: str, paper_doi: Optional[str] = None) -> Paper:
+    def get_paper(
+        self, paper_title: str, publication_date: str, paper_doi: Optional[str] = None
+    ) -> Paper:
         """
         Get a collected paper by paper's title and publication date
 
@@ -200,12 +224,13 @@ class Search():
             The wanted paper, or None if there isn't a paper given by the provided arguments
         """
 
-        paper_key = self.get_paper_key(
-            paper_title, publication_date, paper_doi)
+        paper_key = self.get_paper_key(paper_title, publication_date, paper_doi)
 
         return self.paper_by_key.get(paper_key, None)
 
-    def get_publication(self, title: str, issn: Optional[str] = None, isbn: Optional[str] = None) -> Publication:
+    def get_publication(
+        self, title: str, issn: Optional[str] = None, isbn: Optional[str] = None
+    ) -> Publication:
         """
         Get a collected publication by publication's title, issn and isbn
 
@@ -238,8 +263,7 @@ class Search():
             A paper instance
         """
 
-        paper_key = self.get_paper_key(
-            paper.title, paper.publication_date, paper.doi)
+        paper_key = self.get_paper_key(paper.title, paper.publication_date, paper.doi)
 
         if paper_key in self.paper_by_key:
             del self.paper_by_key[paper_key]
@@ -251,7 +275,7 @@ class Search():
 
     def merge_duplications(self, similarity_threshold: float = 0.95):
         """
-        In some cases, a same paper is represented with tiny differences between some databases, 
+        In some cases, a same paper is represented with tiny differences between some databases,
         this method try to deal with this situation merging those instances of the paper,
         using a similarity threshold, by default 0.95 (95%), i.e., if two papers titles
         are similar by 95% or more, and if the papers have the same year of publication
@@ -263,8 +287,7 @@ class Search():
             A value between 0 and 1 that represents a threshold that says if a pair of papers is a duplication or not, by default 0.95 (95%)
         """
 
-        paper_key_pairs = list(
-            itertools.combinations(self.paper_by_key.keys(), 2))
+        paper_key_pairs = list(itertools.combinations(self.paper_by_key.keys(), 2))
 
         for i, pair in enumerate(paper_key_pairs):
 
@@ -273,23 +296,31 @@ class Search():
             paper_1 = self.paper_by_key.get(paper_1_key)
             paper_2 = self.paper_by_key.get(paper_2_key)
 
-            if (paper_1.publication_date is None or paper_2.publication_date is None) or \
-                (paper_1.publication_date.year != paper_2.publication_date.year) or \
-                (paper_1.doi is not None and paper_2.doi is not None and paper_1.doi != paper_2.doi):
+            if (
+                (paper_1.publication_date is None or paper_2.publication_date is None)
+                or (paper_1.publication_date.year != paper_2.publication_date.year)
+                or (
+                    paper_1.doi is not None
+                    and paper_2.doi is not None
+                    and paper_1.doi != paper_2.doi
+                )
+            ):
                 # We cannot merge paper from different years or without a year defined or different DOI
                 break
 
             max_title_length = max(len(paper_1.title), len(paper_2.title))
 
             # creating the max valid edit distance using the max title length between the two papers and the provided similarity threshold
-            max_edit_distance = int(
-                max_title_length * (1 - similarity_threshold))
+            max_edit_distance = int(max_title_length * (1 - similarity_threshold))
 
             # calculating the edit distance between the titles
-            titles_edit_distance = edlib.align(
-                paper_1.title.lower(), paper_2.title.lower())["editDistance"]
+            titles_edit_distance = edlib.align(paper_1.title.lower(), paper_2.title.lower())[
+                "editDistance"
+            ]
 
-            if (paper_1.doi is not None and paper_1.doi == paper_2.doi) or (titles_edit_distance <= max_edit_distance):
+            if (paper_1.doi is not None and paper_1.doi == paper_2.doi) or (
+                titles_edit_distance <= max_edit_distance
+            ):
 
                 # using the information of paper_2 to enrich paper_1
                 paper_1.enrich(paper_2)
@@ -312,10 +343,12 @@ class Search():
             a flag that says if the search has reached its limit
         """
 
-        reached_general_limit = self.limit is not None and len(
-            self.papers) >= self.limit
-        reached_database_limit = self.limit_per_database is not None and database in self.papers_by_database and len(
-            self.papers_by_database.get(database)) >= self.limit_per_database
+        reached_general_limit = self.limit is not None and len(self.papers) >= self.limit
+        reached_database_limit = (
+            self.limit_per_database is not None
+            and database in self.papers_by_database
+            and len(self.papers_by_database.get(database)) >= self.limit_per_database
+        )
 
         return reached_general_limit or reached_database_limit
 
@@ -358,7 +391,17 @@ class Search():
         for paper in search_dict.get("papers", []):
             papers.add(Paper.from_dict(paper))
 
-        return cls(query, since, until, limit, limit_per_database, processed_at, databases, publication_types, papers)
+        return cls(
+            query,
+            since,
+            until,
+            limit,
+            limit_per_database,
+            processed_at,
+            databases,
+            publication_types,
+            papers,
+        )
 
     @staticmethod
     def to_dict(search: Search) -> dict:
@@ -388,14 +431,18 @@ class Search():
 
         return {
             "query": search.query,
-            "since": search.since.strftime("%Y-%m-%d") if search.since is not None else None,
-            "until": search.until.strftime("%Y-%m-%d") if search.until is not None else None,
+            "since": (search.since.strftime("%Y-%m-%d") if search.since is not None else None),
+            "until": (search.until.strftime("%Y-%m-%d") if search.until is not None else None),
             "limit": search.limit,
             "limit_per_database": search.limit_per_database,
-            "processed_at": search.processed_at.strftime("%Y-%m-%d %H:%M:%S") if search.processed_at is not None else None,
+            "processed_at": (
+                search.processed_at.strftime("%Y-%m-%d %H:%M:%S")
+                if search.processed_at is not None
+                else None
+            ),
             "databases": search.databases,
             "publication_types": search.publication_types,
             "number_of_papers": len(papers),
             "number_of_papers_by_database": number_of_papers_by_database,
-            "papers": papers
+            "papers": papers,
         }

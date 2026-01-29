@@ -1,8 +1,10 @@
 import datetime
+
 import pytest
+
 import findpapers.searchers.scopus_searcher as scopus_searcher
-from findpapers.models.search import Search
 from findpapers.models.publication import Publication
+from findpapers.models.search import Search
 
 
 def test_get_query(search: Search):
@@ -21,20 +23,27 @@ def test_mocks():
     assert scopus_searcher._get_search_results() is not None
 
 
-@pytest.mark.parametrize("paper_entry", [
-    ({
-        "prism:publicationName": "fake publication title",
-        "prism:isbn": "fake ISBN",
-        "prism:issn": "fake ISSN",
-        "prism:aggregationType": "journal",
-    }),
-    ({
-        "prism:publicationName": "fake publication title",
-        "prism:isbn": [{"$": "fake ISBN"}],
-        "prism:issn": [{"$": "fake ISSN"}],
-        "prism:aggregationType": "journal",
-    })
-])
+@pytest.mark.parametrize(
+    "paper_entry",
+    [
+        (
+            {
+                "prism:publicationName": "fake publication title",
+                "prism:isbn": "fake ISBN",
+                "prism:issn": "fake ISSN",
+                "prism:aggregationType": "journal",
+            }
+        ),
+        (
+            {
+                "prism:publicationName": "fake publication title",
+                "prism:isbn": [{"$": "fake ISBN"}],
+                "prism:issn": [{"$": "fake ISSN"}],
+                "prism:aggregationType": "journal",
+            }
+        ),
+    ],
+)
 def test_get_publication(paper_entry: dict):
 
     publication = scopus_searcher._get_publication(paper_entry, None)
@@ -62,9 +71,7 @@ def test_get_paper(publication: Publication):
         "prism:coverDate": "2020-01-01",
         "prism:doi": "fake-doi",
         "citedby-count": "42",
-        "link": [
-            {"@ref": "scopus", "@href": "http://fake-url"}
-        ]
+        "link": [{"@ref": "scopus", "@href": "http://fake-url"}],
     }
 
     paper = scopus_searcher._get_paper(paper_entry, publication, "fake-api-token")
@@ -91,9 +98,7 @@ def test_get_paper_exceptions(publication: Publication, mock_scopus_get_paper_pa
         "prism:coverDate": "2020-01-01",
         "prism:doi": "fake-doi",
         "citedby-count": "42",
-        "link": [
-            {"@ref": "scopus", "@href": "http://fake-url"}
-        ]
+        "link": [{"@ref": "scopus", "@href": "http://fake-url"}],
     }
 
     paper = scopus_searcher._get_paper(paper_entry, publication, "fake-api-token")
@@ -131,4 +136,3 @@ def test_enrich_publication_data(search: Search):
         assert publication.sjr is not None
         assert publication.snip is not None
         assert len(publication.subject_areas) > 0
-    

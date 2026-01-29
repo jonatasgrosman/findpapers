@@ -1,17 +1,14 @@
-import logging
-import math
-import requests
 import datetime
-from urllib.parse import urlencode
-from typing import Optional, List
-from lxml import html
-import findpapers.utils.query_util as query_util
-import findpapers.utils.common_util as common_util
-from findpapers.models.search import Search
-from findpapers.models.paper import Paper
-from findpapers.models.publication import Publication
-from findpapers.utils.requests_util import DefaultSession
+import logging
+from typing import List
 
+from lxml import html
+
+import findpapers.utils.common_util as common_util
+import findpapers.utils.query_util as query_util
+from findpapers.models.paper import Paper
+from findpapers.models.search import Search
+from findpapers.utils.requests_util import DefaultSession
 
 BASE_URL = "https://www.medrxiv.org"
 API_BASE_URL = "https://api.biorxiv.org"
@@ -38,21 +35,21 @@ def _get_search_urls(search: Search, database: str) -> List[str]:
     # The databases don"t support wildcards properly nowadays
     if "?" in search.query or "*" in search.query:
         raise ValueError("Queries with wildcards are not supported by medRxiv/bioRxiv database")
-    
+
     # NOT connectors aren"t supported
     if " AND NOT " in search.query:
         raise ValueError("NOT connectors aren't supported")
-    
+
     # Parentheses are used for URL splitting purposes and only 1-level grouping is supported with an OR connector between the groups
-    
+
     max_group_level = query_util.get_max_group_level(search.query)
 
     if max_group_level > 1:
         raise ValueError("Max 1-level parentheses grouping exceeded")
-    
+
     if ") AND (" in search.query:
         raise ValueError("Only the OR connector can be used between the groups")
-    
+
     query = query_util.apply_on_each_term(search.query, lambda x: x.replace(" ", "+"))
     queries = query.split(") OR (")
     queries = [x[1:] if x[0] == "(" else x for x in queries]
@@ -62,7 +59,11 @@ def _get_search_urls(search: Search, database: str) -> List[str]:
 
     date_pattern = "%Y-%m-%d"
     since = search.since.strftime(date_pattern) if search.since is not None else "1970-01-01"
-    until = search.until.strftime(date_pattern) if search.until is not None else datetime.datetime.now().strftime(date_pattern)
+    until = (
+        search.until.strftime(date_pattern)
+        if search.until is not None
+        else datetime.datetime.now().strftime(date_pattern)
+    )
     date_parameter = f"limit_from%3A{since}%20limit_to%3A{until}"
 
     url_suffix = f"jcode%3A{database.lower()}%20{date_parameter}%20numresults%3A75%20sort%3Apublication-date%20direction%3Adescending%20format_result%3Acondensed"
@@ -73,13 +74,21 @@ def _get_search_urls(search: Search, database: str) -> List[str]:
 
         # All the inner connectors of the groups needs to be the same
         if ors_count > 0 and ands_count > 0:
-            raise ValueError(f"Mixed inner connectors found. Each query group must use only one connector type, only ANDs or only ORs: {query}")
-        
+            raise ValueError(
+                f"Mixed inner connectors found. Each query group must use only one connector type, only ANDs or only ORs: {query}"
+            )
+
         query_match_flag = "match-any"
         if ands_count > 0:
             query_match_flag = "match-all"
 
-        encoded_query = query.replace("+", "%252B").replace(" OR ", "%2B").replace(" AND ", "%2B").replace("[", "%2522").replace("]", "%2522")
+        encoded_query = (
+            query.replace("+", "%252B")
+            .replace(" OR ", "%2B")
+            .replace(" AND ", "%2B")
+            .replace("[", "%2522")
+            .replace("]", "%2522")
+        )
 
         url = f"{BASE_URL}/search/abstract_title%3A{encoded_query}%20abstract_title_flags%3A{query_match_flag}%20{url_suffix}"
         urls.append(url)
@@ -121,7 +130,7 @@ def _get_result_page_data(result_page: html.HtmlElement) -> dict:
         a dict containing papers DOis, total_papers and next_page_url info
     """
 
-    total_papers = result_page.xpath("//*[@id=\"page-title\"]/text()")[0].strip()
+    total_papers = result_page.xpath('//*[@id="page-title"]/text()')[0].strip()
     if "no results" in total_papers.lower():
         total_papers = 0
     else:
@@ -129,25 +138,23 @@ def _get_result_page_data(result_page: html.HtmlElement) -> dict:
 
     dois = []
     next_page_url = None
-    
+
     if total_papers > 0:
 
-        dois = result_page.xpath("//*[@class=\"highwire-cite-metadata-doi highwire-cite-metadata\"]/text()")
+        dois = result_page.xpath(
+            '//*[@class="highwire-cite-metadata-doi highwire-cite-metadata"]/text()'
+        )
         dois = [x.strip().replace("https://doi.org/", "") for x in dois]
 
-        next_page_elements = result_page.xpath("//*[@class=\"link-icon link-icon-after\"]")
+        next_page_elements = result_page.xpath('//*[@class="link-icon link-icon-after"]')
         if len(next_page_elements) > 0:
             next_page_url = next_page_elements[0].attrib["href"]
             next_page_url = BASE_URL + next_page_url
 
-    data = {
-        "dois": dois,
-        "total_papers": total_papers,
-        "next_page_url": next_page_url
-    }
+    data = {"dois": dois, "total_papers": total_papers, "next_page_url": next_page_url}
 
     return data
-    
+
 
 def _get_paper_metadata(doi: str, database: str) -> dict:  # pragma: no cover
     """
@@ -169,7 +176,11 @@ def _get_paper_metadata(doi: str, database: str) -> dict:  # pragma: no cover
     url = f"{API_BASE_URL}/details/{database.lower()}/{doi}"
 
     response = common_util.try_success(lambda: DefaultSession().get(url).json(), 2)
-    if response is not None and response.get("collection", None) is not None and len(response.get("collection")) > 0:
+    if (
+        response is not None
+        and response.get("collection", None) is not None
+        and len(response.get("collection")) > 0
+    ):
         return response.get("collection")[0]
 
 
@@ -217,7 +228,9 @@ def _get_paper(paper_metadata: dict) -> Paper:
     paper_abstract = paper_metadata.get("abstract")
     paper_authors = [x.strip() for x in paper_metadata.get("authors").split(";")]
     publication = None
-    paper_publication_date = datetime.datetime.strptime(paper_metadata.get("date"), "%Y-%m-%d").date()
+    paper_publication_date = datetime.datetime.strptime(
+        paper_metadata.get("date"), "%Y-%m-%d"
+    ).date()
     paper_url = f"https://doi.org/{paper_metadata.get('doi')}"
     paper_doi = paper_metadata.get("doi")
     paper_citations = None
@@ -229,9 +242,20 @@ def _get_paper(paper_metadata: dict) -> Paper:
     if paper_metadata.get("published").lower() != "na":
         paper_doi = paper_metadata.get("published").replace("\\", "")
 
-    return Paper(paper_title, paper_abstract, paper_authors, publication,
-                  paper_publication_date, {paper_url}, paper_doi,
-                  paper_citations, paper_keywords, paper_comments, paper_number_of_pages, paper_pages)
+    return Paper(
+        paper_title,
+        paper_abstract,
+        paper_authors,
+        publication,
+        paper_publication_date,
+        {paper_url},
+        paper_doi,
+        paper_citations,
+        paper_keywords,
+        paper_comments,
+        paper_number_of_pages,
+        paper_pages,
+    )
 
 
 def run(search: Search, database: str):
@@ -262,7 +286,9 @@ def run(search: Search, database: str):
         if len(data) > 0:
             total_papers = data[0].get("total_papers")
 
-        logging.info(f"{database}: {total_papers} papers to fetch from {i+1}/{len(urls)} papers requests")
+        logging.info(
+            f"{database}: {total_papers} papers to fetch from {i+1}/{len(urls)} papers requests"
+        )
 
         papers_count = 0
         dois = sum([d.get("dois") for d in [x for x in data]], [])
@@ -275,11 +301,13 @@ def run(search: Search, database: str):
                 paper_metadata = _get_paper_metadata(doi, database)
 
                 paper_title = paper_metadata.get("title")
-                
-                logging.info(f"({papers_count}/{total_papers}) Fetching {database} paper: {paper_title}")
-                
+
+                logging.info(
+                    f"({papers_count}/{total_papers}) Fetching {database} paper: {paper_title}"
+                )
+
                 paper = _get_paper(paper_metadata)
-                
+
                 paper.add_database(database)
 
                 search.add_paper(paper)

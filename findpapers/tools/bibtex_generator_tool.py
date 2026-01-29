@@ -1,13 +1,16 @@
 import logging
-import datetime
 from typing import Optional
-import findpapers.utils.persistence_util as persistence_util
+
 import findpapers.utils.common_util as common_util
+import findpapers.utils.persistence_util as persistence_util
 
 
-def generate_bibtex(search_path: str, outputpath: str, only_selected_papers: Optional[bool] = False,
-                    categories_filter: Optional[dict] = None, add_findpapers_citation: Optional[bool] = False, 
-                    verbose: Optional[bool] = False):
+def generate_bibtex(
+    search_path: str,
+    outputpath: str,
+    add_findpapers_citation: Optional[bool] = False,
+    verbose: Optional[bool] = False,
+):
     """
     Method used to generate a BibTeX file from a search result
 
@@ -17,10 +20,6 @@ def generate_bibtex(search_path: str, outputpath: str, only_selected_papers: Opt
         A valid file path containing a JSON representation of the search results
     outputpath : str
         A valid file path for the BibTeX output file
-    only_selected_papers : bool, optional
-        If you only want to generate a BibTeX file for selected papers, by default False
-    categories_filter : dict, None by default
-        A dict of categories to be used to filter which papers will be downloaded
     add_findpapers_citation : bool, optional
         If you want to add an entry for Findpapers in your BibTeX output file, by default False
     verbose : Optional[bool], optional
@@ -36,22 +35,20 @@ def generate_bibtex(search_path: str, outputpath: str, only_selected_papers: Opt
     bibtex_output = ""
 
     if add_findpapers_citation:
-        bibtex_output = "\n".join([
-            "@misc{grosman2020findpapers",
-            "\ttitle = {Findpapers},",
-            "\tauthor = {Grosman, Jonatas},",
-            "\tpublisher = {GitHub},",
-            "\tjournal = {GitHub repository},",
-            "\thowpublished = {\\url{https://github.com/jonatasgrosman/findpapers}},",
-            "\tyear = {2020}",
-            "}\n\n"
-        ])
+        bibtex_output = "\n".join(
+            [
+                "@misc{grosman2020findpapers",
+                "\ttitle = {Findpapers},",
+                "\tauthor = {Grosman, Jonatas},",
+                "\tpublisher = {GitHub},",
+                "\tjournal = {GitHub repository},",
+                "\thowpublished = {\\url{https://github.com/jonatasgrosman/findpapers}},",
+                "\tyear = {2020}",
+                "}\n\n",
+            ]
+        )
 
     for paper in search.papers:
-
-        if (only_selected_papers and not paper.selected) or \
-        (categories_filter is not None and (paper.categories is None or not paper.has_category_match(categories_filter))):
-            continue
 
         logging.info(f"Exporting bibtex for: {paper.title}")
 
@@ -83,14 +80,17 @@ def generate_bibtex(search_path: str, outputpath: str, only_selected_papers: Opt
                 if paper.publication_date is not None:
                     note += f" ({paper.publication_date.strftime('%Y/%m/%d')})"
                 if paper.comments is not None:
-                    note += paper.comments if len(
-                        note) == 0 else f" | {paper.comments}"
+                    note += paper.comments if len(note) == 0 else f" | {paper.comments}"
                 bibtex_output += f"{default_tab}note = {{{note}}},\n"
             elif citation_type == "@article":
                 bibtex_output += f"{default_tab}journal = {{{paper.publication.title}}},\n"
             elif citation_type == "@inproceedings":
                 bibtex_output += f"{default_tab}booktitle = {{{paper.publication.title}}},\n"
-            elif citation_type == "@misc" and len(paper.urls) > 0 and paper.publication_date is not None:
+            elif (
+                citation_type == "@misc"
+                and len(paper.urls) > 0
+                and paper.publication_date is not None
+            ):
                 date = paper.publication_date.strftime("%Y/%m/%d")
                 url = list(paper.urls)[0]
                 bibtex_output += f"{default_tab}howpublished = {{Available at {url} ({date})}},\n"
@@ -104,8 +104,7 @@ def generate_bibtex(search_path: str, outputpath: str, only_selected_papers: Opt
             if paper.pages is not None:
                 bibtex_output += f"{default_tab}pages = {{{paper.pages}}},\n"
 
-            bibtex_output = bibtex_output.rstrip(
-                ",\n") + "\n"  # removing last comma
+            bibtex_output = bibtex_output.rstrip(",\n") + "\n"  # removing last comma
 
             bibtex_output += "}\n\n"
 
