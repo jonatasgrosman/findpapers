@@ -20,7 +20,7 @@ xmltodict = "^0.12.0"
 importlib-metadata = {version = "^1.0", python = "<3.8"}
 
 [tool.poetry.dev-dependencies]
-pytest = "^7.4.4"
+pytest = "^9.0.2"
 pytest-cov = "^4.1.0"
 pytest-randomly = "^3.15.0"
 Sphinx = "^3.2.1"
