@@ -1,18 +1,21 @@
 name: 'Sync Labels'
 
 on:
-  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
   push:
     branches:
       - develop
       - main
+    paths:
+      - .github/labels-config.yml
 
 jobs:
-  sync:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Sync repository labels
-        uses: micnncim/action-label-syncer@v1
+      - uses: actions/checkout@v2
+      - uses: micnncim/action-label-syncer@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
