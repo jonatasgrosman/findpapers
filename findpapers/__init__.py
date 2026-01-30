@@ -21,6 +21,7 @@ class SearchRunner:
         self,
         *args,
         databases: list[str] | None = None,
+        publication_types: list[str] | None = None,
         enrich: bool = True,
         max_workers: int | None = None,
         timeout: float = 10.0,
@@ -33,6 +34,7 @@ class SearchRunner:
         self._config = {
             "enrich": enrich,
             "max_workers": max_workers,
+            "publication_types": publication_types,
             "timeout": timeout,
         }
 
@@ -45,8 +47,15 @@ class SearchRunner:
             "errors_total": 0,
             "searchers_total": len(self._searchers),
             "stage.fetch.runtime_seconds": 0.0,
+            "stage.filter.runtime_seconds": 0.0,
+            "stage.dedupe.runtime_seconds": 0.0,
+            "count.before_filter": 0,
+            "count.after_filter": 0,
+            "count.after_dedupe": 0,
         }
         self._fetch_searchers(metrics)
+        self._filter_by_publication_types(metrics)
+        self._dedupe_and_merge(metrics)
 
         metrics["papers_count"] = len(self._results)
         metrics["runtime_seconds"] = perf_counter() - start
@@ -113,6 +122,114 @@ class SearchRunner:
             metrics[f"searcher.{searcher.name}.errors"] = errors
             metrics["errors_total"] += errors
         metrics["stage.fetch.runtime_seconds"] = perf_counter() - fetch_start
+
+    def _filter_by_publication_types(self, metrics: dict[str, int | float]) -> None:
+        filter_start = perf_counter()
+        metrics["count.before_filter"] = len(self._results)
+        publication_types = self._config.get("publication_types") or []
+        if publication_types:
+            allowed = {ptype.strip().lower() for ptype in publication_types}
+            self._results = [
+                item for item in self._results if self._publication_type_allowed(item, allowed)
+            ]
+        metrics["count.after_filter"] = len(self._results)
+        metrics["stage.filter.runtime_seconds"] = perf_counter() - filter_start
+
+    def _publication_type_allowed(self, item: object, allowed: set[str]) -> bool:
+        category = None
+        if isinstance(item, dict):
+            publication = item.get("publication")
+            if isinstance(publication, dict):
+                category = publication.get("category")
+            elif publication is not None:
+                category = getattr(publication, "category", None)
+            if category is None:
+                category = item.get("publication_category")
+        else:
+            publication = getattr(item, "publication", None)
+            if publication is not None:
+                category = getattr(publication, "category", None)
+            if category is None:
+                category = getattr(item, "publication_category", None)
+
+        if category is None:
+            return False
+
+        return str(category).strip().lower() in allowed
+
+    def _dedupe_and_merge(self, metrics: dict[str, int | float]) -> None:
+        dedupe_start = perf_counter()
+        merged: dict[str, object] = {}
+        for item in self._results:
+            key = self._dedupe_key(item)
+            if key in merged:
+                merged[key] = self._merge_items(merged[key], item)
+            else:
+                merged[key] = item
+        self._results = list(merged.values())
+        metrics["count.after_dedupe"] = len(self._results)
+        metrics["stage.dedupe.runtime_seconds"] = perf_counter() - dedupe_start
+
+    def _dedupe_key(self, item: object) -> str:
+        if isinstance(item, dict):
+            doi = item.get("doi")
+            title = item.get("title")
+            year = self._publication_year(item.get("publication_date"))
+        else:
+            doi = getattr(item, "doi", None)
+            title = getattr(item, "title", None)
+            year = self._publication_year(getattr(item, "publication_date", None))
+
+        if doi:
+            return f"doi:{str(doi).strip().lower()}"
+        if title and year:
+            return f"title:{str(title).strip().lower()}|year:{year}"
+        if title:
+            return f"title:{str(title).strip().lower()}"
+        return f"object:{id(item)}"
+
+    def _publication_year(self, publication_date: object) -> int | None:
+        if publication_date is None:
+            return None
+        year = getattr(publication_date, "year", None)
+        if isinstance(year, int):
+            return year
+        return None
+
+    def _merge_items(self, base: object, incoming: object) -> object:
+        if isinstance(base, dict) and isinstance(incoming, dict):
+            return self._merge_dicts(base, incoming)
+        if hasattr(base, "__dict__") and hasattr(incoming, "__dict__"):
+            merged = self._merge_dicts(vars(base), vars(incoming))
+            for key, value in merged.items():
+                setattr(base, key, value)
+            return base
+        return base
+
+    def _merge_dicts(self, base: dict, incoming: dict) -> dict:
+        merged = dict(base)
+        for key in set(base.keys()) | set(incoming.keys()):
+            merged[key] = self._merge_values(base.get(key), incoming.get(key))
+        return merged
+
+    def _merge_values(self, base: object, incoming: object) -> object:
+        if base is None:
+            return incoming
+        if incoming is None:
+            return base
+        if isinstance(base, str) and isinstance(incoming, str):
+            return base if len(base) >= len(incoming) else incoming
+        if isinstance(base, (int, float)) and isinstance(incoming, (int, float)):
+            return base if base >= incoming else incoming
+        if isinstance(base, set) and isinstance(incoming, set):
+            return base | incoming
+        if isinstance(base, list) and isinstance(incoming, list):
+            return list({*base, *incoming})
+        if isinstance(base, tuple) and isinstance(incoming, tuple):
+            return tuple({*base, *incoming})
+        if isinstance(base, dict) and isinstance(incoming, dict):
+            return self._merge_dicts(base, incoming)
+        return base
 
 
 __all__ = ["SearchRunner", "SearchRunnerNotExecutedError"]

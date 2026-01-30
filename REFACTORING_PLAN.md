@@ -114,10 +114,11 @@ The following checklist breaks the refactoring into small, reviewable phases. Ea
   - Review checklist: timeouts and failures do not crash the run; partial results are kept.
   - Comment: Fetch stage now records `stage.fetch.runtime_seconds` and preserves partial results on failure.
 
-- [ ] **Stage 4 — Filtering & Deduplication**
+- [x] **Stage 4 — Filtering & Deduplication**
   - Scope: implement publication-type filtering and the dedupe+merge stage following the "most complete" rules (strings longest, numbers greatest, collections union, prefer non-null).
   - Tests: unit tests covering merge rules and end-to-end example where duplicates are merged correctly.
   - Review checklist: metrics include counts before/after filter and dedupe.
+  - Comment: Filtering uses `publication.category`; dedupe uses DOI/title/year keys and merges most complete values.
 
 - [ ] **Stage 5 — Predatory flagging**
   - Scope: add a predatory-flagging stage that marks papers and increments metrics for flagged items.
