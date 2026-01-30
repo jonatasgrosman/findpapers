@@ -82,7 +82,7 @@ Rules:
 
 ## Staged Execution Checklist ✅
 
-The following checklist breaks the refactoring into small, reviewable phases. Each item is self-contained: implement, add tests, and create a pull request. Mark items as done as you complete them to track progress.
+The following checklist breaks the refactoring into small, reviewable phases. Each item is self-contained: implement, add tests, and create a pull request. Mark items as done as you complete them to track progress. The old code was moved to `findpapers_old` and `tests_old` folders to keep it available for reference during the migration.
 
 - [ ] **Stage 0 — Preparation (quick wins)**
   - Scope: add `findpapers/exceptions.py`, a `SearcherBase` ABC skeleton, and a minimal `SearchRunner` placeholder that raises `SearchRunnerNotExecutedError` on getters/exports.
