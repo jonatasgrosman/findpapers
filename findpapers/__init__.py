@@ -44,22 +44,9 @@ class SearchRunner:
             "runtime_seconds": 0.0,
             "errors_total": 0,
             "searchers_total": len(self._searchers),
+            "stage.fetch.runtime_seconds": 0.0,
         }
-
-        for searcher in self._searchers:
-            searcher_start = perf_counter()
-            count = 0
-            errors = 0
-            try:
-                results = searcher.search() or []
-                count = len(results)
-                self._results.extend(results)
-            except Exception:
-                errors = 1
-            metrics[f"searcher.{searcher.name}.runtime_seconds"] = perf_counter() - searcher_start
-            metrics[f"searcher.{searcher.name}.count"] = count
-            metrics[f"searcher.{searcher.name}.errors"] = errors
-            metrics["errors_total"] += errors
+        self._fetch_searchers(metrics)
 
         metrics["papers_count"] = len(self._results)
         metrics["runtime_seconds"] = perf_counter() - start
@@ -108,6 +95,24 @@ class SearchRunner:
             else:
                 raise ValueError(f"Unknown database: {database}")
         return searchers
+
+    def _fetch_searchers(self, metrics: dict[str, int | float]) -> None:
+        fetch_start = perf_counter()
+        for searcher in self._searchers:
+            searcher_start = perf_counter()
+            count = 0
+            errors = 0
+            try:
+                results = searcher.search() or []
+                count = len(results)
+                self._results.extend(results)
+            except Exception:
+                errors = 1
+            metrics[f"searcher.{searcher.name}.runtime_seconds"] = perf_counter() - searcher_start
+            metrics[f"searcher.{searcher.name}.count"] = count
+            metrics[f"searcher.{searcher.name}.errors"] = errors
+            metrics["errors_total"] += errors
+        metrics["stage.fetch.runtime_seconds"] = perf_counter() - fetch_start
 
 
 __all__ = ["SearchRunner", "SearchRunnerNotExecutedError"]

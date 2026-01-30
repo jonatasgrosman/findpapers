@@ -108,10 +108,11 @@ The following checklist breaks the refactoring into small, reviewable phases. Ea
   - Review checklist: all searchers converted; no regressions in existing tests.
   - Comment: Placeholders added for all remaining searchers. `rxiv` is an internal base searcher (not user-selectable).
 
-- [ ] **Stage 3 — Fetch pipeline implementation**
+- [x] **Stage 3 — Fetch pipeline implementation**
   - Scope: implement the fetch stage to call all configured searchers, collect raw `Paper` objects`, and record per-searcher counts and error counts.
   - Tests: integration-like tests using mocks from `tests_old/mocks/*` to assert counts and error handling. If the mocks are outdated, create new ones asking for help.
   - Review checklist: timeouts and failures do not crash the run; partial results are kept.
+  - Comment: Fetch stage now records `stage.fetch.runtime_seconds` and preserves partial results on failure.
 
 - [ ] **Stage 4 — Filtering & Deduplication**
   - Scope: implement publication-type filtering and the dedupe+merge stage following the "most complete" rules (strings longest, numbers greatest, collections union, prefer non-null).
