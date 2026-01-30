@@ -41,7 +41,7 @@ lint:
 	@ruff check .
 	@isort --check-only .
 	@black --check .
-	@mypy findpapers tests/unit --exclude 'tests/integration|_ignore' --ignore-missing-imports --allow-untyped-defs --allow-untyped-globals --follow-imports=silent || true
+	@MYPYPATH=typings mypy findpapers tests/unit
 
 publish: setup
 	@poetry config pypi-token.pypi ${FINDPAPERS_PYPI_API_TOKEN}

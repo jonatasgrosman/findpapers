@@ -41,6 +41,4 @@ jobs:
       - name: Run black check
         run: black --check .
       - name: Run mypy (type checks)
-        # mypy currently has many findings; run but don't block PRs yet
-        run: mypy findpapers tests/unit --exclude 'tests/integration|_ignore' --ignore-missing-imports --allow-untyped-defs --allow-untyped-globals --follow-imports=silent
-        continue-on-error: true
+        run: MYPYPATH=typings mypy findpapers tests/unit
