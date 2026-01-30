@@ -96,10 +96,11 @@ The following checklist breaks the refactoring into small, reviewable phases. Ea
   - Review checklist: API surface matches the plan; errors are raised when expected.
   - Comment: Basic metrics are numeric-only (`papers_count`, `runtime_seconds`); keep richer metrics for later stages.
 
-- [ ] **Stage 2 — Searcher classes & wiring**
+- [x] **Stage 2 — Searcher classes & wiring**
   - Scope: convert one searchers (e.g., `arxiv`) into class-based searchers implementing `SearcherBase`; add dependency injection into `SearchRunner` and measure per-searcher timing.
   - Tests: mock network calls, assert per-searcher metrics and counts present.
   - Review checklist: searchers are easily instantiated and replaceable; no duplicate global state.
+  - Comment: `ArxivSearcher` is a placeholder returning an empty list; migrate real logic from `findpapers_old` in Stage 2.2/3.
 
   - [ ] **Stage 2.2 — The other Searchers**
   - Scope: repeat Stage 2 for all remaining searchers in batches (e.g., 2–3 at a time) to keep PRs small.
