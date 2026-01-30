@@ -102,11 +102,11 @@ The following checklist breaks the refactoring into small, reviewable phases. Ea
   - Review checklist: searchers are easily instantiated and replaceable; no duplicate global state.
   - Comment: `ArxivSearcher` is a placeholder returning an empty list; migrate real logic from `findpapers_old` in Stage 2.2/3.
 
-  - [ ] **Stage 2.2 — The other Searchers**
+  - [x] **Stage 2.2 — The other Searchers**
   - Scope: repeat Stage 2 for all remaining searchers in batches (e.g., 2–3 at a time) to keep PRs small.
   - Tests: same as Stage 2, but for each batch.
   - Review checklist: all searchers converted; no regressions in existing tests.
-  - Comment: Batch 1 placeholders added for `biorxiv`, `medrxiv`, `pubmed`. Batch 2 placeholders added for `ieee`, `scopus`. `rxiv` is an internal base searcher (not user-selectable).
+  - Comment: Placeholders added for all remaining searchers. `rxiv` is an internal base searcher (not user-selectable).
 
 - [ ] **Stage 3 — Fetch pipeline implementation**
   - Scope: implement the fetch stage to call all configured searchers, collect raw `Paper` objects`, and record per-searcher counts and error counts.
