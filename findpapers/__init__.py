@@ -3,7 +3,7 @@ from __future__ import annotations
 from time import perf_counter
 
 from .exceptions import SearchRunnerNotExecutedError
-from .searchers import ArxivSearcher, SearcherBase
+from .searchers import ArxivSearcher, BiorxivSearcher, MedrxivSearcher, PubmedSearcher, SearcherBase
 
 
 class SearchRunner:
@@ -87,6 +87,12 @@ class SearchRunner:
             key = database.strip().lower()
             if key == "arxiv":
                 searchers.append(ArxivSearcher())
+            elif key == "biorxiv":
+                searchers.append(BiorxivSearcher())
+            elif key == "medrxiv":
+                searchers.append(MedrxivSearcher())
+            elif key == "pubmed":
+                searchers.append(PubmedSearcher())
             else:
                 raise ValueError(f"Unknown database: {database}")
         return searchers
