@@ -84,10 +84,11 @@ Rules:
 
 The following checklist breaks the refactoring into small, reviewable phases. Each item is self-contained: implement, add tests, and create a pull request. Mark items as done as you complete them to track progress. The old code was moved to `findpapers_old` and `tests_old` folders to keep it available for reference during the migration.
 
-- [ ] **Stage 0 — Preparation (quick wins)**
+- [x] **Stage 0 — Preparation (quick wins)**
   - Scope: add `findpapers/exceptions.py`, a `SearcherBase` ABC skeleton, and a minimal `SearchRunner` placeholder that raises `SearchRunnerNotExecutedError` on getters/exports.
   - Tests: unit tests for exceptions and ABC presence; basic smoke test for `SearchRunner` construction.
   - Review checklist: new files follow project import style, no behavioral changes to existing code.
+  - Comment: Stage 0 done — tests added in `tests/unit`; keep Stage 1 focused on `SearchRunner` run state/metrics only (no external calls yet).
 
 - [ ] **Stage 1 — Public API scaffold**
   - Scope: implement `SearchRunner.__init__` signature and `run(verbose=False)` that runs a trivial pipeline (no external calls) and records `run` state and basic metrics.
