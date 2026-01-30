@@ -90,10 +90,11 @@ The following checklist breaks the refactoring into small, reviewable phases. Ea
   - Review checklist: new files follow project import style, no behavioral changes to existing code.
   - Comment: Stage 0 done — tests added in `tests/unit`; keep Stage 1 focused on `SearchRunner` run state/metrics only (no external calls yet).
 
-- [ ] **Stage 1 — Public API scaffold**
+- [x] **Stage 1 — Public API scaffold**
   - Scope: implement `SearchRunner.__init__` signature and `run(verbose=False)` that runs a trivial pipeline (no external calls) and records `run` state and basic metrics.
   - Tests: verify `run()` sets executed flag, `get_results()` and `get_metrics()` raise before `run()`, and work after `run()`.
   - Review checklist: API surface matches the plan; errors are raised when expected.
+  - Comment: Basic metrics are numeric-only (`papers_count`, `runtime_seconds`); keep richer metrics for later stages.
 
 - [ ] **Stage 2 — Searcher classes & wiring**
   - Scope: convert one searchers (e.g., `arxiv`) into class-based searchers implementing `SearcherBase`; add dependency injection into `SearchRunner` and measure per-searcher timing.
