@@ -1,18 +1,10 @@
 from __future__ import annotations
 
-from .base import SearcherBase
+from .rxiv import RxivSearcher
 
 
-class BiorxivSearcher(SearcherBase):
+class BiorxivSearcher(RxivSearcher):
     """Minimal bioRxiv searcher placeholder for the new OO pipeline."""
 
     def __init__(self, query: str | None = None) -> None:
-        self._query = query
-
-    @property
-    def name(self) -> str:
-        return "biorxiv"
-
-    def search(self) -> list:
-        # Stage 2.2 placeholder: real implementation will be migrated from findpapers_old.
-        return []
+        super().__init__(query=query, database="biorxiv")

@@ -106,7 +106,7 @@ The following checklist breaks the refactoring into small, reviewable phases. Ea
   - Scope: repeat Stage 2 for all remaining searchers in batches (e.g., 2–3 at a time) to keep PRs small.
   - Tests: same as Stage 2, but for each batch.
   - Review checklist: all searchers converted; no regressions in existing tests.
-  - Comment: Batch 1 placeholders added for `biorxiv`, `medrxiv`, `pubmed` (no real logic yet).
+  - Comment: Batch 1 placeholders added for `biorxiv`, `medrxiv`, `pubmed`. Batch 2 placeholders added for `ieee`, `scopus`. `rxiv` is an internal base searcher (not user-selectable).
 
 - [ ] **Stage 3 — Fetch pipeline implementation**
   - Scope: implement the fetch stage to call all configured searchers, collect raw `Paper` objects`, and record per-searcher counts and error counts.
