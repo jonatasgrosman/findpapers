@@ -15,7 +15,7 @@ from .searchers import (
 
 
 class SearchRunner:
-    """Public API placeholder for the refactor."""
+    """Public API entry point for running searches."""
 
     def __init__(
         self,
@@ -27,20 +27,47 @@ class SearchRunner:
         timeout: float = 10.0,
         **kwargs,
     ) -> None:
+        """Initialize a search run configuration without executing it.
+
+        Parameters
+        ----------
+        databases : list[str] | None
+            List of database identifiers to query.
+        publication_types : list[str] | None
+            Allowed publication categories for filtering.
+        enrich : bool
+            Whether to enable enrichment stage (placeholder).
+        max_workers : int | None
+            Maximum workers for parallelism (placeholder).
+        timeout : float
+            Global timeout in seconds (placeholder).
+        """
         self._executed = False
         self._results: list = []
         self._metrics: dict[str, int | float] = {}
         self._searchers = self._build_searchers(databases)
+        self._publication_types = publication_types
         self._config = {
             "enrich": enrich,
             "max_workers": max_workers,
-            "publication_types": publication_types,
             "timeout": timeout,
         }
 
     def run(self, verbose: bool = False) -> None:  # noqa: ARG002 - placeholder
+        """Execute the configured pipeline once, resetting previous results.
+
+        Parameters
+        ----------
+        verbose : bool
+            Enable verbose logging (placeholder).
+
+        Returns
+        -------
+        None
+        """
         start = perf_counter()
         self._results = []
+        # Metrics are numeric-only to keep them export-friendly.
         metrics: dict[str, int | float] = {
             "papers_count": 0,
             "runtime_seconds": 0.0,
@@ -63,27 +90,111 @@ class SearchRunner:
         self._executed = True
 
     def get_results(self):
+        """Return a shallow copy of the results list after `run()`.
+
+        Returns
+        -------
+        list
+            Copy of the current results.
+
+        Raises
+        ------
+        SearchRunnerNotExecutedError
+            If `run()` has not been called.
+        """
         self._ensure_executed()
         return list(self._results)
 
     def get_metrics(self):
+        """Return a copy of numeric metrics after `run()`.
+
+        Returns
+        -------
+        dict[str, int | float]
+            Numeric metrics snapshot.
+
+        Raises
+        ------
+        SearchRunnerNotExecutedError
+            If `run()` has not been called.
+        """
         self._ensure_executed()
         return dict(self._metrics)
 
     def to_json(self, path) -> None:  # noqa: ANN001 - placeholder
+        """Export results to JSON after `run()` (placeholder).
+
+        Parameters
+        ----------
+        path : Any
+            Output path for JSON export.
+
+        Raises
+        ------
+        SearchRunnerNotExecutedError
+            If `run()` has not been called.
+        """
         self._ensure_executed()
 
     def to_csv(self, path) -> None:  # noqa: ANN001 - placeholder
+        """Export results to CSV after `run()` (placeholder).
+
+        Parameters
+        ----------
+        path : Any
+            Output path for CSV export.
+
+        Raises
+        ------
+        SearchRunnerNotExecutedError
+            If `run()` has not been called.
+        """
         self._ensure_executed()
 
     def to_bibtex(self, path) -> None:  # noqa: ANN001 - placeholder
+        """Export results to BibTeX after `run()` (placeholder).
+
+        Parameters
+        ----------
+        path : Any
+            Output path for BibTeX export.
+
+        Raises
+        ------
+        SearchRunnerNotExecutedError
+            If `run()` has not been called.
+        """
         self._ensure_executed()
 
     def _ensure_executed(self) -> None:
+        """Guard against accessing results before `run()`.
+
+        Raises
+        ------
+        SearchRunnerNotExecutedError
+            If `run()` has not been called.
+        """
         if not self._executed:
             raise SearchRunnerNotExecutedError("SearchRunner has not been executed yet.")
 
     def _build_searchers(self, databases: list[str] | None) -> list[SearcherBase]:
+        """Instantiate internal searchers from the user-provided database list.
+
+        Parameters
+        ----------
+        databases : list[str] | None
+            List of database identifiers.
+
+        Returns
+        -------
+        list[SearcherBase]
+            Instantiated searchers.
+
+        Raises
+        ------
+        ValueError
+            If any database identifier is unknown.
+        """
         if not databases:
             return []
         searchers: list[SearcherBase] = []
@@ -106,6 +217,17 @@ class SearchRunner:
         return searchers
 
     def _fetch_searchers(self, metrics: dict[str, int | float]) -> None:
+        """Fetch results from all configured searchers, capturing per-searcher metrics.
+
+        Parameters
+        ----------
+        metrics : dict[str, int | float]
+            Metrics dict to update.
+
+        Returns
+        -------
+        None
+        """
         fetch_start = perf_counter()
         for searcher in self._searchers:
             searcher_start = perf_counter()
@@ -124,9 +246,20 @@ class SearchRunner:
         metrics["stage.fetch.runtime_seconds"] = perf_counter() - fetch_start
 
     def _filter_by_publication_types(self, metrics: dict[str, int | float]) -> None:
+        """Filter results by allowed publication categories.
+
+        Parameters
+        ----------
+        metrics : dict[str, int | float]
+            Metrics dict to update.
+
+        Returns
+        -------
+        None
+        """
         filter_start = perf_counter()
         metrics["count.before_filter"] = len(self._results)
-        publication_types = self._config.get("publication_types") or []
+        publication_types = self._publication_types or []
         if publication_types:
             allowed = {ptype.strip().lower() for ptype in publication_types}
             self._results = [
@@ -136,6 +269,20 @@ class SearchRunner:
         metrics["stage.filter.runtime_seconds"] = perf_counter() - filter_start
 
     def _publication_type_allowed(self, item: object, allowed: set[str]) -> bool:
+        """Return whether a result item belongs to an allowed publication category.
+
+        Parameters
+        ----------
+        item : object
+            Result item (dict or object).
+        allowed : set[str]
+            Allowed category names.
+
+        Returns
+        -------
+        bool
+            True if the item matches an allowed category.
+        """
         category = None
         if isinstance(item, dict):
             publication = item.get("publication")
@@ -158,6 +305,17 @@ class SearchRunner:
         return str(category).strip().lower() in allowed
 
     def _dedupe_and_merge(self, metrics: dict[str, int | float]) -> None:
+        """Deduplicate results and merge using the most-complete rule.
+
+        Parameters
+        ----------
+        metrics : dict[str, int | float]
+            Metrics dict to update.
+
+        Returns
+        -------
+        None
+        """
         dedupe_start = perf_counter()
         merged: dict[str, object] = {}
         for item in self._results:
@@ -171,6 +329,18 @@ class SearchRunner:
         metrics["stage.dedupe.runtime_seconds"] = perf_counter() - dedupe_start
 
     def _dedupe_key(self, item: object) -> str:
+        """Build a stable key based on DOI/title/year for deduplication.
+
+        Parameters
+        ----------
+        item : object
+            Result item (dict or object).
+
+        Returns
+        -------
+        str
+            Stable dedupe key.
+        """
         if isinstance(item, dict):
             doi = item.get("doi")
             title = item.get("title")
@@ -189,6 +359,18 @@ class SearchRunner:
         return f"object:{id(item)}"
 
     def _publication_year(self, publication_date: object) -> int | None:
+        """Extract the year from a publication date object if present.
+
+        Parameters
+        ----------
+        publication_date : object
+            Publication date object.
+
+        Returns
+        -------
+        int | None
+            Year if available.
+        """
         if publication_date is None:
             return None
         year = getattr(publication_date, "year", None)
@@ -197,6 +379,20 @@ class SearchRunner:
         return None
 
     def _merge_items(self, base: object, incoming: object) -> object:
+        """Merge two items, favoring the most complete values.
+
+        Parameters
+        ----------
+        base : object
+            Base item.
+        incoming : object
+            Incoming item to merge.
+
+        Returns
+        -------
+        object
+            Merged item.
+        """
         if isinstance(base, dict) and isinstance(incoming, dict):
             return self._merge_dicts(base, incoming)
         if hasattr(base, "__dict__") and hasattr(incoming, "__dict__"):
@@ -207,12 +403,40 @@ class SearchRunner:
         return base
 
     def _merge_dicts(self, base: dict, incoming: dict) -> dict:
+        """Merge dictionaries using the most-complete value rule.
+
+        Parameters
+        ----------
+        base : dict
+            Base dictionary.
+        incoming : dict
+            Incoming dictionary.
+
+        Returns
+        -------
+        dict
+            Merged dictionary.
+        """
         merged = dict(base)
         for key in set(base.keys()) | set(incoming.keys()):
             merged[key] = self._merge_values(base.get(key), incoming.get(key))
         return merged
 
     def _merge_values(self, base: object, incoming: object) -> object:
+        """Return the most complete value according to merge rules.
+
+        Parameters
+        ----------
+        base : object
+            Base value.
+        incoming : object
+            Incoming value.
+
+        Returns
+        -------
+        object
+            Selected merged value.
+        """
         if base is None:
             return incoming
         if incoming is None:

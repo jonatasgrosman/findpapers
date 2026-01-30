@@ -1,3 +1,5 @@
+"""Tests for database selection and validation."""
+
 import pytest
 
 from findpapers import SearchRunner
@@ -9,9 +11,7 @@ def test_search_runner_raises_for_unknown_database():
 
 
 def test_search_runner_accepts_multiple_databases():
-    runner = SearchRunner(
-        databases=["arxiv", "biorxiv", "ieee", "medrxiv", "pubmed", "scopus"]
-    )
+    runner = SearchRunner(databases=["arxiv", "biorxiv", "ieee", "medrxiv", "pubmed", "scopus"])
     runner.run()
     metrics = runner.get_metrics()
     assert metrics["searchers_total"] == 6

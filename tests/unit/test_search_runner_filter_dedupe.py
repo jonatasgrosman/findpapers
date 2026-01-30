@@ -1,3 +1,5 @@
+"""Tests for filtering and deduplication behavior."""
+
 from findpapers import SearchRunner
 from findpapers.searchers import ArxivSearcher
 

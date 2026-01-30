@@ -1,3 +1,5 @@
+"""Tests for SearchRunner pre-run error behavior and base classes."""
+
 from abc import ABC
 
 import pytest

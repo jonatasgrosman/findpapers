@@ -1,3 +1,5 @@
+"""Tests for SearchRunner run state and metrics types."""
+
 from findpapers import SearchRunner
 
 

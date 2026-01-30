@@ -140,6 +140,11 @@ The following checklist breaks the refactoring into small, reviewable phases. Ea
   - Tests: assert metrics keys/types and that verbose run emits expected log messages (use caplog or similar).
   - Review checklist: metrics are stable, documented, and appear in JSON `metrics` section.
 
+- [ ] **Stage 8.5 — Documentation hygiene (comments, docstrings, test naming)**
+  - Scope: ensure public methods/classes have docstrings; add concise comments where non-obvious; align test filenames to behavior (not refactor stages).
+  - Tests: rename tests as needed; ensure no duplicate stage-based filenames remain.
+  - Review checklist: docstrings present for public APIs, tests are discoverable and descriptive.
+
 - [ ] **Stage 9 — Tests, CI, and compatibility**
   - Scope: update and add unit and integration tests; ensure CI passes; add tests that mock all searchers and cover error/failure modes.
   - Tests: coverage targets for new code; migration tests ensuring old functional API usage still works (if keeping compatibility layer) or that deprecation is documented.

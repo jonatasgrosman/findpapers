@@ -1,4 +1,4 @@
-.PHONY: help clean setup test test_report
+.PHONY: help clean setup test test_report lint
 
 include .env
 export $(shell sed 's/=.*//' .env)
@@ -8,6 +8,8 @@ help:
 	@echo "       clean project removing unnecessary files"
 	@echo "make setup"
 	@echo "       prepare environment"
+	@echo "make lint"
+	@echo "       run lint and formatting checks"
 	@echo "make test"
 	@echo "       run tests"
 	@echo "make test_report"
@@ -31,6 +33,15 @@ test: setup
 
 test_report: setup
 	@poetry run pytest --durations=3 -v --cov=${PWD}/findpapers --cov-report xml:reports/coverage.xml --junitxml=reports/tests.xml
+
+lint:
+	@python -m pip install --upgrade pip
+	@pip install ruff mypy isort black
+	@poetry install --no-interaction --no-ansi
+	@ruff check .
+	@isort --check-only .
+	@black --check .
+	@mypy findpapers tests/unit --exclude 'tests/integration|_ignore' --ignore-missing-imports --allow-untyped-defs --allow-untyped-globals --follow-imports=silent || true
 
 publish: setup
 	@poetry config pypi-token.pypi ${FINDPAPERS_PYPI_API_TOKEN}

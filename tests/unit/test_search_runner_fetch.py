@@ -1,3 +1,5 @@
+"""Tests for fetch stage behavior and error handling."""
+
 from findpapers import SearchRunner
 from findpapers.searchers import ArxivSearcher, PubmedSearcher
 
