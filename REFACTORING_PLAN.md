@@ -143,7 +143,7 @@ The following checklist breaks the refactoring into small, reviewable phases. Ea
   - Review checklist: flags are deterministic and documented.
   - Comment: Uses a small built-in predatory list placeholder for now.
 
-- [ ] **Stage 6 — Enrichment runner (optional, parallelism, timeouts)**
+- [x] **Stage 6 — Enrichment runner (optional, parallelism, timeouts)**
   - Scope: implement `EnrichmentRunner` to enrich a provided list of papers, honoring
     `max_workers` and `timeout`. Implement graceful failures and logging when `verbose=True`.
   - Tests: test with a slow mock enrichment to assert `timeout` behavior and partial results on
@@ -151,7 +151,7 @@ The following checklist breaks the refactoring into small, reviewable phases. Ea
   - Review checklist: parallelism is optional, errors are recorded but do not fail the entire run.
   - Comment: Enrichment uses a placeholder hook; parallel and timeout paths are covered by tests.
 
-- [ ] **Stage 6.1 — Download runner (optional, parallelism, timeouts)**
+- [x] **Stage 6.1 — Download runner (optional, parallelism, timeouts)**
   - Scope: implement `DownloadRunner` to download PDFs for a provided list of papers, honoring
     `max_workers`, `timeout`, and optional proxy configuration.
   - Tests: unit tests with mocked requests verifying download success/failure metrics and log
@@ -161,7 +161,6 @@ The following checklist breaks the refactoring into small, reviewable phases. Ea
 - [ ] **Stage 7 — Exports (JSON / CSV / BibTeX)**
   - Scope: implement `to_json`, `to_csv`, and `to_bibtex` according to the spec (metadata, papers, metrics; column priorities; BibTeX-only papers).
   - Tests: serialization tests that validate JSON schema, CSV columns order, and BibTeX formatting.
-  - Review checklist: exporting before `run()` raises `SearchRunnerNotExecutedError`.
 
 - [ ] **Stage 8 — Metrics, logging & verbose output**
   - Scope: finalize numeric-only metrics, add runtime per stage, and implement `verbose=True` summaries and logger integration with the project logger.

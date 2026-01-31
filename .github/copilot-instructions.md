@@ -15,7 +15,7 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 
 * Write code in English.
 * Write comments in English.
-* Write comments where necessary to explain non-trivial parts of the code.
+* You must write comments to explain non-trivial parts of the code.
 * All features or bug fixes must be tested by one or more specs (unit-tests).
 * All methods must have type hints.
 * All methods must have docstrings.
