@@ -119,7 +119,14 @@ class SearchRunner:
             If any database identifier is unknown.
         """
         if not databases:
-            return []
+            databases = [
+                Database.ARXIV,
+                Database.BIORXIV,
+                Database.IEEE,
+                Database.MEDRXIV,
+                Database.PUBMED,
+                Database.SCOPUS,
+            ]
         searchers: list[SearcherBase] = []
         for database in databases:
             if isinstance(database, Database):
