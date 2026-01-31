@@ -34,11 +34,9 @@ def test_predatory_flagging_sets_publication_flag(monkeypatch):
     monkeypatch.setattr(ArxivSearcher, "search", mock_arxiv_search)
 
     runner = SearchRunner(databases=["arxiv"])
-    runner.run()
-
-    results = runner.get_results()
+    results = runner.run()
     metrics = runner.get_metrics()
 
-    assert metrics["count.predatory"] == 1
+    assert metrics["total_papers_from_predatory_publication"] == 1
     flagged = [paper for paper in results if paper.publication.is_potentially_predatory]
     assert len(flagged) == 1

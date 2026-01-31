@@ -74,3 +74,55 @@ class Search:
         """
         if paper in self.papers:
             self.papers.remove(paper)
+
+    def to_dict(self) -> dict[str, object]:
+        """Serialize search to a dictionary representation.
+
+        Returns
+        -------
+        dict[str, object]
+            Dictionary representation of the search.
+        """
+        raise NotImplementedError("Search serialization is not implemented yet.")
+
+    def to_json(self, path: str) -> None:
+        """Export search results to a JSON file.
+
+        Parameters
+        ----------
+        path : str
+            Output path for JSON export.
+
+        Returns
+        -------
+        None
+        """
+        raise NotImplementedError("Search JSON export is not implemented yet.")
+
+    def to_csv(self, path: str) -> None:
+        """Export search results to a CSV file.
+
+        Parameters
+        ----------
+        path : str
+            Output path for CSV export.
+
+        Returns
+        -------
+        None
+        """
+        raise NotImplementedError("Search CSV export is not implemented yet.")
+
+    def to_bibtex(self, path: str) -> None:
+        """Export search results to a BibTeX file.
+
+        Parameters
+        ----------
+        path : str
+            Output path for BibTeX export.
+
+        Returns
+        -------
+        None
+        """
+        raise NotImplementedError("Search BibTeX export is not implemented yet.")

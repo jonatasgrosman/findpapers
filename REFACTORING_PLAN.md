@@ -4,12 +4,24 @@
 Replace the current functional API with a fully object‑oriented, single‑run public API named `SearchRunner`. Keep the pipeline fixed but configurable via constructor parameters, store everything in memory, and export only when explicitly requested.
 
 ## Final API (Public)
-`SearchRunner` is the new entry point:
-- `__init__(..., enrich: bool = True, max_workers: int | None = None, timeout: float = 10.0)`
+`SearchRunner` is the entry point for searching:
+- `__init__(..., databases: list[str] | None = None, publication_types: list[str] | None = None)`
 - `run(verbose: bool = False) -> None`
 - `get_results() -> list[Paper]` (deep copy, preserves types)
 - `get_metrics() -> dict[str, int | float]` (copy, numeric only)
 - `to_json(path)`, `to_csv(path)`, `to_bibtex(path)`
+
+`EnrichmentRunner` enriches existing papers:
+- `__init__(max_workers: int | None = None, timeout: float = 10.0)`
+- `run(papers: list[Paper], verbose: bool = False) -> None`
+- `get_results() -> list[Paper]`
+- `get_metrics() -> dict[str, int | float]`
+
+`DownloadRunner` downloads PDFs for existing papers:
+- `__init__(max_workers: int | None = None, timeout: float = 10.0, proxy: str | None = None)`
+- `run(papers: list[Paper], output_directory: str, verbose: bool = False) -> None`
+- `get_results() -> list[Paper]`
+- `get_metrics() -> dict[str, int | float]`
 
 Rules:
 - **Multi‑run**: calling `run()` twice will clear previous results.
@@ -22,7 +34,6 @@ Rules:
 2. Filter by publication types
 3. Deduplicate + merge ("most complete")
 4. Flag predatory publications
-5. Enrich (optional; last step, controlled by `enrich` flag)
 
 ## Merge Rule (Most Complete)
 - **Strings**: keep the longest string
@@ -30,8 +41,14 @@ Rules:
 - **Collections**: union
 - **Nulls**: prefer non‑null
 
-## Enrichment
-- Enrichment runs **only if** `enrich=True` and is always the **last** stage.
+## Enrichment Runner
+- Enrichment runs **only** in `EnrichmentRunner` and is always its **last** step.
+- `max_workers=None` means **no parallelism**; values > 1 enable parallelism.
+- `timeout` defaults to **10s** and is global.
+- Failures keep partial results and log errors when `verbose=True`.
+
+## Download Runner
+- Downloads run **only** in `DownloadRunner` and operate on a list of papers.
 - `max_workers=None` means **no parallelism**; values > 1 enable parallelism.
 - `timeout` defaults to **10s** and is global.
 - Failures keep partial results and log errors when `verbose=True`.
@@ -126,11 +143,20 @@ The following checklist breaks the refactoring into small, reviewable phases. Ea
   - Review checklist: flags are deterministic and documented.
   - Comment: Uses a small built-in predatory list placeholder for now.
 
-- [x] **Stage 6 — Enrichment (optional, parallelism, timeouts)**
-  - Scope: implement enrichment as a final stage, honoring `enrich`, `max_workers`, and `timeout`. Implement graceful failures and logging when `verbose=True`.
-  - Tests: test with a slow mock enrichment to assert `timeout` behavior and partial results on failure.
+- [ ] **Stage 6 — Enrichment runner (optional, parallelism, timeouts)**
+  - Scope: implement `EnrichmentRunner` to enrich a provided list of papers, honoring
+    `max_workers` and `timeout`. Implement graceful failures and logging when `verbose=True`.
+  - Tests: test with a slow mock enrichment to assert `timeout` behavior and partial results on
+    failure.
   - Review checklist: parallelism is optional, errors are recorded but do not fail the entire run.
   - Comment: Enrichment uses a placeholder hook; parallel and timeout paths are covered by tests.
+
+- [ ] **Stage 6.1 — Download runner (optional, parallelism, timeouts)**
+  - Scope: implement `DownloadRunner` to download PDFs for a provided list of papers, honoring
+    `max_workers`, `timeout`, and optional proxy configuration.
+  - Tests: unit tests with mocked requests verifying download success/failure metrics and log
+    entries.
+  - Review checklist: parallelism is optional, failures are recorded but do not fail the run.
 
 - [ ] **Stage 7 — Exports (JSON / CSV / BibTeX)**
   - Scope: implement `to_json`, `to_csv`, and `to_bibtex` according to the spec (metadata, papers, metrics; column priorities; BibTeX-only papers).

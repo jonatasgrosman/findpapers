@@ -14,4 +14,9 @@ def test_search_runner_accepts_multiple_databases():
     runner = SearchRunner(databases=["arxiv", "biorxiv", "ieee", "medrxiv", "pubmed", "scopus"])
     runner.run()
     metrics = runner.get_metrics()
-    assert metrics["searchers_total"] == 6
+    assert metrics["total_papers_from_arxiv"] == 0
+    assert metrics["total_papers_from_biorxiv"] == 0
+    assert metrics["total_papers_from_ieee"] == 0
+    assert metrics["total_papers_from_medrxiv"] == 0
+    assert metrics["total_papers_from_pubmed"] == 0
+    assert metrics["total_papers_from_scopus"] == 0

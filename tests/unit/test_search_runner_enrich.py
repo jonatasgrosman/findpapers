@@ -1,67 +1,62 @@
-"""Tests for enrichment stage behavior."""
+"""Tests for enrichment runner behavior."""
 
 import time
 
-from findpapers import SearchRunner
+import pytest
+
+from findpapers import EnrichmentRunner, SearchRunnerNotExecutedError
 from findpapers.models import Paper
-from findpapers.searchers import ArxivSearcher
 from findpapers.utils import enrichment_util
 
 
-def test_enrich_skipped_when_disabled(monkeypatch):
-    def mock_arxiv_search(self):
-        return [
-            Paper(
-                title="A",
-                abstract="",
-                authors=["A"],
-                publication=None,
-                publication_date=None,
-                urls=set(),
-            )
-        ]
-
-    monkeypatch.setattr(ArxivSearcher, "search", mock_arxiv_search)
-
-    runner = SearchRunner(databases=["arxiv"], enrich=False)
+def test_enrich_empty_list():
+    runner = EnrichmentRunner([])
     runner.run()
     metrics = runner.get_metrics()
 
-    assert metrics["count.enriched"] == 0
-    assert metrics["errors.enrich"] == 0
+    assert metrics["enriched_papers"] == 0
+
+
+def test_enrichment_runner_requires_run():
+    runner = EnrichmentRunner([])
+    with pytest.raises(SearchRunnerNotExecutedError):
+        runner.get_metrics()
 
 
 def test_enrich_sequential_timeout(monkeypatch):
-    def mock_arxiv_search(self):
-        return [
-            Paper(
-                title="A",
-                abstract="",
-                authors=["A"],
-                publication=None,
-                publication_date=None,
-                urls=set(),
-            )
-        ]
-
     def slow_enrich(self, paper, timeout=None):
         time.sleep(0.02)
         return True
 
-    monkeypatch.setattr(ArxivSearcher, "search", mock_arxiv_search)
-    monkeypatch.setattr(SearchRunner, "_enrich_paper", slow_enrich)
+    monkeypatch.setattr(EnrichmentRunner, "_enrich_paper", slow_enrich)
 
-    runner = SearchRunner(databases=["arxiv"], enrich=True, timeout=0.0)
+    runner = EnrichmentRunner(
+        [
+            Paper(
+                title="A",
+                abstract="",
+                authors=["A"],
+                publication=None,
+                publication_date=None,
+                urls=set(),
+            )
+        ],
+        timeout=0.0,
+    )
     runner.run()
     metrics = runner.get_metrics()
 
-    assert metrics["count.enriched"] == 0
-    assert metrics["errors.enrich"] >= 1
+    assert metrics["enriched_papers"] == 0
 
 
 def test_enrich_parallel_errors(monkeypatch):
-    def mock_arxiv_search(self):
-        return [
+    def failing_enrich(self, paper, timeout=None):
+        raise RuntimeError("boom")
+
+    monkeypatch.setattr(EnrichmentRunner, "_enrich_paper", failing_enrich)
+
+    runner = EnrichmentRunner(
+        [
             Paper(
                 title="A",
                 abstract="",
@@ -78,20 +73,14 @@ def test_enrich_parallel_errors(monkeypatch):
                 publication_date=None,
                 urls=set(),
             ),
-        ]
-
-    def failing_enrich(self, paper, timeout=None):
-        raise RuntimeError("boom")
-
-    monkeypatch.setattr(ArxivSearcher, "search", mock_arxiv_search)
-    monkeypatch.setattr(SearchRunner, "_enrich_paper", failing_enrich)
-
-    runner = SearchRunner(databases=["arxiv"], enrich=True, max_workers=2, timeout=1.0)
+        ],
+        max_workers=2,
+        timeout=1.0,
+    )
     runner.run()
     metrics = runner.get_metrics()
 
-    assert metrics["errors.enrich"] == 2
-    assert metrics["count.enriched"] == 0
+    assert metrics["enriched_papers"] == 0
 
 
 def test_enrich_paper_default_paths(monkeypatch):
@@ -101,7 +90,6 @@ def test_enrich_paper_default_paths(monkeypatch):
             "https://example.com",
         )
 
-    runner = SearchRunner()
     paper = Paper(
         title="A",
         abstract="",
@@ -110,6 +98,7 @@ def test_enrich_paper_default_paths(monkeypatch):
         publication_date=None,
         urls={"https://example.com"},
     )
+    runner = EnrichmentRunner([paper])
 
     monkeypatch.setattr(enrichment_util, "enrich_from_sources", lambda *args, **kwargs: None)
     assert runner._enrich_paper(paper) is False

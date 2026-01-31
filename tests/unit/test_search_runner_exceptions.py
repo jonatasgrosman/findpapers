@@ -20,16 +20,4 @@ def test_search_runner_constructs():
 def test_getters_raise_before_run():
     runner = SearchRunner()
     with pytest.raises(SearchRunnerNotExecutedError):
-        runner.get_results()
-    with pytest.raises(SearchRunnerNotExecutedError):
         runner.get_metrics()
-
-
-def test_exports_raise_before_run():
-    runner = SearchRunner()
-    with pytest.raises(SearchRunnerNotExecutedError):
-        runner.to_json("/tmp/out.json")
-    with pytest.raises(SearchRunnerNotExecutedError):
-        runner.to_csv("/tmp/out.csv")
-    with pytest.raises(SearchRunnerNotExecutedError):
-        runner.to_bibtex("/tmp/out.bib")

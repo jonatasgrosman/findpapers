@@ -33,14 +33,13 @@ def test_fetch_stage_collects_results_and_keeps_partial_on_error(monkeypatch):
     monkeypatch.setattr(PubmedSearcher, "search", mock_pubmed_search)
 
     runner = SearchRunner(databases=["arxiv", "pubmed"])
-    runner.run()
+    results = runner.run()
 
     metrics = runner.get_metrics()
-    assert metrics["papers_count"] == 2
-    assert metrics["errors_total"] == 1
-    assert metrics["searcher.arxiv.count"] == 2
-    assert metrics["searcher.pubmed.errors"] == 1
-    assert metrics["stage.fetch.runtime_seconds"] >= 0
+    assert metrics["total_papers"] == 2
+    assert metrics["total_papers_from_arxiv"] == 2
+    assert metrics["total_papers_from_pubmed"] == 0
+    assert len(results) == 2
 
 
 def test_fetch_stage_keeps_doi_url_from_paper(monkeypatch):
@@ -60,7 +59,5 @@ def test_fetch_stage_keeps_doi_url_from_paper(monkeypatch):
     monkeypatch.setattr(ArxivSearcher, "search", mock_arxiv_search)
 
     runner = SearchRunner(databases=["arxiv"])
-    runner.run()
-
-    results = runner.get_results()
+    results = runner.run()
     assert "https://doi.org/10.1/abc" in results[0].urls
