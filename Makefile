@@ -1,5 +1,11 @@
 .PHONY: help clean setup test test_report lint
 
+VENV ?= venv
+VENV_BIN = $(VENV)/bin
+PYTHON = $(VENV_BIN)/python
+PIP = $(VENV_BIN)/pip
+POETRY = $(VENV_BIN)/poetry
+
 include .env
 export $(shell sed 's/=.*//' .env)
 
@@ -15,9 +21,10 @@ help:
 	@echo "make test_report"
 	@echo "       run tests and save tests and coverag reports"
 
-setup: poetry.lock
-poetry.lock: pyproject.toml
-	@poetry install -vvv
+setup:
+	@python -m venv $(VENV)
+	@$(PIP) install --upgrade pip poetry
+	@POETRY_VIRTUALENVS_CREATE=false $(POETRY) install --with dev --no-interaction --no-ansi -vvv
 	@touch poetry.lock
 
 clean:
@@ -28,21 +35,18 @@ clean:
 	@find . -type d -name '*pytest_cache*' -exec rm -rf {} +
 	@find . -type f -name "*.py[co]" -exec rm -rf {} +
 
-test: setup
-	@poetry run pytest --durations=3 -v --cov=${PWD}/findpapers 
+test:
+	@POETRY_VIRTUALENVS_CREATE=false $(POETRY) run pytest --durations=3 -v --cov=${PWD}/findpapers 
 
-test_report: setup
-	@poetry run pytest --durations=3 -v --cov=${PWD}/findpapers --cov-report xml:reports/coverage.xml --junitxml=reports/tests.xml
+test_report:
+	@POETRY_VIRTUALENVS_CREATE=false $(POETRY) run pytest --durations=3 -v --cov=${PWD}/findpapers --cov-report xml:reports/coverage.xml --junitxml=reports/tests.xml
 
 lint:
-	@python -m pip install --upgrade pip
-	@pip install ruff mypy isort black
-	@poetry install --no-interaction --no-ansi
-	@ruff check .
-	@isort --check-only .
-	@black --check .
-	@MYPYPATH=typings mypy findpapers tests/unit
+	@POETRY_VIRTUALENVS_CREATE=false $(POETRY) run ruff check .
+	@POETRY_VIRTUALENVS_CREATE=false $(POETRY) run isort --check-only .
+	@POETRY_VIRTUALENVS_CREATE=false $(POETRY) run black --check .
+	@MYPYPATH=typings POETRY_VIRTUALENVS_CREATE=false $(POETRY) run mypy findpapers tests/unit
 
-publish: setup
-	@poetry config pypi-token.pypi ${FINDPAPERS_PYPI_API_TOKEN}
-	@poetry publish --build
+publish:
+	@POETRY_VIRTUALENVS_CREATE=false $(POETRY) config pypi-token.pypi ${FINDPAPERS_PYPI_API_TOKEN}
+	@POETRY_VIRTUALENVS_CREATE=false $(POETRY) publish --build

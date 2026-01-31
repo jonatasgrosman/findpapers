@@ -5,18 +5,6 @@ from urllib.parse import urlparse
 
 from .predatory_data import POTENTIAL_PREDATORY_JOURNALS, POTENTIAL_PREDATORY_PUBLISHERS
 
-POTENTIAL_PREDATORY_PUBLISHERS_HOSTS: set[str] = {
-    urlparse(entry.get("url", "")).netloc.replace("www.", "")
-    for entry in POTENTIAL_PREDATORY_PUBLISHERS
-    if entry.get("url")
-}
-POTENTIAL_PREDATORY_PUBLISHERS_NAMES: set[str] = {
-    entry.get("name", "").lower() for entry in POTENTIAL_PREDATORY_PUBLISHERS if entry.get("name")
-}
-POTENTIAL_PREDATORY_JOURNALS_NAMES: set[str] = {
-    entry.get("name", "").lower() for entry in POTENTIAL_PREDATORY_JOURNALS if entry.get("name")
-}
-
 
 def _normalize(value: str | None) -> str | None:
     """Normalize a string for matching.
@@ -35,6 +23,36 @@ def _normalize(value: str | None) -> str | None:
         return None
     normalized = value.strip().lower()
     return normalized or None
+
+
+def _normalized_names(entries: Iterable[dict]) -> set[str]:
+    """Collect normalized names from entries.
+
+    Parameters
+    ----------
+    entries : Iterable[dict]
+        Entries containing a name field.
+
+    Returns
+    -------
+    set[str]
+        Normalized names.
+    """
+    names: set[str] = set()
+    for entry in entries:
+        normalized = _normalize(entry.get("name"))
+        if normalized:
+            names.add(normalized)
+    return names
+
+
+POTENTIAL_PREDATORY_PUBLISHERS_HOSTS: set[str] = {
+    urlparse(entry.get("url", "")).netloc.replace("www.", "")
+    for entry in POTENTIAL_PREDATORY_PUBLISHERS
+    if entry.get("url")
+}
+POTENTIAL_PREDATORY_PUBLISHERS_NAMES: set[str] = _normalized_names(POTENTIAL_PREDATORY_PUBLISHERS)
+POTENTIAL_PREDATORY_JOURNALS_NAMES: set[str] = _normalized_names(POTENTIAL_PREDATORY_JOURNALS)
 
 
 def _get_publication_fields(publication: object) -> tuple[str | None, str | None, str | None]:

@@ -1,6 +1,7 @@
 """Tests for predatory publication flagging."""
 
 from findpapers import SearchRunner
+from findpapers.models import Paper, Publication
 from findpapers.searchers import ArxivSearcher
 from findpapers.utils.predatory_util import POTENTIAL_PREDATORY_JOURNALS_NAMES
 
@@ -10,16 +11,24 @@ def test_predatory_flagging_sets_publication_flag(monkeypatch):
 
     def mock_arxiv_search(self):
         return [
-            {
-                "title": "Paper A",
-                "doi": "10.1/abc",
-                "publication": {"title": predatory_name},
-            },
-            {
-                "title": "Paper B",
-                "doi": "10.2/xyz",
-                "publication": {"title": "Legit Journal"},
-            },
+            Paper(
+                title="Paper A",
+                abstract="",
+                authors=["A"],
+                publication=Publication(title=predatory_name),
+                publication_date=None,
+                urls=set(),
+                doi="10.1/abc",
+            ),
+            Paper(
+                title="Paper B",
+                abstract="",
+                authors=["A"],
+                publication=Publication(title="Legit Journal"),
+                publication_date=None,
+                urls=set(),
+                doi="10.2/xyz",
+            ),
         ]
 
     monkeypatch.setattr(ArxivSearcher, "search", mock_arxiv_search)
@@ -31,6 +40,5 @@ def test_predatory_flagging_sets_publication_flag(monkeypatch):
     metrics = runner.get_metrics()
 
     assert metrics["count.predatory"] == 1
-    flagged = [item for item in results if item.get("is_potentially_predatory")]
+    flagged = [paper for paper in results if paper.publication.is_potentially_predatory]
     assert len(flagged) == 1
-    assert flagged[0]["publication"]["is_potentially_predatory"] is True

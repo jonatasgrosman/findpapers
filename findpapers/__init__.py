@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from time import perf_counter
 
 from .exceptions import SearchRunnerNotExecutedError
+from .models import Paper, Publication, Search
 from .searchers import (
     ArxivSearcher,
     BiorxivSearcher,
@@ -12,6 +14,7 @@ from .searchers import (
     ScopusSearcher,
     SearcherBase,
 )
+from .utils import enrichment_util
 from .utils.predatory_util import is_predatory_publication
 
 
@@ -44,7 +47,7 @@ class SearchRunner:
             Global timeout in seconds (placeholder).
         """
         self._executed = False
-        self._results: list = []
+        self._results: list[Paper] = []
         self._metrics: dict[str, int | float] = {}
         self._searchers = self._build_searchers(databases)
         self._publication_types = publication_types
@@ -78,27 +81,32 @@ class SearchRunner:
             "stage.filter.runtime_seconds": 0.0,
             "stage.dedupe.runtime_seconds": 0.0,
             "stage.flag.runtime_seconds": 0.0,
+            "stage.enrich.runtime_seconds": 0.0,
             "count.before_filter": 0,
             "count.after_filter": 0,
             "count.after_dedupe": 0,
             "count.predatory": 0,
+            "count.enriched": 0,
+            "errors.enrich": 0,
         }
         self._fetch_searchers(metrics)
         self._filter_by_publication_types(metrics)
         self._dedupe_and_merge(metrics)
         self._flag_predatory_publications(metrics)
+        if self._config.get("enrich"):
+            self._enrich_results(metrics)
 
         metrics["papers_count"] = len(self._results)
         metrics["runtime_seconds"] = perf_counter() - start
         self._metrics = metrics
         self._executed = True
 
-    def get_results(self):
+    def get_results(self) -> list[Paper]:
         """Return a shallow copy of the results list after `run()`.
 
         Returns
         -------
-        list
+        list[Paper]
             Copy of the current results.
 
         Raises
@@ -109,7 +117,7 @@ class SearchRunner:
         self._ensure_executed()
         return list(self._results)
 
-    def get_metrics(self):
+    def get_metrics(self) -> dict[str, int | float]:
         """Return a copy of numeric metrics after `run()`.
 
         Returns
@@ -238,9 +246,9 @@ class SearchRunner:
             count = 0
             errors = 0
             try:
-                results = searcher.search() or []
-                count = len(results)
-                self._results.extend(results)
+                papers = searcher.search() or []
+                count = len(papers)
+                self._results.extend(papers)
             except Exception:
                 errors = 1
             metrics[f"searcher.{searcher.name}.runtime_seconds"] = perf_counter() - searcher_start
@@ -266,43 +274,32 @@ class SearchRunner:
         publication_types = self._publication_types or []
         if publication_types:
             allowed = {ptype.strip().lower() for ptype in publication_types}
+            # Filter based on the publication category stored in each Paper.
             self._results = [
-                item for item in self._results if self._publication_type_allowed(item, allowed)
+                paper for paper in self._results if self._publication_type_allowed(paper, allowed)
             ]
         metrics["count.after_filter"] = len(self._results)
         metrics["stage.filter.runtime_seconds"] = perf_counter() - filter_start
 
-    def _publication_type_allowed(self, item: object, allowed: set[str]) -> bool:
-        """Return whether a result item belongs to an allowed publication category.
+    def _publication_type_allowed(self, paper: Paper, allowed: set[str]) -> bool:
+        """Return whether a paper belongs to an allowed publication category.
 
         Parameters
         ----------
-        item : object
-            Result item (dict or object).
+        paper : Paper
+            Result paper.
         allowed : set[str]
             Allowed category names.
 
         Returns
         -------
         bool
-            True if the item matches an allowed category.
+            True if the paper matches an allowed category.
         """
         category = None
-        if isinstance(item, dict):
-            publication = item.get("publication")
-            if isinstance(publication, dict):
-                category = publication.get("category")
-            elif publication is not None:
-                category = getattr(publication, "category", None)
-            if category is None:
-                category = item.get("publication_category")
-        else:
-            publication = getattr(item, "publication", None)
-            if publication is not None:
-                category = getattr(publication, "category", None)
-            if category is None:
-                category = getattr(item, "publication_category", None)
-
+        publication = paper.publication
+        if publication is not None:
+            category = publication.category
         if category is None:
             return False
 
@@ -321,13 +318,14 @@ class SearchRunner:
         None
         """
         dedupe_start = perf_counter()
-        merged: dict[str, object] = {}
-        for item in self._results:
-            key = self._dedupe_key(item)
+        # Merge by stable keys (DOI, then title/year) to collapse duplicates.
+        merged: dict[str, Paper] = {}
+        for paper in self._results:
+            key = self._dedupe_key(paper)
             if key in merged:
-                merged[key] = self._merge_items(merged[key], item)
+                merged[key].merge(paper)
             else:
-                merged[key] = item
+                merged[key] = paper
         self._results = list(merged.values())
         metrics["count.after_dedupe"] = len(self._results)
         metrics["stage.dedupe.runtime_seconds"] = perf_counter() - dedupe_start
@@ -346,76 +344,109 @@ class SearchRunner:
         """
         flag_start = perf_counter()
         flagged_count = 0
-        for item in self._results:
-            publication = self._get_publication(item)
+        for paper in self._results:
+            publication = paper.publication
             if is_predatory_publication(publication):
-                self._set_predatory_flag(item, publication)
+                if publication is not None:
+                    publication.is_potentially_predatory = True
                 flagged_count += 1
         metrics["count.predatory"] = flagged_count
         metrics["stage.flag.runtime_seconds"] = perf_counter() - flag_start
 
-    def _get_publication(self, item: object) -> object | None:
-        """Extract publication data from a result item.
+    def _enrich_results(self, metrics: dict[str, int | float]) -> None:
+        """Enrich results as the final stage.
 
         Parameters
         ----------
-        item : object
-            Result item (dict or object).
-
-        Returns
-        -------
-        object | None
-            Publication object or dict if present.
-        """
-        if isinstance(item, dict):
-            return item.get("publication")
-        return getattr(item, "publication", None)
-
-    def _set_predatory_flag(self, item: object, publication: object | None) -> None:
-        """Set predatory flag on a result item.
-
-        Parameters
-        ----------
-        item : object
-            Result item (dict or object).
-        publication : object | None
-            Publication object or dict.
+        metrics : dict[str, int | float]
+            Metrics dict to update.
 
         Returns
         -------
         None
         """
-        if isinstance(publication, dict):
-            publication["is_potentially_predatory"] = True
-        elif publication is not None:
-            setattr(publication, "is_potentially_predatory", True)
+        enrich_start = perf_counter()
+        max_workers_value = self._config.get("max_workers")
+        max_workers = max_workers_value if isinstance(max_workers_value, int) else None
+        timeout = self._config.get("timeout")
+        enriched = 0
+        errors = 0
 
-        if isinstance(item, dict):
-            item["is_potentially_predatory"] = True
+        if not self._results:
+            metrics["stage.enrich.runtime_seconds"] = perf_counter() - enrich_start
+            return
+
+        if max_workers is None or max_workers <= 1:
+            for paper in self._results:
+                if timeout is not None and (perf_counter() - enrich_start) > timeout:
+                    errors += 1
+                    break
+                try:
+                    if self._enrich_paper(paper, timeout=timeout):
+                        enriched += 1
+                except Exception:
+                    errors += 1
         else:
-            setattr(item, "is_potentially_predatory", True)
+            with ThreadPoolExecutor(max_workers=max_workers) as executor:
+                futures = {
+                    executor.submit(self._enrich_paper, paper, timeout=timeout): paper
+                    for paper in self._results
+                }
+                remaining = (
+                    None if timeout is None else max(timeout - (perf_counter() - enrich_start), 0)
+                )
+                try:
+                    for future in as_completed(futures, timeout=remaining):
+                        try:
+                            if future.result():
+                                enriched += 1
+                        except Exception:
+                            errors += 1
+                except Exception:
+                    errors += len([f for f in futures if not f.done()])
 
-    def _dedupe_key(self, item: object) -> str:
+        metrics["count.enriched"] = enriched
+        metrics["errors.enrich"] = errors
+        metrics["stage.enrich.runtime_seconds"] = perf_counter() - enrich_start
+
+    def _enrich_paper(self, paper: Paper, timeout: float | None = None) -> bool:
+        """Enrich a single paper.
+
+        Parameters
+        ----------
+        paper : Paper
+            Result paper to enrich.
+
+        Returns
+        -------
+        bool
+            True if the paper was enriched, False otherwise.
+        """
+        urls = [str(url) for url in paper.urls if url]
+        if not urls:
+            return False
+        enriched = enrichment_util.enrich_from_sources(urls=urls, timeout=timeout)
+        if enriched is None:
+            return False
+        paper.merge(enriched)
+        return True
+
+    def _dedupe_key(self, paper: Paper) -> str:
         """Build a stable key based on DOI/title/year for deduplication.
 
         Parameters
         ----------
-        item : object
-            Result item (dict or object).
+        paper : Paper
+            Result paper.
 
         Returns
         -------
         str
             Stable dedupe key.
         """
-        if isinstance(item, dict):
-            doi = item.get("doi")
-            title = item.get("title")
-            year = self._publication_year(item.get("publication_date"))
-        else:
-            doi = getattr(item, "doi", None)
-            title = getattr(item, "title", None)
-            year = self._publication_year(getattr(item, "publication_date", None))
+        doi = paper.doi
+        title = paper.title
+        year = self._publication_year(paper.publication_date)
 
         if doi:
             return f"doi:{str(doi).strip().lower()}"
@@ -423,7 +454,7 @@ class SearchRunner:
             return f"title:{str(title).strip().lower()}|year:{year}"
         if title:
             return f"title:{str(title).strip().lower()}"
-        return f"object:{id(item)}"
+        return f"object:{id(paper)}"
 
     def _publication_year(self, publication_date: object) -> int | None:
         """Extract the year from a publication date object if present.
@@ -445,82 +476,11 @@ class SearchRunner:
             return year
         return None
 
-    def _merge_items(self, base: object, incoming: object) -> object:
-        """Merge two items, favoring the most complete values.
 
-        Parameters
-        ----------
-        base : object
-            Base item.
-        incoming : object
-            Incoming item to merge.
-
-        Returns
-        -------
-        object
-            Merged item.
-        """
-        if isinstance(base, dict) and isinstance(incoming, dict):
-            return self._merge_dicts(base, incoming)
-        if hasattr(base, "__dict__") and hasattr(incoming, "__dict__"):
-            merged = self._merge_dicts(vars(base), vars(incoming))
-            for key, value in merged.items():
-                setattr(base, key, value)
-            return base
-        return base
-
-    def _merge_dicts(self, base: dict, incoming: dict) -> dict:
-        """Merge dictionaries using the most-complete value rule.
-
-        Parameters
-        ----------
-        base : dict
-            Base dictionary.
-        incoming : dict
-            Incoming dictionary.
-
-        Returns
-        -------
-        dict
-            Merged dictionary.
-        """
-        merged = dict(base)
-        for key in set(base.keys()) | set(incoming.keys()):
-            merged[key] = self._merge_values(base.get(key), incoming.get(key))
-        return merged
-
-    def _merge_values(self, base: object, incoming: object) -> object:
-        """Return the most complete value according to merge rules.
-
-        Parameters
-        ----------
-        base : object
-            Base value.
-        incoming : object
-            Incoming value.
-
-        Returns
-        -------
-        object
-            Selected merged value.
-        """
-        if base is None:
-            return incoming
-        if incoming is None:
-            return base
-        if isinstance(base, str) and isinstance(incoming, str):
-            return base if len(base) >= len(incoming) else incoming
-        if isinstance(base, (int, float)) and isinstance(incoming, (int, float)):
-            return base if base >= incoming else incoming
-        if isinstance(base, set) and isinstance(incoming, set):
-            return base | incoming
-        if isinstance(base, list) and isinstance(incoming, list):
-            return list({*base, *incoming})
-        if isinstance(base, tuple) and isinstance(incoming, tuple):
-            return tuple({*base, *incoming})
-        if isinstance(base, dict) and isinstance(incoming, dict):
-            return self._merge_dicts(base, incoming)
-        return base
-
-
-__all__ = ["SearchRunner", "SearchRunnerNotExecutedError"]
+__all__ = [
+    "Paper",
+    "Publication",
+    "Search",
+    "SearchRunner",
+    "SearchRunnerNotExecutedError",
+]

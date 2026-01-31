@@ -3,132 +3,107 @@
 from datetime import date
 
 from findpapers import SearchRunner
+from findpapers.models import Paper, Publication
 
 
-def test_publication_type_allowed_from_dict():
+def test_publication_type_allowed_from_publication():
     runner = SearchRunner()
     allowed = {"journal"}
-    item = {"publication": {"category": "Journal"}}
-    assert runner._publication_type_allowed(item, allowed) is True
+    publication = Publication(title="Journal", category="Journal")
+    paper = Paper(
+        title="Paper",
+        abstract="Abstract",
+        authors=["A"],
+        publication=publication,
+        publication_date=None,
+        urls=set(),
+    )
+    assert runner._publication_type_allowed(paper, allowed) is True
 
 
 def test_publication_type_allowed_from_object_publication_category():
-    class Publication:
-        def __init__(self) -> None:
-            self.category = "Conference Proceedings"
-
-    class Paper:
-        def __init__(self) -> None:
-            self.publication = Publication()
-
+    publication = Publication(title="Conference", category="Conference Proceedings")
+    paper = Paper(
+        title="Paper",
+        abstract="Abstract",
+        authors=["A"],
+        publication=publication,
+        publication_date=None,
+        urls=set(),
+    )
     runner = SearchRunner()
     allowed = {"conference proceedings"}
-    assert runner._publication_type_allowed(Paper(), allowed) is True
+    assert runner._publication_type_allowed(paper, allowed) is True
 
 
 def test_publication_type_not_allowed_when_missing():
     runner = SearchRunner()
-    assert runner._publication_type_allowed({}, {"journal"}) is False
-
-
-def test_publication_type_allowed_from_publication_category_dict():
-    runner = SearchRunner()
-    allowed = {"journal"}
-    item = {"publication_category": "Journal"}
-    assert runner._publication_type_allowed(item, allowed) is True
-
-
-def test_publication_type_allowed_from_publication_category_object():
-    class Paper:
-        def __init__(self) -> None:
-            self.publication_category = "Journal"
-
-    runner = SearchRunner()
-    allowed = {"journal"}
-    assert runner._publication_type_allowed(Paper(), allowed) is True
+    paper = Paper(
+        title="Paper",
+        abstract="Abstract",
+        authors=["A"],
+        publication=None,
+        publication_date=None,
+        urls=set(),
+    )
+    assert runner._publication_type_allowed(paper, {"journal"}) is False
 
 
 def test_dedupe_key_variants():
     runner = SearchRunner()
-    assert runner._dedupe_key({"doi": "10.1/ABC"}) == "doi:10.1/abc"
-    assert (
-        runner._dedupe_key({"title": "My Title", "publication_date": date(2020, 1, 1)})
-        == "title:my title|year:2020"
+    paper_with_doi = Paper(
+        title="My Title",
+        abstract="Abstract",
+        authors=["A"],
+        publication=None,
+        publication_date=None,
+        urls=set(),
+        doi="10.1/ABC",
     )
-    assert runner._dedupe_key({"title": "My Title"}) == "title:my title"
-    assert runner._dedupe_key({})[:7] == "object:"
+    assert runner._dedupe_key(paper_with_doi) == "doi:10.1/abc"
+
+    paper_with_date = Paper(
+        title="My Title",
+        abstract="Abstract",
+        authors=["A"],
+        publication=None,
+        publication_date=date(2020, 1, 1),
+        urls=set(),
+    )
+    assert runner._dedupe_key(paper_with_date) == "title:my title|year:2020"
+
+    paper_title_only = Paper(
+        title="My Title",
+        abstract="Abstract",
+        authors=["A"],
+        publication=None,
+        publication_date=None,
+        urls=set(),
+    )
+    assert runner._dedupe_key(paper_title_only) == "title:my title"
 
 
 def test_dedupe_key_object_date():
-    class Paper:
-        def __init__(self) -> None:
-            self.title = "My Title"
-            self.doi = None
-            self.publication_date = date(2021, 1, 1)
-
     runner = SearchRunner()
-    assert runner._dedupe_key(Paper()) == "title:my title|year:2021"
+    paper = Paper(
+        title="My Title",
+        abstract="Abstract",
+        authors=["A"],
+        publication=None,
+        publication_date=date(2021, 1, 1),
+        urls=set(),
+    )
+    assert runner._dedupe_key(paper) == "title:my title|year:2021"
 
 
-def test_merge_values_rules():
-    runner = SearchRunner()
-    assert runner._merge_values(None, "x") == "x"
-    assert runner._merge_values("x", None) == "x"
-    assert runner._merge_values("short", "longer") == "longer"
-    assert runner._merge_values(1, 2) == 2
-    assert runner._merge_values({"a"}, {"b"}) == {"a", "b"}
-    assert sorted(runner._merge_values(["a"], ["b"])) == ["a", "b"]
-    assert set(runner._merge_values(("a",), ("b",))) == {"a", "b"}
-    assert runner._merge_values({"a": 1}, {"a": 2, "b": 3}) == {"a": 2, "b": 3}
-
-
-def test_merge_items_object():
-    class Paper:
-        def __init__(self) -> None:
-            self.title = "Short"
-            self.citations = 1
-
-    runner = SearchRunner()
-    base = Paper()
-    incoming = Paper()
-    incoming.title = "A much longer title"
-    incoming.citations = 3
-
-    merged = runner._merge_items(base, incoming)
-    assert merged.title == "A much longer title"
-    assert merged.citations == 3
-
-
-def test_merge_items_dict():
-    runner = SearchRunner()
-    base = {"title": "Short", "citations": 1}
-    incoming = {"title": "A much longer title", "citations": 3}
-    merged = runner._merge_items(base, incoming)
-    assert merged["title"] == "A much longer title"
-    assert merged["citations"] == 3
-
-
-def test_merge_values_fallback():
-    runner = SearchRunner()
-    obj = object()
-    assert runner._merge_values(obj, 123) is obj
-
-
-def test_get_publication_and_set_predatory_on_object():
-    class Publication:
-        def __init__(self) -> None:
-            self.title = "Journal"
-            self.is_potentially_predatory = False
-
-    class Paper:
-        def __init__(self) -> None:
-            self.publication = Publication()
-            self.is_potentially_predatory = False
-
-    runner = SearchRunner()
-    paper = Paper()
-    publication = runner._get_publication(paper)
-    assert publication is paper.publication
-    runner._set_predatory_flag(paper, publication)
-    assert paper.is_potentially_predatory is True
-    assert paper.publication.is_potentially_predatory is True
+def test_paper_urls_have_doi_url_when_available():
+    paper = Paper(
+        title="Paper",
+        abstract="Abstract",
+        authors=["A"],
+        publication=None,
+        publication_date=None,
+        urls={"https://a"},
+        doi="10.1/abc",
+    )
+    assert "https://doi.org/10.1/abc" in paper.urls

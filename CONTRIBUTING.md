@@ -141,39 +141,44 @@ from the main (upstream) repository:
 
 To ensure consistency throughout the source code, keep these rules in mind as you are working:
 
-* All features or bug fixes **must be tested** by one or more specs (unit-tests).
-* All public methods **must be documented** for the final user in some way.
-* We follow the [PEP8 Style Guide][pep8-style-guide] for general coding 
-  and the [Numpy Docstirng Style Guide][numpy-docstring-style-guide] for code documentation.
+* Write code in English.
+* Write comments in English.
+* Write comments where necessary to explain non-trivial parts of the code.
+* All features or bug fixes must be tested by one or more specs (unit-tests).
+* All methods must have type hints.
+* All methods must have docstrings.
+* The names of variables, functions, classes, and modules should be descriptive.
+* Keep functions and methods focused on a single task; avoid large monolithic functions.
+* Line length should not exceed 100 characters.
 * If you changed any code, run `make lint` and `make test` before committing.
-* Aim to keep test coverage as close to **100%** as possible.
-* public methods must include **parameters, returns, and possible exceptions**.
+* Aim to keep test coverage as close to 100% as possible.
+* public methods must include parameters, returns, and possible exceptions.
+* We follow the [PEP8 Style Guide][pep8-style-guide] for general coding.
+* We follow the [Numpy Docstirng Style Guide][numpy-docstring-style-guide] for code documentation.
+* Use type hints as much as possible. We use [mypy](http://mypy-lang.org/) for static type checking.
+* Follow the [isort](https://pycqa.github.io/isort/) rules for import sorting.
+* Follow the [black](https://black.readthedocs.io/en/stable/) rules for code formatting.
+* Follow the [ruff](https://ruff.rs/) rules for linting.
+* When adding new dependencies, add them to the `pyproject.toml` file using Poetry.
 * PRs can only be merged if the code is formatted properly and all tests are passing.
+* No secret keys, passwords, or sensitive information should be committed to the repository.
+* Use environment variables or configuration files (e.g., `.env`) to manage sensitive data.
 
 ## <a name="commit"></a> Commit Message Guidelines
 
-We have very precise rules over how our git commit messages can be formatted. We follow the [Convetional Commit Guide][conventionalcommits]. This leads to **more
-readable messages** that are easy to follow when looking through the **project history**.  But also,
-we use the git commit messages to **generate the project change log**.
-
-### Commit Message Format
-Each commit message consists of a **header**, a **body** and a **footer**.  The header has a special
+Each commit message consists of a **header** and a **body**.  The header has a special
 format that includes a **type** and a **subject**:
 
 ```
 <type>: <subject>
 <BLANK LINE>
 <body>
-<BLANK LINE>
-<footer>
 ```
 
-The **header** is mandatory.
+The **header** is mandatory. The **body** is optional.
 
 Any line of the commit message cannot be longer 100 characters! This allows the message to be easier
 to read in various git tools.
-
-The footer should contain a [closing reference to an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-issues/linking-a-pull-request-to-an-issue) if any.
 
 ```
 docs: update changelog to 0.2
@@ -183,7 +188,6 @@ fix: need to depend on latest rxjs and zone.js
 
 The version in our package.json gets copied to the one we publish, and users need the latest of these.
 
-Closes #10
 ```
 
 ### Type
@@ -209,13 +213,6 @@ The subject contains a succinct description of the change:
 
 Just as in the **subject**, use the imperative, present tense: "change" not "changed" nor "changes".
 The body should include the motivation for the change and contrast this with previous behavior.
-
-### Footer
-
-The footer should contain any information about **Breaking Changes** and is also the place to
-reference GitHub issues that this commit **Closes**.
-
-**Breaking Changes** should start with the words `BREAKING CHANGE:` with a space or two newlines. The rest of the commit message is then used for this.
 
 ## <a name="dev"></a> Building and Testing
 
