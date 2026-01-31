@@ -12,6 +12,7 @@ from .searchers import (
     ScopusSearcher,
     SearcherBase,
 )
+from .utils.predatory_util import is_predatory_publication
 
 
 class SearchRunner:
@@ -76,13 +77,16 @@ class SearchRunner:
             "stage.fetch.runtime_seconds": 0.0,
             "stage.filter.runtime_seconds": 0.0,
             "stage.dedupe.runtime_seconds": 0.0,
+            "stage.flag.runtime_seconds": 0.0,
             "count.before_filter": 0,
             "count.after_filter": 0,
             "count.after_dedupe": 0,
+            "count.predatory": 0,
         }
         self._fetch_searchers(metrics)
         self._filter_by_publication_types(metrics)
         self._dedupe_and_merge(metrics)
+        self._flag_predatory_publications(metrics)
 
         metrics["papers_count"] = len(self._results)
         metrics["runtime_seconds"] = perf_counter() - start
@@ -327,6 +331,69 @@ class SearchRunner:
         self._results = list(merged.values())
         metrics["count.after_dedupe"] = len(self._results)
         metrics["stage.dedupe.runtime_seconds"] = perf_counter() - dedupe_start
+
+    def _flag_predatory_publications(self, metrics: dict[str, int | float]) -> None:
+        """Flag potentially predatory publications in results.
+
+        Parameters
+        ----------
+        metrics : dict[str, int | float]
+            Metrics dict to update.
+
+        Returns
+        -------
+        None
+        """
+        flag_start = perf_counter()
+        flagged_count = 0
+        for item in self._results:
+            publication = self._get_publication(item)
+            if is_predatory_publication(publication):
+                self._set_predatory_flag(item, publication)
+                flagged_count += 1
+        metrics["count.predatory"] = flagged_count
+        metrics["stage.flag.runtime_seconds"] = perf_counter() - flag_start
+
+    def _get_publication(self, item: object) -> object | None:
+        """Extract publication data from a result item.
+
+        Parameters
+        ----------
+        item : object
+            Result item (dict or object).
+
+        Returns
+        -------
+        object | None
+            Publication object or dict if present.
+        """
+        if isinstance(item, dict):
+            return item.get("publication")
+        return getattr(item, "publication", None)
+
+    def _set_predatory_flag(self, item: object, publication: object | None) -> None:
+        """Set predatory flag on a result item.
+
+        Parameters
+        ----------
+        item : object
+            Result item (dict or object).
+        publication : object | None
+            Publication object or dict.
+
+        Returns
+        -------
+        None
+        """
+        if isinstance(publication, dict):
+            publication["is_potentially_predatory"] = True
+        elif publication is not None:
+            setattr(publication, "is_potentially_predatory", True)
+
+        if isinstance(item, dict):
+            item["is_potentially_predatory"] = True
+        else:
+            setattr(item, "is_potentially_predatory", True)
 
     def _dedupe_key(self, item: object) -> str:
         """Build a stable key based on DOI/title/year for deduplication.

@@ -120,10 +120,11 @@ The following checklist breaks the refactoring into small, reviewable phases. Ea
   - Review checklist: metrics include counts before/after filter and dedupe.
   - Comment: Filtering uses `publication.category`; dedupe uses DOI/title/year keys and merges most complete values.
 
-- [ ] **Stage 5 — Predatory flagging**
+- [x] **Stage 5 — Predatory flagging**
   - Scope: add a predatory-flagging stage that marks papers and increments metrics for flagged items.
   - Tests: unit tests for flagging logic and metrics increment.
   - Review checklist: flags are deterministic and documented.
+  - Comment: Uses a small built-in predatory list placeholder for now.
 
 - [ ] **Stage 6 — Enrichment (optional, parallelism, timeouts)**
   - Scope: implement enrichment as a final stage, honoring `enrich`, `max_workers`, and `timeout`. Implement graceful failures and logging when `verbose=True`.
