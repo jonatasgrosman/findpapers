@@ -12,6 +12,7 @@ today! As a contributor, here are the guidelines we would like you to follow:
  - [Building and Testing](#dev)
 
 ## <a name="coc"></a> Code of Conduct
+
 Help us keep the project open and inclusive. Please read and follow our Code of Conduct.
 
 As contributors and maintainers of the project, we pledge to respect everyone who contributes by posting issues, updating documentation, submitting pull requests, providing feedback in comments, and any other activities.
@@ -25,11 +26,13 @@ If any member of the community violates this code of conduct, the maintainers of
 If you are subject to or witness unacceptable behavior, or have any other concerns, please send a message to the maintainers of the project.
 
 ## <a name="issue"></a> Found a Bug?
+
 If you find a bug in the source code, you can help us by
 [submitting an issue](#submit-issue) to our [GitHub Repository](https://github.com/jonatasgrosman/findpapers). Even better, you can
 [submit a Pull Request](#submit-pr) with a fix.
 
 ## <a name="feature"></a> Missing a Feature?
+
 You can *request* a new feature by [submitting an issue](#submit-issue) to our GitHub
 Repository. If you would like to *implement* a new feature, please submit an issue with
 a proposal for your work first, to be sure that we can use it.
@@ -43,8 +46,8 @@ and help you to craft the change so that it is successfully accepted into the pr
 ## <a name="submit"></a> Submission Guidelines
 
 In our development process we follow the [GitHub flow][github-flow], that is very powerful and easy to understand. 
-That process enforces continuous delivery by **making anything in the master branch deployable**.
-So everybody needs to keep the master branch as safe as possible and ready to be deployed at any time.
+That process enforces continuous delivery by **making anything in the main branch deployable**.
+So everybody needs to keep the main branch as safe as possible and ready to be deployed at any time.
 
 ### <a name="submit-issue"></a> Submitting an Issue
 
@@ -70,7 +73,7 @@ Before you submit your Pull Request (PR) consider the following guidelines:
 1. Make your changes in a new git branch:
 
      ```shell
-     git checkout -b my-fix-branch master
+     git checkout -b my-fix-branch main
      ```
 
 1. Create your patch, **including appropriate test cases**.
@@ -92,14 +95,14 @@ Before you submit your Pull Request (PR) consider the following guidelines:
     git push origin my-fix-branch
     ```
 
-1. In GitHub, send a pull request to `findpapers:master`.
+1. In GitHub, send a pull request to `findpapers:main`.
 * If we suggest changes then:
   * Make the required updates.
   * Re-run the test suites to ensure tests are still passing.
   * Rebase your branch and force push to your GitHub repository (this will update your Pull Request):
 
     ```shell
-    git rebase master -i
+    git rebase main -i
     git push -f
     ```
 
@@ -116,10 +119,10 @@ from the main (upstream) repository:
     git push origin --delete my-fix-branch
     ```
 
-* Check out the master branch:
+* Check out the main branch:
 
     ```shell
-    git checkout master -f
+    git checkout main -f
     ```
 
 * Delete the local branch:
@@ -128,19 +131,24 @@ from the main (upstream) repository:
     git branch -D my-fix-branch
     ```
 
-* Update your master with the latest upstream version:
+* Update your main with the latest upstream version:
 
     ```shell
-    git pull --ff upstream master
+    git pull --ff upstream main
     ```
 
 ## <a name="rules"></a> Coding Rules
+
 To ensure consistency throughout the source code, keep these rules in mind as you are working:
 
 * All features or bug fixes **must be tested** by one or more specs (unit-tests).
 * All public methods **must be documented** for the final user in some way.
 * We follow the [PEP8 Style Guide][pep8-style-guide] for general coding 
   and the [Numpy Docstirng Style Guide][numpy-docstring-style-guide] for code documentation.
+* If you changed any code, run `make lint` and `make test` before committing.
+* Aim to keep test coverage as close to **100%** as possible.
+* public methods must include **parameters, returns, and possible exceptions**.
+* PRs can only be merged if the code is formatted properly and all tests are passing.
 
 ## <a name="commit"></a> Commit Message Guidelines
 
@@ -179,6 +187,7 @@ Closes #10
 ```
 
 ### Type
+
 We use a concise set of commit types. Use one of the following in the commit header:
 
 * **feat**: A new feature
@@ -189,6 +198,7 @@ We use a concise set of commit types. Use one of the following in the commit hea
 * **chore**: Maintenance, build, CI, or refactor tasks
 
 ### Subject
+
 The subject contains a succinct description of the change:
 
 * use the imperative, present tense: "change" not "changed" nor "changes"
@@ -196,10 +206,12 @@ The subject contains a succinct description of the change:
 * no dot (.) at the end
 
 ### Body
+
 Just as in the **subject**, use the imperative, present tense: "change" not "changed" nor "changes".
 The body should include the motivation for the change and contrast this with previous behavior.
 
 ### Footer
+
 The footer should contain any information about **Breaking Changes** and is also the place to
 reference GitHub issues that this commit **Closes**.
 
@@ -257,19 +269,17 @@ After cloning this file, you should set the values of its variables properly
 make setup
 ```
 
-## Running Tests
+## Running Tests and Linting
+
+Run tests:
+
 
 ```shell
 make test
 ```
 
-**Note**: All the tests are executed on our Continuous Integration infrastructure after a commit push. PRs can only be merged if the code is formatted properly and all tests are passing.
+Run lint:
 
-## Linting/verifying your Source Code
-
-(TODO: We need to define this)
-
-[numpy-docstring-style-guide]: https://numpydoc.readthedocs.io/en/latest/format.html
-[pep8-style-guide]: https://www.python.org/dev/peps/pep-0008/
-[conventionalcommits]: https://www.conventionalcommits.org/en/v1.0.0/
-[github-flow]: https://guides.github.com/introduction/flow/
+```shell
+make lint
+```
