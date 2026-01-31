@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and discussions
+    url: https://github.com/jonatasgrosman/findpapers/discussions
+    about: Please use GitHub Discussions for questions or general discussion.
