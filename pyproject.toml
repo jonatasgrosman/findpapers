@@ -16,6 +16,7 @@ python = "^3.10"
 lxml = "^4.5.2"
 requests = "^2.24.0"
 tqdm = "^4.66.0"
+tomli = "^2.0.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.4"

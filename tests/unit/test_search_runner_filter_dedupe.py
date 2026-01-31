@@ -46,12 +46,12 @@ def test_filter_and_dedupe_merge_rules(monkeypatch):
     monkeypatch.setattr(ArxivSearcher, "iter_search", mock_arxiv_iter_search)
 
     runner = SearchRunner(databases=["arxiv"], publication_types=["Journal"])
-    results = runner.run()
+    search = runner.run()
     metrics = runner.get_metrics()
 
     assert metrics["total_papers"] == 1
 
-    merged = results[0]
+    merged = search.papers[0]
     assert merged.title == "A much longer title"
     assert merged.citations == 7
     assert merged.keywords == {"a", "b"}

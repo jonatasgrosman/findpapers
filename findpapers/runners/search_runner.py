@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
+from copy import deepcopy
+from datetime import datetime, timezone
 from time import perf_counter
 
 from tqdm import tqdm
 
 from findpapers.exceptions import SearchRunnerNotExecutedError
-from findpapers.models import Paper
+from findpapers.models import Paper, Search
 from findpapers.searchers import (
     ArxivSearcher,
     BiorxivSearcher,
@@ -46,11 +48,15 @@ class SearchRunner:
         self._executed = False
         self._results: list[Paper] = []
         self._metrics: dict[str, int | float] = {}
+        self._search: Search | None = None
         self._searchers = self._build_searchers(databases)
         self._publication_types = publication_types
         self._parallel_search = parallel_search
+        self._query = kwargs.get("query") or ""
+        self._limits = kwargs.get("limits") or {}
+        self._timeout = kwargs.get("timeout")
 
-    def run(self, verbose: bool = False) -> list[Paper]:  # noqa: ARG002 - placeholder
+    def run(self, verbose: bool = False) -> Search:  # noqa: ARG002 - placeholder
         """Execute the configured pipeline once, resetting previous results.
 
         Parameters
@@ -60,8 +66,8 @@ class SearchRunner:
 
         Returns
         -------
-        list[Paper]
-            Results from the search pipeline.
+        Search
+            Search object containing results and metadata.
         """
         start = perf_counter()
         self._results = []
@@ -79,7 +85,35 @@ class SearchRunner:
         metrics["runtime_in_seconds"] = perf_counter() - start
         self._metrics = metrics
         self._executed = True
-        return list(self._results)
+        self._search = Search(
+            query=self._query,
+            limit=self._limits.get("limit"),
+            limit_per_database=self._limits.get("limit_per_database"),
+            processed_at=datetime.now(timezone.utc),
+            databases=[searcher.name for searcher in self._searchers],
+            publication_types=self._publication_types,
+            papers=list(self._results),
+            metrics=dict(self._metrics),
+            timeout=self._timeout,
+            runtime_seconds=self._metrics.get("runtime_in_seconds"),
+        )
+        return self._search
+
+    def get_results(self) -> list[Paper]:
+        """Return a deep copy of papers after `run()`.
+
+        Returns
+        -------
+        list[Paper]
+            List of paper results.
+
+        Raises
+        ------
+        SearchRunnerNotExecutedError
+            If `run()` has not been called.
+        """
+        self._ensure_executed()
+        return deepcopy(self._results)
 
     def get_metrics(self) -> dict[str, int | float]:
         """Return a copy of numeric metrics after `run()`.

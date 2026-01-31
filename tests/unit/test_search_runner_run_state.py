@@ -5,8 +5,8 @@ from findpapers import SearchRunner
 
 def test_run_sets_executed_state():
     runner = SearchRunner()
-    results = runner.run()
-    assert results == []
+    search = runner.run()
+    assert search.papers == []
     assert isinstance(runner.get_metrics(), dict)
 
 
