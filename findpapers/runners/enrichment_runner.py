@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from time import perf_counter
 
 from findpapers.exceptions import SearchRunnerNotExecutedError
 from findpapers.models import Paper
 from findpapers.utils import enrichment_util
+from findpapers.utils.parallel_util import execute_tasks
 
 
 class EnrichmentRunner:
@@ -96,43 +96,32 @@ class EnrichmentRunner:
         -------
         None
         """
-        enrich_start = perf_counter()
         max_workers = self._max_workers if isinstance(self._max_workers, int) else None
         timeout = self._timeout
         enriched = 0
-        errors = 0
 
         if not self._results:
             return
 
-        if max_workers is None or max_workers <= 1:
-            for paper in self._results:
-                if timeout is not None and (perf_counter() - enrich_start) > timeout:
-                    errors += 1
-                    break
-                try:
-                    if self._enrich_paper(paper, timeout=timeout):
-                        enriched += 1
-                except Exception:
-                    errors += 1
-        else:
-            with ThreadPoolExecutor(max_workers=max_workers) as executor:
-                futures = {
-                    executor.submit(self._enrich_paper, paper, timeout=timeout): paper
-                    for paper in self._results
-                }
-                remaining = (
-                    None if timeout is None else max(timeout - (perf_counter() - enrich_start), 0)
-                )
-                try:
-                    for future in as_completed(futures, timeout=remaining):
-                        try:
-                            if future.result():
-                                enriched += 1
-                        except Exception:
-                            errors += 1
-                except Exception:
-                    errors += len([future for future in futures if not future.done()])
+        # Enrichment task wrapper so the parallel helper can execute per paper.
+        def enrich_task(paper: Paper) -> bool:
+            return self._enrich_paper(paper, timeout=timeout)
+
+        # Parallel/sequential execution with a single progress bar over papers.
+        for _paper, result, error in execute_tasks(
+            self._results,
+            enrich_task,
+            max_workers=max_workers,
+            timeout=timeout,
+            progress_total=len(self._results),
+            progress_unit="paper",
+            use_progress=True,
+            stop_on_timeout=True,
+        ):
+            if error is not None:
+                continue
+            if result:
+                enriched += 1
 
         metrics["enriched_papers"] = enriched
 

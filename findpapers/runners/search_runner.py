@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from threading import Lock
 from time import perf_counter
 
 from tqdm import tqdm
@@ -19,6 +17,7 @@ from findpapers.searchers import (
     ScopusSearcher,
     SearcherBase,
 )
+from findpapers.utils.parallel_util import execute_tasks
 from findpapers.utils.predatory_util import is_predatory_publication
 
 
@@ -179,22 +178,29 @@ class SearchRunner:
                 metrics[f"total_papers_from_{searcher.name}"] = 0
 
         total_papers = sum(plan[4] for plan in plans)
-        lock = Lock()
 
-        def process_plan(searcher: SearcherBase, iterator: Iterator[list[Paper]]) -> None:
-            """Collect papers for a single searcher, updating metrics and progress.
+        # One progress bar per database, labeled with the searcher name.
+        progress_bars: dict[SearcherBase, tqdm] = {
+            plan[0]: tqdm(total=plan[4], unit="paper", desc=plan[0].name, position=index)
+            for index, plan in enumerate(plans)
+        }
+
+        def process_plan(
+            plan: tuple[SearcherBase, Iterator[list[Paper]], int, int, int],
+        ) -> tuple[list[Paper], int]:
+            """Collect papers for a single searcher.
 
             Parameters
             ----------
-            searcher : SearcherBase
-                Searcher instance being executed.
-            iterator : Iterator[list[Paper]]
-                Iterator yielding lists of papers.
+            plan : tuple[SearcherBase, Iterator[list[Paper]], int, int, int]
+                Searcher execution plan.
 
             Returns
             -------
-            None
+            tuple[list[Paper], int]
+                Collected papers and count.
             """
+            searcher, iterator, _steps, _papers_per_step, _total_papers = plan
             count = 0
             papers: list[Paper] = []
             try:
@@ -202,23 +208,32 @@ class SearchRunner:
                     if batch:
                         papers.extend(batch)
                         count += len(batch)
-                        progress.update(len(batch))
+                        progress_bars[searcher].update(len(batch))
             except Exception:
-                count = 0
-                papers = []
-            with lock:
-                self._results.extend(papers)
-                metrics[f"total_papers_from_{searcher.name}"] = count
+                return [], 0
+            finally:
+                progress_bars[searcher].close()
+            return papers, count
 
-        with tqdm(total=total_papers, unit="paper") as progress:
-            if self._parallel_search and len(plans) > 1:
-                with ThreadPoolExecutor(max_workers=len(plans)) as executor:
-                    futures = [executor.submit(process_plan, plan[0], plan[1]) for plan in plans]
-                    for future in as_completed(futures):
-                        future.result()
-            else:
-                for plan in plans:
-                    process_plan(plan[0], plan[1])
+        # Run searchers in parallel only when explicitly enabled and there is more than one.
+        max_workers = len(plans) if self._parallel_search and len(plans) > 1 else None
+        for plan, result, error in execute_tasks(
+            plans,
+            process_plan,
+            max_workers=max_workers,
+            timeout=None,
+            progress_total=total_papers,
+            progress_unit="paper",
+            # Progress is handled per-searcher to show the database name.
+            use_progress=False,
+        ):
+            searcher = plan[0]
+            if error is not None or result is None:
+                metrics[f"total_papers_from_{searcher.name}"] = 0
+                continue
+            papers, count = result
+            self._results.extend(papers)
+            metrics[f"total_papers_from_{searcher.name}"] = count
 
     def _filter_by_publication_types(self, metrics: dict[str, int | float]) -> None:
         """Filter results by allowed publication categories.

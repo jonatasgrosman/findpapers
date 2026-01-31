@@ -5,13 +5,13 @@ import logging
 import os
 import re
 import urllib.parse
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from time import perf_counter
 
 import requests
 
 from findpapers.exceptions import SearchRunnerNotExecutedError
 from findpapers.models import Paper
+from findpapers.utils.parallel_util import execute_tasks
 
 
 class DownloadRunner:
@@ -82,52 +82,35 @@ class DownloadRunner:
         max_workers = self._max_workers if isinstance(self._max_workers, int) else None
         timeout = self._timeout
         proxies = self._build_proxies()
-        download_start = perf_counter()
 
-        if max_workers is None or max_workers <= 1:
-            for paper in self._results:
-                if timeout is not None and (perf_counter() - download_start) > timeout:
-                    self._log_download_error(error_log_path, paper.title, [])
-                    continue
-                    continue
-                downloaded, attempted_urls = self._download_paper(
-                    paper, self._output_directory, timeout=timeout, proxies=proxies
-                )
-                if downloaded:
-                    metrics["downloaded_papers"] += 1
-                else:
-                    self._log_download_error(error_log_path, paper.title, attempted_urls)
-        else:
-            with ThreadPoolExecutor(max_workers=max_workers) as executor:
-                futures = {
-                    executor.submit(
-                        self._download_paper,
-                        paper,
-                        self._output_directory,
-                        timeout,
-                        proxies,
-                    ): paper
-                    for paper in self._results
-                }
-                remaining = (
-                    None if timeout is None else max(timeout - (perf_counter() - download_start), 0)
-                )
-                try:
-                    for future in as_completed(futures, timeout=remaining):
-                        paper = futures[future]
-                        try:
-                            downloaded, attempted_urls = future.result()
-                        except Exception:
-                            downloaded = False
-                            attempted_urls = []
-                        if downloaded:
-                            metrics["downloaded_papers"] += 1
-                        else:
-                            self._log_download_error(error_log_path, paper.title, attempted_urls)
-                except Exception:
-                    for future, paper in futures.items():
-                        if not future.done():
-                            self._log_download_error(error_log_path, paper.title, [])
+        # Download task wrapper so the parallel helper can execute per paper.
+        def download_task(paper: Paper) -> tuple[bool, list[str]]:
+            return self._download_paper(
+                paper,
+                self._output_directory,
+                timeout=timeout,
+                proxies=proxies,
+            )
+
+        # Parallel/sequential execution with a single progress bar over papers.
+        for paper, result, error in execute_tasks(
+            self._results,
+            download_task,
+            max_workers=max_workers,
+            timeout=timeout,
+            progress_total=len(self._results),
+            progress_unit="paper",
+            use_progress=True,
+            stop_on_timeout=True,
+        ):
+            if error is not None or result is None:
+                self._log_download_error(error_log_path, paper.title, [])
+                continue
+            downloaded, attempted_urls = result
+            if downloaded:
+                metrics["downloaded_papers"] += 1
+            else:
+                self._log_download_error(error_log_path, paper.title, attempted_urls)
 
         metrics["runtime_in_seconds"] = perf_counter() - start
         self._metrics = metrics
