@@ -1,4 +1,4 @@
-.PHONY: help clean setup test test_report lint
+.PHONY: help clean setup test test_report lint format
 
 VENV ?= venv
 VENV_BIN = $(VENV)/bin
@@ -16,6 +16,8 @@ help:
 	@echo "       prepare environment"
 	@echo "make lint"
 	@echo "       run lint and formatting checks"
+	@echo "make format"
+	@echo "       auto-fix formatting and lint issues"
 	@echo "make test"
 	@echo "       run tests"
 	@echo "make test_report"
@@ -46,6 +48,11 @@ lint:
 	@POETRY_VIRTUALENVS_CREATE=false $(POETRY) run isort --check-only .
 	@POETRY_VIRTUALENVS_CREATE=false $(POETRY) run black --check .
 	@MYPYPATH=typings POETRY_VIRTUALENVS_CREATE=false $(POETRY) run mypy findpapers tests/unit
+
+format:
+	@POETRY_VIRTUALENVS_CREATE=false $(POETRY) run ruff check . --fix
+	@POETRY_VIRTUALENVS_CREATE=false $(POETRY) run isort .
+	@POETRY_VIRTUALENVS_CREATE=false $(POETRY) run black .
 
 publish:
 	@POETRY_VIRTUALENVS_CREATE=false $(POETRY) config pypi-token.pypi ${FINDPAPERS_PYPI_API_TOKEN}

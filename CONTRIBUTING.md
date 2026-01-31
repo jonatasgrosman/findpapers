@@ -134,7 +134,7 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 * The names of variables, functions, classes, and modules should be descriptive.
 * Keep functions and methods focused on a single task; avoid large monolithic functions.
 * Line length should not exceed 100 characters.
-* If you changed any code, run `make lint` and `make test` before committing.
+* If you changed any code, run `make format`, `make lint` and `make test` before committing.
 * Aim to keep test coverage as close to 100% as possible.
 * public methods must include parameters, returns, and possible exceptions.
 * We follow the [PEP8 Style Guide][pep8-style-guide] for general coding.
@@ -248,12 +248,18 @@ After cloning this file, you should set the values of its variables properly
 make setup
 ```
 
-## Running Tests and Linting
+## Running Tests, Format and Linting
 
 Run tests:
 
 ```shell
 make test
+```
+
+Run format:
+
+```shell
+make format
 ```
 
 Run lint:
