@@ -3,27 +3,12 @@
 We would love for you to contribute to Findpapers and help make it even better than it is
 today! As a contributor, here are the guidelines we would like you to follow:
 
- - [Code of Conduct](#coc)
  - [Found a Bug?](#issue)
  - [Missing a Feature?](#feature)
  - [Submission Guidelines](#submit)
  - [Coding Rules](#rules)
  - [Commit Message Guidelines](#commit)
  - [Building and Testing](#dev)
-
-## <a name="coc"></a> Code of Conduct
-
-Help us keep the project open and inclusive. Please read and follow our Code of Conduct.
-
-As contributors and maintainers of the project, we pledge to respect everyone who contributes by posting issues, updating documentation, submitting pull requests, providing feedback in comments, and any other activities.
-
-The contributors and maintainers communication must be constructive and never resort to personal attacks, trolling, public or private harassment, insults, or other unprofessional conduct.
-
-We promise to extend courtesy and respect to everyone involved in this project regardless of gender, gender identity, sexual orientation, disability, age, race, ethnicity, religion, or level of experience. We expect anyone contributing to the project to do the same.
-
-If any member of the community violates this code of conduct, the maintainers of the project may take action, removing issues, comments, and pull requests or blocking accounts as deemed appropriate.
-
-If you are subject to or witness unacceptable behavior, or have any other concerns, please send a message to the maintainers of the project.
 
 ## <a name="issue"></a> Found a Bug?
 
@@ -41,6 +26,7 @@ Please consider what kind of change it is:
 * For a **Major Feature**, first open an issue and outline your proposal so that it can be
 discussed. This will also allow us to better coordinate our efforts, prevent duplication of work,
 and help you to craft the change so that it is successfully accepted into the project.
+
 * **Small Features** can be crafted and directly [submitted as a Pull Request](#submit-pr).
 
 ## <a name="submit"></a> Submission Guidelines
@@ -57,14 +43,12 @@ We want to fix all the issues as soon as possible, but before fixing a bug we ne
 
 A minimal reproduce scenario allows us to quickly confirm a bug (or point out coding problem) as well as confirm that we are fixing the right problem. And when is possible, please create a standalone git repository demonstrating the problem.
 
-We will be insisting on a minimal reproduce scenario in order to save maintainers time and ultimately be able to fix more bugs. Interestingly, from our experience users often find coding problems themselves while preparing a minimal reproduction scenario. We understand that sometimes it might be hard to extract essentials bits of code from a larger code-base but we really need to isolate the problem before we can fix it.
-
 Unfortunately, we are not able to investigate/fix bugs without a minimal reproduction, so if we don't hear back from you we are going to close an issue that doesn't have enough info to be reproduced.
 
 You can file new issues by filling out our [new issue form](https://github.com/jonatasgrosman/findpapers/issues/new).
 
-
 ### <a name="submit-pr"></a> Submitting a Pull Request (PR)
+
 Before you submit your Pull Request (PR) consider the following guidelines:
 
 1. Search [GitHub](https://github.com/jonatasgrosman/findpapers/pulls) for an open or closed PR
@@ -227,8 +211,6 @@ following products on your development machine:
 
 * [Git](http://git-scm.com)
 
-* [Poetry](https://python-poetry.org)
-
 ## Getting the Sources
 
 Fork and clone the Findpapers repository:
@@ -269,7 +251,6 @@ make setup
 ## Running Tests and Linting
 
 Run tests:
-
 
 ```shell
 make test

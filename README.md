@@ -116,6 +116,8 @@ findpapers.generate_bibtex(search_file, "/some/path/mybib.bib")
 See the [contribution guidelines](https://github.com/jonatasgrosman/findpapers/blob/master/CONTRIBUTING.md)
 if you'd like to contribute to Findpapers project.
 
+Please follow the [Code of Conduct](https://github.com/jonatasgrosman/findpapers/blob/master/CODE_OF_CONDUCT.md).
+
 You don't need to know how to code to contribute to the project. Even the improvement of our documentation is an outstanding contribution.
 
 If this project has been useful for you, please share it with your friends. This project could be helpful for them too.
