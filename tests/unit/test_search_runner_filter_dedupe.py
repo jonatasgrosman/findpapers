@@ -6,8 +6,8 @@ from findpapers.searchers import ArxivSearcher
 
 
 def test_filter_and_dedupe_merge_rules(monkeypatch):
-    def mock_arxiv_search(self):
-        return [
+    def mock_arxiv_iter_search(self):
+        papers = [
             Paper(
                 title="Short",
                 abstract="",
@@ -41,7 +41,9 @@ def test_filter_and_dedupe_merge_rules(monkeypatch):
             ),
         ]
 
-    monkeypatch.setattr(ArxivSearcher, "search", mock_arxiv_search)
+        return iter([papers]), 1, len(papers), len(papers)
+
+    monkeypatch.setattr(ArxivSearcher, "iter_search", mock_arxiv_iter_search)
 
     runner = SearchRunner(databases=["arxiv"], publication_types=["Journal"])
     results = runner.run()

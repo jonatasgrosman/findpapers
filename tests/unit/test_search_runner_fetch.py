@@ -6,8 +6,8 @@ from findpapers.searchers import ArxivSearcher, PubmedSearcher
 
 
 def test_fetch_stage_collects_results_and_keeps_partial_on_error(monkeypatch):
-    def mock_arxiv_search(self):
-        return [
+    def mock_arxiv_iter_search(self):
+        papers = [
             Paper(
                 title="Paper 1",
                 abstract="",
@@ -25,12 +25,17 @@ def test_fetch_stage_collects_results_and_keeps_partial_on_error(monkeypatch):
                 urls=set(),
             ),
         ]
+        return iter([papers]), 1, len(papers), len(papers)
 
-    def mock_pubmed_search(self):
-        raise RuntimeError("boom")
+    def mock_pubmed_iter_search(self):
+        def iterator():
+            raise RuntimeError("boom")
+            yield []
 
-    monkeypatch.setattr(ArxivSearcher, "search", mock_arxiv_search)
-    monkeypatch.setattr(PubmedSearcher, "search", mock_pubmed_search)
+        return iterator(), 1, 1, 1
+
+    monkeypatch.setattr(ArxivSearcher, "iter_search", mock_arxiv_iter_search)
+    monkeypatch.setattr(PubmedSearcher, "iter_search", mock_pubmed_iter_search)
 
     runner = SearchRunner(databases=["arxiv", "pubmed"])
     results = runner.run()
@@ -43,8 +48,8 @@ def test_fetch_stage_collects_results_and_keeps_partial_on_error(monkeypatch):
 
 
 def test_fetch_stage_keeps_doi_url_from_paper(monkeypatch):
-    def mock_arxiv_search(self):
-        return [
+    def mock_arxiv_iter_search(self):
+        papers = [
             Paper(
                 title="Paper 1",
                 abstract="",
@@ -56,7 +61,9 @@ def test_fetch_stage_keeps_doi_url_from_paper(monkeypatch):
             )
         ]
 
-    monkeypatch.setattr(ArxivSearcher, "search", mock_arxiv_search)
+        return iter([papers]), 1, len(papers), len(papers)
+
+    monkeypatch.setattr(ArxivSearcher, "iter_search", mock_arxiv_iter_search)
 
     runner = SearchRunner(databases=["arxiv"])
     results = runner.run()

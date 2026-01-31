@@ -9,8 +9,8 @@ from findpapers.utils.predatory_util import POTENTIAL_PREDATORY_JOURNALS_NAMES
 def test_predatory_flagging_sets_publication_flag(monkeypatch):
     predatory_name = next(iter(POTENTIAL_PREDATORY_JOURNALS_NAMES))
 
-    def mock_arxiv_search(self):
-        return [
+    def mock_arxiv_iter_search(self):
+        papers = [
             Paper(
                 title="Paper A",
                 abstract="",
@@ -31,7 +31,9 @@ def test_predatory_flagging_sets_publication_flag(monkeypatch):
             ),
         ]
 
-    monkeypatch.setattr(ArxivSearcher, "search", mock_arxiv_search)
+        return iter([papers]), 1, len(papers), len(papers)
+
+    monkeypatch.setattr(ArxivSearcher, "iter_search", mock_arxiv_iter_search)
 
     runner = SearchRunner(databases=["arxiv"])
     results = runner.run()

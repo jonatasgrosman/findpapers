@@ -15,6 +15,7 @@ keywords = ["academic", "academic publications", "academic publishing", "arxiv",
 python = "^3.10"
 lxml = "^4.5.2"
 requests = "^2.24.0"
+tqdm = "^4.66.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.4"
@@ -23,6 +24,7 @@ pytest-randomly = "^3.15.0"
 coverage = {version = "^7.4.4", extras = ["toml"]}
 types-requests = "^2.31.0"
 lxml-stubs = "^0.4.0"
+types-tqdm = "^4.66.0"
 ruff = "^0.14.14"
 mypy = "^1.19.1"
 isort = "^7.0.0"

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Iterator
+
 from .base import SearcherBase
 
 
@@ -27,13 +29,13 @@ class PubmedSearcher(SearcherBase):
         """
         return "pubmed"
 
-    def search(self) -> list:
-        """Execute the search and return a list of papers.
+    def iter_search(self) -> tuple[Iterator[list], int, int, int]:
+        """Return an empty iterator for the placeholder implementation.
 
         Returns
         -------
-        list
-            List of paper objects.
+        tuple
+            Empty iterator, zero steps, zero papers per step, zero total papers.
         """
         # Stage 2.2 placeholder: real implementation will be migrated from findpapers_old.
-        return []
+        return self._empty_search_result()

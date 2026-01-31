@@ -1,6 +1,11 @@
 from __future__ import annotations
 
+from collections.abc import Iterator
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from threading import Lock
 from time import perf_counter
+
+from tqdm import tqdm
 
 from findpapers.exceptions import SearchRunnerNotExecutedError
 from findpapers.models import Paper
@@ -25,6 +30,7 @@ class SearchRunner:
         *args,
         databases: list[str | Database] | None = None,
         publication_types: list[str] | None = None,
+        parallel_search: bool = True,
         **kwargs,
     ) -> None:
         """Initialize a search run configuration without executing it.
@@ -35,12 +41,15 @@ class SearchRunner:
             List of database identifiers to query.
         publication_types : list[str] | None
             Allowed publication categories for filtering.
+        parallel_search : bool
+            Whether to execute database searches in parallel.
         """
         self._executed = False
         self._results: list[Paper] = []
         self._metrics: dict[str, int | float] = {}
         self._searchers = self._build_searchers(databases)
         self._publication_types = publication_types
+        self._parallel_search = parallel_search
 
     def run(self, verbose: bool = False) -> list[Paper]:  # noqa: ARG002 - placeholder
         """Execute the configured pipeline once, resetting previous results.
@@ -161,15 +170,55 @@ class SearchRunner:
         -------
         None
         """
+        plans: list[tuple[SearcherBase, Iterator[list[Paper]], int, int, int]] = []
         for searcher in self._searchers:
-            count = 0
             try:
-                papers = searcher.search() or []
-                count = len(papers)
-                self._results.extend(papers)
+                iterator, _steps, _papers_per_step, total_papers = searcher.iter_search()
+                plans.append((searcher, iterator, _steps, _papers_per_step, total_papers))
+            except Exception:
+                metrics[f"total_papers_from_{searcher.name}"] = 0
+
+        total_papers = sum(plan[4] for plan in plans)
+        lock = Lock()
+
+        def process_plan(searcher: SearcherBase, iterator: Iterator[list[Paper]]) -> None:
+            """Collect papers for a single searcher, updating metrics and progress.
+
+            Parameters
+            ----------
+            searcher : SearcherBase
+                Searcher instance being executed.
+            iterator : Iterator[list[Paper]]
+                Iterator yielding lists of papers.
+
+            Returns
+            -------
+            None
+            """
+            count = 0
+            papers: list[Paper] = []
+            try:
+                for batch in iterator:
+                    if batch:
+                        papers.extend(batch)
+                        count += len(batch)
+                        progress.update(len(batch))
             except Exception:
                 count = 0
-            metrics[f"total_papers_from_{searcher.name}"] = count
+                papers = []
+            with lock:
+                self._results.extend(papers)
+                metrics[f"total_papers_from_{searcher.name}"] = count
+
+        with tqdm(total=total_papers, unit="paper") as progress:
+            if self._parallel_search and len(plans) > 1:
+                with ThreadPoolExecutor(max_workers=len(plans)) as executor:
+                    futures = [executor.submit(process_plan, plan[0], plan[1]) for plan in plans]
+                    for future in as_completed(futures):
+                        future.result()
+            else:
+                for plan in plans:
+                    process_plan(plan[0], plan[1])
 
     def _filter_by_publication_types(self, metrics: dict[str, int | float]) -> None:
         """Filter results by allowed publication categories.
