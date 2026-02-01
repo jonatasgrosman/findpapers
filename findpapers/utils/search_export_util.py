@@ -1,24 +1,24 @@
 from __future__ import annotations
 
 import csv
-import datetime
 import json
 import re
-from importlib import metadata
 from pathlib import Path
-
-import tomli
+from typing import TYPE_CHECKING
 
 from findpapers.models.paper import Paper
 
+if TYPE_CHECKING:
+    from findpapers.models.search import Search
 
-def export_search_to_json(payload: dict[str, object], path: str) -> None:
-    """Write a JSON payload to disk.
+
+def export_search_to_json(search: Search, path: str) -> None:
+    """Write search results to a JSON file.
 
     Parameters
     ----------
-    payload : dict[str, object]
-        JSON-ready payload.
+    search : Search
+        Search instance with results and metadata.
     path : str
         Output file path.
 
@@ -26,17 +26,18 @@ def export_search_to_json(payload: dict[str, object], path: str) -> None:
     -------
     None
     """
+    payload = search.to_dict()
     with Path(path).open("w", encoding="utf-8") as handle:
         json.dump(payload, handle, ensure_ascii=False, indent=2)
 
 
-def export_search_to_csv(papers: list[Paper], path: str) -> None:
-    """Write papers to a CSV file using the standard column order.
+def export_search_to_csv(search: Search, path: str) -> None:
+    """Write search results to a CSV file using the standard column order.
 
     Parameters
     ----------
-    papers : list[Paper]
-        Papers to export.
+    search : Search
+        Search instance with papers to export.
     path : str
         Output file path.
 
@@ -48,17 +49,17 @@ def export_search_to_csv(papers: list[Paper], path: str) -> None:
     with Path(path).open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=columns)
         writer.writeheader()
-        for paper in papers:
+        for paper in search.papers:
             writer.writerow(paper_to_csv_row(paper))
 
 
-def export_search_to_bibtex(papers: list[Paper], path: str) -> None:
-    """Write papers to a BibTeX file.
+def export_search_to_bibtex(search: Search, path: str) -> None:
+    """Write search results to a BibTeX file.
 
     Parameters
     ----------
-    papers : list[Paper]
-        Papers to export.
+    search : Search
+        Search instance with papers to export.
     path : str
         Output file path.
 
@@ -66,91 +67,9 @@ def export_search_to_bibtex(papers: list[Paper], path: str) -> None:
     -------
     None
     """
-    bibtex_output = "".join(paper_to_bibtex(paper) for paper in papers)
+    bibtex_output = "".join(paper_to_bibtex(paper) for paper in search.papers)
     with Path(path).open("w", encoding="utf-8") as handle:
         handle.write(bibtex_output)
-
-
-def build_metadata(
-    *,
-    query: str,
-    databases: list[str] | None,
-    limit: int | None,
-    limit_per_database: int | None,
-    timeout: float | None,
-    processed_at: datetime.datetime,
-    runtime_seconds: float | None,
-) -> dict[str, object]:
-    """Build export metadata payload.
-
-    Parameters
-    ----------
-    query : str
-        Search query.
-    databases : list[str] | None
-        Database identifiers.
-    limit : int | None
-        Global limit.
-    limit_per_database : int | None
-        Per-database limit.
-    timeout : float | None
-        Global timeout used for the run.
-    processed_at : datetime.datetime
-        Timestamp of processing.
-    runtime_seconds : float | None
-        Total runtime of the search pipeline.
-
-    Returns
-    -------
-    dict[str, object]
-        Metadata dictionary.
-    """
-    limits = None
-    if limit is not None or limit_per_database is not None:
-        limits = {
-            "limit": limit,
-            "limit_per_database": limit_per_database,
-        }
-    timestamp = processed_at.astimezone(datetime.timezone.utc).isoformat()
-    return {
-        "query": query,
-        "databases": databases,
-        "limits": limits,
-        "timeout": timeout,
-        "timestamp": timestamp,
-        "version": package_version(),
-        "runtime_seconds": runtime_seconds,
-    }
-
-
-def package_version() -> str:
-    """Resolve the package version for metadata export.
-
-    Returns
-    -------
-    str
-        Version string.
-    """
-    try:
-        return metadata.version("findpapers")
-    except metadata.PackageNotFoundError:
-        return version_from_pyproject()
-
-
-def version_from_pyproject() -> str:
-    """Read version from pyproject.toml when package metadata is unavailable.
-
-    Returns
-    -------
-    str
-        Version string or "unknown" if missing.
-    """
-    pyproject_path = Path(__file__).resolve().parents[2] / "pyproject.toml"
-    if not pyproject_path.exists():
-        return "unknown"
-    with pyproject_path.open("rb") as handle:
-        data = tomli.load(handle)
-    return str(data.get("tool", {}).get("poetry", {}).get("version", "unknown"))
 
 
 def csv_columns() -> list[str]:

@@ -4,11 +4,11 @@ import datetime
 from typing import List, Optional
 
 from ..utils.search_export_util import (
-    build_metadata,
     export_search_to_bibtex,
     export_search_to_csv,
     export_search_to_json,
 )
+from ..utils.version_util import package_version
 from .paper import Paper
 
 
@@ -108,8 +108,23 @@ class Search:
         dict[str, object]
             Dictionary representation of the search.
         """
+        limits = None
+        if self.limit is not None or self.limit_per_database is not None:
+            limits = {
+                "limit": self.limit,
+                "limit_per_database": self.limit_per_database,
+            }
+        metadata = {
+            "query": self.query,
+            "databases": self.databases,
+            "limits": limits,
+            "timeout": self.timeout,
+            "timestamp": self.processed_at.astimezone(datetime.timezone.utc).isoformat(),
+            "version": package_version(),
+            "runtime_seconds": self.runtime_seconds,
+        }
         return {
-            "metadata": self._build_metadata(),
+            "metadata": metadata,
             "papers": [Paper.to_dict(paper) for paper in self.papers],
             "metrics": dict(self.metrics),
         }
@@ -126,7 +141,7 @@ class Search:
         -------
         None
         """
-        export_search_to_json(self.to_dict(), path)
+        export_search_to_json(self, path)
 
     def to_csv(self, path: str) -> None:
         """Export search results to a CSV file.
@@ -140,7 +155,7 @@ class Search:
         -------
         None
         """
-        export_search_to_csv(self.papers, path)
+        export_search_to_csv(self, path)
 
     def to_bibtex(self, path: str) -> None:
         """Export search results to a BibTeX file.
@@ -154,22 +169,4 @@ class Search:
         -------
         None
         """
-        export_search_to_bibtex(self.papers, path)
-
-    def _build_metadata(self) -> dict[str, object]:
-        """Build export metadata payload.
-
-        Returns
-        -------
-        dict[str, object]
-            Metadata dictionary.
-        """
-        return build_metadata(
-            query=self.query,
-            databases=self.databases,
-            limit=self.limit,
-            limit_per_database=self.limit_per_database,
-            timeout=self.timeout,
-            processed_at=self.processed_at,
-            runtime_seconds=self.runtime_seconds,
-        )
+        export_search_to_bibtex(self, path)
