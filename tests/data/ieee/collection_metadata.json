@@ -1,0 +1,13 @@
+{
+  "collected_at": "2026-02-01T14:59:49.994821",
+  "api_url": "https://ieeexploreapi.ieee.org/api/v1/search/articles",
+  "query": "(\"machine learning\" OR \"deep learning\") AND (\"nlp\" OR \"natural language processing\")",
+  "date_range": {
+    "from": 2020,
+    "to": 2022
+  },
+  "limit": 50,
+  "response_status": 200,
+  "total_records": 5484,
+  "articles_returned": 50
+}

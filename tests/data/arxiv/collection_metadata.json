@@ -1,0 +1,12 @@
+{
+  "collected_at": "2026-02-01T14:54:19.230514",
+  "api_url": "http://export.arxiv.org/api/query?search_query=%28%28all%3Amachine+AND+all%3Alearning%29+OR+%28all%3Adeep+AND+all%3Alearning%29+AND+%28all%3Anlp+OR+all%3Anatural+AND+all%3Alanguage+AND+all%3Aprocessing%29%29+AND+submittedDate%3A%5B202001010000+TO+202212312359%5D&start=0&max_results=50&sortBy=submittedDate&sortOrder=descending",
+  "query": "((all:machine AND all:learning) OR (all:deep AND all:learning) AND (all:nlp OR all:natural AND all:language AND all:processing)) AND submittedDate:[202001010000 TO 202212312359]",
+  "date_range": {
+    "from": "2020-01-01",
+    "to": "2022-12-31"
+  },
+  "limit": 50,
+  "response_status": 200,
+  "response_size_bytes": 118431
+}

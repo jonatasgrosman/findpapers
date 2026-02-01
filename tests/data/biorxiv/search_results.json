@@ -1,0 +1,52 @@
+{
+  "collected_at": "2026-02-01T15:11:03.283340",
+  "database": "biorxiv",
+  "date_range": {
+    "from": "2020-01-01",
+    "to": "2022-12-31"
+  },
+  "search_terms": [
+    "machine+learning+natural+language+processing",
+    "deep+learning+natural+language+processing",
+    "machine+learning+nlp",
+    "deep+learning+nlp"
+  ],
+  "results": [
+    {
+      "url": "https://www.medrxiv.org/search/abstract_title%3Amachine%252Blearning%252Bnatural%252Blanguage%252Bprocessing%20abstract_title_flags%3Amatch-all%20jcode%3Abiorxiv%20limit_from%3A2020-01-01%20limit_to%3A2022-12-31%20numresults%3A75%20sort%3Apublication-date%20direction%3Adescending%20format_result%3Acondensed",
+      "total_papers": 3,
+      "dois_found": 3,
+      "dois": [
+        "10.1101/2022.04.11.487927",
+        "10.1101/2020.07.11.198606",
+        "10.1101/2020.06.11.145425"
+      ]
+    },
+    {
+      "url": "https://www.medrxiv.org/search/abstract_title%3Adeep%252Blearning%252Bnatural%252Blanguage%252Bprocessing%20abstract_title_flags%3Amatch-all%20jcode%3Abiorxiv%20limit_from%3A2020-01-01%20limit_to%3A2022-12-31%20numresults%3A75%20sort%3Apublication-date%20direction%3Adescending%20format_result%3Acondensed",
+      "total_papers": 2,
+      "dois_found": 2,
+      "dois": [
+        "10.1101/2021.09.30.462652",
+        "10.1101/2021.09.15.460567"
+      ]
+    },
+    {
+      "url": "https://www.medrxiv.org/search/abstract_title%3Amachine%252Blearning%252Bnlp%20abstract_title_flags%3Amatch-all%20jcode%3Abiorxiv%20limit_from%3A2020-01-01%20limit_to%3A2022-12-31%20numresults%3A75%20sort%3Apublication-date%20direction%3Adescending%20format_result%3Acondensed",
+      "total_papers": 1,
+      "dois_found": 1,
+      "dois": [
+        "10.1101/2022.11.18.516120"
+      ]
+    },
+    {
+      "url": "https://www.medrxiv.org/search/abstract_title%3Adeep%252Blearning%252Bnlp%20abstract_title_flags%3Amatch-all%20jcode%3Abiorxiv%20limit_from%3A2020-01-01%20limit_to%3A2022-12-31%20numresults%3A75%20sort%3Apublication-date%20direction%3Adescending%20format_result%3Acondensed",
+      "total_papers": 1,
+      "dois_found": 1,
+      "dois": [
+        "10.1101/2022.08.02.502236"
+      ]
+    }
+  ],
+  "unique_dois_total": 7
+}

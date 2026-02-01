@@ -1,0 +1,3109 @@
+{
+  "total": 11626,
+  "offset": 0,
+  "next": 50,
+  "data": [
+    {
+      "paperId": "39d8cc728d5c5cd477d128a3a73f265e2d94780a",
+      "externalIds": {
+        "DBLP": "conf/soli/HasanZTSA21",
+        "DOI": "10.1109/SOLI54607.2021.9672398",
+        "CorpusId": 245946929
+      },
+      "corpusId": 245946929,
+      "url": "https://www.semanticscholar.org/paper/39d8cc728d5c5cd477d128a3a73f265e2d94780a",
+      "title": "An Analysis of Machine Learning Algorithms and Deep Neural Networks for Email Spam Classification using Natural Language Processing",
+      "venue": "International Conference on Service Operations and Logistics, and Informatics",
+      "year": 2021,
+      "referenceCount": 0,
+      "citationCount": 6,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/SOLI54607.2021.9672398?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/SOLI54607.2021.9672398, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Conference"
+      ],
+      "publicationDate": "2021-12-11",
+      "journal": {
+        "name": "2021 IEEE International Conference on Service Operations and Logistics, and Informatics (SOLI)",
+        "pages": "1-6"
+      },
+      "authors": [
+        {
+          "authorId": "1657365531",
+          "name": "Moh. Arie Hasan"
+        },
+        {
+          "authorId": "2149952780",
+          "name": "Syed Mahbubuz Zaman"
+        },
+        {
+          "authorId": "2149965660",
+          "name": "Md. Asif Talukdar"
+        },
+        {
+          "authorId": "4779690",
+          "name": "A. Siddika"
+        },
+        {
+          "authorId": "2401685",
+          "name": "Md. Golam Rabiul Alam"
+        }
+      ],
+      "abstract": "Due to the extensive use of technology in our daily lives, email has become essential for online correspondence between individuals from all walks of life. As such certain individuals have weaponized this service by bulk mailing malicious emails to recipients with the goal of retrieving some form of classified information. Thus, Email classification has become a major area of research as it enables identification and isolation of such malicious emails. The objectives of this paper include a robust comparison of several traditional machine learning (ML) algorithms, exploring transfer learning with static (non-trainable) pretrained GLOVE (Global word vector representation) embedding, comparison of several deep learning models trained with GLOVE and keras embedding separately. Among ML classifiers, XGBoost achieved the highest evaluation scores. Among deep learning algorithms, keras embedding based models outperformed GLOVE embedding based models by a small margin which shows the efficiency of transfer learning in downstream NLP tasks (parts of speech tagging)."
+    },
+    {
+      "paperId": "e1ae5e692c5057bd94f3279a0a2a9b9e79827473",
+      "externalIds": {
+        "DBLP": "journals/access/ShahbaziB22",
+        "DOI": "10.1109/ACCESS.2021.3139586",
+        "CorpusId": 245601915
+      },
+      "corpusId": 245601915,
+      "url": "https://www.semanticscholar.org/paper/e1ae5e692c5057bd94f3279a0a2a9b9e79827473",
+      "title": "Blockchain-Based Event Detection and Trust Verification Using Natural Language Processing and Machine Learning",
+      "venue": "IEEE Access",
+      "year": 2022,
+      "referenceCount": 55,
+      "citationCount": 33,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://ieeexplore.ieee.org/ielx7/6287639/9668973/09665772.pdf",
+        "status": "GOLD",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/ACCESS.2021.3139586?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/ACCESS.2021.3139586, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Engineering",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": null,
+      "journal": {
+        "name": "IEEE Access",
+        "pages": "5790-5800",
+        "volume": "10"
+      },
+      "authors": [
+        {
+          "authorId": "9239463",
+          "name": "Zeinab Shahbazi"
+        },
+        {
+          "authorId": "1703870",
+          "name": "Y. Byun"
+        }
+      ],
+      "abstract": "Information sharing is one of the huge topics in social media platform regarding the daily news related to events or disasters happens in nature or its human-made. The automatic urgent need identification and sharing posts and information delivery with a short response are essential tasks in this area. The key goal of this research is developing a solution for management of disasters and emergency response using social media platforms as a core component. This process focuses on text analysis techniques to improve the process of authorities in terms of emergency response and filter the information using the automatically gathered information to support the relief efforts. Specifically, we used state-of-art Machine Learning (ML), Deep Learning (DL), and Natural Language Processing (NLP) based on supervised and unsupervised learning using social media datasets to extract real-time content related to the emergency events to comfort the fast response in a critical situation. Similarly, the blockchain framework used in this process for trust verification of the detected events and eliminating the single authority on the system. The main reason of using the integrated system is to improve the system security and transparency to avoid sharing the wrong information related to an event in social media."
+    },
+    {
+      "paperId": "0aa8614c8d8d605215023625f156db5c9994388e",
+      "externalIds": {
+        "DOI": "10.52783/jas.v11i1.1432",
+        "CorpusId": 258925598
+      },
+      "corpusId": 258925598,
+      "url": "https://www.semanticscholar.org/paper/0aa8614c8d8d605215023625f156db5c9994388e",
+      "title": "A Comparative Study of Deep Learning Models for Natural Language Processing (NLP)",
+      "venue": "Journal of Algebraic Statistics",
+      "year": 2020,
+      "referenceCount": 19,
+      "citationCount": 2,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://www.publishoa.com/index.php/journal/article/download/1432/1218",
+        "status": "CLOSED",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.52783/jas.v11i1.1432?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.52783/jas.v11i1.1432, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Review"
+      ],
+      "publicationDate": null,
+      "journal": {
+        "name": "JOURNAL OF ALGEBRAIC STATISTICS"
+      },
+      "authors": [
+        {
+          "authorId": "2363793010",
+          "name": "Lisa Gopal"
+        }
+      ],
+      "abstract": ". Natural language processing (NLP) has become an indispensable tool across many disciplines, and deep learning models have shown promising early results in improving the accuracy and efficiency of NLP-related tasks. In order to get valuable insights into the strengths and weaknesses of different models and approaches, and to help determine which models are the most successful for fulfilling particular NLP tasks, a comparative study of deep learning models for NLP is invaluable. Several deep learning models for NLP tasks including sentiment analysis, named entity recognition, and machine translation are compared and contrasted in this article's literature review. This research takes a look at popular benchmarks and data sets for evaluating deep learning models for NLP comparisons. (NLP). The strengths and weaknesses of various models and approaches are also highlighted throughout the examination. In addition to a discussion of recent advancements in the field such pretrained language models and attention processes, the article also details the many challenges and limitations of comparing deep learning models for NLP and how they stack up against one another. (NLP). The report concludes with a discussion of directions in which further study of the topic may go. There is a need to construct more interpretable and multilingual deep learning models, and there is also a need to explore cross-modal learning and domain-specific models. When taken as a whole, a research comparing different deep learning models for NLP might have far-reaching effects on the creation of new NLP applications and the enhancement of current ones. This is due to its capacity to aid in the creation of more precise and efficient models for natural language processing and to provide light on the relative merits of existing approaches."
+    },
+    {
+      "paperId": "a403facdfde7cc20371ba2e67cd0d5fbd5e4762b",
+      "externalIds": {
+        "DOI": "10.56578/ataiml010201",
+        "CorpusId": 255916211
+      },
+      "corpusId": 255916211,
+      "url": "https://www.semanticscholar.org/paper/a403facdfde7cc20371ba2e67cd0d5fbd5e4762b",
+      "title": "Analysis of Artificial Intelligence and Natural Language Processing Significance as Expert Systems Support for E-Health Using Pre-Train Deep Learning Models",
+      "venue": "Acadlore Transactions on AI and Machine Learning",
+      "year": 2022,
+      "referenceCount": 0,
+      "citationCount": 8,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://library.acadlore.com/ATAIML/2022/1/2/ATAIML_01.02_01.pdf",
+        "status": "HYBRID",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.56578/ataiml010201?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.56578/ataiml010201, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": "2022-12-31",
+      "journal": {
+        "name": "Acadlore Transactions on AI and Machine Learning"
+      },
+      "authors": [
+        {
+          "authorId": "2162544284",
+          "name": "Pascal Muam Mah"
+        }
+      ],
+      "abstract": "Artificial intelligence (AI) and natural language processing (NLP) are relentless technologies for healthcare that can support a strong and secure digital system with embedded applications of internet of things (IoTs). The study tried to build an artificial intelligence-natural language processing cluster system. In the system, rich content is extracted using parts of speech and then classified into an understandable dataset. The unavailable uniqueness systems with standardize process and procedures for artificial intelligence and natural language processing across different systems to support E-healthcare sector is a big challenge for nations and the world at large. Aim to train a cluster system that extract rich content and fit into a deep learning model frame to enable interpretation of the dataset for healthcare needs through a fast and secure digital system. The study uses (behavior-oriented driven and influential functions) to determine the significance of AI and NLP on E-health. Based on a selective scorings method, a rate of 1 out of 5 grading was developed called the Key Benefits score. The behavior-oriented drive and influential function allows an in-depth evaluation of E-health based on the selection of text content applied to the sample proposed study. Results show a score of 3.947 scale significance of NLP and AI on E-health. The study concluded that well-defined artificial intelligence and natural language processing applications are perfect areas that advance positive results in healthcare electronic services."
+    },
+    {
+      "paperId": "cb991711d64f4d92ca339b95d037b3e40b0e2bac",
+      "externalIds": {
+        "PubMedCentral": "9582109",
+        "DBLP": "journals/jdi/XavierC22",
+        "DOI": "10.1007/s10278-022-00633-8",
+        "CorpusId": 249285072,
+        "PubMed": "35654878"
+      },
+      "corpusId": 249285072,
+      "url": "https://www.semanticscholar.org/paper/cb991711d64f4d92ca339b95d037b3e40b0e2bac",
+      "title": "Natural Language Processing for Imaging Protocol Assignment: Machine Learning for Multiclass Classification of Abdominal CT Protocols Using Indication Text Data",
+      "venue": "Journal of digital imaging",
+      "year": 2022,
+      "referenceCount": 22,
+      "citationCount": 15,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://link.springer.com/content/pdf/10.1007/s10278-022-00633-8.pdf",
+        "status": "HYBRID",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://pmc.ncbi.nlm.nih.gov/articles/PMC9582109, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Medicine",
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Medicine",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": "2022-06-02",
+      "journal": {
+        "name": "Journal of Digital Imaging",
+        "pages": "1120 - 1130",
+        "volume": "35"
+      },
+      "authors": [
+        {
+          "authorId": "2167607731",
+          "name": "B. A. Xavier"
+        },
+        {
+          "authorId": "46468728",
+          "name": "Po-Hao Chen"
+        }
+      ],
+      "abstract": "A correct protocol assignment is critical to high-quality imaging examinations, and its automation can be amenable to natural language processing (NLP). Assigning protocols for abdominal imaging CT scans is particularly challenging given the multiple organ specific indications and parameters. We compared conventional machine learning, deep learning, and automated machine learning builder workflows for this multiclass text classification task. A total of 94,501 CT studies performed over 4 years and their assigned protocols were obtained. Text data associated with each study including the ordering provider generated free text study indication and ICD codes were used for NLP analysis and protocol class prediction. The data was classified into one of 11 abdominal CT protocol classes before and after augmentations used to account for imbalances in the class sample sizes. Four machine learning (ML) algorithms, one deep learning algorithm, and an automated machine learning (AutoML) builder were used for the multilabel classification task: Random Forest (RF), Tree Ensemble (TE), Gradient Boosted Tree (GBT), multi-layer perceptron (MLP), Universal Language Model Fine-tuning (ULMFiT), and Google\u2019s AutoML builder (Alphabet, Inc., Mountain View, CA), respectively. On the unbalanced dataset, the manually coded algorithms all performed similarly with F1 scores of 0.811 for RF, 0.813 for TE, 0.813 for GBT, 0.828 for MLP, and 0.847 for ULMFiT. The AutoML builder performed better with a F1 score of 0.854. On the balanced dataset, the tree ensemble machine learning algorithm performed the best with an F1 score of 0.803 and a Cohen\u2019s kappa of 0.612. AutoML methods took a longer time for completion of NLP model training and evaluation, 4 h and 45 min compared to an average of 51 min for manual methods. Machine learning and natural language processing can be used for the complex multiclass classification task of abdominal imaging CT scan protocol assignment."
+    },
+    {
+      "paperId": "96a85f6b13ae4def201e1cf4a456baab82e50401",
+      "externalIds": {
+        "CorpusId": 237510107
+      },
+      "corpusId": 237510107,
+      "url": "https://www.semanticscholar.org/paper/96a85f6b13ae4def201e1cf4a456baab82e50401",
+      "title": "ARTIFICIAL INTELLIGENCE NATURAL LANGUAGE PROCESSING Open domain question answering system A deep learning based NLP solution on Intel \u00ae Xeon \u00ae scalable processors Executive summary",
+      "venue": "",
+      "year": 2020,
+      "referenceCount": 0,
+      "citationCount": 0,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": null,
+      "journal": null,
+      "authors": [],
+      "abstract": null
+    },
+    {
+      "paperId": "35df7522680c1ecad2c390c544d0f4d0f3da6ebc",
+      "externalIds": {
+        "DBLP": "conf/biostec/MollaeiCRG22",
+        "DOI": "10.5220/0010819500003123",
+        "CorpusId": 247140890
+      },
+      "corpusId": 247140890,
+      "url": "https://www.semanticscholar.org/paper/35df7522680c1ecad2c390c544d0f4d0f3da6ebc",
+      "title": "Biomedical Text Mining: Applicability of Machine Learning-based Natural Language Processing in Medical Database",
+      "venue": "International Conference on Bio-inspired Systems and Signal Processing",
+      "year": 2022,
+      "referenceCount": 60,
+      "citationCount": 13,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://doi.org/10.5220/0010819500003123",
+        "status": "HYBRID",
+        "license": "CCBYNCND",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.5220/0010819500003123?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.5220/0010819500003123, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Review"
+      ],
+      "publicationDate": null,
+      "journal": {
+        "pages": "159-166"
+      },
+      "authors": [
+        {
+          "authorId": "29395807",
+          "name": "N. Mollaei"
+        },
+        {
+          "authorId": "145196822",
+          "name": "C\u00e1tia Cepeda"
+        },
+        {
+          "authorId": "152794065",
+          "name": "Jo\u00e3o Rodrigues"
+        },
+        {
+          "authorId": "2156327549",
+          "name": "Hugo Gamboa"
+        }
+      ],
+      "abstract": "Machine learning has demonstrated superior performance in solving many problems in various fields of medicine compared to non-machine learning approaches. The aim of this review is to understand how Machine Learning-based Natural Language Processing (ML-NLP) has been applied to the clinical notes databases. Optimization algorithms are listed as examples to demonstrate the simplicity and effectiveness of their applications for clinical notes database. We reviewed the literature in clinical applications of ML-NLP, particularly techniques of deep learning such as mainly in pathology reports of diabetes, schizophrenia, cancer and cardiology, where NLP either on a classical algorithm or with deep learning has been actively adopted. We covered 60 different studies in this domain, focusing on a wide range of medical perspective based algorithms. Machine learning-based approaches combine the benefits of health systems with the expertise and experience of human well-being. From this review, it is clear that these techniques can improve the quantification of diagnosis and prognosis of cases and may create tools to assist patients during diagnosis and treatment. We complete this work by providing guidelines on the applicability of ML-NLP by describing the most relevant libraries to extract medical expressions from clinical reports text that can support clinical decision-making."
+    },
+    {
+      "paperId": "0ddd6dcf82032e0c5e10427502941b467167a518",
+      "externalIds": {
+        "ACL": "2021.naacl-tutorials.3",
+        "DBLP": "conf/sigir/WuCJL21",
+        "MAG": "3169810761",
+        "DOI": "10.1145/3404835.3462809",
+        "CorpusId": 235097368
+      },
+      "corpusId": 235097368,
+      "url": "https://www.semanticscholar.org/paper/0ddd6dcf82032e0c5e10427502941b467167a518",
+      "title": "Deep Learning on Graphs for Natural Language Processing",
+      "venue": "North American Chapter of the Association for Computational Linguistics",
+      "year": 2021,
+      "referenceCount": 15,
+      "citationCount": 44,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": "CLOSED",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://aclanthology.org/2021.naacl-tutorials.3, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Book",
+        "JournalArticle",
+        "Conference",
+        "Review"
+      ],
+      "publicationDate": "2021-06-01",
+      "journal": {
+        "name": "Proceedings of the 44th International ACM SIGIR Conference on Research and Development in Information Retrieval"
+      },
+      "authors": [
+        {
+          "authorId": "3008832",
+          "name": "Lingfei Wu"
+        },
+        {
+          "authorId": "2144836395",
+          "name": "Yu Chen"
+        },
+        {
+          "authorId": "144016781",
+          "name": "Heng Ji"
+        },
+        {
+          "authorId": "2382048854",
+          "name": "Yunyao Li"
+        }
+      ],
+      "abstract": "Due to its great power in modeling non-Euclidean data like graphs or manifolds, deep learning on graph techniques (i.e., Graph Neural Networks (GNNs)) have opened a new door to solving challenging graph-related NLP problems. There has seen a surge of interests in applying deep learning on graph techniques to NLP, and has achieved considerable success in many NLP tasks, ranging from classification tasks like sentence classification, semantic role labeling and relation extraction, to generation tasks like machine translation, question generation and summarization. Despite these successes, deep learning on graphs for NLP still face many challenges, including automatically transforming original text sequence data into highly graph-structured data, and effectively modeling complex data that involves mapping between graph-based inputs and other highly structured output data such as sequences, trees, and graph data with multi-types in both nodes and edges. This tutorial will cover relevant and interesting topics on applying deep learning on graph techniques to NLP, including automatic graph construction for NLP, graph representation learning for NLP, advanced GNN based models (e.g., graph2seq, graph2tree, and graph2graph) for NLP, and the applications of GNNs in various NLP tasks (e.g., machine translation, natural language generation, information extraction and semantic parsing). In addition, hands-on demonstration sessions will be included to help the audience gain practical experience on applying GNNs to solve challenging NLP problems using our recently developed open source library \u2013 Graph4NLP, the first library for researchers and practitioners for easy use of GNNs for various NLP tasks."
+    },
+    {
+      "paperId": "59cebaf9ff644e91f3a813cb0413a7a9b8ddc690",
+      "externalIds": {
+        "DBLP": "journals/access/WangSY20",
+        "MAG": "3006156918",
+        "DOI": "10.1109/ACCESS.2020.2974101",
+        "CorpusId": 213183574
+      },
+      "corpusId": 213183574,
+      "url": "https://www.semanticscholar.org/paper/59cebaf9ff644e91f3a813cb0413a7a9b8ddc690",
+      "title": "Feature Extraction and Analysis of Natural Language Processing for Deep Learning English Language",
+      "venue": "IEEE Access",
+      "year": 2020,
+      "referenceCount": 45,
+      "citationCount": 129,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://ieeexplore.ieee.org/ielx7/6287639/8948470/08999624.pdf",
+        "status": "GOLD",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/ACCESS.2020.2974101?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/ACCESS.2020.2974101, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": "2020-02-14",
+      "journal": {
+        "name": "IEEE Access",
+        "pages": "46335-46345",
+        "volume": "8"
+      },
+      "authors": [
+        {
+          "authorId": "1574137544",
+          "name": "Dongyang Wang"
+        },
+        {
+          "authorId": "2087680212",
+          "name": "Junli Su"
+        },
+        {
+          "authorId": "2119121668",
+          "name": "Hongbin Yu"
+        }
+      ],
+      "abstract": "NLP (Natural Language Processing) is a technology that enables computers to understand human languages. Deep-level grammatical and semantic analysis usually uses words as the basic unit, and word segmentation is usually the primary task of NLP. In order to solve the practical problem of huge structural differences between different data modalities in a multi-modal environment and traditional machine learning methods cannot be directly applied, this paper introduces the feature extraction method of deep learning and applies the ideas of deep learning to multi-modal feature extraction. This paper proposes a multi-modal neural network. For each mode, there is a multilayer sub-neural network with an independent structure corresponding to it. It is used to convert the features in different modes to the same-modal features. In terms of word segmentation processing, in view of the problems that existing word segmentation methods can hardly guarantee long-term dependency of text semantics and long training prediction time, a hybrid network English word segmentation processing method is proposed. This method applies BI-GRU (Bidirectional Gated Recurrent Unit) to English word segmentation, and uses the CRF (Conditional Random Field) model to annotate sentences in sequence, effectively solving the long-distance dependency of text semantics, shortening network training and predicted time. Experiments show that the processing effect of this method on word segmentation is similar to that of BI-LSTM-CRF (Bidirectional- Long Short Term Memory-Conditional Random Field) model, but the average predicted processing speed is 1.94 times that of BI-LSTM-CRF, effectively improving the efficiency of word segmentation processing."
+    },
+    {
+      "paperId": "9ab808ae7d2d24e1054a627946e4a629969f2d0e",
+      "externalIds": {
+        "DOI": "10.3171/2022.1.FOCUS21561",
+        "CorpusId": 247865789,
+        "PubMed": "35364584"
+      },
+      "corpusId": 247865789,
+      "url": "https://www.semanticscholar.org/paper/9ab808ae7d2d24e1054a627946e4a629969f2d0e",
+      "title": "Differentiation of lumbar disc herniation and lumbar spinal stenosis using natural language processing-based machine learning based on positive symptoms.",
+      "venue": "Neurosurgical Focus",
+      "year": 2022,
+      "referenceCount": 33,
+      "citationCount": 9,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://thejns.org/downloadpdf/journals/neurosurg-focus/52/4/article-pE7.pdf",
+        "status": "GOLD",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.3171/2022.1.FOCUS21561?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.3171/2022.1.FOCUS21561, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Medicine"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Medicine",
+          "source": "external"
+        },
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": "2022-04-01",
+      "journal": {
+        "name": "Neurosurgical focus",
+        "pages": "\n          E7\n        ",
+        "volume": "52 4"
+      },
+      "authors": [
+        {
+          "authorId": "2121524969",
+          "name": "GuanRui Ren"
+        },
+        {
+          "authorId": "49352743",
+          "name": "Kun Yu"
+        },
+        {
+          "authorId": "7654318",
+          "name": "Zhiyang Xie"
+        },
+        {
+          "authorId": "2150802059",
+          "name": "Lei Liu"
+        },
+        {
+          "authorId": "46808277",
+          "name": "Peiyang Wang"
+        },
+        {
+          "authorId": "2155469183",
+          "name": "Wei Zhang"
+        },
+        {
+          "authorId": "2241266495",
+          "name": "Yuntao Wang"
+        },
+        {
+          "authorId": "2241091181",
+          "name": "Xiaotao Wu"
+        }
+      ],
+      "abstract": "OBJECTIVE\nThe purpose of this study was to develop natural language processing (NLP)-based machine learning algorithms to automatically differentiate lumbar disc herniation (LDH) and lumbar spinal stenosis (LSS) based on positive symptoms in free-text admission notes. The secondary purpose was to compare the performance of the deep learning algorithm with the ensemble model on the current task.\n\n\nMETHODS\nIn total, 1921 patients whose principal diagnosis was LDH or LSS between June 2013 and June 2020 at Zhongda Hospital, affiliated with Southeast University, were retrospectively analyzed. The data set was randomly divided into a training set and testing set at a 7:3 ratio. Long Short-Term Memory (LSTM) and extreme gradient boosting (XGBoost) models were developed in this study. NLP algorithms were assessed on the testing set by the following metrics: receiver operating characteristic (ROC) curve, area under the curve (AUC), accuracy score, recall score, F1 score, and precision score.\n\n\nRESULTS\nIn the testing set, the LSTM model achieved an AUC of 0.8487, accuracy score of 0.7818, recall score of 0.9045, F1 score of 0.8108, and precision score of 0.7347. In comparison, the XGBoost model achieved an AUC of 0.7565, accuracy score of 0.6961, recall score of 0.7387, F1 score of 0.7153, and precision score of 0.6934.\n\n\nCONCLUSIONS\nNLP-based machine learning algorithms were a promising auxiliary to the electronic health record in spine disease diagnosis. LSTM, the deep learning model, showed better capacity compared with the widely used ensemble model, XGBoost, in differentiation of LDH and LSS using positive symptoms. This study presents a proof of concept for the application of NLP in prediagnosis of spine disease."
+    },
+    {
+      "paperId": "713fa143c2fe2c6cb81b74997549222ee1de3a93",
+      "externalIds": {
+        "DOI": "10.1109/ICAISS55157.2022.10010807",
+        "CorpusId": 255996941
+      },
+      "corpusId": 255996941,
+      "url": "https://www.semanticscholar.org/paper/713fa143c2fe2c6cb81b74997549222ee1de3a93",
+      "title": "Recent Trends in Deep Learning for Natural Language Processing and Scope for Asian Languages",
+      "venue": "2022 International Conference on Augmented Intelligence and Sustainable Systems (ICAISS)",
+      "year": 2022,
+      "referenceCount": 22,
+      "citationCount": 6,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/ICAISS55157.2022.10010807?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/ICAISS55157.2022.10010807, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Conference",
+        "Review"
+      ],
+      "publicationDate": "2022-11-24",
+      "journal": {
+        "name": "2022 International Conference on Augmented Intelligence and Sustainable Systems (ICAISS)",
+        "pages": "408-411"
+      },
+      "authors": [
+        {
+          "authorId": "3119072",
+          "name": "Diganta Baishya"
+        },
+        {
+          "authorId": "2023724307",
+          "name": "Rupam Baruah"
+        }
+      ],
+      "abstract": "Natural language processing (NLP) studies the techniques and procedures that allow a machine to converse using human language. Recent advances in artificial intelligence and communication technology have considerably enhanced natural language processing applications. Due to improvements in deep learning, virtually every aspect of artificial intelligence, including natural language processing, has made substantial progress. Deep learning methods use many layers of neurons to construct a neural network. Recurrent Neural Networks and their variants like long short term (LSTM), bidirectional LSTM, are some of the most popular deep learning techniques. This article reviews deep learning techniques employed in NLP- specific approaches in the last few years. We also studied the issues faced by researchers while trying to apply deep learning to Asian languages. We also highlight some critical deep learning research work carried out recently for Indian and other Asian languages. In addition, we discuss fundamental linguistic processing challenges and suggest future scopes for the topic."
+    },
+    {
+      "paperId": "56e0eaa75929a65cf91ea83686a1e31745bececa",
+      "externalIds": {
+        "DBLP": "conf/iscmi/MathevenK22",
+        "DOI": "10.1109/ISCMI56532.2022.10068440",
+        "CorpusId": 257667679
+      },
+      "corpusId": 257667679,
+      "url": "https://www.semanticscholar.org/paper/56e0eaa75929a65cf91ea83686a1e31745bececa",
+      "title": "Fake News Detection Using Deep Learning and Natural Language Processing",
+      "venue": "2022 9th International Conference on Soft Computing & Machine Intelligence (ISCMI)",
+      "year": 2022,
+      "referenceCount": 9,
+      "citationCount": 11,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/ISCMI56532.2022.10068440?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/ISCMI56532.2022.10068440, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Conference"
+      ],
+      "publicationDate": "2022-11-26",
+      "journal": {
+        "name": "2022 9th International Conference on Soft Computing & Machine Intelligence (ISCMI)",
+        "pages": "11-14"
+      },
+      "authors": [
+        {
+          "authorId": "2212473402",
+          "name": "Anand Matheven"
+        },
+        {
+          "authorId": "2051644082",
+          "name": "B. V. D. Kumar"
+        }
+      ],
+      "abstract": "The rise of social media has brought the rise of fake news and this fake news comes with negative consequences. With fake news being such a huge issue, efforts should be made to identify any forms of fake news however it is not so simple. Manually identifying fake news can be extremely subjective as determining the accuracy of the information in a story is complex and difficult to perform, even for experts. On the other hand, an automated solution would require a good understanding of NLP which is also complex and may have difficulties producing an accurate output. Therefore, the main problem focused on this project is the viability of developing a system that can effectively and accurately detect and identify fake news. Finding a solution would be a significant benefit to the media industry, particularly the social media industry as this is where a large proportion of fake news is published and spread. In order to find a solution to this problem, this project proposed the development of a fake news identification system using deep learning and natural language processing. The system was developed using a Word2vec model combined with a Long Short-Term Memory model in order to showcase the compatibility of the two models in a whole system. This system was trained and tested using two different dataset collections that each consisted of one real news dataset and one fake news dataset. Furthermore, three independent variables were chosen which were the number of training cycles, data diversity and vector size to analyze the relationship between these variables and the accuracy levels of the system. It was found that these three variables did have a significant effect on the accuracy of the system. From this, the system was then trained and tested with the optimal variables and was able to achieve the minimum expected accuracy level of 90%. The achieving of this accuracy levels confirms the compatibility of the LSTM and Word2vec model and their capability to be synergized into a single system that is able to identify fake news with a high level of accuracy."
+    },
+    {
+      "paperId": "2411767fa4b4f7df181f656d4dd449dde4f700f7",
+      "externalIds": {
+        "DBLP": "journals/dagstuhl-reports/DodgeG0SA22",
+        "DOI": "10.4230/DagRep.12.6.14",
+        "CorpusId": 256195463
+      },
+      "corpusId": 256195463,
+      "url": "https://www.semanticscholar.org/paper/2411767fa4b4f7df181f656d4dd449dde4f700f7",
+      "title": "Efficient and Equitable Natural Language Processing in the Age of Deep Learning (Dagstuhl Seminar 22232)",
+      "venue": "Dagstuhl Reports",
+      "year": 2022,
+      "referenceCount": 4,
+      "citationCount": 1,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: The following paper fields have been elided by the publisher: {'abstract'}. Paper or abstract available at https://api.unpaywall.org/v2/10.4230/DagRep.12.6.14?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.4230/DagRep.12.6.14, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": null,
+      "journal": {
+        "name": "Dagstuhl Reports",
+        "pages": "14-27",
+        "volume": "12"
+      },
+      "authors": [
+        {
+          "authorId": "34176020",
+          "name": "Jesse Dodge"
+        },
+        {
+          "authorId": "1730400",
+          "name": "Iryna Gurevych"
+        },
+        {
+          "authorId": "4671928",
+          "name": "Roy Schwartz"
+        },
+        {
+          "authorId": "2268272",
+          "name": "Emma Strubell"
+        },
+        {
+          "authorId": "51436004",
+          "name": "Betty van Aken"
+        }
+      ],
+      "abstract": null
+    },
+    {
+      "paperId": "dadf09774ea6d9ae0488dedc7df1302121186233",
+      "externalIds": {
+        "DOI": "10.1109/com-it-con54601.2022.9850594",
+        "CorpusId": 251609777
+      },
+      "corpusId": 251609777,
+      "url": "https://www.semanticscholar.org/paper/dadf09774ea6d9ae0488dedc7df1302121186233",
+      "title": "Sentiment Analysis on Tweets with Deep Learning and Natural Language Processing",
+      "venue": "2022 International Conference on Machine Learning, Big Data, Cloud and Parallel Computing (COM-IT-CON)",
+      "year": 2022,
+      "referenceCount": 0,
+      "citationCount": 1,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/com-it-con54601.2022.9850594?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/com-it-con54601.2022.9850594, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Conference"
+      ],
+      "publicationDate": "2022-05-26",
+      "journal": {
+        "name": "2022 International Conference on Machine Learning, Big Data, Cloud and Parallel Computing (COM-IT-CON)",
+        "pages": "517-525",
+        "volume": "1"
+      },
+      "authors": [
+        {
+          "authorId": "2211563015",
+          "name": "Kusum"
+        },
+        {
+          "authorId": "1379850116",
+          "name": "S. Panda"
+        }
+      ],
+      "abstract": "Today\u2019s social media users are very large, where everyone expresses opinions, comments, criticisms, and so on. The data provides valuable information to be able to help people or groups in opinion evaluation. The enormous quantity of information is impractical for humans to interpret and evaluate manually. The Sentiment Analysis (SA) is a task that has become very important for the scientific and business community. Thus, SA can be used to diagnose a population regarding specific issues. There are many machine learning techniques, Deep Learning (DL) is one of them that has a deeper architecture than other ML techniques in solving prediction and classification problems. Using DL Models and NLP, this work tries to categorise content on social media into positive, negative, and neutral groups as sentiments. While NLP is being used to extract features, which enhances accuracy and performance, other DL models for classification, such as CNN, RNN, and LSTM models, can synthesize or create acceptable sentiments with a voluminous data; however, they take longer to train."
+    },
+    {
+      "paperId": "869c3f6d51e81a3a0473fb8cbce884e76c816f54",
+      "externalIds": {
+        "DOI": "10.54660/.ijmrge.2022.3.3-643-646",
+        "CorpusId": 276397297
+      },
+      "corpusId": 276397297,
+      "url": "https://www.semanticscholar.org/paper/869c3f6d51e81a3a0473fb8cbce884e76c816f54",
+      "title": "Artificial intelligence in processing medical insurance claims: Generating claim denial letters with deep learning and natural language processing algorithms",
+      "venue": "International Journal of Multidisciplinary Research and Growth Evaluation",
+      "year": 2022,
+      "referenceCount": 0,
+      "citationCount": 0,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.54660/.ijmrge.2022.3.3-643-646?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.54660/.ijmrge.2022.3.3-643-646, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": null,
+      "journal": {
+        "name": "International Journal of Multidisciplinary Research and Growth Evaluation"
+      },
+      "authors": [
+        {
+          "authorId": "2338658225",
+          "name": "Kiran Veernapu"
+        }
+      ],
+      "abstract": "The insurance sector has difficulties in processing claims effectively while keeping things clear, precise, and friendly for clients. A key part of this process is creating denial letters that outline the reasons a claim was rejected, often due to complicated policy terms and claim specifics. This study examines how Artificial Intelligence (AI) and Machine Learning (ML) can help automate the creation of denial letters for insurance claims. The aim is to boost efficiency, ensure rule compliance, and keep a caring tone to help retain customers. The document introduces an AI-based framework using Natural Language Processing (NLP), machine learning for making decisions, and automatic text creation to generate denial letters that are precise, legally valid, and considerate."
+    },
+    {
+      "paperId": "ebdb02f9d0f31d3a13070f61fa07fe2fa11cb531",
+      "externalIds": {
+        "ArXiv": "2106.07410",
+        "DBLP": "journals/corr/abs-2106-07410",
+        "CorpusId": 235421616
+      },
+      "corpusId": 235421616,
+      "url": "https://www.semanticscholar.org/paper/ebdb02f9d0f31d3a13070f61fa07fe2fa11cb531",
+      "title": "Model Explainability in Deep Learning Based Natural Language Processing",
+      "venue": "arXiv.org",
+      "year": 2021,
+      "referenceCount": 26,
+      "citationCount": 20,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2106.07410, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Review"
+      ],
+      "publicationDate": "2021-06-14",
+      "journal": {
+        "name": "ArXiv",
+        "volume": "abs/2106.07410"
+      },
+      "authors": [
+        {
+          "authorId": "51441410",
+          "name": "Shafie Gholizadeh"
+        },
+        {
+          "authorId": "1959032",
+          "name": "Nengfeng Zhou"
+        }
+      ],
+      "abstract": "Machine learning (ML) model explainability has received growing attention, especially in the area related to model risk and regulations. In this paper, we reviewed and compared some popular ML model explainability methodologies, especially those related to Natural Language Processing (NLP) models. We then applied one of the NLP explainability methods Layer-wise Relevance Propagation (LRP) to a NLP classification model. We used the LRP method to derive a relevance score for each word in an instance, which is a local explainability. The relevance scores are then aggregated together to achieve global variable importance of the model. Through the case study, we also demonstrated how to apply the local explainability method to false positive and false negative instances to discover the weakness of a NLP model. These analysis can help us to understand NLP models better and reduce the risk due to the black-box nature of NLP models. We also identified some common issues due to the special natures of NLP models and discussed how explainability analysis can act as a control to detect these issues after the model has been trained."
+    },
+    {
+      "paperId": "d38d5de70f106f1e0efac59aad2201f7c7a28569",
+      "externalIds": {
+        "DOI": "10.1007/978-3-030-85292-4_32",
+        "CorpusId": 244872441,
+        "PubMed": "34862552"
+      },
+      "corpusId": 244872441,
+      "url": "https://www.semanticscholar.org/paper/d38d5de70f106f1e0efac59aad2201f7c7a28569",
+      "title": "Natural Language Processing Applications in the Clinical Neurosciences: A Machine Learning Augmented Systematic Review.",
+      "venue": "Acta neurochirurgica. Supplement",
+      "year": 2021,
+      "referenceCount": 80,
+      "citationCount": 21,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": "CLOSED",
+        "license": null,
+        "disclaimer": "Notice: The following paper fields have been elided by the publisher: {'abstract'}. Paper or abstract available at https://api.unpaywall.org/v2/10.1007/978-3-030-85292-4_32?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1007/978-3-030-85292-4_32, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Medicine"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Medicine",
+          "source": "external"
+        },
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Review"
+      ],
+      "publicationDate": "2021-12-04",
+      "journal": {
+        "name": "Acta neurochirurgica. Supplement",
+        "pages": "\n          277-289\n        ",
+        "volume": "134"
+      },
+      "authors": [
+        {
+          "authorId": "4499589",
+          "name": "Quinlan D. Buchlak"
+        },
+        {
+          "authorId": "51934700",
+          "name": "Nazanin Esmaili"
+        },
+        {
+          "authorId": "74155663",
+          "name": "Christine C Bennett"
+        },
+        {
+          "authorId": "3136698",
+          "name": "Farrokh R. Farrokhi"
+        }
+      ],
+      "abstract": null
+    },
+    {
+      "paperId": "a21c65a3d6c66944ff075d34c2a8c1cbbb5376ba",
+      "externalIds": {
+        "MAG": "3202922580",
+        "DOI": "10.1162/coli_r_00423",
+        "CorpusId": 244115158
+      },
+      "corpusId": 244115158,
+      "url": "https://www.semanticscholar.org/paper/a21c65a3d6c66944ff075d34c2a8c1cbbb5376ba",
+      "title": "Natural Language Processing. A Machine Learning Perspective",
+      "venue": "Computational Linguistics",
+      "year": 2021,
+      "referenceCount": 0,
+      "citationCount": 18,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://direct.mit.edu/coli/article-pdf/doi/10.1162/coli_r_00423/1996562/coli_r_00423.pdf",
+        "status": "GOLD",
+        "license": "CCBYNCND",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1162/coli_r_00423?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1162/coli_r_00423, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": "2021-10-04",
+      "journal": {
+        "name": "Computational Linguistics"
+      },
+      "authors": [
+        {
+          "authorId": "1591125925",
+          "name": "Yue Zhang"
+        },
+        {
+          "authorId": "2272668",
+          "name": "Zhiyang Teng"
+        }
+      ],
+      "abstract": "Natural Language Processing (NLP) is a discipline at the crossroads of Artificial Intelligence (Machine Learning [ML] as its part), Linguistics, Cognitive Science, and Computer Science that enables machines to analyze and generate natural language data. The multi-disciplinary nature of NLP attracts specialists of various backgrounds, mostly with the knowledge of Linguistics and ML. As the discipline is largely practise-oriented, traditionally NLP textbooks are focused on concrete tasks and tend to elaborate on the linguistic peculiarities of ML approaches to NLP. They also often introduce predominantly either traditional ML or deep learning methods. This textbook introduces NLP from the ML standpoint, elaborating on fundamental approaches and algorithms used in the field such as statistical and deep learning models, generative and discriminative models, supervised and unsupervised models, and so on. In spite of the density of the material, the book is very easy to follow. The complexity of the introduced topics is built up gradually with references to previously introduced concepts while relying on a carefully observed unified notation system. The textbook is oriented to prepare the finalyear undergraduate, as well as graduate students of relevant disciplines, for the NLP course and stimulate related research activities. Considering the comprehensiveness of the topics covered in an accessible way, the textbook is also suitable for NLP engineers, non-ML specialists, and a broad range of readers interested in the topic. The book comprises 18 chapters organized in three parts. Part I, \u201cBasics\u201d, discusses the fundamental ML and NLP concepts necessary for further comprehension using the example of classification tasks. Part II, \u201cStructures\u201d, covers the principles of mathematical modeling for structured prediction, namely, for such structures as sequences and trees. Part III, \u201cDeep Learning\u201d, describes the basics of deep learning modeling for classification and structured prediction tasks. The part ends with the basics of sequence-to-sequence modeling. The textbook thus emphasizes the close connection and inheritance between the traditional and deep-learning methods. Following clear logic, generative models are introduced before discriminative ones (e.g., Chapter 7 from Part II introduces generative sequence labeling and Chapter 8 introduces discriminative sequence labeling), while modeling with hidden variables is presented at the end. Within each chapter, model descriptions are followed by their training and inference details. Finally, chapters are concluded with a summary, chapter notes, and exercises. The exercises are carefully designed to not only support and deepen comprehension but also stimulate further independent investigation on"
+    },
+    {
+      "paperId": "c168ee8aa9a15d312ae1e7dc205da19bef3f6ae3",
+      "externalIds": {
+        "DBLP": "conf/embc/DayDBPPK21",
+        "DOI": "10.1109/EMBC46164.2021.9630694",
+        "CorpusId": 243866738,
+        "PubMed": "34891746"
+      },
+      "corpusId": 243866738,
+      "url": "https://www.semanticscholar.org/paper/c168ee8aa9a15d312ae1e7dc205da19bef3f6ae3",
+      "title": "Predicting Severity in People with Aphasia: A Natural Language Processing and Machine Learning Approach",
+      "venue": "Annual International Conference of the IEEE Engineering in Medicine and Biology Society",
+      "year": 2021,
+      "referenceCount": 21,
+      "citationCount": 16,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/EMBC46164.2021.9630694?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/EMBC46164.2021.9630694, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Medicine",
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Medicine",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Conference"
+      ],
+      "publicationDate": "2021-11-01",
+      "journal": {
+        "name": "2021 43rd Annual International Conference of the IEEE Engineering in Medicine & Biology Society (EMBC)",
+        "pages": "2299-2302"
+      },
+      "authors": [
+        {
+          "authorId": "2139591284",
+          "name": "Marjory Day"
+        },
+        {
+          "authorId": "2139970000",
+          "name": "Rupam Dey"
+        },
+        {
+          "authorId": "40881173",
+          "name": "Matt Baucum"
+        },
+        {
+          "authorId": "47441752",
+          "name": "E. Paek"
+        },
+        {
+          "authorId": "93544325",
+          "name": "Hyejin Park"
+        },
+        {
+          "authorId": "2138773",
+          "name": "Anahita Khojandi"
+        }
+      ],
+      "abstract": "Speech language pathologists need an accurate assessment of the severity of people with aphasia (PWA) to design and provide the best course of therapy. Currently, severity is evaluated manually by an increasingly scarce pool of experienced and well-trained clinicians, taking considerable time resources. By analyzing the transcripts from three discourse elicitation methods, this study combines natural language processing (NLP) and machine learning (ML) to predict the severity of PWA, both by score and severity level. By engineering language features from PWA tasks, an unstructured k-means clustering presents distinct aphasia types, showing validity of the selected features. We develop regression models to predict severity scores along with a classification of severity by level (Mild, Moderate, Severe, and Very Severe) to assist clinicians to easily plan and monitor the course of treatment. Our best ML regression model uses a deep neural network and results in a mean absolute error (MAE) of 0.0671 and root mean squared error (RMSE) of 0.0922. Our best classification model uses a random forest and result in an overall accuracy of 73%, with the highest accuracy of 87.5% for mild severity. Our results suggest that using NLP and ML provides an accurate and cost-effective approach to evaluate the severity levels in PWA to consequently help clinicians determine rehabilitation procedures."
+    },
+    {
+      "paperId": "f923c8e30650e2e1df99f54d00c89eccf1f33649",
+      "externalIds": {
+        "MAG": "3110926788",
+        "PubMedCentral": "7766032",
+        "DOI": "10.3390/jpm10040286",
+        "CorpusId": 229324715,
+        "PubMed": "33339385"
+      },
+      "corpusId": 229324715,
+      "url": "https://www.semanticscholar.org/paper/f923c8e30650e2e1df99f54d00c89eccf1f33649",
+      "title": "Prediction of Stroke Outcome Using Natural Language Processing-Based Machine Learning of Radiology Report of Brain MRI",
+      "venue": "Journal of Personalized Medicine",
+      "year": 2020,
+      "referenceCount": 37,
+      "citationCount": 53,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://www.mdpi.com/2075-4426/10/4/286/pdf?version=1608176071",
+        "status": "GOLD",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://pmc.ncbi.nlm.nih.gov/articles/PMC7766032, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Medicine",
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Medicine",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": "2020-12-01",
+      "journal": {
+        "name": "Journal of Personalized Medicine",
+        "volume": "10"
+      },
+      "authors": [
+        {
+          "authorId": "1644077770",
+          "name": "Tak-Sung Heo"
+        },
+        {
+          "authorId": "152848161",
+          "name": "Yu Seop Kim"
+        },
+        {
+          "authorId": "2039168523",
+          "name": "J. Choi"
+        },
+        {
+          "authorId": "2039153386",
+          "name": "Y. Jeong"
+        },
+        {
+          "authorId": "47274763",
+          "name": "Soo Young Seo"
+        },
+        {
+          "authorId": "47381670",
+          "name": "J. Lee"
+        },
+        {
+          "authorId": "3459908",
+          "name": "J. Jeon"
+        },
+        {
+          "authorId": "103013291",
+          "name": "Chulho Kim"
+        }
+      ],
+      "abstract": "Brain magnetic resonance imaging (MRI) is useful for predicting the outcome of patients with acute ischemic stroke (AIS). Although deep learning (DL) using brain MRI with certain image biomarkers has shown satisfactory results in predicting poor outcomes, no study has assessed the usefulness of natural language processing (NLP)-based machine learning (ML) algorithms using brain MRI free-text reports of AIS patients. Therefore, we aimed to assess whether NLP-based ML algorithms using brain MRI text reports could predict poor outcomes in AIS patients. This study included only English text reports of brain MRIs examined during admission of AIS patients. Poor outcome was defined as a modified Rankin Scale score of 3\u20136, and the data were captured by trained nurses and physicians. We only included MRI text report of the first MRI scan during the admission. The text dataset was randomly divided into a training and test dataset with a 7:3 ratio. Text was vectorized to word, sentence, and document levels. In the word level approach, which did not consider the sequence of words, and the \u201cbag-of-words\u201d model was used to reflect the number of repetitions of text token. The \u201csent2vec\u201d method was used in the sensation-level approach considering the sequence of words, and the word embedding was used in the document level approach. In addition to conventional ML algorithms, DL algorithms such as the convolutional neural network (CNN), long short-term memory, and multilayer perceptron were used to predict poor outcomes using 5-fold cross-validation and grid search techniques. The performance of each ML classifier was compared with the area under the receiver operating characteristic (AUROC) curve. Among 1840 subjects with AIS, 645 patients (35.1%) had a poor outcome 3 months after the stroke onset. Random forest was the best classifier (0.782 of AUROC) using a word-level approach. Overall, the document-level approach exhibited better performance than did the word- or sentence-level approaches. Among all the ML classifiers, the multi-CNN algorithm demonstrated the best classification performance (0.805), followed by the CNN (0.799) algorithm. When predicting future clinical outcomes using NLP-based ML of radiology free-text reports of brain MRI, DL algorithms showed superior performance over the other ML algorithms. In particular, the prediction of poor outcomes in document-level NLP DL was improved more by multi-CNN and CNN than by recurrent neural network-based algorithms. NLP-based DL algorithms can be used as an important digital marker for unstructured electronic health record data DL prediction."
+    },
+    {
+      "paperId": "f0018ee771b4ea862e9473208e3b377693879d7b",
+      "externalIds": {
+        "MAG": "3162022378",
+        "DOI": "10.31234/OSF.IO/293KT",
+        "CorpusId": 236556118
+      },
+      "corpusId": 236556118,
+      "url": "https://www.semanticscholar.org/paper/f0018ee771b4ea862e9473208e3b377693879d7b",
+      "title": "Text: An R-package for Analyzing and Visualizing Human Language Using Natural Language Processing and Deep Learning",
+      "venue": "",
+      "year": 2021,
+      "referenceCount": 0,
+      "citationCount": 11,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://doi.org/10.31234/osf.io/293kt",
+        "status": "GREEN",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.31234/OSF.IO/293KT?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.31234/OSF.IO/293KT, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Psychology",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Review"
+      ],
+      "publicationDate": "2021-04-16",
+      "journal": {
+        "name": "",
+        "volume": ""
+      },
+      "authors": [
+        {
+          "authorId": "5033059",
+          "name": "O. Kjell"
+        },
+        {
+          "authorId": "50360470",
+          "name": "Salvatore Giorgi"
+        },
+        {
+          "authorId": "145035129",
+          "name": "H. A. Schwartz"
+        }
+      ],
+      "abstract": "The language that individuals use for expressing themselves contains rich psychological information. Recent significant advances in Natural Language Processing (NLP) and Deep Learning (DL), namely transformers, have resulted in large performance gains in tasks related to understanding natural language such as machine translation. However, these state-of-the-art methods have not yet been made easily accessible for psychology researchers, nor designed to be optimal for human-level analyses. This tutorial introduces text (www.r-text.org), a new R-package for analyzing and visualizing human language using transformers, the latest techniques from NLP and DL. Text is both a modular solution for accessing state-of-the-art language models and an end-to-end solution catered for human-level analyses. Hence, text provides user-friendly functions tailored to test hypotheses in social sciences for both relatively small and large datasets. This tutorial describes useful methods for analyzing text, providing functions with reliable defaults that can be used off-the-shelf as well as providing a framework for the advanced users to build on for novel techniques and analysis pipelines. The reader learns about six methods: 1) textEmbed: to transform text to traditional or modern transformer-based word embeddings (i.e., numeric representations of words); 2) textTrain: to examine the relationships between text and numeric/categorical variables; 3) textSimilarity and 4) textSimilarityTest: to computing semantic similarity scores between texts and significance test the difference in meaning between two sets of texts; and 5) textProjection and 6) textProjectionPlot: to examine and visualize text within the embedding space according to latent or specified construct dimensions (e.g., low to high rating scale scores)."
+    },
+    {
+      "paperId": "af0ea2ea3b4f5fdc0b4dceedb307e6c5f1291a44",
+      "externalIds": {
+        "MAG": "3153304007",
+        "DOI": "10.17762/TURCOMAT.V12I4.611",
+        "CorpusId": 234809605
+      },
+      "corpusId": 234809605,
+      "url": "https://www.semanticscholar.org/paper/af0ea2ea3b4f5fdc0b4dceedb307e6c5f1291a44",
+      "title": "The Survey: Advances in Natural Language Processing using Deep Learning*",
+      "venue": "Turkish Journal of Computer and Mathematics Education",
+      "year": 2021,
+      "referenceCount": 22,
+      "citationCount": 8,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://doi.org/10.17762/turcomat.v12i4.611",
+        "status": "GOLD",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.17762/TURCOMAT.V12I4.611?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.17762/TURCOMAT.V12I4.611, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Review"
+      ],
+      "publicationDate": "2021-04-11",
+      "journal": {
+        "name": "Turkish Journal of Computer and Mathematics Education (TURCOMAT)"
+      },
+      "authors": [
+        {
+          "authorId": "2100464387",
+          "name": "Vamsi Krishna Vedantam"
+        }
+      ],
+      "abstract": "Natural Language Processing using Deep Learning is one of the critical areas of Artificial Intelligence to focus in the next decades. Over the last few years, Artificial intelligence had evolved by maturing critical areas in research and development. The latest developments in Natural Language Processing con- tributed to the successful implementation of machine translations, linguistic models, Speech recognitions, automatic text generations applications. This paper covers the recent advancements in Natural Language Processing using Deep Learning and some of the much-waited areas in NLP to look for in the next few years. The first section explains Deep Learning architecture, Natural Language Processing techniques followed by the second section that highlights the developments in NLP using Deep learning and the last part by concluding the critical takeaways from my article."
+    },
+    {
+      "paperId": "bdd0272a648a52f28550e4ec8580bb091182bbc3",
+      "externalIds": {
+        "MAG": "3020224787",
+        "DOI": "10.1109/ICIMIA48430.2020.9074941",
+        "CorpusId": 216104771
+      },
+      "corpusId": 216104771,
+      "url": "https://www.semanticscholar.org/paper/bdd0272a648a52f28550e4ec8580bb091182bbc3",
+      "title": "Deep Learning Techniques for Part of Speech Tagging by Natural Language Processing",
+      "venue": "International Conference on Innovative Mechanisms for Industry Applications",
+      "year": 2020,
+      "referenceCount": 15,
+      "citationCount": 41,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/ICIMIA48430.2020.9074941?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/ICIMIA48430.2020.9074941, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Conference"
+      ],
+      "publicationDate": "2020-03-01",
+      "journal": {
+        "name": "2020 2nd International Conference on Innovative Mechanisms for Industry Applications (ICIMIA)",
+        "pages": "76-81"
+      },
+      "authors": [
+        {
+          "authorId": "1654161183",
+          "name": "Rushali Dhumal Deshmukh"
+        },
+        {
+          "authorId": "1704670",
+          "name": "Arvind W. Kiwelekar"
+        }
+      ],
+      "abstract": "For many natural language processing applications, part of speech (POS) tagging remains as a preliminary task. Marathi, is observed as a popular language in India but it only has limited tools and corpus for NLP applications. An accurate POS tagger is essential for many NLP tasks like sentiment analysis, named entity recognition, dependency parsing, etc. This research work proposes a deep learning model and bidirectional long short-term memory (Bi-LSTM) model to perform POS tagging for Marathi text. We achieved an accuracy of 85% for the deep learning model and 97% for the Bi-LSTM model. Our contribution here is based on three folds - building a deep learning model, building the Bi-LSTM model, comparison with machine learning techniques for the same dataset."
+    },
+    {
+      "paperId": "d743e7cb6f95ddcf6d83d3cd6e914c3ea84bfb8f",
+      "externalIds": {
+        "DOI": "10.1109/ICAC54203.2021.9671230",
+        "CorpusId": 245882035
+      },
+      "corpusId": 245882035,
+      "url": "https://www.semanticscholar.org/paper/d743e7cb6f95ddcf6d83d3cd6e914c3ea84bfb8f",
+      "title": "Use of Natural Language Processing and Deep Learning towards Guiding Healthy Cholesterol Free Life",
+      "venue": "International Conference on Automation and Computing",
+      "year": 2021,
+      "referenceCount": 0,
+      "citationCount": 1,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/ICAC54203.2021.9671230?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/ICAC54203.2021.9671230, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Conference"
+      ],
+      "publicationDate": "2021-12-09",
+      "journal": {
+        "name": "2021 3rd International Conference on Advancements in Computing (ICAC)",
+        "pages": "152-157"
+      },
+      "authors": [
+        {
+          "authorId": "2143307561",
+          "name": "Dilith Sasanka"
+        },
+        {
+          "authorId": "2143322190",
+          "name": "H. Malshani"
+        },
+        {
+          "authorId": "2143294606",
+          "name": "U.I Wickramaratne"
+        },
+        {
+          "authorId": "2143315517",
+          "name": "Yashmitha Kavindi"
+        },
+        {
+          "authorId": "30528069",
+          "name": "Muditha Tissera"
+        },
+        {
+          "authorId": "2051699679",
+          "name": "B. Attanayaka"
+        }
+      ],
+      "abstract": "High blood cholesterol is a key risk factor for cardiovascular diseases such as coronary heart disease and stroke. This has become a severe health problem, because it causes a considerable amount of deaths annually. The major risk factors that affect a person\u2019s cholesterol level include unawareness of cholesterol risk, unhealthy dietary habits, lack of proper exercises, and high stress conditions. In this research, novel approaches are introduced to provide an automated and personalized guidance to maintain healthy cholesterol level and raise the awareness of each risk factors mentioned above. This research associates with four novel approaches. Natural Language Processing (NLP) based Cholesterol risk analyzer, Fuzzy based Food management with Meal predictor, Machine Learning based Physical exercise planner and Stress controller. Altogether with results, this research will provide a complete and facts-proven solution to reduce and guide people towards a cholesterol-free healthy lifestyle."
+    },
+    {
+      "paperId": "f1857fce43faa8d782e1c16f2f952b6f13f47ccc",
+      "externalIds": {
+        "DOI": "10.1145/3436206",
+        "CorpusId": 233224188
+      },
+      "corpusId": 233224188,
+      "url": "https://www.semanticscholar.org/paper/f1857fce43faa8d782e1c16f2f952b6f13f47ccc",
+      "title": "Special Issue on Deep Structured Learning for Natural Language Processing",
+      "venue": "ACM Transactions on Asian and Low-Resource Language Information Processing",
+      "year": 2021,
+      "referenceCount": 0,
+      "citationCount": 2,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://doi.org/10.1145/3436206",
+        "status": "BRONZE",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1145/3436206?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1145/3436206, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Review"
+      ],
+      "publicationDate": "2021-03-31",
+      "journal": {
+        "name": "ACM Transactions on Asian and Low-Resource Language Information Processing (TALLIP)",
+        "pages": "1 - 2",
+        "volume": "20"
+      },
+      "authors": [
+        {
+          "authorId": "2285312922",
+          "name": "Dr. Gunasekaran Manogaran"
+        },
+        {
+          "authorId": "2285310537",
+          "name": "Dr. Hassan Qudrat-Ullah"
+        },
+        {
+          "authorId": "2285307727",
+          "name": "Dr. Qin Xin"
+        }
+      ],
+      "abstract": "The landscape of deep structured learning has changed in recent years. Many new trends and techniques have entered the arena. This editorial on \u201cDeep Structured Learning for Natural Language Processing\u201d brings out the innovative applications of deep structured learning for various dimensions of natural language processing (NLP). To this point, this editorial gives the researcher and practitioner\u2019s orientation on recent developments in NLP and provides an opportunity for relevant and qualitative research. This special section provides research articles that were selected following a rigorous review process focusing on various applications of deep learning for NLP. Overall, the special section contains 5 articles. Specifically, the first article. From a practical perspective, today\u2019s crime rate increases exponentially, leading to numerous serious threats in society. Due to this research, interest in cyberbullying has acquired increased research attention in recent days. Forefronts in machine learning and NLP are the two most important cutting-edge techniques that reduce the risk of cyberbullying in contemporary modern society. A new detection algorithm based on fast text detection and word similarity is introduced. It further analyzes the cyberbullying characteristics from the lexical as well as the syntactic viewpoints. From the experimental observation, it is envisioned that detection accuracy and recall measures are improved compared to the existing schemes. A scheme called \u201cdeep interactive memory network for aspect-level sentiment analysis\u201d is explored to effectively study the subjective information. It makes use of deep learning techniques to extract opinions from the massively large datasets. Imbalanced Twitter sentiment analysis is the systematic issue deals with class imbalances and its effects. A research article is proposed to analyze the emotions in a big corpus of imbalanced tweets using deep learning techniques. Another important research area is big data analytics and NLP applications. Against this background, research articles emphasis on transnational happiness study on big data using artificial intelligence and deep learning techniques. Next, knowledge discovery plays a vital role when dealing with big data. Effective ways of retrieving knowledge from news texts are analyzed in depth using NLP and deep learning methods. Finally, citation recommendation in massively generated big data is often a crucial task. This process is made easier with model-enhanced graph modeling techniques. This approach reduces the complexity rate and assists in effective citation process. This special issue emphasis on various aspects NLP using deep learning techniques. The articles published in this special section contribute to the application of NLP in various domains, which includes NLP and deep learning for big data analytics, recommendation, and linguistic analysis. We thank the authors for submitting good quality research contributions reflecting the theme of"
+    },
+    {
+      "paperId": "895ff88285a54e9f55ce334f2d436bf9800f47dc",
+      "externalIds": {
+        "MAG": "3012310192",
+        "DOI": "10.5772/intechopen.91813",
+        "CorpusId": 215876722
+      },
+      "corpusId": 215876722,
+      "url": "https://www.semanticscholar.org/paper/895ff88285a54e9f55ce334f2d436bf9800f47dc",
+      "title": "Deep Learning: Exemplar Studies in Natural Language Processing and Computer Vision",
+      "venue": "Data Mining - Methods, Applications and Systems",
+      "year": 2020,
+      "referenceCount": 27,
+      "citationCount": 6,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://doi.org/10.5772/intechopen.91813",
+        "status": "HYBRID",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.5772/intechopen.91813?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.5772/intechopen.91813, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": "2020-03-19",
+      "journal": {
+        "name": "Data Mining - Methods, Applications and Systems"
+      },
+      "authors": [
+        {
+          "authorId": "2527010",
+          "name": "Selma Tekir"
+        },
+        {
+          "authorId": "1788636",
+          "name": "Y. Bastanlar"
+        }
+      ],
+      "abstract": "Deep learning has become the most popular approach in machine learning in recent years. The reason lies in considerably high accuracies obtained by deep learning methods in many tasks especially with textual and visual data. In fact, natural language processing (NLP) and computer vision are the two research areas that deep learning has demonstrated its impact at utmost level. This chapter will firstly summarize the historical evolution of deep neural networks and their fundamental working principles. After briefly introducing the natural language processing and computer vision research areas, it will explain how exactly deep learning is used to solve the problems in these two areas. Several examples regarding the common tasks of these research areas and some discussion are also provided."
+    },
+    {
+      "paperId": "57c7a45ea40345434ae64060bfe9e4e9599e5dcd",
+      "externalIds": {
+        "DBLP": "conf/ssci/JidkovATP20",
+        "DOI": "10.1109/SSCI47803.2020.9308441",
+        "CorpusId": 230996863
+      },
+      "corpusId": 230996863,
+      "url": "https://www.semanticscholar.org/paper/57c7a45ea40345434ae64060bfe9e4e9599e5dcd",
+      "title": "Enabling Maritime Risk Assessment Using Natural Language Processing-based Deep Learning Techniques",
+      "venue": "IEEE Symposium Series on Computational Intelligence",
+      "year": 2020,
+      "referenceCount": 3,
+      "citationCount": 9,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/SSCI47803.2020.9308441?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/SSCI47803.2020.9308441, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Environmental Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Engineering",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": "2020-12-01",
+      "journal": {
+        "name": "2020 IEEE Symposium Series on Computational Intelligence (SSCI)",
+        "pages": "2469-2476"
+      },
+      "authors": [
+        {
+          "authorId": "2045767901",
+          "name": "Vladislav Jidkov"
+        },
+        {
+          "authorId": "1731797",
+          "name": "R. Abielmona"
+        },
+        {
+          "authorId": "2992949",
+          "name": "A. Teske"
+        },
+        {
+          "authorId": "1745632",
+          "name": "E. Petriu"
+        }
+      ],
+      "abstract": "Maritime vessels around the world risk encountering dangerous situations during their voyages such as piracy, kidnappings, hijackings, and smugglings. Such dangers may put crews at risk and potentially cause extensive damage to both the vessel and its cargo. Maritime risk assessment is a process of analyzing such factors to positively impact the safety and timeliness of operations. Analyzing the high-risk areas in seas and oceans can help vessels route around areas with previously recorded high levels of dangerous activities. This information is scraped and extracted from various maritime documents, including newspaper articles, social media, incident blogs, and operational reports. After textual data sources are parsed, it is possible to use this extracted information as training datasets into a Machine Learning (ML) model using Natural Language Processing (NLP) Deep Learning (DL) techniques. With these methods, we can perform document classification, risk extraction, text summarization, topic modeling, and information extraction in an automated manner. Methods that are used include the bag-of words (BOW) approach and, in particular, the use of Named Entity Recognition (NER) to identify specific areas around the world that are considered a risk to a particular voyage. Once this information is processed, the model can determine and aggregate specific areas of high-risk activity. We propose a Maritime Event Log (MEL) pipeline using DL methods. This pipeline includes binary document classification (DC) to extract positive instances of incidents, an incident type classification (IC,) and an information extraction module (IE) including date and location and ship type extraction. With such information available, it is possible to avoid dangerous situations, which may have a significant level of impact on the safety and success rate of maritime operations."
+    },
+    {
+      "paperId": "021346b18334052aa55697dbaf578e30c3740650",
+      "externalIds": {
+        "CorpusId": 244487704
+      },
+      "corpusId": 244487704,
+      "url": "https://www.semanticscholar.org/paper/021346b18334052aa55697dbaf578e30c3740650",
+      "title": "Detecting Phishing Attacks Using Natural Language Processing and Deep Learning models",
+      "venue": "",
+      "year": 2020,
+      "referenceCount": 10,
+      "citationCount": 1,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": null,
+      "journal": null,
+      "authors": [
+        {
+          "authorId": "2141619328",
+          "name": "Fenny Zalavadia"
+        },
+        {
+          "authorId": "84279141",
+          "name": "Shubhangi Pandey"
+        },
+        {
+          "authorId": "2141630509",
+          "name": "P. Pachpande"
+        },
+        {
+          "authorId": "15106036",
+          "name": "Akshata Nevrekar"
+        },
+        {
+          "authorId": "2142923656",
+          "name": "Dr. Sharvari S. Govilkar"
+        }
+      ],
+      "abstract": null
+    },
+    {
+      "paperId": "65dafe503fd49c22d6536fce57965cfd2e212965",
+      "externalIds": {
+        "DOI": "10.26562/irjcs.2020.v0709.001",
+        "CorpusId": 237460173
+      },
+      "corpusId": 237460173,
+      "url": "https://www.semanticscholar.org/paper/65dafe503fd49c22d6536fce57965cfd2e212965",
+      "title": "AN ANALYSIS OF DEEP LEARNING AND ATTENTION MODELS FOR NATURAL LANGUAGE PROCESSING TASKS",
+      "venue": "International Research Journal of Computer Science",
+      "year": 2020,
+      "referenceCount": 8,
+      "citationCount": 1,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://doi.org/10.26562/irjcs.2020.v0709.001",
+        "status": "GOLD",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.26562/irjcs.2020.v0709.001?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.26562/irjcs.2020.v0709.001, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Review"
+      ],
+      "publicationDate": "2020-09-08",
+      "journal": {
+        "name": "International Research Journal of Computer Science"
+      },
+      "authors": [
+        {
+          "authorId": "1571843842",
+          "name": "Advait Pravin Savant"
+        }
+      ],
+      "abstract": ": A Language is a means of communication among humans. It has a structure and is defined by the rules of grammar, which govern the constitution of sentences, clauses and words. Linguistics, the scientific study of language concerns itself with a wide variety of topics such as syntax and semantics. It concerns itself with how the words in a language are combined to form a sentence and how meaning and information are derived from the sentence based on the context. Natural Language processing as a computational discipline has the goal of getting computers to perform tasks, which involve language such as sentiment analysis, parts of speech tagging, machine translation and conversational agents. Classical NLP consisted of the symbolic paradigm, which was based on modelling grammar using theoretical computer science and using rules based on logic. Later on, statistical and probabilistic models became the standard with noisy channel models and Bayesian inference methods being prevalent. In the last two decades, the increase in computing power and the large amounts of data that is available over the internet has led to increased focus on Machine Learning. Machine Learning paradigms like Hidden Markov Models were successful. In the few years, there has been a surge in the use of Deep Learning for various tasks including NLP. Deep Learning is that subfield of Machine Learning, which creates representations of data using artificial neural networks based on computational graphs. In this paper, we will review how deep learning architectures can be used for the task of machine translation and building conversational agents."
+    },
+    {
+      "paperId": "5eec12f38d35a5cbc98519e2c86f6f6e15f19f68",
+      "externalIds": {
+        "MAG": "3105511442",
+        "CorpusId": 229245201
+      },
+      "corpusId": 229245201,
+      "url": "https://www.semanticscholar.org/paper/5eec12f38d35a5cbc98519e2c86f6f6e15f19f68",
+      "title": "A tale of two sequences : Interpretable and linguistically-informed deep learning for natural language processing",
+      "venue": "",
+      "year": 2020,
+      "referenceCount": 0,
+      "citationCount": 0,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": null,
+      "journal": {
+        "name": "",
+        "volume": ""
+      },
+      "authors": [
+        {
+          "authorId": "1994065972",
+          "name": "Jasmijn Bastings"
+        }
+      ],
+      "abstract": null
+    },
+    {
+      "paperId": "449072493a6311370060f1a1f5ed650f02334762",
+      "externalIds": {
+        "DBLP": "journals/access/SamantBGK22",
+        "DOI": "10.1109/ACCESS.2022.3149798",
+        "CorpusId": 246657761
+      },
+      "corpusId": 246657761,
+      "url": "https://www.semanticscholar.org/paper/449072493a6311370060f1a1f5ed650f02334762",
+      "title": "Framework for Deep Learning-Based Language Models Using Multi-Task Learning in Natural Language Understanding: A Systematic Literature Review and Future Directions",
+      "venue": "IEEE Access",
+      "year": 2022,
+      "referenceCount": 118,
+      "citationCount": 80,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://ieeexplore.ieee.org/ielx7/6287639/9668973/09706456.pdf",
+        "status": "GOLD",
+        "license": "CCBYNCND",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/ACCESS.2022.3149798?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/ACCESS.2022.3149798, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Review"
+      ],
+      "publicationDate": null,
+      "journal": {
+        "name": "IEEE Access",
+        "pages": "17078-17097",
+        "volume": "10"
+      },
+      "authors": [
+        {
+          "authorId": "145261381",
+          "name": "R. Samant"
+        },
+        {
+          "authorId": "31269352",
+          "name": "M. Bachute"
+        },
+        {
+          "authorId": "2133803946",
+          "name": "Shilpa Gite"
+        },
+        {
+          "authorId": "1794896",
+          "name": "K. Kotecha"
+        }
+      ],
+      "abstract": "Learning human languages is a difficult task for a computer. However, Deep Learning (DL) techniques have enhanced performance significantly for almost all-natural language processing (NLP) tasks. Unfortunately, these models cannot be generalized for all the NLP tasks with similar performance. NLU (Natural Language Understanding) is a subset of NLP including tasks, like machine translation, dialogue-based systems, natural language inference, text entailment, sentiment analysis, etc. The advancement in the field of NLU is the collective performance enhancement in all these tasks. Even though MTL (Multi-task Learning) was introduced before Deep Learning, it has gained significant attention in the past years. This paper aims to identify, investigate, and analyze various language models used in NLU and NLP to find directions for future research. The Systematic Literature Review (SLR) is prepared using the literature search guidelines proposed by Kitchenham and Charters on various language models between 2011 and 2021. This SLR points out that the unsupervised learning method-based language models show potential performance improvement. However, they face the challenge of designing the general-purpose framework for the language model, which will improve the performance of multi-task NLU and the generalized representation of knowledge. Combining these approaches may result in a more efficient and robust multi-task NLU. This SLR proposes building steps for a conceptual framework to achieve goals of enhancing the performance of language models in the field of NLU."
+    },
+    {
+      "paperId": "c79a5856fa4840a0df960ec366526ea3306a4a55",
+      "externalIds": {
+        "DOI": "10.1080/00051144.2021.1922150",
+        "CorpusId": 235427475
+      },
+      "corpusId": 235427475,
+      "url": "https://www.semanticscholar.org/paper/c79a5856fa4840a0df960ec366526ea3306a4a55",
+      "title": "Advancing natural language processing (NLP) applications of morphologically rich languages with bidirectional encoder representations from transformers (BERT): an empirical case study for Turkish",
+      "venue": "Automatika",
+      "year": 2021,
+      "referenceCount": 72,
+      "citationCount": 39,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://www.tandfonline.com/doi/pdf/10.1080/00051144.2021.1922150?needAccess=true",
+        "status": "GOLD",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1080/00051144.2021.1922150?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1080/00051144.2021.1922150, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": "2021-04-03",
+      "journal": {
+        "name": "Automatika",
+        "pages": "226 - 238",
+        "volume": "62"
+      },
+      "authors": [
+        {
+          "authorId": "1745285",
+          "name": "Ak\u0131n \u00d6z\u00e7ift"
+        },
+        {
+          "authorId": "2111960534",
+          "name": "Kamil Akarsu"
+        },
+        {
+          "authorId": "2111957687",
+          "name": "Fatma Yumuk"
+        },
+        {
+          "authorId": "2111958922",
+          "name": "Cevhernur S\u00f6ylemez"
+        }
+      ],
+      "abstract": "Language model pre-training architectures have demonstrated to be useful to learn language representations. bidirectional encoder representations from transformers (BERT), a recent deep bidirectional self-attention representation from unlabelled text, has achieved remarkable results in many natural language processing (NLP) tasks with fine-tuning. In this paper, we want to demonstrate the efficiency of BERT for a morphologically rich language, Turkish. Traditionally morphologically difficult languages require dense language pre-processing steps in order to model the data to be suitable for machine learning (ML) algorithms. In particular, tokenization, lemmatization or stemming and feature engineering tasks are needed to obtain an efficient data model to overcome data sparsity or high-dimension problems. In this context, we selected five various Turkish NLP research problems as sentiment analysis, cyberbullying identification, text classification, emotion recognition and spam detection from the literature. We then compared the empirical performance of BERT with the baseline ML algorithms. Finally, we found enhanced results compared to base ML algorithms in the selected NLP problems while eliminating heavy pre-processing tasks."
+    },
+    {
+      "paperId": "bf22ef16a6a912763780aea454198edc3e2bb3c9",
+      "externalIds": {
+        "DBLP": "journals/corr/abs-2203-05061",
+        "ArXiv": "2203.05061",
+        "DOI": "10.48550/arXiv.2203.05061",
+        "CorpusId": 247362554,
+        "PubMed": "37128372"
+      },
+      "corpusId": 247362554,
+      "url": "https://www.semanticscholar.org/paper/bf22ef16a6a912763780aea454198edc3e2bb3c9",
+      "title": "HealthPrompt: A Zero-shot Learning Paradigm for Clinical Natural Language Processing",
+      "venue": "American Medical Informatics Association Annual Symposium",
+      "year": 2022,
+      "referenceCount": 39,
+      "citationCount": 64,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2203.05061, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Medicine",
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Medicine",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": "2022-03-09",
+      "journal": {
+        "name": "AMIA ... Annual Symposium proceedings. AMIA Symposium",
+        "pages": "\n          972-981\n        ",
+        "volume": "2022"
+      },
+      "authors": [
+        {
+          "authorId": "2158366736",
+          "name": "Sonish Sivarajkumar"
+        },
+        {
+          "authorId": "13044536",
+          "name": "Yanshan Wang"
+        }
+      ],
+      "abstract": "Developing clinical natural language systems based on machine learning and deep learning is dependent on the availability of large-scale annotated clinical text datasets, most of which are time-consuming to create and not publicly available. The lack of such annotated datasets is the biggest bottleneck for the development of clinical NLP systems. Zero-Shot Learning (ZSL) refers to the use of deep learning models to classify instances from new classes of which no training data have been seen before. Prompt-based learning is an emerging ZSL technique in NLP where we define task-based templates for different tasks. In this study, we developed a novel prompt-based clinical NLP framework called HealthPrompt and applied the paradigm of prompt-based learning on clinical texts. In this technique, rather than fine-tuning a Pre-trained Language Model (PLM), the task definitions are tuned by defining a prompt template. We performed an in-depth analysis of HealthPrompt on six different PLMs in a no-training-data setting. Our experiments show that HealthPrompt could effectively capture the context of clinical texts and perform well for clinical NLP tasks without any training data."
+    },
+    {
+      "paperId": "43b7437ed33a29d3d90239ad66f325a465ff7e91",
+      "externalIds": {
+        "DBLP": "conf/naacl/Lee0V22",
+        "ACL": "2022.naacl-main.49",
+        "ArXiv": "2205.01500",
+        "DOI": "10.48550/arXiv.2205.01500",
+        "CorpusId": 248505738
+      },
+      "corpusId": 248505738,
+      "url": "https://www.semanticscholar.org/paper/43b7437ed33a29d3d90239ad66f325a465ff7e91",
+      "title": "Meta Learning for Natural Language Processing: A Survey",
+      "venue": "North American Chapter of the Association for Computational Linguistics",
+      "year": 2022,
+      "referenceCount": 164,
+      "citationCount": 52,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "http://arxiv.org/pdf/2205.01500",
+        "status": "GREEN",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2205.01500, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Conference",
+        "Review"
+      ],
+      "publicationDate": "2022-05-03",
+      "journal": {
+        "pages": "666-684"
+      },
+      "authors": [
+        {
+          "authorId": "1706104",
+          "name": "Hung-yi Lee"
+        },
+        {
+          "authorId": "2530311",
+          "name": "Shang-Wen Li"
+        },
+        {
+          "authorId": "4160376",
+          "name": "Ngoc Thang Vu"
+        }
+      ],
+      "abstract": "Deep learning has been the mainstream technique in the natural language processing (NLP) area. However, deep learning requires many labeled data and is less generalizable across domains. Meta-learning is an arising field in machine learning. It studies approaches to learning better learning algorithms and aims to improve algorithms in various aspects, including data efficiency and generalizability. The efficacy of meta-learning has been shown in many NLP tasks, but there is no systematic survey of these approaches in NLP, which hinders more researchers from joining the field. Our goal with this survey paper is to offer researchers pointers to relevant meta-learning works in NLP and attract more attention from the NLP community to drive future innovation. This paper first introduces the general concepts of meta-learning and the common approaches. Then we summarize task construction settings, applications of meta-learning for various NLP problems and review the development of meta-learning in the NLP community."
+    },
+    {
+      "paperId": "6800baa161c47429a478d35f49239de1722b0819",
+      "externalIds": {
+        "DOI": "10.1109/IEC52205.2021.9476131",
+        "CorpusId": 236193003
+      },
+      "corpusId": 236193003,
+      "url": "https://www.semanticscholar.org/paper/6800baa161c47429a478d35f49239de1722b0819",
+      "title": "Envisioning the potential of Natural Language Processing (NLP) in Health Care Management",
+      "venue": "International Enformatika Conference",
+      "year": 2021,
+      "referenceCount": 20,
+      "citationCount": 12,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": "CLOSED",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/IEC52205.2021.9476131?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/IEC52205.2021.9476131, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Conference"
+      ],
+      "publicationDate": "2021-02-24",
+      "journal": {
+        "name": "2021 7th International Engineering Conference \u201cResearch & Innovation amid Global Pandemic\" (IEC)",
+        "pages": "189-193"
+      },
+      "authors": [
+        {
+          "authorId": "66336492",
+          "name": "R. Sivarethinamohan"
+        },
+        {
+          "authorId": "47639261",
+          "name": "S. Sujatha"
+        },
+        {
+          "authorId": "145464068",
+          "name": "P. Biswas"
+        }
+      ],
+      "abstract": "Natural Language Processing (NLP) continues to play a strategic role in disease detection, intensive care, drug discovery and control of mushrooming infections during the current pandemic. It energizes chat programs to reduce outbreaks during the initial stages of coronavirus infection. NLP technologies have reached new heights in terms of utility, and are at the heart of the success of a multilingual conversation system, and Deep learning language models. It supports more languages around the world. NLP powered AI such as Health map and Copweb platforms track patient requests and perform incident detections. This study looks at the role of NLP and its technologies, challenges, and future possibilities using AI and machine learning for crisis mitigation and easier electronic health records (EHRs) maintenance in the health care industry. This research work explores the strategic approach and potential of NLP which maximizes the value of the EHR and healthcare data, making data a critical and trusted component in improving health outcomes"
+    },
+    {
+      "paperId": "f0110d0f7e938038bc1305c4c243b2d631d32c39",
+      "externalIds": {
+        "ArXiv": "2107.12603",
+        "DBLP": "journals/corr/abs-2107-12603",
+        "CorpusId": 236447775
+      },
+      "corpusId": 236447775,
+      "url": "https://www.semanticscholar.org/paper/f0110d0f7e938038bc1305c4c243b2d631d32c39",
+      "title": "Federated Learning Meets Natural Language Processing: A Survey",
+      "venue": "arXiv.org",
+      "year": 2021,
+      "referenceCount": 72,
+      "citationCount": 82,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2107.12603, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Review"
+      ],
+      "publicationDate": "2021-07-27",
+      "journal": {
+        "name": "ArXiv",
+        "volume": "abs/2107.12603"
+      },
+      "authors": [
+        {
+          "authorId": "2112748109",
+          "name": "Ming Liu"
+        },
+        {
+          "authorId": "2069288370",
+          "name": "Stella Ho"
+        },
+        {
+          "authorId": "2145361994",
+          "name": "Mengqi Wang"
+        },
+        {
+          "authorId": "2265626472",
+          "name": "Longxiang Gao"
+        },
+        {
+          "authorId": "2110894738",
+          "name": "Yuan Jin"
+        },
+        {
+          "authorId": "2153525636",
+          "name": "Heng Zhang"
+        }
+      ],
+      "abstract": "Federated Learning aims to learn machine learning models from multiple decentralized edge devices (e.g. mobiles) or servers without sacrificing local data privacy. Recent Natural Language Processing techniques rely on deep learning and large pre-trained language models. However, both big deep neural and language models are trained with huge amounts of data which often lies on the server side. Since text data is widely originated from end users, in this work, we look into recent NLP models and techniques which use federated learning as the learning framework. Our survey discusses major challenges in federated natural language processing, including the algorithm challenges, system challenges as well as the privacy issues. We also provide a critical review of the existing Federated NLP evaluation methods and tools. Finally, we highlight the current research gaps and future directions."
+    },
+    {
+      "paperId": "099f8bf42b95a4c239bc338b05821b592c60f44b",
+      "externalIds": {
+        "PubMedCentral": "8993841",
+        "DBLP": "journals/npjdm/ZhangSJA22",
+        "DOI": "10.1038/s41746-022-00589-7",
+        "CorpusId": 248004235,
+        "PubMed": "35396451"
+      },
+      "corpusId": 248004235,
+      "url": "https://www.semanticscholar.org/paper/099f8bf42b95a4c239bc338b05821b592c60f44b",
+      "title": "Natural language processing applied to mental illness detection: a narrative review",
+      "venue": "npj Digital Medicine",
+      "year": 2022,
+      "referenceCount": 245,
+      "citationCount": 343,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://www.nature.com/articles/s41746-022-00589-7.pdf",
+        "status": "GOLD",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://pmc.ncbi.nlm.nih.gov/articles/PMC8993841, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Medicine",
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Medicine",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Psychology",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Review",
+        "JournalArticle"
+      ],
+      "publicationDate": "2022-04-08",
+      "journal": {
+        "name": "NPJ Digital Medicine",
+        "volume": "5"
+      },
+      "authors": [
+        {
+          "authorId": "9416328",
+          "name": "Tianlin Zhang"
+        },
+        {
+          "authorId": "33858862",
+          "name": "Annika Marie Schoene"
+        },
+        {
+          "authorId": "51394448",
+          "name": "Shaoxiong Ji"
+        },
+        {
+          "authorId": "1881965",
+          "name": "S. Ananiadou"
+        }
+      ],
+      "abstract": "Mental illness is highly prevalent nowadays, constituting a major cause of distress in people\u2019s life with impact on society\u2019s health and well-being. Mental illness is a complex multi-factorial disease associated with individual risk factors and a variety of socioeconomic, clinical associations. In order to capture these complex associations expressed in a wide variety of textual data, including social media posts, interviews, and clinical notes, natural language processing (NLP) methods demonstrate promising improvements to empower proactive mental healthcare and assist early diagnosis. We provide a narrative review of mental illness detection using NLP in the past decade, to understand methods, trends, challenges and future directions. A total of 399 studies from 10,467 records were included. The review reveals that there is an upward trend in mental illness detection NLP research. Deep learning methods receive more attention and perform better than traditional machine learning methods. We also provide some recommendations for future studies, including the development of novel detection methods, deep learning paradigms and interpretable models."
+    },
+    {
+      "paperId": "42769cb82048651a54f3d4803319f32f1f019667",
+      "externalIds": {
+        "MAG": "3175709359",
+        "DOI": "10.52209/1609-1825_2021_2_172",
+        "CorpusId": 238061270
+      },
+      "corpusId": 238061270,
+      "url": "https://www.semanticscholar.org/paper/42769cb82048651a54f3d4803319f32f1f019667",
+      "title": "Natural Language Processing (NLP) Methods for Determining the Style of Kazakh Text",
+      "venue": "Trudy Universiteta",
+      "year": 2021,
+      "referenceCount": 4,
+      "citationCount": 0,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.52209/1609-1825_2021_2_172?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.52209/1609-1825_2021_2_172, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Review"
+      ],
+      "publicationDate": null,
+      "journal": {
+        "name": "Trudy Universiteta"
+      },
+      "authors": [
+        {
+          "authorId": "2129770491",
+          "name": "D. Kaibassova"
+        },
+        {
+          "authorId": "2129787334",
+          "name": "Balzhan Makhanova"
+        },
+        {
+          "authorId": "2129779853",
+          "name": "Ainur Suleimen"
+        }
+      ],
+      "abstract": ". The purpose of the article is to study the problem of natural language processing in the analysis of the Kazakh text. Attention was paid to the capabilities and ratings of the normalization used to implement natural language processing. Tonal analysis is aimed at predicting the polarity (positive, negative or neutral) of the mood of a given piece of text. The review of modern models of tonal analysis of different languages is made. The proposed work examines various approaches and methods of natural language processing, such as deep learning, machine learning, repetitive neural networks (RNN), LSTM neural networks. The modern work on the systematization of applications of the Kazakh language is analyzed."
+    },
+    {
+      "paperId": "46258ab268e3d940e72ca9370899924f76e7ef38",
+      "externalIds": {
+        "DBLP": "journals/jbd/ChicheY22",
+        "DOI": "10.1186/s40537-022-00561-y",
+        "CorpusId": 246281655
+      },
+      "corpusId": 246281655,
+      "url": "https://www.semanticscholar.org/paper/46258ab268e3d940e72ca9370899924f76e7ef38",
+      "title": "Part of speech tagging: a systematic review of deep learning and machine learning approaches",
+      "venue": "Journal of Big Data",
+      "year": 2022,
+      "referenceCount": 74,
+      "citationCount": 173,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://journalofbigdata.springeropen.com/counter/pdf/10.1186/s40537-022-00561-y",
+        "status": "GOLD",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1186/s40537-022-00561-y?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1186/s40537-022-00561-y, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Review"
+      ],
+      "publicationDate": "2022-01-24",
+      "journal": {
+        "name": "Journal of Big Data",
+        "volume": "9"
+      },
+      "authors": [
+        {
+          "authorId": "80914492",
+          "name": "Alebachew Chiche"
+        },
+        {
+          "authorId": "2151139573",
+          "name": "Betselot Yitagesu"
+        }
+      ],
+      "abstract": "Natural language processing (NLP) tools have sparked a great deal of interest due to rapid improvements in information and communications technologies. As a result, many different NLP tools are being produced. However, there are many challenges for developing efficient and effective NLP tools that accurately process natural languages. One such tool is part of speech (POS) tagging, which tags a particular sentence or words in a paragraph by looking at the context of the sentence/words inside the paragraph. Despite enormous efforts by researchers, POS tagging still faces challenges in improving accuracy while reducing false-positive rates and in tagging unknown words. Furthermore, the presence of ambiguity when tagging terms with different contextual meanings inside a sentence cannot be overlooked. Recently, Deep learning (DL) and Machine learning (ML)-based POS taggers are being implemented as potential solutions to efficiently identify words in a given sentence across a paragraph. This article first clarifies the concept of part of speech POS tagging. It then provides the broad categorization based on the famous ML and DL techniques employed in designing and implementing part of speech taggers. A comprehensive review of the latest POS tagging articles is provided by discussing the weakness and strengths of the proposed approaches. Then, recent trends and advancements of DL and ML-based part-of-speech-taggers are presented in terms of the proposed approaches deployed and their performance evaluation metrics. Using the limitations of the proposed approaches, we emphasized various research gaps and presented future recommendations for the research in advancing DL and ML-based POS tagging."
+    },
+    {
+      "paperId": "9cad6966751162c0c48bd7bac91dc3a845e7f805",
+      "externalIds": {
+        "DOI": "10.53730/ijhs.v6ns4.9272",
+        "CorpusId": 250721704
+      },
+      "corpusId": 250721704,
+      "url": "https://www.semanticscholar.org/paper/9cad6966751162c0c48bd7bac91dc3a845e7f805",
+      "title": "Advancement of natural language programming, machine learning and electronic health records for the digital health science field",
+      "venue": "International Journal of Health Sciences",
+      "year": 2022,
+      "referenceCount": 13,
+      "citationCount": 0,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://sciencescholar.us/journal/index.php/ijhs/article/download/9272/6191",
+        "status": "GOLD",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.53730/ijhs.v6ns4.9272?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.53730/ijhs.v6ns4.9272, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Review"
+      ],
+      "publicationDate": "2022-06-18",
+      "journal": {
+        "name": "International journal of health sciences"
+      },
+      "authors": [
+        {
+          "authorId": "151138414",
+          "name": "M. Srilakshmi"
+        },
+        {
+          "authorId": "2062888973",
+          "name": "Nitin Purohit"
+        },
+        {
+          "authorId": "144433074",
+          "name": "P. Rajesh"
+        },
+        {
+          "authorId": "48356692",
+          "name": "D. Stalin David"
+        },
+        {
+          "authorId": "2272551677",
+          "name": "M. Rani"
+        },
+        {
+          "authorId": "65868971",
+          "name": "Harishchander Anandaram"
+        }
+      ],
+      "abstract": "The widespread use of \u201celectronic health record systems (EHRs)\u201d in health care provides a large amount of real-world data, opening up new opportunities for medical trials. \u201cDeep learning, a subset of machine learning (ML)\u201d, has experienced a meteoric rise in popularity over the last six years, owing to advances in computing power and the accessibility of enormous new datasets. \u201cNatural language processing (NLP)\u201d approaches have been used as an \u201cartificial intelligence strategy\u201d to obtain information from medical narratives in EHRs, as a huge quantity of useful clinical knowledge is contained in clinical stories. This NLP capacity may enable \u201cautomated chart review in clinical care to identify individuals with distinct clinical features\u201d and decrease methodological heterogeneity in establishing \u201cphenotypes, masking biological heterogeneity in allergy, asthma, and immunology research\u201d. Aim of this research paper is to understand the advanced technologies such as \u201cMachine Learning, Natural Language Programming\u201d are helpful for digital health field. In this context, secondary data collection method is used to gather information related to this topic."
+    },
+    {
+      "paperId": "b01b962620a1627dbdd0d202eda9e7185fa8f2e0",
+      "externalIds": {
+        "DBLP": "journals/bioinformatics/BressemAGTHMSVN21",
+        "MAG": "3045332379",
+        "DOI": "10.1093/bioinformatics/btaa668",
+        "CorpusId": 225452639,
+        "PubMed": "32702106"
+      },
+      "corpusId": 225452639,
+      "url": "https://www.semanticscholar.org/paper/b01b962620a1627dbdd0d202eda9e7185fa8f2e0",
+      "title": "Highly accurate classification of chest radiographic reports using a deep learning natural language model pre-trained on 3.8 million text reports",
+      "venue": "Bioinform.",
+      "year": 2020,
+      "referenceCount": 10,
+      "citationCount": 68,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": "CLOSED",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1093/bioinformatics/btaa668?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1093/bioinformatics/btaa668, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science",
+        "Medicine"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Medicine",
+          "source": "external"
+        },
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": "2020-07-23",
+      "journal": {
+        "name": "Bioinformatics"
+      },
+      "authors": [
+        {
+          "authorId": "28908056",
+          "name": "K. Bressem"
+        },
+        {
+          "authorId": "39429177",
+          "name": "L. Adams"
+        },
+        {
+          "authorId": "32897343",
+          "name": "R. Gaudin"
+        },
+        {
+          "authorId": "2082494751",
+          "name": "Daniel Tr\u00f6ltzsch"
+        },
+        {
+          "authorId": "50086761",
+          "name": "B. Hamm"
+        },
+        {
+          "authorId": "2380008",
+          "name": "M. Makowski"
+        },
+        {
+          "authorId": "2081376663",
+          "name": "C. Sch\u00fcle"
+        },
+        {
+          "authorId": "13088320",
+          "name": "J. Vahldiek"
+        },
+        {
+          "authorId": "4713711",
+          "name": "S. Niehues"
+        }
+      ],
+      "abstract": "MOTIVATION\nThe development of deep, bidirectional transformers such as BERT (Bidirectional Encoder Representations from Transformers) led to an outperformance of several Natural Language Processing (NLP) benchmarks. Especially in radiology, large amounts of free-text data are generated in the daily clinical workflow. These report texts could be of particular use for the generation of labels in machine learning, especially for image classification. However, as report text are mostly unstructured, advanced NLP methods are needed for text classification. While neural networks can be used for this purpose, they must first be trained on large amounts of manually labelled data in order to achieve good results. In contrast, BERT models can be pre-trained on unlabelledunlabeled data and then only require fine tuning on a small amount of manually labelled data to achieve even better results.\n\n\nRESULTS\nBy using BERT to identify the most important findings in intensive care chest x-ray reports, we achieve areas under the receiver operation characteristics curve of 0.98 for congestion, 0.97 for effusion, 0.97 for consolidation and 0.99 for pneumothorax, surpassing the accuracy of previous approaches with comparatively little annotation effort. Our approach could help to improve information extraction from free-text medical reports.\n\n\nAVAILABILITY"
+    },
+    {
+      "paperId": "182c47303720019f944d5ea01a75c44e675bd215",
+      "externalIds": {
+        "DBLP": "journals/information/AlghamdiLL22",
+        "DOI": "10.3390/info13120576",
+        "CorpusId": 254661764
+      },
+      "corpusId": 254661764,
+      "url": "https://www.semanticscholar.org/paper/182c47303720019f944d5ea01a75c44e675bd215",
+      "title": "A Comparative Study of Machine Learning and Deep Learning Techniques for Fake News Detection",
+      "venue": "Inf.",
+      "year": 2022,
+      "referenceCount": 50,
+      "citationCount": 71,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://www.mdpi.com/2078-2489/13/12/576/pdf?version=1670843701",
+        "status": "GOLD",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.3390/info13120576?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.3390/info13120576, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Medicine"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Medicine",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Review"
+      ],
+      "publicationDate": "2022-12-12",
+      "journal": {
+        "name": "Inf.",
+        "pages": "576",
+        "volume": "13"
+      },
+      "authors": [
+        {
+          "authorId": "40098856",
+          "name": "Jawaher Alghamdi"
+        },
+        {
+          "authorId": "2162628816",
+          "name": "Yuqing Lin"
+        },
+        {
+          "authorId": "1760393",
+          "name": "S. Luo"
+        }
+      ],
+      "abstract": "Efforts have been dedicated by researchers in the field of natural language processing (NLP) to detecting and combating fake news using an assortment of machine learning (ML) and deep learning (DL) techniques. In this paper, a review of the existing studies is conducted to understand and curtail the dissemination of fake news. Specifically, we conducted a benchmark study using a wide range of (1) classical ML algorithms such as logistic regression (LR), support vector machines (SVM), decision tree (DT), naive Bayes (NB), random forest (RF), XGBoost (XGB) and an ensemble learning method of such algorithms, (2) advanced ML algorithms such as convolutional neural networks (CNNs), bidirectional long short-term memory (BiLSTM), bidirectional gated recurrent units (BiGRU), CNN-BiLSTM, CNN-BiGRU and a hybrid approach of such techniques and (3) DL transformer-based models such as BERTbase and RoBERTabase. The experiments are carried out using different pretrained word embedding methods across four well-known real-world fake news datasets\u2014LIAR, PolitiFact, GossipCop and COVID-19\u2014to examine the performance of different techniques across various datasets. Furthermore, a comparison is made between context-independent embedding methods (e.g., GloVe) and the effectiveness of BERTbase\u2014contextualised representations in detecting fake news. Compared with the state of the art\u2019s results across the used datasets, we achieve better results by solely relying on news text. We hope this study can provide useful insights for researchers working on fake news detection."
+    },
+    {
+      "paperId": "4d99e629edb90b8596671f25ed2087b915b9766c",
+      "externalIds": {
+        "ArXiv": "2210.10903",
+        "DBLP": "journals/corr/abs-2210-10903",
+        "DOI": "10.48550/arXiv.2210.10903",
+        "CorpusId": 253018379
+      },
+      "corpusId": 253018379,
+      "url": "https://www.semanticscholar.org/paper/4d99e629edb90b8596671f25ed2087b915b9766c",
+      "title": "Machine and Deep Learning Methods with Manual and Automatic Labelling for News Classification in Bangla Language",
+      "venue": "arXiv.org",
+      "year": 2022,
+      "referenceCount": 61,
+      "citationCount": 5,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "http://arxiv.org/pdf/2210.10903",
+        "status": "GREEN",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2210.10903, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": "2022-10-19",
+      "journal": {
+        "name": "ArXiv",
+        "volume": "abs/2210.10903"
+      },
+      "authors": [
+        {
+          "authorId": "2074278819",
+          "name": "Istiak Ahmad"
+        },
+        {
+          "authorId": "2306990928",
+          "name": "Fahad Alqurashi"
+        },
+        {
+          "authorId": "1715632",
+          "name": "R. Mehmood"
+        }
+      ],
+      "abstract": "Research in Natural Language Processing (NLP) has increasingly become important due to applications such as text classification, text mining, sentiment analysis, POS tagging, named entity recognition, textual entailment, and many others. This paper introduces several machine and deep learning methods with manual and automatic labelling for news classification in the Bangla language. We implemented several machine (ML) and deep learning (DL) algorithms. The ML algorithms are Logistic Regression (LR), Stochastic Gradient Descent (SGD), Support Vector Machine (SVM), Random Forest (RF), and K-Nearest Neighbour (KNN), used with Bag of Words (BoW), Term Frequency-Inverse Document Frequency (TF-IDF), and Doc2Vec embedding models. The DL algorithms are Long Short-Term Memory (LSTM), Bidirectional LSTM (BiLSTM), Gated Recurrent Unit (GRU), and Convolutional Neural Network (CNN), used with Word2vec, Glove, and FastText word embedding models. We develop automatic labelling methods using Latent Dirichlet Allocation (LDA) and investigate the performance of single-label and multi-label article classification methods. To investigate performance, we developed from scratch Potrika, the largest and the most extensive dataset for news classification in the Bangla language, comprising 185.51 million words and 12.57 million sentences contained in 664,880 news articles in eight distinct categories, curated from six popular online news portals in Bangladesh for the period 2014-2020. GRU and Fasttext with 91.83% achieve the highest accuracy for manually-labelled data. For the automatic labelling case, KNN and Doc2Vec at 57.72% and 75% achieve the highest accuracy for single-label and multi-label data, respectively. The methods developed in this paper are expected to advance research in Bangla and other languages."
+    },
+    {
+      "paperId": "5c09b7be6a7d4b0cd34fd95c4f783dc5c266edf3",
+      "externalIds": {
+        "MAG": "3041843309",
+        "ArXiv": "2007.04239",
+        "DBLP": "journals/corr/abs-2007-04239",
+        "CorpusId": 220404708
+      },
+      "corpusId": 220404708,
+      "url": "https://www.semanticscholar.org/paper/5c09b7be6a7d4b0cd34fd95c4f783dc5c266edf3",
+      "title": "A Survey on Transfer Learning in Natural Language Processing",
+      "venue": "arXiv.org",
+      "year": 2020,
+      "referenceCount": 89,
+      "citationCount": 89,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2007.04239, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science",
+        "Mathematics"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Mathematics",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Review"
+      ],
+      "publicationDate": "2020-05-31",
+      "journal": {
+        "name": "ArXiv",
+        "volume": "abs/2007.04239"
+      },
+      "authors": [
+        {
+          "authorId": "25098419",
+          "name": "Zaid Alyafeai"
+        },
+        {
+          "authorId": "2065657002",
+          "name": "Maged Saeed Al-shaibani"
+        },
+        {
+          "authorId": "151503424",
+          "name": "Irfan Ahmad"
+        }
+      ],
+      "abstract": "Deep learning models usually require a huge amount of data. However, these large datasets are not always attainable. This is common in many challenging NLP tasks. Consider Neural Machine Translation, for instance, where curating such large datasets may not be possible specially for low resource languages. Another limitation of deep learning models is the demand for huge computing resources. These obstacles motivate research to question the possibility of knowledge transfer using large trained models. The demand for transfer learning is increasing as many large models are emerging. In this survey, we feature the recent transfer learning advances in the field of NLP. We also provide a taxonomy for categorizing different transfer learning approaches from the literature."
+    },
+    {
+      "paperId": "b5c2dbd795282ff9a5649296fa621c079f54bd89",
+      "externalIds": {
+        "DBLP": "conf/cc/NanGSL21",
+        "DOI": "10.1145/3446804.3446852",
+        "CorpusId": 231912663
+      },
+      "corpusId": 231912663,
+      "url": "https://www.semanticscholar.org/paper/b5c2dbd795282ff9a5649296fa621c079f54bd89",
+      "title": "Deep NLP-based co-evolvement for synthesizing code analysis from natural language",
+      "venue": "International Conference on Compiler Construction",
+      "year": 2021,
+      "referenceCount": 51,
+      "citationCount": 13,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://www.osti.gov/biblio/1828128",
+        "status": "GREEN",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1145/3446804.3446852?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1145/3446804.3446852, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Book",
+        "Conference"
+      ],
+      "publicationDate": "2021-02-27",
+      "journal": {
+        "name": "Proceedings of the 30th ACM SIGPLAN International Conference on Compiler Construction"
+      },
+      "authors": [
+        {
+          "authorId": "69911350",
+          "name": "Zifan Nan"
+        },
+        {
+          "authorId": "49061558",
+          "name": "Hui Guan"
+        },
+        {
+          "authorId": "37914192",
+          "name": "Xipeng Shen"
+        },
+        {
+          "authorId": "7604095",
+          "name": "C. Liao"
+        }
+      ],
+      "abstract": "This paper presents Deepsy, a Natural Language-based synthesizer to assist source code analysis. It takes English descriptions of to-be-found code patterns as its inputs, and automatically produces ASTMatcher expressions that are directly usable by LLVM/Clang to materialize intended code analysis. The code analysis domain features profuse complexities in data types and operations, which make it elusive for prior rule-based synthesizers to tackle. On the other hand, machine learning-based solutions are neither applicable due to the scarcity of well labeled examples. This paper presents how Deepsy addresses the challenges by leveraging deep Natural Language Processing (NLP) and creating a new technique named dependency tree-based co-evolvement.Deepsy features an effective design that seamlessly integrates Natural Language dependency analysis into code analysis and meanwhile synergizes it with type-based narrowing and domain-specific guidance. Deepsy achieves over 70.0% expression-level accuracy and 85.1% individual API-level accuracy, significantly outperforming previous solutions."
+    },
+    {
+      "paperId": "8a9fd97dafd664b8fd1ae4ed5ca5071adf9f20ba",
+      "externalIds": {
+        "ArXiv": "2109.12575",
+        "DBLP": "journals/ijautcomp/SunLQH22",
+        "DOI": "10.1007/s11633-022-1331-6",
+        "CorpusId": 237940861
+      },
+      "corpusId": 237940861,
+      "url": "https://www.semanticscholar.org/paper/8a9fd97dafd664b8fd1ae4ed5ca5071adf9f20ba",
+      "title": "Paradigm Shift in Natural Language Processing",
+      "venue": "Machine Intelligence Research",
+      "year": 2021,
+      "referenceCount": 105,
+      "citationCount": 86,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://link.springer.com/content/pdf/10.1007/s11633-022-1331-6.pdf",
+        "status": "HYBRID",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2109.12575, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Review"
+      ],
+      "publicationDate": "2021-09-26",
+      "journal": {
+        "name": "Machine Intelligence Research",
+        "pages": "169 - 183",
+        "volume": "19"
+      },
+      "authors": [
+        {
+          "authorId": "153345698",
+          "name": "Tianxiang Sun"
+        },
+        {
+          "authorId": "2144226697",
+          "name": "Xiangyang Liu"
+        },
+        {
+          "authorId": "1767521",
+          "name": "Xipeng Qiu"
+        },
+        {
+          "authorId": "1790227",
+          "name": "Xuanjing Huang"
+        }
+      ],
+      "abstract": "In the era of deep learning, modeling for most natural language processing (NLP) tasks has converged into several mainstream paradigms. For example, we usually adopt the sequence labeling paradigm to solve a bundle of tasks such as POS-tagging, named entity recognition (NER), and chunking, and adopt the classification paradigm to solve tasks like sentiment analysis. With the rapid progress of pre-trained language models, recent years have witnessed a rising trend of paradigm shift, which is solving one NLP task in a new paradigm by reformulating the task. The paradigm shift has achieved great success on many tasks and is becoming a promising way to improve model performance. Moreover, some of these paradigms have shown great potential to unify a large number of NLP tasks, making it possible to build a single model to handle diverse tasks. In this paper, we review such phenomenon of paradigm shifts in recent years, highlighting several paradigms that have the potential to solve different NLP tasks."
+    },
+    {
+      "paperId": "3a4840ecfddc5e938e715379462af6fdbaa5e9b6",
+      "externalIds": {
+        "MAG": "3184333966",
+        "ACL": "2021.acl-tutorials.3",
+        "DOI": "10.18653/v1/2021.acl-tutorials.3",
+        "CorpusId": 237700510
+      },
+      "corpusId": 237700510,
+      "url": "https://www.semanticscholar.org/paper/3a4840ecfddc5e938e715379462af6fdbaa5e9b6",
+      "title": "Meta Learning and Its Applications to Natural Language Processing",
+      "venue": "Annual Meeting of the Association for Computational Linguistics",
+      "year": 2021,
+      "referenceCount": 50,
+      "citationCount": 12,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://aclanthology.org/2021.acl-tutorials.3.pdf",
+        "status": "HYBRID",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://aclanthology.org/2021.acl-tutorials.3, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Conference",
+        "Review"
+      ],
+      "publicationDate": "2021-08-01",
+      "journal": {
+        "name": "Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing: Tutorial Abstracts"
+      },
+      "authors": [
+        {
+          "authorId": "1706104",
+          "name": "Hung-yi Lee"
+        },
+        {
+          "authorId": "4160376",
+          "name": "Ngoc Thang Vu"
+        },
+        {
+          "authorId": "2530311",
+          "name": "Shang-Wen Li"
+        }
+      ],
+      "abstract": "Deep learning based natural language processing (NLP) has become the mainstream of research in recent years and significantly outperforms conventional methods. However, deep learning models are notorious for being data and computation hungry. These downsides limit the application of such models from deployment to different domains, languages, countries, or styles, since collecting in-genre data and model training from scratch are costly. The long-tail nature of human language makes challenges even more significant. Meta-learning, or \u2018Learning to Learn\u2019, aims to learn better learning algorithms, including better parameter initialization, optimization strategy, network architecture, distance metrics, and beyond. Meta-learning has been shown to allow faster fine-tuning, converge to better performance, and achieve amazing results for few-shot learning in many applications. Meta-learning is one of the most important new techniques in machine learning in recent years. There is a related tutorial in ICML 2019 and a related course at Stanford, but most of the example applications given in these materials are about image processing. It is believed that meta-learning has great potential to be applied in NLP, and some works have been proposed with notable achievements in several relevant problems, e.g., relation extraction, machine translation, and dialogue generation and state tracking. However, it does not catch the same level of attention as in the image processing community. In the tutorial, we will first introduce Meta-learning approaches and the theory behind them, and then review the works of applying this technology to NLP problems. This tutorial intends to facilitate researchers in the NLP community to understand this new technology better and promote more research studies using this new technology."
+    },
+    {
+      "paperId": "00c9922edc4b56331c23ff7c5df3fb2df691310e",
+      "externalIds": {
+        "DOI": "10.1109/hpbdis53214.2021.9658453",
+        "CorpusId": 245694890
+      },
+      "corpusId": 245694890,
+      "url": "https://www.semanticscholar.org/paper/00c9922edc4b56331c23ff7c5df3fb2df691310e",
+      "title": "Research on Natural Language Extraction Method Based on Deep Learning Technology",
+      "venue": "2021 International Conference on High Performance Big Data and Intelligent Systems (HPBD&IS)",
+      "year": 2021,
+      "referenceCount": 0,
+      "citationCount": 0,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": "CLOSED",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/hpbdis53214.2021.9658453?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/hpbdis53214.2021.9658453, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Conference"
+      ],
+      "publicationDate": "2021-12-05",
+      "journal": {
+        "name": "2021 International Conference on High Performance Big Data and Intelligent Systems (HPBD&IS)",
+        "pages": "88-93"
+      },
+      "authors": [
+        {
+          "authorId": "2139597027",
+          "name": "Wei Zhuang"
+        }
+      ],
+      "abstract": "NLP (Natural Language Processing) has become one of the research hotspots of machine learning. Text classification is an important branch of NLP processing technology. This article uses journal papers as experimental data to study Chinese text classification and proposes two classification models. One is the Chinese text classification algorithm PRE-TF-IDF. The traditional word frequency algorithm only considers the appearance frequency of the word when weighting the word, and does not consider the position of the word in the text. The PRE-TF-IDF algorithm improves the accuracy of text classification by adding weight preprocessing and word density weighting on the basis of the TF-IDF (Term Frequency Inverse Document Frequency) algorithm. The other is the text classification model CNNSVM(Convolutional Neural Network and Support Vector Machine Classifier)based on the combination of convolutional neural network and support vector machine. On the basis of the traditional convolutional neural network model, an attention mechanism is added, while the parameters of the model are simplified, and a support vector machine-based classifier is used to replace the softmax layer in the traditional model to achieve text classification. The extraction effect of feature words is improved, and the problem of weak generalization ability of the softmax layer is solved."
+    },
+    {
+      "paperId": "7646af3d1a2df902d429f3426251572edf0f90c0",
+      "externalIds": {
+        "DBLP": "conf/esann/LauriolaLA20",
+        "CorpusId": 231668451
+      },
+      "corpusId": 231668451,
+      "url": "https://www.semanticscholar.org/paper/7646af3d1a2df902d429f3426251572edf0f90c0",
+      "title": "Language processing in the era of deep learning",
+      "venue": "The European Symposium on Artificial Neural Networks",
+      "year": 2020,
+      "referenceCount": 59,
+      "citationCount": 1,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Review"
+      ],
+      "publicationDate": null,
+      "journal": {
+        "pages": "597-606"
+      },
+      "authors": [
+        {
+          "authorId": "49548657",
+          "name": "Ivano Lauriola"
+        },
+        {
+          "authorId": "2192424",
+          "name": "A. Lavelli"
+        },
+        {
+          "authorId": "1788286",
+          "name": "F. Aiolli"
+        }
+      ],
+      "abstract": null
+    },
+    {
+      "paperId": "25761ba4bdc054bfe902fe7c5d6338be6d00d491",
+      "externalIds": {
+        "MAG": "3159506165",
+        "DOI": "10.3390/APP11093986",
+        "CorpusId": 235583524
+      },
+      "corpusId": 235583524,
+      "url": "https://www.semanticscholar.org/paper/25761ba4bdc054bfe902fe7c5d6338be6d00d491",
+      "title": "Sentiment Analysis of Students\u2019 Feedback with NLP and Deep Learning: A Systematic Mapping Study",
+      "venue": "Applied Sciences",
+      "year": 2021,
+      "referenceCount": 107,
+      "citationCount": 198,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://www.mdpi.com/2076-3417/11/9/3986/pdf",
+        "status": "GOLD",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.3390/APP11093986?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.3390/APP11093986, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Education",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Review"
+      ],
+      "publicationDate": "2021-04-28",
+      "journal": {
+        "name": "Applied Sciences",
+        "pages": "3986",
+        "volume": "11"
+      },
+      "authors": [
+        {
+          "authorId": "2429723",
+          "name": "Zenun Kastrati"
+        },
+        {
+          "authorId": "2035596",
+          "name": "Fisnik Dalipi"
+        },
+        {
+          "authorId": null,
+          "name": "Ali Shariq Imran"
+        },
+        {
+          "authorId": "89182458",
+          "name": "Krenare Pireva Nu\u00e7i"
+        },
+        {
+          "authorId": "15971377",
+          "name": "M. A. Wani"
+        }
+      ],
+      "abstract": "In the last decade, sentiment analysis has been widely applied in many domains, including business, social networks and education. Particularly in the education domain, where dealing with and processing students\u2019 opinions is a complicated task due to the nature of the language used by students and the large volume of information, the application of sentiment analysis is growing yet remains challenging. Several literature reviews reveal the state of the application of sentiment analysis in this domain from different perspectives and contexts. However, the body of literature is lacking a review that systematically classifies the research and results of the application of natural language processing (NLP), deep learning (DL), and machine learning (ML) solutions for sentiment analysis in the education domain. In this article, we present the results of a systematic mapping study to structure the published information available. We used a stepwise PRISMA framework to guide the search process and searched for studies conducted between 2015 and 2020 in the electronic research databases of the scientific literature. We identified 92 relevant studies out of 612 that were initially found on the sentiment analysis of students\u2019 feedback in learning platform environments. The mapping results showed that, despite the identified challenges, the field is rapidly growing, especially regarding the application of DL, which is the most recent trend. We identified various aspects that need to be considered in order to contribute to the maturity of research and development in the field. Among these aspects, we highlighted the need of having structured datasets, standardized solutions and increased focus on emotional expression and detection."
+    }
+  ]
+}

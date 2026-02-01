@@ -1,0 +1,3101 @@
+{
+  "total": 8269,
+  "token": "PCOKWVSKJJGM4TWNJNI3EUSQJIWVNUSRKBFEYK2JFUBHFI4VBRJQZEWTFSGJGTJNRWJU3DCNBVGFHU4MZVGY2LGTKKGU2LJMRUJA3EUNBRGBEU6MSVRGWAPOKIKAK",
+  "data": [
+    {
+      "paperId": "000170e0e67cae990b5cebce7f9f2f7b0f72c496",
+      "externalIds": {
+        "MAG": "3046280588",
+        "DBLP": "journals/itiis/MuZ20",
+        "DOI": "10.3837/tiis.2020.06.001",
+        "CorpusId": 225796365
+      },
+      "corpusId": 225796365,
+      "url": "https://www.semanticscholar.org/paper/000170e0e67cae990b5cebce7f9f2f7b0f72c496",
+      "title": "Auxiliary Stacked Denoising Autoencoder based Collaborative Filtering Recommendation",
+      "venue": "KSII Transactions on Internet and Information Systems",
+      "year": 2020,
+      "referenceCount": 32,
+      "citationCount": 8,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://doi.org/10.3837/tiis.2020.06.001",
+        "status": "GOLD",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.3837/tiis.2020.06.001?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.3837/tiis.2020.06.001, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": "2020-06-30",
+      "journal": {
+        "name": "KSII Trans. Internet Inf. Syst.",
+        "pages": "2310-2332",
+        "volume": "14"
+      },
+      "authors": [
+        {
+          "authorId": "1689536",
+          "name": "Ruihui Mu"
+        },
+        {
+          "authorId": "1686138",
+          "name": "Xiaoqin Zeng"
+        }
+      ],
+      "abstract": "In recent years, deep learning techniques have achieved tremendous successes in natural language processing, speech recognition and image processing. Collaborative filtering(CF) recommendation is one of widely used methods and has significant effects in implementing the new recommendation function, but it also has limitations in dealing with the problem of poor scalability, cold start and data sparsity, etc. Combining the traditional recommendation algorithm with the deep learning model has brought great opportunity for the construction of a new recommender system. In this paper, we propose a novel collaborative recommendation model based on auxiliary stacked denoising autoencoder(ASDAE), the model learns effective the preferences of users from auxiliary information. Firstly, we integrate auxiliary information with rating information. Then, we design a stacked denoising autoencoder based collaborative recommendation model to learn the preferences of users from auxiliary information and rating information. Finally, we conduct comprehensive experiments on three real datasets to compare our proposed model with state-of-the-art methods. Experimental results demonstrate that our proposed model is superior to other recommendation methods."
+    },
+    {
+      "paperId": "001069a23f3e562c8599609ac110e080aba1637f",
+      "externalIds": {
+        "CorpusId": 251047692
+      },
+      "corpusId": 251047692,
+      "url": "https://www.semanticscholar.org/paper/001069a23f3e562c8599609ac110e080aba1637f",
+      "title": "Applications of Reinforcement Learning and its Extension to Tactical Simulation Technologies",
+      "venue": "",
+      "year": 2021,
+      "referenceCount": 36,
+      "citationCount": 2,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Engineering",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": null,
+      "journal": null,
+      "authors": [
+        {
+          "authorId": "66154237",
+          "name": "A. Mendi"
+        },
+        {
+          "authorId": "2071275222",
+          "name": "Dilara Do\u011fan"
+        },
+        {
+          "authorId": "121777576",
+          "name": "Tolga Erol"
+        },
+        {
+          "authorId": "2179147925",
+          "name": "Turan Topalo\u011flu"
+        },
+        {
+          "authorId": "1389527546",
+          "name": "Muhammet Esat Kalfaoglu"
+        },
+        {
+          "authorId": "2046869305",
+          "name": "H\u00fcseyin Oktay Altun"
+        }
+      ],
+      "abstract": null
+    },
+    {
+      "paperId": "0014ecb6e7055de7b3bef3d5619446c24fdf0db4",
+      "externalIds": {
+        "DOI": "10.3390/app112210795",
+        "CorpusId": 244300728
+      },
+      "corpusId": 244300728,
+      "url": "https://www.semanticscholar.org/paper/0014ecb6e7055de7b3bef3d5619446c24fdf0db4",
+      "title": "Fine-Grained Named Entity Recognition Using a Multi-Stacked Feature Fusion and Dual-Stacked Output in Korean",
+      "venue": "Applied Sciences",
+      "year": 2021,
+      "referenceCount": 8,
+      "citationCount": 7,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://www.mdpi.com/2076-3417/11/22/10795/pdf?version=1637052254",
+        "status": "GOLD",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.3390/app112210795?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.3390/app112210795, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": "2021-11-15",
+      "journal": {
+        "name": "Applied Sciences"
+      },
+      "authors": [
+        {
+          "authorId": "2110134563",
+          "name": "Hongjin Kim"
+        },
+        {
+          "authorId": "2108880610",
+          "name": "Harksoo Kim"
+        }
+      ],
+      "abstract": "Named entity recognition (NER) is a natural language processing task to identify spans that mention named entities and to annotate them with predefined named entity classes. Although many NER models based on machine learning have been proposed, their performance in terms of processing fine-grained NER tasks was less than acceptable. This is because the training data of a fine-grained NER task is much more unbalanced than those of a coarse-grained NER task. To overcome the problem presented by unbalanced data, we propose a fine-grained NER model that compensates for the sparseness of fine-grained NEs by using the contextual information of coarse-grained NEs. From another viewpoint, many NER models have used different levels of features, such as part-of-speech tags and gazetteer look-up results, in a nonhierarchical manner. Unfortunately, these models experience the feature interference problem. Our solution to this problem is to adopt a multi-stacked feature fusion scheme, which accepts different levels of features as its input. The proposed model is based on multi-stacked long short-term memories (LSTMs) with a multi-stacked feature fusion layer for acquiring multilevel embeddings and a dual-stacked output layer for predicting fine-grained NEs based on the categorical information of coarse-grained NEs. Our experiments indicate that the proposed model is capable of state-of-the-art performance. The results show that the proposed model can effectively alleviate the unbalanced data problem that frequently occurs in a fine-grained NER task. In addition, the multi-stacked feature fusion layer contributes to the improvement of NER performance, confirming that the proposed model can alleviate the feature interference problem. Based on this experimental result, we conclude that the proposed model is well-designed to effectively perform NER tasks."
+    },
+    {
+      "paperId": "0016e12c1080787948c0e9a4dacedc4b5b5ebf41",
+      "externalIds": {
+        "DBLP": "conf/rectour/VargaH21",
+        "CorpusId": 243831445
+      },
+      "corpusId": 243831445,
+      "url": "https://www.semanticscholar.org/paper/0016e12c1080787948c0e9a4dacedc4b5b5ebf41",
+      "title": "Addressing Overchoice: Automatically Generating Meaningful Filters from Hotel Reviews",
+      "venue": "RecTour@RecSys",
+      "year": 2021,
+      "referenceCount": 56,
+      "citationCount": 1,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Business",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Review"
+      ],
+      "publicationDate": null,
+      "journal": {
+        "pages": "54-68"
+      },
+      "authors": [
+        {
+          "authorId": "2060429542",
+          "name": "Istv\u00e1n Varga"
+        },
+        {
+          "authorId": "50347055",
+          "name": "Yuta Hayashibe"
+        }
+      ],
+      "abstract": null
+    },
+    {
+      "paperId": "001a51349da8527406031d0afd66701454b9dbe1",
+      "externalIds": {
+        "DBLP": "journals/fac/YangBYHBFG21",
+        "MAG": "3163348536",
+        "DOI": "10.1007/s00165-021-00543-6",
+        "CorpusId": 236437264
+      },
+      "corpusId": 236437264,
+      "url": "https://www.semanticscholar.org/paper/001a51349da8527406031d0afd66701454b9dbe1",
+      "title": "Exploiting augmented intelligence in the modeling of safety-critical autonomous systems",
+      "venue": "Formal Aspects of Computing",
+      "year": 2021,
+      "referenceCount": 56,
+      "citationCount": 8,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://dl.acm.org/doi/pdf/10.1007/s00165-021-00543-6",
+        "status": "BRONZE",
+        "license": null,
+        "disclaimer": "Notice: The following paper fields have been elided by the publisher: {'abstract'}. Paper or abstract available at https://api.unpaywall.org/v2/10.1007/s00165-021-00543-6?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1007/s00165-021-00543-6, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Engineering",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": "2021-05-17",
+      "journal": {
+        "name": "Formal Aspects of Computing",
+        "pages": "343 - 384",
+        "volume": "33"
+      },
+      "authors": [
+        {
+          "authorId": "2109432754",
+          "name": "Zhibin Yang"
+        },
+        {
+          "authorId": "2075377374",
+          "name": "Yang Bao"
+        },
+        {
+          "authorId": "49307645",
+          "name": "Yongqiang Yang"
+        },
+        {
+          "authorId": "1713329",
+          "name": "Zhiqiu Huang"
+        },
+        {
+          "authorId": "1763020",
+          "name": "J. Bodeveix"
+        },
+        {
+          "authorId": "1709518",
+          "name": "M. Filali"
+        },
+        {
+          "authorId": "2068006437",
+          "name": "Zonghua Gu"
+        }
+      ],
+      "abstract": null
+    },
+    {
+      "paperId": "00213d44e03dae916860c0512025b5f96c3ee231",
+      "externalIds": {
+        "PubMedCentral": "9001823",
+        "DBLP": "journals/corr/abs-2103-14453",
+        "ArXiv": "2103.14453",
+        "DOI": "10.1007/s13042-022-01553-3",
+        "CorpusId": 232379879,
+        "PubMed": "35432623"
+      },
+      "corpusId": 232379879,
+      "url": "https://www.semanticscholar.org/paper/00213d44e03dae916860c0512025b5f96c3ee231",
+      "title": "Data augmentation in natural language processing: a novel text generation approach for long and short text classifiers",
+      "venue": "International Journal of Machine Learning and Cybernetics",
+      "year": 2021,
+      "referenceCount": 77,
+      "citationCount": 145,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://link.springer.com/content/pdf/10.1007/s13042-022-01553-3.pdf",
+        "status": "HYBRID",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2103.14453, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science",
+        "Medicine"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Medicine",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": "2021-03-26",
+      "journal": {
+        "name": "International Journal of Machine Learning and Cybernetics",
+        "pages": "135 - 150",
+        "volume": "14"
+      },
+      "authors": [
+        {
+          "authorId": "144892532",
+          "name": "Markus Bayer"
+        },
+        {
+          "authorId": "2555887",
+          "name": "M. Kaufhold"
+        },
+        {
+          "authorId": "2209043",
+          "name": "Bj\u00f6rn Buchhold"
+        },
+        {
+          "authorId": null,
+          "name": "Marcel Keller"
+        },
+        {
+          "authorId": "2774931",
+          "name": "J. Dallmeyer"
+        },
+        {
+          "authorId": "145481292",
+          "name": "Christian Reuter"
+        }
+      ],
+      "abstract": "In many cases of machine learning, research suggests that the development of training data might have a higher relevance than the choice and modelling of classifiers themselves. Thus, data augmentation methods have been developed to improve classifiers by artificially created training data. In NLP, there is the challenge of establishing universal rules for text transformations which provide new linguistic patterns. In this paper, we present and evaluate a text generation method suitable to increase the performance of classifiers for long and short texts. We achieved promising improvements when evaluating short as well as long text tasks with the enhancement by our text generation method. Especially with regard to small data analytics, additive accuracy gains of up to 15.53% and 3.56% are achieved within a constructed low data regime, compared to the no augmentation baseline and another data augmentation technique. As the current track of these constructed regimes is not universally applicable, we also show major improvements in several real world low data tasks (up to +4.84 F1-score). Since we are evaluating the method from many perspectives (in total 11 datasets), we also observe situations where the method might not be suitable. We discuss implications and patterns for the successful application of our approach on different types of datasets."
+    },
+    {
+      "paperId": "002912aefce306d7bcf00ab6dfbcc6aa05447941",
+      "externalIds": {
+        "PubMedCentral": "8968783",
+        "DBLP": "journals/snam/ToramanSYA22",
+        "DOI": "10.1007/s13278-022-00872-1",
+        "CorpusId": 247846711,
+        "PubMed": "35378818"
+      },
+      "corpusId": 247846711,
+      "url": "https://www.semanticscholar.org/paper/002912aefce306d7bcf00ab6dfbcc6aa05447941",
+      "title": "Understanding social engagements: A comparative analysis of user and text features in Twitter",
+      "venue": "Social Network Analysis and Mining",
+      "year": 2022,
+      "referenceCount": 49,
+      "citationCount": 21,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://link.springer.com/content/pdf/10.1007/s13278-022-00872-1.pdf",
+        "status": "BRONZE",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://pmc.ncbi.nlm.nih.gov/articles/PMC8968783, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Medicine",
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Medicine",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": "2022-03-31",
+      "journal": {
+        "name": "Social Network Analysis and Mining",
+        "volume": "12"
+      },
+      "authors": [
+        {
+          "authorId": "2648640",
+          "name": "Cagri Toraman"
+        },
+        {
+          "authorId": "107973475",
+          "name": "Furkan \u015eahinu\u00e7"
+        },
+        {
+          "authorId": "1830448719",
+          "name": "E. Yilmaz"
+        },
+        {
+          "authorId": "30686917",
+          "name": "Ibrahim Batuhan Akkaya"
+        }
+      ],
+      "abstract": "Information is spread as individuals engage with other users in the underlying social network. Analysis of social engagements can therefore provide insights to understand the motivation behind how and why users engage with others in different activities. In this study, we aim to understand the driving factors behind four engagement types in Twitter, namely like, reply, retweet, and quote. We extensively analyze a diverse set of features that reflect user behaviors, as well as tweet attributes and semantics by natural language processing, including a deep learning language model, BERT. The performance of these features is assessed in a supervised task of engagement prediction by learning social engagements from over 14 million multilingual tweets. In the light of our experimental results, we find that users would engage with tweets based on text semantics and contents regardless of tweet author, yet popular and trusted authors could be important for reply and quote. Users who actively liked and retweeted in the past are likely to maintain this type of behavior in the future, while this trend is not seen in more complex types of engagements, reply, and quote. Moreover, users do not necessarily follow the behavior of other users with whom they have previously engaged. We further discuss the social insights obtained from the experimental results to understand better user behavior and social engagements in online social networks."
+    },
+    {
+      "paperId": "002fd768fa5bdcbe03f1b3383db06f5f429cc767",
+      "externalIds": {
+        "MAG": "3021968902",
+        "DOI": "10.1007/978-981-15-3863-6_17",
+        "CorpusId": 219031427
+      },
+      "corpusId": 219031427,
+      "url": "https://www.semanticscholar.org/paper/002fd768fa5bdcbe03f1b3383db06f5f429cc767",
+      "title": "Research and Design of a Key Technology for Accelerating Convolution Computation for FPGA-Based CNN",
+      "venue": "",
+      "year": 2020,
+      "referenceCount": 8,
+      "citationCount": 0,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: The following paper fields have been elided by the publisher: {'abstract'}. Paper or abstract available at https://api.unpaywall.org/v2/10.1007/978-981-15-3863-6_17?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1007/978-981-15-3863-6_17, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Engineering",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": null,
+      "journal": {
+        "name": "",
+        "pages": "149-155",
+        "volume": ""
+      },
+      "authors": [
+        {
+          "authorId": "2072433749",
+          "name": "Liang Ying"
+        },
+        {
+          "authorId": "1391691626",
+          "name": "L. Keli"
+        },
+        {
+          "authorId": "1453643631",
+          "name": "Bi Fanghong"
+        },
+        {
+          "authorId": "2058424508",
+          "name": "Zhang Kun"
+        },
+        {
+          "authorId": "50532559",
+          "name": "Yang Jun"
+        }
+      ],
+      "abstract": null
+    },
+    {
+      "paperId": "0036c9dbc356b6daef640c792cf1e19a9f976c23",
+      "externalIds": {
+        "DOI": "10.2139/ssrn.3681682",
+        "CorpusId": 223638619
+      },
+      "corpusId": 223638619,
+      "url": "https://www.semanticscholar.org/paper/0036c9dbc356b6daef640c792cf1e19a9f976c23",
+      "title": "Using Machine Learning to Demystify Startups Funding, Post-Money Valuation, and Success",
+      "venue": "Social Science Research Network",
+      "year": 2020,
+      "referenceCount": 36,
+      "citationCount": 19,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.2139/ssrn.3681682?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.2139/ssrn.3681682, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Business",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Economics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": "2020-08-27",
+      "journal": {
+        "name": "Mutual Funds"
+      },
+      "authors": [
+        {
+          "authorId": "2003406528",
+          "name": "Yu Qian Ang"
+        },
+        {
+          "authorId": "118187689",
+          "name": "Andrew Chia"
+        },
+        {
+          "authorId": "2096503",
+          "name": "S. Saghafian"
+        }
+      ],
+      "abstract": "This chapter develops a novel approach to predict post-money valuation of startups across various regions and sectors, as well as their probabilities of success. Using startup funding data and descriptions from Crunchbase over a ten-year period, we develop two models linking information such as description, region, and venture capital funding to successful outcomes such as the achievement of an acquisition or IPO. The first model utilizes latent Dirichlet allocation, a generative statistical model in natural language processing, to organize the startups in the dataset into clusters representing various sectors in the typical economy. An optimized distributed gradient boosting regressor (XGBoost) is subsequently deployed to make use of the resultant feature set to predict post-money valuation, with Bayesian optimization used to find the optimal hyperparameters. Our model consistently achieves an accuracy of over 95% on hold-out test sets, even with some continuous features removed. The second model is a feed-forward neural network constructed using TensorFlow, with the final layer providing probabilities of success.We find that post-money valuations across regions are typically log-normally distributed, and startups in regions such as San Francisco Bay Area typically witness higher valuations across most sectors. We also find that startups operating in specific geographical regions and sectors of economy (e.g., regions and sectors with higher number of investors) typically have higher predicted probabilities of success. Our approach offers an empirical perspective to startups, policymakers, and venture funds to benchmark and predict valuation and success, clearing some opacity in the modern startup economy."
+    },
+    {
+      "paperId": "0040c37c9648b0e7f3f68659335e9f83ce161111",
+      "externalIds": {
+        "DOI": "10.1093/oso/9780190939717.003.0013",
+        "CorpusId": 219496307
+      },
+      "corpusId": 219496307,
+      "url": "https://www.semanticscholar.org/paper/0040c37c9648b0e7f3f68659335e9f83ce161111",
+      "title": "Open-Ended Questions",
+      "venue": "Employee Surveys and Sensing",
+      "year": 2020,
+      "referenceCount": 0,
+      "citationCount": 2,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: The following paper fields have been elided by the publisher: {'abstract'}. Paper or abstract available at https://api.unpaywall.org/v2/10.1093/oso/9780190939717.003.0013?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1093/oso/9780190939717.003.0013, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Psychology",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Business",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Review"
+      ],
+      "publicationDate": "2020-05-21",
+      "journal": {
+        "name": "Employee Surveys and Sensing"
+      },
+      "authors": [],
+      "abstract": null
+    },
+    {
+      "paperId": "004147dab6dc3372133f551f06d40d0aecc2951e",
+      "externalIds": {
+        "DBLP": "conf/icccnt/VamsiRH20",
+        "MAG": "3094617772",
+        "DOI": "10.1109/ICCCNT49239.2020.9225395",
+        "CorpusId": 224777665
+      },
+      "corpusId": 224777665,
+      "url": "https://www.semanticscholar.org/paper/004147dab6dc3372133f551f06d40d0aecc2951e",
+      "title": "Chatbot: A Deep Neural Network Based Human to Machine Conversation Model",
+      "venue": "International Conference on Computing Communication and Networking Technologies",
+      "year": 2020,
+      "referenceCount": 15,
+      "citationCount": 32,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/ICCCNT49239.2020.9225395?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/ICCCNT49239.2020.9225395, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Conference"
+      ],
+      "publicationDate": "2020-07-01",
+      "journal": {
+        "name": "2020 11th International Conference on Computing, Communication and Networking Technologies (ICCCNT)",
+        "pages": "1-7"
+      },
+      "authors": [
+        {
+          "authorId": "2285029824",
+          "name": "G Krishna Vamsi"
+        },
+        {
+          "authorId": "14137553",
+          "name": "A. Rasool"
+        },
+        {
+          "authorId": "1931753533",
+          "name": "Gaurav Hajela"
+        }
+      ],
+      "abstract": "A conversational agent (chatbot) is computer software capable of communicating with humans using natural language processing. The crucial part of building any chatbot is the development of conversation. Despite many developments in Natural Language Processing (NLP) and Artificial Intelligence (AI), creating a good chatbot model remains a significant challenge in this field even today. A conversational bot can be used for countless errands. In general, they need to understand the user's intent and deliver appropriate replies. This is a software program of a conversational interface that allows a user to converse in the same manner one would address a human. Hence, these are used in almost every customer communication platform, like social networks. At present, there are two basic models used in developing a chatbot. Generative based models and Retrieval based models. The recent advancements in deep learning and artificial intelligence, such as the end-to-end trainable neural networks have rapidly replaced earlier methods based on hand-written instructions and patterns or statistical methods. This paper proposes a new method of creating a chatbot using a deep neural learning method. In this method, a neural network with multiple layers is built to learn and process the data."
+    },
+    {
+      "paperId": "004455626f641d75d5e85e9f95b11580e77da277",
+      "externalIds": {
+        "ArXiv": "2208.14493",
+        "DBLP": "journals/corr/abs-2208-14493",
+        "DOI": "10.48550/arXiv.2208.14493",
+        "CorpusId": 251953590
+      },
+      "corpusId": 251953590,
+      "url": "https://www.semanticscholar.org/paper/004455626f641d75d5e85e9f95b11580e77da277",
+      "title": "Annotated Dataset Creation through General Purpose Language Models for non-English Medical NLP",
+      "venue": "arXiv.org",
+      "year": 2022,
+      "referenceCount": 47,
+      "citationCount": 2,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "http://arxiv.org/pdf/2208.14493",
+        "status": "CLOSED",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2208.14493, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": "2022-08-30",
+      "journal": {
+        "name": "ArXiv",
+        "volume": "abs/2208.14493"
+      },
+      "authors": [
+        {
+          "authorId": "143627925",
+          "name": "Johann Frei"
+        },
+        {
+          "authorId": "47965138",
+          "name": "F. Kramer"
+        }
+      ],
+      "abstract": "Obtaining text datasets with semantic annotations is an effortful process, yet crucial for supervised training in natural language processsing (NLP). In general, developing and applying new NLP pipelines in domain-specific contexts for tasks often requires custom designed datasets to address NLP tasks in supervised machine learning fashion. When operating in non-English languages for medical data processing, this exposes several minor and major, interconnected problems such as lack of task-matching datasets as well as task-specific pre-trained models. In our work we suggest to leverage pretrained language models for training data acquisition in order to retrieve sufficiently large datasets for training smaller and more efficient models for use-case specific tasks. To demonstrate the effectiveness of your approach, we create a custom dataset which we use to train a medical NER model for German texts, GPTNERMED, yet our method remains language-independent in principle. Our obtained dataset as well as our pre-trained models are publicly available at: https://github.com/frankkramer-lab/GPTNERMED"
+    },
+    {
+      "paperId": "00480c39b4436cf8e29a3b483c04532c89696496",
+      "externalIds": {
+        "DOI": "10.1111/jnu.12852",
+        "CorpusId": 254910824,
+        "PubMed": "36529995"
+      },
+      "corpusId": 254910824,
+      "url": "https://www.semanticscholar.org/paper/00480c39b4436cf8e29a3b483c04532c89696496",
+      "title": "Global output on artificial intelligence in the field of nursing: A bibliometric analysis and science mapping.",
+      "venue": "Journal of Nursing Scholarship",
+      "year": 2022,
+      "referenceCount": 31,
+      "citationCount": 26,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1111/jnu.12852?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1111/jnu.12852, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Medicine"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Medicine",
+          "source": "external"
+        },
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Review"
+      ],
+      "publicationDate": "2022-12-18",
+      "journal": {
+        "name": "Journal of nursing scholarship : an official publication of Sigma Theta Tau International Honor Society of Nursing"
+      },
+      "authors": [
+        {
+          "authorId": "1516927215",
+          "name": "Jiyuan Shi"
+        },
+        {
+          "authorId": "74211107",
+          "name": "Shuaifang Wei"
+        },
+        {
+          "authorId": "8128261",
+          "name": "Ya Gao"
+        },
+        {
+          "authorId": "2197275177",
+          "name": "Fan Mei"
+        },
+        {
+          "authorId": "2313054784",
+          "name": "Jinhui Tian"
+        },
+        {
+          "authorId": "2145161703",
+          "name": "Yang Zhao"
+        },
+        {
+          "authorId": "2146249261",
+          "name": "Zheng Li"
+        }
+      ],
+      "abstract": "PURPOSE\nTo analyze the AI research in the field of nursing, to explore the current situation, hot topics, and prospects of AI research in the field of nursing, and to provide a reference for researchers to carry out related studies.\n\n\nMETHODS\nWe used the VOSviewer 1.6.17, SciMAT, and CiteSpace 5.8.R3 to generate visual cooperation network maps for the country, organizations, authors, citations, and keywords and perform burst detection, theme evolution, and so forth.\n\n\nFINDINGS\nA total of 9318 articles were obtained from the Web of Science Core Collection database. Four hundred and thirty-one AI research related to the field of nursing was published by 855 institutions from 54 countries. CIN-Computers Informatics Nursing was the top productive journal. The United States was the dominant country. The transnational cooperation between authors from developed countries was closer than that between authors from developing countries. The main hot topics included nurse rostering, nursing diagnosis, nursing decision support, disease risk factor prediction, nursing big data management, expert system, support vector machine, decision tree, deep learning, natural language processing, and nursing education. Machine learning represented one of the cutting-edge and most applicable branches of artificial intelligence in the field of nursing, and deep learning was the hottest technology among many machine learning methods in recent years. One of the most cited papers was published by Burke in 2004 and cited 500 times, which critically evaluated AI methods to deal with nurse scheduling problems.\n\n\nCONCLUSIONS\nAlthough AI has been paid more and more attention to the field of nursing, there is still a lack of high-yielding authors who have been engaged in this field for a long time. Most of the high contribution authors and institutions came from developed countries; therefore, more transnational and multi-disciplinary cooperation is needed to promote the development of AI in the nursing field. This bibliometric analysis not only provided a comprehensive overview to help researchers to understand the important articles, journals, potential collaborators, and institutions in this field but also analyzed the history, hot spots, and future trends of the research topic to provide inspiration for researchers to choose research directions."
+    },
+    {
+      "paperId": "0051ed2a0e219c1ceabfd76d9993ab46297d115d",
+      "externalIds": {
+        "DOI": "10.1109/CONECCT55679.2022.9865706",
+        "CorpusId": 251957469
+      },
+      "corpusId": 251957469,
+      "url": "https://www.semanticscholar.org/paper/0051ed2a0e219c1ceabfd76d9993ab46297d115d",
+      "title": "An Approach to Evaluating Subjective Answers using BERT model",
+      "venue": "IEEE International Conference on Electronics, Computing and Communication Technologies",
+      "year": 2022,
+      "referenceCount": 15,
+      "citationCount": 5,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/CONECCT55679.2022.9865706?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/CONECCT55679.2022.9865706, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Mathematics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Conference"
+      ],
+      "publicationDate": "2022-07-08",
+      "journal": {
+        "name": "2022 IEEE International Conference on Electronics, Computing and Communication Technologies (CONECCT)",
+        "pages": "1-4"
+      },
+      "authors": [
+        {
+          "authorId": "2183508029",
+          "name": "Potsangbam Sushila Devi"
+        },
+        {
+          "authorId": "10616154",
+          "name": "Sunita Sarkar"
+        },
+        {
+          "authorId": "2112767874",
+          "name": "Takhellambam Sonamani Singh"
+        },
+        {
+          "authorId": "2183507347",
+          "name": "Laimayum Dayal Sharma"
+        },
+        {
+          "authorId": "2143593698",
+          "name": "Chongtham Pankaj"
+        },
+        {
+          "authorId": "2153603270",
+          "name": "Khoirom Rajib Singh"
+        }
+      ],
+      "abstract": "The state of art model for language translation, conversion from hand written to digital text, transcription are succeeded in wide range of fields using Natural Language Processing, Artificial Intelligence and Machine Learning (AIML) applications. In present, evaluation of subjective answers are not exercised systematically and graded using computer system. In this work, a mathematical method is proposed for evaluating subjective answers using Bidirectional Encoder Representation Transformers for word embedding and convert the sentence into vector space using pooling method for representing similar sentences. The proposed method evaluates the subjective answers having semantic meaning of answers based on topic Engineering and Medical related questions and answers dataset. It achieves to understand the similarity of different answers which are same semantically. The BERT model is used with machine learning methods to transform the sentence into vector space. The vector space is used to calculate percentage of similarity. The similarity of the sentences with percentage is observed and evaluated."
+    },
+    {
+      "paperId": "0052756b1cbbb6890b05b0e3aff107a298ac0fb6",
+      "externalIds": {
+        "DBLP": "journals/jikm/ThukrooBG22",
+        "DOI": "10.1142/s0219649222500575",
+        "CorpusId": 250588250
+      },
+      "corpusId": 250588250,
+      "url": "https://www.semanticscholar.org/paper/0052756b1cbbb6890b05b0e3aff107a298ac0fb6",
+      "title": "Spoken Language Identification Using Prosody, Phonotactics, and Acoustics: A Review",
+      "venue": "Journal of Information & Knowledge Management",
+      "year": 2022,
+      "referenceCount": 0,
+      "citationCount": 0,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1142/s0219649222500575?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1142/s0219649222500575, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Review"
+      ],
+      "publicationDate": "2022-07-14",
+      "journal": {
+        "name": "J. Inf. Knowl. Manag.",
+        "pages": "2250057:1-2250057:45",
+        "volume": "21"
+      },
+      "authors": [
+        {
+          "authorId": "2150114476",
+          "name": "Irshad Ahmad Thukroo"
+        },
+        {
+          "authorId": "9310887",
+          "name": "Rumaan Bashir"
+        },
+        {
+          "authorId": "9306324",
+          "name": "Kaiser J. Giri"
+        }
+      ],
+      "abstract": "Spoken language identification (LID) is the identification of language present in a speech segment despite its size (duration and speed), ambiance (topic and emotion), and moderator (gender, age, demographic region). Information Technology has touched new vistas for a couple of decades mostly to simplify the day-to-day life of humans. One of the key contributions of Information Technology is the application of Artificial Intelligence to achieve better results. The advent of artificial intelligence has given rise to a new branch of Natural Language Processing (NLP) called Computational Linguistics, which generates frameworks for intelligently manipulating spoken language knowledge and has brought human\u2013machine into a new stage. In this context, speech has arisen to be one of the imperative forms of interfaces, which is the basic mode of communication for us, and generally the most preferred one. Recognition of the spoken language is a frontend for several technologies, like multiple languages conversation systems, expressed translation software, multilingual speech recognition, spoken word extraction, speech production systems. This paper reviews and summarises the different levels of information that can be used for language identification. A broad study of acoustic, phonetic, and prosody features has been provided and various classifiers have been used for spoken language identification specifically for Indian languages. This paper has investigated various existing spoken language identification models implemented using prosodic, phonotactic, acoustic, and deep learning approaches, the datasets used, and performance measures utilized for their analysis. It also highlights the main features and challenges faced by these models. Moreover, this review analyses the efficiency of the spoken language models that can help the researchers to propose new language identification models for speech signals."
+    },
+    {
+      "paperId": "0064e6d447ef17824656c108545bea4fd4e5881a",
+      "externalIds": {
+        "DOI": "10.3390/app12105216",
+        "CorpusId": 248979180
+      },
+      "corpusId": 248979180,
+      "url": "https://www.semanticscholar.org/paper/0064e6d447ef17824656c108545bea4fd4e5881a",
+      "title": "Sigmoid Activation Implementation for Neural Networks Hardware Accelerators Based on Reconfigurable Computing Environments for Low-Power Intelligent Systems",
+      "venue": "Applied Sciences",
+      "year": 2022,
+      "referenceCount": 0,
+      "citationCount": 14,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://www.mdpi.com/2076-3417/12/10/5216/pdf?version=1653373842",
+        "status": "GOLD",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.3390/app12105216?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.3390/app12105216, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Engineering",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": "2022-05-21",
+      "journal": {
+        "name": "Applied Sciences"
+      },
+      "authors": [
+        {
+          "authorId": "72924426",
+          "name": "V. Shatravin"
+        },
+        {
+          "authorId": "71269649",
+          "name": "D. Shashev"
+        },
+        {
+          "authorId": "66815344",
+          "name": "Stanislav Shidlovskiy"
+        }
+      ],
+      "abstract": "The remarkable results of applying machine learning algorithms to complex tasks are well known. They open wide opportunities in natural language processing, image recognition, and predictive analysis. However, their use in low-power intelligent systems is restricted because of high computational complexity and memory requirements. This group includes a wide variety of devices, from smartphones and Internet of Things (IoT)smart sensors to unmanned aerial vehicles (UAVs), self-driving cars, and nodes of Edge Computing systems. All of these devices have severe limitations to their weight and power consumption. To apply neural networks in these systems efficiently, specialized hardware accelerators are used. However, hardware implementation of some neural network operations is a challenging task. Sigmoid activation is popular in the classification problem and is a notable example of such a complex operation because it uses division and exponentiation. The paper proposes efficient implementations of this activation for dynamically reconfigurable accelerators. Reconfigurable computing environments (RCE) allow achieving reconfigurability of accelerators. The paper shows the advantages of applying such accelerators in low-power systems, proposes the centralized and distributed hardware implementations of the sigmoid, presents comparisons with the results of other studies, and describes application of the proposed approaches to other activation functions. Timing simulations of the developed Verilog modules show low delay (14\u201318.5 ns) with acceptable accuracy (average absolute error is 0.004)."
+    },
+    {
+      "paperId": "0066872b2ca9f4f511bdefdf04e10b7cb2257087",
+      "externalIds": {
+        "DBLP": "conf/mie/ChraibiDTDBH21",
+        "DOI": "10.3233/SHTI210178",
+        "CorpusId": 235216942,
+        "PubMed": "34042763"
+      },
+      "corpusId": 235216942,
+      "url": "https://www.semanticscholar.org/paper/0066872b2ca9f4f511bdefdf04e10b7cb2257087",
+      "title": "A Deep Learning Framework for Automated ICD-10 Coding",
+      "venue": "Medical Informatics Europe",
+      "year": 2021,
+      "referenceCount": 13,
+      "citationCount": 5,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://ebooks.iospress.nl/pdf/doi/10.3233/SHTI210178",
+        "status": "HYBRID",
+        "license": "CCBYNC",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.3233/SHTI210178?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.3233/SHTI210178, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Medicine",
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Medicine",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": "2021-05-27",
+      "journal": {
+        "name": "Studies in health technology and informatics",
+        "pages": "\n          347-351\n        ",
+        "volume": "281"
+      },
+      "authors": [
+        {
+          "authorId": "152619347",
+          "name": "Abdelahad Chraibi"
+        },
+        {
+          "authorId": "2238381",
+          "name": "D. Delerue"
+        },
+        {
+          "authorId": "2318382",
+          "name": "Julien Taillard"
+        },
+        {
+          "authorId": "2436329",
+          "name": "Ismat Chaib Draa"
+        },
+        {
+          "authorId": "1712612",
+          "name": "R. Beuscart"
+        },
+        {
+          "authorId": "9644519",
+          "name": "A. Hansske"
+        }
+      ],
+      "abstract": "The International Statistical Classification of Diseases and Related Health Problems (ICD) is one of the widely used classification system for diagnoses and procedures to assign diagnosis codes to Electronic Health Record (EHR) associated with a patient's stay. The aim of this paper is to propose an automated coding system to assist physicians in the assignment of ICD codes to EHR. For this purpose, we created a pipeline of Natural Language Processing (NLP) and Deep Learning (DL) models able to extract the useful information from French medical texts and to perform classification. After the evaluation phase, our approach was able to predict 346 diagnosis codes from heterogeneous medical units with an accuracy average of 83%. Our results were finally validated by physicians of the Medical Information Department (MID) in charge of coding hospital stays."
+    },
+    {
+      "paperId": "0067521525564c7b131f0ca4ca0e69590ce82bdd",
+      "externalIds": {
+        "DBLP": "conf/ichi/Miller22",
+        "DOI": "10.1109/ICHI54592.2022.00077",
+        "CorpusId": 252167243
+      },
+      "corpusId": 252167243,
+      "url": "https://www.semanticscholar.org/paper/0067521525564c7b131f0ca4ca0e69590ce82bdd",
+      "title": "Comprehension of Contextual Semantics Across Clinical Healthcare Domains",
+      "venue": "IEEE International Conference on Healthcare Informatics",
+      "year": 2022,
+      "referenceCount": 6,
+      "citationCount": 0,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/ICHI54592.2022.00077?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/ICHI54592.2022.00077, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Conference"
+      ],
+      "publicationDate": "2022-06-01",
+      "journal": {
+        "name": "2022 IEEE 10th International Conference on Healthcare Informatics (ICHI)",
+        "pages": "479-480"
+      },
+      "authors": [
+        {
+          "authorId": "2184494355",
+          "name": "Kurt Miller"
+        }
+      ],
+      "abstract": "The widespread lack of adoption of clinical notetaking standards has rendered information retrieval from Electronic Health Records (EHRs) especially challenging using traditional Natural Language Processing (NLP) techniques. Clinical note authors too commonly adopt their own note-taking structures and styles, limiting the applicability of rule-based and statistical models. While the context of any given sentence within a note carries important implied information, context is notoriously difficult for a language model to infer. However, recent advances in deep learning NLP methods such as pre-training on domain-specific corpora, novel embedding structures, and transformer architectures have enabled an awareness of context not previously attainable. In this work, I study the application of these evidenced NLP approaches to a gold standard annotated corpus of primary care notes of multiple Mayo Clinic EHR systems. The strongly labelled data will be supplemented with large volumes of weakly labelled data curated using distant supervision. The combined dataset will be used to train and evaluate context classification and section boundary detection models that classify the current context of a sentence given adjacent text segments. Once validated against primary care corpora, transfer learning methods will enable access to shared knowledge across more specific clinical domains, enabling generalizability across clinical domains and a degree of transparency into the shared aspects of the integrated model."
+    },
+    {
+      "paperId": "006a98bb77bbccedb1ae21df7e05e83195e18632",
+      "externalIds": {
+        "PubMedCentral": "8892306",
+        "DOI": "10.1073/pnas.2107760119",
+        "CorpusId": 247057678,
+        "PubMed": "35193972"
+      },
+      "corpusId": 247057678,
+      "url": "https://www.semanticscholar.org/paper/006a98bb77bbccedb1ae21df7e05e83195e18632",
+      "title": "Widespread use of National Academies consensus reports by the American public",
+      "venue": "Proceedings of the National Academy of Sciences of the United States of America",
+      "year": 2022,
+      "referenceCount": 32,
+      "citationCount": 8,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://doi.org/10.1073/pnas.2107760119",
+        "status": "HYBRID",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://pmc.ncbi.nlm.nih.gov/articles/PMC8892306, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Medicine"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Medicine",
+          "source": "external"
+        },
+        {
+          "category": "Education",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": "2022-02-22",
+      "journal": {
+        "name": "Proceedings of the National Academy of Sciences of the United States of America",
+        "volume": "119"
+      },
+      "authors": [
+        {
+          "authorId": "1825222",
+          "name": "D. Hicks"
+        },
+        {
+          "authorId": "2111643411",
+          "name": "Matteo Zullo"
+        },
+        {
+          "authorId": "52423470",
+          "name": "Ameet Doshi"
+        },
+        {
+          "authorId": "12928935",
+          "name": "O. Asensio"
+        }
+      ],
+      "abstract": "Significance Advocates for open access argue that people need scientific information, although they lack evidence for this. Using Google\u2019s recently developed deep learning natural language processing model, which offers unrivalled comprehension of subtle differences in meaning, 1.6 million people downloading National Academies reports were classified, not just into broad categories such as researchers and teachers but also precisely delineated small groups such as hospital chaplains, veterans, and science fiction authors. The results reveal adults motivated to seek out the most credible sources, engage with challenging material, use it to improve the services they provide, and learn more about the world they live in. The picture contrasts starkly with the dominant narrative of a misinformed and manipulated public targeted by social media."
+    },
+    {
+      "paperId": "006eb3aba826caa6f19f682418d70145d8164aee",
+      "externalIds": {
+        "CorpusId": 247657040
+      },
+      "corpusId": 247657040,
+      "url": "https://www.semanticscholar.org/paper/006eb3aba826caa6f19f682418d70145d8164aee",
+      "title": "Preface on the Iberian Languages Evaluation",
+      "venue": "",
+      "year": 2021,
+      "referenceCount": 0,
+      "citationCount": 0,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Review"
+      ],
+      "publicationDate": null,
+      "journal": null,
+      "authors": [],
+      "abstract": null
+    },
+    {
+      "paperId": "006ede6a8dff6679defcadceaf8cd7e21858ad21",
+      "externalIds": {
+        "CorpusId": 247166171
+      },
+      "corpusId": 247166171,
+      "url": "https://www.semanticscholar.org/paper/006ede6a8dff6679defcadceaf8cd7e21858ad21",
+      "title": "In Press, Psychophysiology Neural Correlates of Word Representation Vectors in Natural Language Processing Models: Evidence from Representational Similarity Analysis of Event-Related Brain Potentials",
+      "venue": "",
+      "year": 2022,
+      "referenceCount": 46,
+      "citationCount": 0,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Psychology",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": null,
+      "journal": null,
+      "authors": [
+        {
+          "authorId": null,
+          "name": "Taiqi He"
+        },
+        {
+          "authorId": "1971650",
+          "name": "Megan A. Boudewyn"
+        },
+        {
+          "authorId": "31850189",
+          "name": "J. Kiat"
+        },
+        {
+          "authorId": "1757166",
+          "name": "Kenji Sagae"
+        },
+        {
+          "authorId": "2880391",
+          "name": "S. Luck"
+        }
+      ],
+      "abstract": null
+    },
+    {
+      "paperId": "007010384de3a337a464d1ed806c083a53450bcd",
+      "externalIds": {
+        "MAG": "3152541122",
+        "DOI": "10.1080/13614533.2021.1906715",
+        "CorpusId": 234846162
+      },
+      "corpusId": 234846162,
+      "url": "https://www.semanticscholar.org/paper/007010384de3a337a464d1ed806c083a53450bcd",
+      "title": "Transforming academic library operations in Africa with artificial intelligence: Opportunities and challenges: A review paper",
+      "venue": "New Review of Academic Librarianship",
+      "year": 2021,
+      "referenceCount": 22,
+      "citationCount": 75,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1080/13614533.2021.1906715?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1080/13614533.2021.1906715, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Engineering"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Engineering",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Education",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Review"
+      ],
+      "publicationDate": "2021-04-03",
+      "journal": {
+        "name": "New Review of Academic Librarianship",
+        "pages": "243 - 255",
+        "volume": "27"
+      },
+      "authors": [
+        {
+          "authorId": "112863967",
+          "name": "A. Echedom"
+        },
+        {
+          "authorId": "119286893",
+          "name": "Omorodion Okuonghae"
+        }
+      ],
+      "abstract": "Abstract This paper focuses on the opportunities and challenges associated with the use of artificial intelligence (AI) in academic library operations. In the quest to render fast, effective and efficient services, academic libraries have adopted different technologies in the past. Artificial intelligence technologies is the latest among the technologies currently being introduced in libraries. The technology which is considered an intelligent system, come in the form of robots and expert systems which have natural language processing, machine learning and pattern recognition capabilities. This paper examined the features of AI, the application of AI to library operations, examples of academic libraries with AI technologies in Sub-Saharan Africa, the need for AI in libraries and the challenges associated with the adoption of AI in libraries. The study concluded that AI holds a lot of prospects for the improvement of information services delivery in African academic libraries. Consequently, its adoption is a sinequanon to delivering robust library services in the Fourth Industrial Revolution (4IR)."
+    },
+    {
+      "paperId": "0084f3cb0a1754272151c5268a783f24bf5676a0",
+      "externalIds": {
+        "PubMedCentral": "8010506",
+        "DBLP": "journals/jbd/AlzubaidiZHADAS21a",
+        "DOI": "10.1186/s40537-021-00444-8",
+        "CorpusId": 232434552,
+        "PubMed": "33816053"
+      },
+      "corpusId": 232434552,
+      "url": "https://www.semanticscholar.org/paper/0084f3cb0a1754272151c5268a783f24bf5676a0",
+      "title": "Review of deep learning: concepts, CNN architectures, challenges, applications, future directions",
+      "venue": "Journal of Big Data",
+      "year": 2021,
+      "referenceCount": 349,
+      "citationCount": 5921,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://journalofbigdata.springeropen.com/counter/pdf/10.1186/s40537-021-00444-8",
+        "status": "GOLD",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://pmc.ncbi.nlm.nih.gov/articles/PMC8010506, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science",
+        "Medicine"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Medicine",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Review"
+      ],
+      "publicationDate": "2021-03-31",
+      "journal": {
+        "name": "Journal of Big Data",
+        "volume": "8"
+      },
+      "authors": [
+        {
+          "authorId": "2281247548",
+          "name": "Laith Alzubaidi"
+        },
+        {
+          "authorId": "1754598",
+          "name": "Jinglan Zhang"
+        },
+        {
+          "authorId": "2073994643",
+          "name": "A. Humaidi"
+        },
+        {
+          "authorId": "1409267833",
+          "name": "Ayad Al-dujaili"
+        },
+        {
+          "authorId": "145013346",
+          "name": "Y. Duan"
+        },
+        {
+          "authorId": "1410016448",
+          "name": "O. Al-Shamma"
+        },
+        {
+          "authorId": "2146732191",
+          "name": "Jos\u00e9 I. Santamar\u00eda"
+        },
+        {
+          "authorId": "1412407676",
+          "name": "M. Fadhel"
+        },
+        {
+          "authorId": "1412958882",
+          "name": "Muthana Al-Amidie"
+        },
+        {
+          "authorId": "144121680",
+          "name": "Laith Farhan"
+        }
+      ],
+      "abstract": "In the last few years, the deep learning (DL) computing paradigm has been deemed the Gold Standard in the machine learning (ML) community. Moreover, it has gradually become the most widely used computational approach in the field of ML, thus achieving outstanding results on several complex cognitive tasks, matching or even beating those provided by human performance. One of the benefits of DL is the ability to learn massive amounts of data. The DL field has grown fast in the last few years and it has been extensively used to successfully address a wide range of traditional applications. More importantly, DL has outperformed well-known ML techniques in many domains, e.g., cybersecurity, natural language processing, bioinformatics, robotics and control, and medical information processing, among many others. Despite it has been contributed several works reviewing the State-of-the-Art on DL, all of them only tackled one aspect of the DL, which leads to an overall lack of knowledge about it. Therefore, in this contribution, we propose using a more holistic approach in order to provide a more suitable starting point from which to develop a full understanding of DL. Specifically, this review attempts to provide a more comprehensive survey of the most important aspects of DL and including those enhancements recently added to the field. In particular, this paper outlines the importance of DL, presents the types of DL techniques and networks. It then presents convolutional neural networks (CNNs) which the most utilized DL network type and describes the development of CNNs architectures together with their main features, e.g., starting with the AlexNet network and closing with the High-Resolution network (HR.Net). Finally, we further present the challenges and suggested solutions to help researchers understand the existing research gaps. It is followed by a list of the major DL applications. Computational tools including FPGA, GPU, and CPU are summarized along with a description of their influence on DL. The paper ends with the evolution matrix, benchmark datasets, and summary and conclusion."
+    },
+    {
+      "paperId": "008bd1d2080d0b38c3448bdcec70221509823816",
+      "externalIds": {
+        "DOI": "10.1155/2022/2315341",
+        "CorpusId": 248971387
+      },
+      "corpusId": 248971387,
+      "url": "https://www.semanticscholar.org/paper/008bd1d2080d0b38c3448bdcec70221509823816",
+      "title": "Research on the Image Description Algorithm of Double-Layer LSTM Based on Adaptive Attention Mechanism",
+      "venue": "Mathematical Problems in Engineering",
+      "year": 2022,
+      "referenceCount": 20,
+      "citationCount": 0,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://downloads.hindawi.com/journals/mpe/2022/2315341.pdf",
+        "status": "GOLD",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1155/2022/2315341?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1155/2022/2315341, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": "2022-05-21",
+      "journal": {
+        "name": "Mathematical Problems in Engineering"
+      },
+      "authors": [
+        {
+          "authorId": "2165995261",
+          "name": "Cifeng Qin"
+        },
+        {
+          "authorId": "1880502",
+          "name": "Wenyin Gong"
+        },
+        {
+          "authorId": "2144438792",
+          "name": "Xiang Li"
+        }
+      ],
+      "abstract": "Image text description is a multimodal data processing problem in the computer field, which involves the research tasks of computer vision and natural language processing. At present, the research focus of image text description task is mainly on the method based on deep learning. The work of this paper is mainly focused on the imprecise description of visual words and nonvisual words in the description of image description tasks in the image text description. An adaptive attention double-layer LSTM (long short-term memory) model based on coding-decoding is proposed. Compared with the algorithm based on the adaptive attention mechanism based on the coding-decoding framework, the evaluation index BLEU-1 is improved by 1.21%. The METEOR was 0.75% higher and CIDEr was 0.55%, while the indexes of BLEU-4 and ROUGE-L were not as good as those of the original model, but the index was not different. Although it cannot surpass all the performance indicators of the original model, the description of visual words and nonvisual words is more accurate in the actual image text description."
+    },
+    {
+      "paperId": "0098c23d706c950b1bfae3a840b796bb371773c8",
+      "externalIds": {
+        "MAG": "3012159372",
+        "DBLP": "journals/kais/AlswaidanM20",
+        "DOI": "10.1007/s10115-020-01449-0",
+        "CorpusId": 212741983
+      },
+      "corpusId": 212741983,
+      "url": "https://www.semanticscholar.org/paper/0098c23d706c950b1bfae3a840b796bb371773c8",
+      "title": "A survey of state-of-the-art approaches for emotion recognition in text",
+      "venue": "Knowledge and Information Systems",
+      "year": 2020,
+      "referenceCount": 186,
+      "citationCount": 236,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: The following paper fields have been elided by the publisher: {'abstract'}. Paper or abstract available at https://api.unpaywall.org/v2/10.1007/s10115-020-01449-0?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1007/s10115-020-01449-0, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Psychology",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Review"
+      ],
+      "publicationDate": "2020-03-18",
+      "journal": {
+        "name": "Knowledge and Information Systems",
+        "pages": "2937-2987",
+        "volume": "62"
+      },
+      "authors": [
+        {
+          "authorId": "46927569",
+          "name": "Nourah Alswaidan"
+        },
+        {
+          "authorId": "3028639",
+          "name": "M. Menai"
+        }
+      ],
+      "abstract": null
+    },
+    {
+      "paperId": "009945022c328673b597965b66a18731a23f51d9",
+      "externalIds": {
+        "DBLP": "journals/talip/NassiriCL23",
+        "DOI": "10.1145/3571510",
+        "CorpusId": 253582818
+      },
+      "corpusId": 253582818,
+      "url": "https://www.semanticscholar.org/paper/009945022c328673b597965b66a18731a23f51d9",
+      "title": "Approaches, Methods, and Resources for Assessing the Readability of Arabic Texts",
+      "venue": "ACM Trans. Asian Low Resour. Lang. Inf. Process.",
+      "year": 2022,
+      "referenceCount": 92,
+      "citationCount": 12,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": "CLOSED",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1145/3571510?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1145/3571510, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Review"
+      ],
+      "publicationDate": "2022-11-17",
+      "journal": {
+        "name": "ACM Transactions on Asian and Low-Resource Language Information Processing",
+        "pages": "1 - 30",
+        "volume": "22"
+      },
+      "authors": [
+        {
+          "authorId": "1411383753",
+          "name": "Naoual Nassiri"
+        },
+        {
+          "authorId": "1399577744",
+          "name": "V. Cavalli-Sforza"
+        },
+        {
+          "authorId": "2571383",
+          "name": "A. Lakhouaja"
+        }
+      ],
+      "abstract": "Text readability assessment is a well-known problem that has acquired even more importance in today\u2019s information-rich world. In this article, we survey various approaches to measuring and assessing the readability of texts. Our specific goal is to provide a perspective on the state-of-the-art in readability assessment research for Arabic, which differs significantly from other languages on which readability studies have tended to focus. We provide background on readability assessment research and tools for English, for which readability studies are the most advanced. We then survey approaches adopted for Arabic, both classical formula-based approaches and studies that combine Machine Learning (ML) with Natural Language Processing (NLP) techniques. The works we cover target text corpora for different audiences: school-age first language readers (L1), foreign language learners (L2), and adult readers in non-academic contexts. Therefore, we explore differences between reading in L1 and L2 and consider how they play out specifically in Arabic after describing language characteristics that may impact readability. Finally, we highlight challenges for Arabic readability research and propose multiple future directions to improve readability assessment and related applications that would benefit from more attention."
+    },
+    {
+      "paperId": "009d529aba9aa2f464b6960ceb7878cea552f080",
+      "externalIds": {
+        "MAG": "3094581190",
+        "CorpusId": 226393948
+      },
+      "corpusId": 226393948,
+      "url": "https://www.semanticscholar.org/paper/009d529aba9aa2f464b6960ceb7878cea552f080",
+      "title": "MEDICAL SENTIMENT ANALYSIS BASED ON SOFT VOTING ENSEMBLE ALGORITHM",
+      "venue": "",
+      "year": 2020,
+      "referenceCount": 25,
+      "citationCount": 14,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Review"
+      ],
+      "publicationDate": "2020-05-15",
+      "journal": {
+        "name": "",
+        "pages": "42-50",
+        "volume": "6"
+      },
+      "authors": [
+        {
+          "authorId": "80983181",
+          "name": "Akin Ozcift"
+        }
+      ],
+      "abstract": null
+    },
+    {
+      "paperId": "00a1904847b645ac5d3100536513ae4b5c7498f6",
+      "externalIds": {
+        "MAG": "3089733467",
+        "CorpusId": 222539600
+      },
+      "corpusId": 222539600,
+      "url": "https://www.semanticscholar.org/paper/00a1904847b645ac5d3100536513ae4b5c7498f6",
+      "title": "Cyber-Bullying and Cyber-Harassment Detection Using Supervised Machine Learning Techniques in Arabic Social Media Contents",
+      "venue": "",
+      "year": 2020,
+      "referenceCount": 51,
+      "citationCount": 38,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": "2020-09-01",
+      "journal": {
+        "name": "Journal of Internet Technology",
+        "pages": "1409-1421",
+        "volume": "21"
+      },
+      "authors": [
+        {
+          "authorId": "121047327",
+          "name": "Tarek Kanan"
+        },
+        {
+          "authorId": "2005880183",
+          "name": "Amal Aldaaja"
+        },
+        {
+          "authorId": "2703882",
+          "name": "Bilal Hawashin"
+        }
+      ],
+      "abstract": null
+    },
+    {
+      "paperId": "00b05a472b0044a59fa7144416c44f1a66c87752",
+      "externalIds": {
+        "DOI": "10.54216/fpa.040202",
+        "CorpusId": 244138495
+      },
+      "corpusId": 244138495,
+      "url": "https://www.semanticscholar.org/paper/00b05a472b0044a59fa7144416c44f1a66c87752",
+      "title": "Image Caption Generation and Comprehensive Comparison of Image Encoders",
+      "venue": "Fusion: Practice and Applications",
+      "year": 2021,
+      "referenceCount": 52,
+      "citationCount": 12,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": "CLOSED",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.54216/fpa.040202?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.54216/fpa.040202, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": null,
+      "journal": {
+        "name": "Fusion: Practice and Applications"
+      },
+      "authors": [
+        {
+          "authorId": "2152953568",
+          "name": "Shitiz Gupta"
+        },
+        {
+          "authorId": "2140634379",
+          "name": "Shubham Agnihotri"
+        },
+        {
+          "authorId": "2140641853",
+          "name": "Deepasha Birla"
+        },
+        {
+          "authorId": "2898860",
+          "name": "Achin Jain"
+        },
+        {
+          "authorId": "1395093110",
+          "name": "Thavavel Vaiyapuri"
+        },
+        {
+          "authorId": "52589645",
+          "name": "Puneet Singh Lamba"
+        }
+      ],
+      "abstract": "Image caption generation is a stimulating multimodal task. Substantial advancements have been made in thefield of deep learning notably in computer vision and natural language processing. Yet, human-generated captions are still considered better, which makes it a challenging application for interactive machine learning. In this paper, we aim to compare different transfer learning techniques and develop a novel architecture to improve image captioning accuracy. We compute image feature vectors using different state-of-the-art transferlearning models which are fed into an Encoder-Decoder network based on Stacked LSTMs with soft attention,along with embedded text to generate high accuracy captions. We have compared these models on severalbenchmark datasets based on different evaluation metrics like BLEU and METEOR."
+    },
+    {
+      "paperId": "00b823c0abf583221d144c99a1907538238286f9",
+      "externalIds": {
+        "DBLP": "conf/icccnt/JoshiJN21",
+        "DOI": "10.1109/ICCCNT51525.2021.9579813",
+        "CorpusId": 241602733
+      },
+      "corpusId": 241602733,
+      "url": "https://www.semanticscholar.org/paper/00b823c0abf583221d144c99a1907538238286f9",
+      "title": "Emotion Based Music Recommendation System Using LSTM - CNN Architecture",
+      "venue": "International Conference on Computing Communication and Networking Technologies",
+      "year": 2021,
+      "referenceCount": 11,
+      "citationCount": 25,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/ICCCNT51525.2021.9579813?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/ICCCNT51525.2021.9579813, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Conference"
+      ],
+      "publicationDate": "2021-07-06",
+      "journal": {
+        "name": "2021 12th International Conference on Computing Communication and Networking Technologies (ICCCNT)",
+        "pages": "01-06"
+      },
+      "authors": [
+        {
+          "authorId": "72335904",
+          "name": "S. Joshi"
+        },
+        {
+          "authorId": "2136724609",
+          "name": "Tanuj Jain"
+        },
+        {
+          "authorId": "2136340718",
+          "name": "Nidhi Nair"
+        }
+      ],
+      "abstract": "In the current era of media and technology, music information retrieval techniques have made progress in the past years but the music recommendation system is still at a rudimentary stage. However personalized music recommendation is quotidian, but recommending songs based on emotions is still an uphill battle. Music has greatly influenced the human brain and helps dispense an exhilarating and frivolous state of mind because it helps us work more effectively. Recommending songs based on emotions will comfort the listener by suggesting music in keeping with the listeners' pervading mental and physical state. Hence, Natural Language Processing and Deep Learning technologies made it possible for machines to read and interpret emotions through texts by recognizing patterns and finding correlations. In this paper, various deep learning models such as Long Short-Term Memory (LSTM), Convolution Neural network (CNN), CNN-LSTM, and LSTM-CNN Architectures were collated for detecting emotions such as angry, happy, love, and sad, the best model was integrated into the application. To enhance the application, a CNN model was used to detect emotions through facial expressions. The application takes text input from the user or a facial expression input. Depending upon the emotion detected, it recommends the user songs and playlists."
+    },
+    {
+      "paperId": "00bbdf28c4641c37948d105f792e68df26d6965e",
+      "externalIds": {
+        "MAG": "3091647772",
+        "DOI": "10.1071/ES19046",
+        "CorpusId": 224876580
+      },
+      "corpusId": 224876580,
+      "url": "https://www.semanticscholar.org/paper/00bbdf28c4641c37948d105f792e68df26d6965e",
+      "title": "Content enhancement with augmented reality and machine learning",
+      "venue": "Journal of Southern Hemisphere Earth Systems Science",
+      "year": 2020,
+      "referenceCount": 15,
+      "citationCount": 4,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://www.publish.csiro.au/es/pdf/ES19046",
+        "status": "GOLD",
+        "license": "CCBYNCND",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1071/ES19046?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1071/ES19046, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Environmental Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Engineering",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": "2020-10-01",
+      "journal": {
+        "name": "Journal of Southern Hemisphere Earth Systems Science"
+      },
+      "authors": [
+        {
+          "authorId": "145513514",
+          "name": "J. Freeman"
+        }
+      ],
+      "abstract": "\nContent enhancement of real-world environments is demonstrated through the combination of machine learning methods with augmented reality displays. Advances in machine learning methods and neural network architectures have facilitated fast and accurate object and image detection, recognition and classification, as well as providing machine translation, natural language processing and neural network approaches for environmental forecasting and prediction. These methods equip computers with a means of interpreting the natural environment. Augmented reality is the embedding of computer-generated assets within the real-world environment. Here I demonstrate, through the development of four sample mobile applications, how machine learning and augmented reality may be combined to create localised, context aware and user-centric environmental information delivery channels. The sample mobile applications demonstrate augmented reality content enhancement of static real-world objects to deliver additional environmental and contextual information, language translation to facilitate accessibility of forecast information and a location aware rain event augmented reality notification application that leverages a nowcasting neural network.\n"
+    },
+    {
+      "paperId": "00c5abdffe51ab33e745e6804d4821ca59db52d8",
+      "externalIds": {
+        "MAG": "3047016605",
+        "DBLP": "journals/corr/abs-2008-01551",
+        "ArXiv": "2008.01551",
+        "DOI": "10.21437/interspeech.2020-2557",
+        "CorpusId": 220961484
+      },
+      "corpusId": 220961484,
+      "url": "https://www.semanticscholar.org/paper/00c5abdffe51ab33e745e6804d4821ca59db52d8",
+      "title": "To BERT or Not To BERT: Comparing Speech and Language-based Approaches for Alzheimer's Disease Detection",
+      "venue": "Interspeech",
+      "year": 2020,
+      "referenceCount": 38,
+      "citationCount": 144,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://arxiv.org/pdf/2008.01551",
+        "status": "GREEN",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2008.01551, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": "2020-07-26",
+      "journal": {
+        "pages": "2167-2171"
+      },
+      "authors": [
+        {
+          "authorId": "46229877",
+          "name": "Aparna Balagopalan"
+        },
+        {
+          "authorId": "1857402110",
+          "name": "Benjamin Eyre"
+        },
+        {
+          "authorId": "2479037",
+          "name": "Frank Rudzicz"
+        },
+        {
+          "authorId": "2848048",
+          "name": "Jekaterina Novikova"
+        }
+      ],
+      "abstract": "Research related to automatically detecting Alzheimer's disease (AD) is important, given the high prevalence of AD and the high cost of traditional methods. Since AD significantly affects the content and acoustics of spontaneous speech, natural language processing and machine learning provide promising techniques for reliably detecting AD. We compare and contrast the performance of two such approaches for AD detection on the recent ADReSS challenge dataset: 1) using domain knowledge-based hand-crafted features that capture linguistic and acoustic phenomena, and 2) fine-tuning Bidirectional Encoder Representations from Transformer (BERT)-based sequence classification models. We also compare multiple feature-based regression models for a neuropsychological score task in the challenge. We observe that fine-tuned BERT models, given the relative importance of linguistics in cognitive impairment detection, outperform feature-based approaches on the AD detection task."
+    },
+    {
+      "paperId": "00c9922edc4b56331c23ff7c5df3fb2df691310e",
+      "externalIds": {
+        "DOI": "10.1109/hpbdis53214.2021.9658453",
+        "CorpusId": 245694890
+      },
+      "corpusId": 245694890,
+      "url": "https://www.semanticscholar.org/paper/00c9922edc4b56331c23ff7c5df3fb2df691310e",
+      "title": "Research on Natural Language Extraction Method Based on Deep Learning Technology",
+      "venue": "2021 International Conference on High Performance Big Data and Intelligent Systems (HPBD&IS)",
+      "year": 2021,
+      "referenceCount": 0,
+      "citationCount": 0,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": "CLOSED",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/hpbdis53214.2021.9658453?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/hpbdis53214.2021.9658453, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Conference"
+      ],
+      "publicationDate": "2021-12-05",
+      "journal": {
+        "name": "2021 International Conference on High Performance Big Data and Intelligent Systems (HPBD&IS)",
+        "pages": "88-93"
+      },
+      "authors": [
+        {
+          "authorId": "2139597027",
+          "name": "Wei Zhuang"
+        }
+      ],
+      "abstract": "NLP (Natural Language Processing) has become one of the research hotspots of machine learning. Text classification is an important branch of NLP processing technology. This article uses journal papers as experimental data to study Chinese text classification and proposes two classification models. One is the Chinese text classification algorithm PRE-TF-IDF. The traditional word frequency algorithm only considers the appearance frequency of the word when weighting the word, and does not consider the position of the word in the text. The PRE-TF-IDF algorithm improves the accuracy of text classification by adding weight preprocessing and word density weighting on the basis of the TF-IDF (Term Frequency Inverse Document Frequency) algorithm. The other is the text classification model CNNSVM(Convolutional Neural Network and Support Vector Machine Classifier)based on the combination of convolutional neural network and support vector machine. On the basis of the traditional convolutional neural network model, an attention mechanism is added, while the parameters of the model are simplified, and a support vector machine-based classifier is used to replace the softmax layer in the traditional model to achieve text classification. The extraction effect of feature words is improved, and the problem of weak generalization ability of the softmax layer is solved."
+    },
+    {
+      "paperId": "00c9afd63f647ed348c34233fe3e6b0f979c583e",
+      "externalIds": {
+        "DOI": "10.1109/CSNT54456.2022.9787596",
+        "CorpusId": 249474939
+      },
+      "corpusId": 249474939,
+      "url": "https://www.semanticscholar.org/paper/00c9afd63f647ed348c34233fe3e6b0f979c583e",
+      "title": "Enumerable Learning-Based Machine Learning Techniques for Sentiment Analysis",
+      "venue": "International Conference on Communication Systems and Network Technologies",
+      "year": 2022,
+      "referenceCount": 0,
+      "citationCount": 3,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/CSNT54456.2022.9787596?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/CSNT54456.2022.9787596, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Business",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Conference",
+        "Review"
+      ],
+      "publicationDate": "2022-04-23",
+      "journal": {
+        "name": "2022 IEEE 11th International Conference on Communication Systems and Network Technologies (CSNT)",
+        "pages": "270-275"
+      },
+      "authors": [
+        {
+          "authorId": "2112765862",
+          "name": "Deepti Singh"
+        },
+        {
+          "authorId": "49320167",
+          "name": "Himanshu Yadav"
+        },
+        {
+          "authorId": "145784204",
+          "name": "Chetan Agrawal"
+        }
+      ],
+      "abstract": "People express their views on goods, services, governments, and events via words and phrases on social media. Sentiment analysis is a technique used in natural language processing to gather positive and negative feedback on a piece of writing on social media. Academics have been forced to research sentiment analysis by exponential growth in business and ecommerce companies. This study examined emotions in two distinct domains: one for electronics product evaluations and another for film reviews. Due to the enormous volume of data gathered for analysis, it is referred to as massive data. This vast data is multidimensional and includes useless information. Furthermore, this data complicates the analysis since it reduces the effectiveness of machine learning categorization algorithms. As a consequence, the data must be cleansed and pertinent features identified. Numerous methods have been used to eliminate noise from data and identify essential components. There are two methods for determining suitable features: feature selection and feature extraction. The research is split into three stages: the first step involves converting unstructured data to structured data and choosing relevant and feature information. Second, machine learning classification algorithms are employed in conjunction with feature selection approaches, and third, machine learning algorithms are used in conjunction with ensemble learning methods."
+    },
+    {
+      "paperId": "00d7e58e16498c6a970005a6177a3529a7beb7bc",
+      "externalIds": {
+        "MAG": "3047237967",
+        "DOI": "10.1109/incet49848.2020.9154124",
+        "CorpusId": 225836815
+      },
+      "corpusId": 225836815,
+      "url": "https://www.semanticscholar.org/paper/00d7e58e16498c6a970005a6177a3529a7beb7bc",
+      "title": "BaSa: A Technique to Identify Context based Common Tokens for Hindi Verses and Proses",
+      "venue": "2020 International Conference for Emerging Technology (INCET)",
+      "year": 2020,
+      "referenceCount": 9,
+      "citationCount": 4,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/incet49848.2020.9154124?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/incet49848.2020.9154124, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Conference"
+      ],
+      "publicationDate": "2020-06-01",
+      "journal": {
+        "name": "2020 International Conference for Emerging Technology (INCET)",
+        "pages": "1-4"
+      },
+      "authors": [
+        {
+          "authorId": "29852572",
+          "name": "P. Bafna"
+        },
+        {
+          "authorId": "5012217",
+          "name": "Jatinderkumar R. Saini"
+        }
+      ],
+      "abstract": "Activating multilingual options on websites in this digital era has enabled the opportunity to generate text in different languages. Hindi has turned to be the significant language in different domains and mainly in the government domain. Proses (proses) and verses (verses) are generally used as an input data source to perform different operations like classification, clustering and so on. Carrying out different natural language processing (NLP) steps is a prerequisite for implementing machine learning algorithms. In this paper, the BaSa technique is proposed to identify context based common tokens from given corpora. Common tokens present at different levels of Natural language processing (NLP) are computed. It will give guidelines in the form for researchers working in Hindi NLP.Corpus of 820 proses and 710 verses is processed. It is observed that percentage of number of tokens reduced at each stage of NLP is almost same for proses and verses."
+    },
+    {
+      "paperId": "00df5cf0d83c48657d453ab8083d8805a67f744f",
+      "externalIds": {
+        "DBLP": "conf/fat/DodgePCOSSLSDB22",
+        "ArXiv": "2206.05229",
+        "DOI": "10.1145/3531146.3533234",
+        "CorpusId": 249605707
+      },
+      "corpusId": 249605707,
+      "url": "https://www.semanticscholar.org/paper/00df5cf0d83c48657d453ab8083d8805a67f744f",
+      "title": "Measuring the Carbon Intensity of AI in Cloud Instances",
+      "venue": "Conference on Fairness, Accountability and Transparency",
+      "year": 2022,
+      "referenceCount": 48,
+      "citationCount": 251,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://dl.acm.org/doi/pdf/10.1145/3531146.3533234",
+        "status": "BRONZE",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2206.05229, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Environmental Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Book"
+      ],
+      "publicationDate": "2022-06-10",
+      "journal": {
+        "name": "Proceedings of the 2022 ACM Conference on Fairness, Accountability, and Transparency"
+      },
+      "authors": [
+        {
+          "authorId": "34176020",
+          "name": "Jesse Dodge"
+        },
+        {
+          "authorId": "2169943514",
+          "name": "Taylor Prewitt"
+        },
+        {
+          "authorId": "15032777",
+          "name": "R\u00e9mi Tachet des Combes"
+        },
+        {
+          "authorId": "2169933026",
+          "name": "Erika Odmark"
+        },
+        {
+          "authorId": "2279023325",
+          "name": "Roy Schwartz"
+        },
+        {
+          "authorId": "2268272",
+          "name": "Emma Strubell"
+        },
+        {
+          "authorId": "2993731",
+          "name": "A. Luccioni"
+        },
+        {
+          "authorId": "144365875",
+          "name": "Noah A. Smith"
+        },
+        {
+          "authorId": "2080048148",
+          "name": "Nicole DeCario"
+        },
+        {
+          "authorId": "2169933158",
+          "name": "Will Buchanan"
+        }
+      ],
+      "abstract": "The advent of cloud computing has provided people around the world with unprecedented access to computational power and enabled rapid growth in technologies such as machine learning, the computational demands of which incur a high energy cost and a commensurate carbon footprint. As a result, recent scholarship has called for better estimates of the greenhouse gas impact of AI: data scientists today do not have easy or reliable access to measurements of this information, which precludes development of actionable tactics. We argue that cloud providers presenting information about software carbon intensity to users is a fundamental stepping stone towards minimizing emissions. In this paper, we provide a framework for measuring software carbon intensity, and propose to measure operational carbon emissions by using location-based and time-specific marginal emissions data per energy unit. We provide measurements of operational software carbon intensity for a set of modern models covering natural language processing and computer vision applications, and a wide range of model sizes, including pretraining of a 6.1 billion parameter language model. We then evaluate a suite of approaches for reducing emissions on the Microsoft Azure cloud compute platform: using cloud instances in different geographic regions, using cloud instances at different times of day, and dynamically pausing cloud instances when the marginal carbon intensity is above a certain threshold. We confirm previous results that the geographic region of the data center plays a significant role in the carbon intensity for a given cloud instance, and find that choosing an appropriate region can have the largest operational emissions reduction impact. We also present new results showing that the time of day has meaningful impact on operational software carbon intensity.Finally, we conclude with recommendations for how machine learning practitioners can use software carbon intensity information to reduce environmental impact."
+    },
+    {
+      "paperId": "00eba050ee4b26fa5bc6f4a406c2ee98a5ee241f",
+      "externalIds": {
+        "DBLP": "journals/tcbb/ZhaoYCLW22",
+        "DOI": "10.1109/TCBB.2021.3069040",
+        "CorpusId": 232375928,
+        "PubMed": "33769935"
+      },
+      "corpusId": 232375928,
+      "url": "https://www.semanticscholar.org/paper/00eba050ee4b26fa5bc6f4a406c2ee98a5ee241f",
+      "title": "Biomedical Data and Deep Learning Computational Models for Predicting Compound-Protein Relations",
+      "venue": "IEEE/ACM Transactions on Computational Biology & Bioinformatics",
+      "year": 2021,
+      "referenceCount": 0,
+      "citationCount": 26,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/TCBB.2021.3069040?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/TCBB.2021.3069040, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science",
+        "Medicine"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Medicine",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Review"
+      ],
+      "publicationDate": "2021-03-26",
+      "journal": {
+        "name": "IEEE/ACM Transactions on Computational Biology and Bioinformatics",
+        "pages": "2092-2110",
+        "volume": "19"
+      },
+      "authors": [
+        {
+          "authorId": "1491625727",
+          "name": "Qichang Zhao"
+        },
+        {
+          "authorId": "150238252",
+          "name": "Mengyun Yang"
+        },
+        {
+          "authorId": "2089466906",
+          "name": "Zhongjian Cheng"
+        },
+        {
+          "authorId": "2748057",
+          "name": "Yaohang Li"
+        },
+        {
+          "authorId": "46583616",
+          "name": "Jianxin Wang"
+        }
+      ],
+      "abstract": "The identification of compound-protein relations (CPRs), which includes compound-protein interactions (CPIs) and compound-protein affinities (CPAs), is critical to drug development. A common method for compound-protein relation identification is the use of in vitro screening experiments. However, the number of compounds and proteins is massive, and in vitro screening experiments are labor-intensive, expensive, and time-consuming with high failure rates. Researchers have developed a computational field called virtual screening (VS) to aid experimental drug development. These methods utilize experimentally validated biological interaction information to generate datasets and use the physicochemical and structural properties of compounds and target proteins as input information to train computational prediction models. At present, deep learning has been widely used in computer vision and natural language processing and has experienced epoch-making progress. At the same time, deep learning has also been used in the field of biomedicine widely, and the prediction of CPRs based on deep learning has developed rapidly and has achieved good results. The purpose of this study is to investigate and discuss the latest applications of deep learning techniques in CPR prediction. First, we describe the datasets and feature engineering (i.e., compound and protein representations and descriptors) commonly used in CPR prediction methods. Then, we review and classify recent deep learning approaches in CPR prediction. Next, a comprehensive comparison is performed to demonstrate the prediction performance of representative methods on classical datasets. Finally, we discuss the current state of the field, including the existing challenges and our proposed future directions. We believe that this investigation will provide sufficient references and insight for researchers to understand and develop new deep learning methods to enhance CPR predictions."
+    },
+    {
+      "paperId": "00ed2e9951f77b0a89deb7fbe457247614dcfa84",
+      "externalIds": {
+        "DOI": "10.1109/ICSSIT53264.2022.9716550",
+        "CorpusId": 247110030
+      },
+      "corpusId": 247110030,
+      "url": "https://www.semanticscholar.org/paper/00ed2e9951f77b0a89deb7fbe457247614dcfa84",
+      "title": "Sentiment Analysis on IMDB Movie Reviews using Machine Learning and Deep Learning Algorithms",
+      "venue": "2022 4th International Conference on Smart Systems and Inventive Technology (ICSSIT)",
+      "year": 2022,
+      "referenceCount": 21,
+      "citationCount": 25,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/ICSSIT53264.2022.9716550?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/ICSSIT53264.2022.9716550, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Business",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Conference",
+        "Review"
+      ],
+      "publicationDate": "2022-01-20",
+      "journal": {
+        "name": "2022 4th International Conference on Smart Systems and Inventive Technology (ICSSIT)",
+        "pages": "814-819"
+      },
+      "authors": [
+        {
+          "authorId": "144430526",
+          "name": "K. Amulya"
+        },
+        {
+          "authorId": "2187547570",
+          "name": "S. B. Swathi"
+        },
+        {
+          "authorId": "2780769",
+          "name": "P. Kamakshi"
+        },
+        {
+          "authorId": "31151876",
+          "name": "Dr. Y. Bhavani"
+        }
+      ],
+      "abstract": "Sentiment analysis is the study, to classify the text based on customer reviews which can provide valuable information to improve business. Previously the analysis was carried out based on the information provided by the customers using natural language processing and machine learning. In this paper, sentiment analysis on IMDB movie reviews dataset is implemented using Machine Learning (ML) and Deep Learning (DL) approaches to measure the accuracy of the model. ML algorithms are the traditional algorithms that work in a single layer while deep learning algorithms work on multilayers and gives better output. This paper helps the researchers to identify the best algorithm for sentiment analysis. The comparison of the machine learning and deep learning approaches shows that DL algorithms provide accurate and efficient results."
+    },
+    {
+      "paperId": "00ed9f77df69c950dac4c0b01a1ac957003a4b0f",
+      "externalIds": {
+        "DBLP": "journals/corr/abs-2104-04580",
+        "ArXiv": "2104.04580",
+        "CorpusId": 233210295
+      },
+      "corpusId": 233210295,
+      "url": "https://www.semanticscholar.org/paper/00ed9f77df69c950dac4c0b01a1ac957003a4b0f",
+      "title": "Predicting the Reproducibility of Social and Behavioral Science Papers Using Supervised Learning Models",
+      "venue": "arXiv.org",
+      "year": 2021,
+      "referenceCount": 47,
+      "citationCount": 14,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2104.04580, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Psychology",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": "2021-04-08",
+      "journal": {
+        "name": "ArXiv",
+        "volume": "abs/2104.04580"
+      },
+      "authors": [
+        {
+          "authorId": "46365617",
+          "name": "Jian Wu"
+        },
+        {
+          "authorId": "2072740551",
+          "name": "Rajal Nivargi"
+        },
+        {
+          "authorId": "2095460077",
+          "name": "Sree Sai Teja Lanka"
+        },
+        {
+          "authorId": "2080136131",
+          "name": "A. Menon"
+        },
+        {
+          "authorId": "65855568",
+          "name": "Sai Ajay Modukuri"
+        },
+        {
+          "authorId": "2045178324",
+          "name": "Nishanth Nakshatri"
+        },
+        {
+          "authorId": "2110849489",
+          "name": "Xin Wei"
+        },
+        {
+          "authorId": "96309563",
+          "name": "Zhuoer Wang"
+        },
+        {
+          "authorId": "1697232",
+          "name": "James Caverlee"
+        },
+        {
+          "authorId": "2528276",
+          "name": "S. Rajtmajer"
+        },
+        {
+          "authorId": "145157784",
+          "name": "C. Lee Giles"
+        }
+      ],
+      "abstract": "In recent years, significant effort has been invested verifying the reproducibility and robustness of research claims in social and behavioral sciences (SBS), much of which has involved resource-intensive replication projects. In this paper, we investigate prediction of the reproducibility of SBS papers using machine learning methods based on a set of features. We propose a framework that extracts five types of features from scholarly work that can be used to support assessments of reproducibility of published research claims. Bibliometric features, venue features, and author features are collected from public APIs or extracted using open source machine learning libraries with customized parsers. Statistical features, such as p-values, are extracted by recognizing patterns in the body text. Semantic features, such as funding information, are obtained from public APIs or are extracted using natural language processing models. We analyze pairwise correlations between individual features and their importance for predicting a set of human-assessed ground truth labels. In doing so, we identify a subset of 9 top features that play relatively more important roles in predicting the reproducibility of SBS papers in our corpus. Results are verified by comparing performances of 10 supervised predictive classifiers trained on different sets of features."
+    },
+    {
+      "paperId": "00f54c753963f2ebde8ade314064b4737ef977d0",
+      "externalIds": {
+        "MAG": "3029282005",
+        "ACL": "2020.globalex-1.14",
+        "DBLP": "conf/lrec/BajceticY20",
+        "CorpusId": 218974191
+      },
+      "corpusId": 218974191,
+      "url": "https://www.semanticscholar.org/paper/00f54c753963f2ebde8ade314064b4737ef977d0",
+      "title": "Implementation of Supervised Training Approaches for Monolingual Word Sense Alignment: ACDH-CH System Description for the MWSA Shared Task at GlobaLex 2020",
+      "venue": "GLOBALEX",
+      "year": 2020,
+      "referenceCount": 17,
+      "citationCount": 1,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: The following paper fields have been elided by the publisher: {'abstract'}. Paper or abstract available at https://aclanthology.org/2020.globalex-1.14, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Review"
+      ],
+      "publicationDate": "2020-05-01",
+      "journal": {
+        "pages": "84-91"
+      },
+      "authors": [
+        {
+          "authorId": "1388358796",
+          "name": "L. Bajcetic"
+        },
+        {
+          "authorId": "72782345",
+          "name": "Seung-bin Yim"
+        }
+      ],
+      "abstract": null
+    },
+    {
+      "paperId": "00f754891bd6958896591f7d89cc7805b3e8210a",
+      "externalIds": {
+        "MAG": "3092489168",
+        "DOI": "10.3389/feduc.2020.572367",
+        "CorpusId": 222136556
+      },
+      "corpusId": 222136556,
+      "url": "https://www.semanticscholar.org/paper/00f754891bd6958896591f7d89cc7805b3e8210a",
+      "title": "Explainable Automated Essay Scoring: Deep Learning Really Has Pedagogical Value",
+      "venue": "Frontiers in Education",
+      "year": 2020,
+      "referenceCount": 42,
+      "citationCount": 99,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://www.frontiersin.org/articles/10.3389/feduc.2020.572367/pdf",
+        "status": "GOLD",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.3389/feduc.2020.572367?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.3389/feduc.2020.572367, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Education",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": "2020-10-06",
+      "journal": {
+        "volume": "5"
+      },
+      "authors": [
+        {
+          "authorId": "2130485879",
+          "name": "Vivekanandan Kumar"
+        },
+        {
+          "authorId": "36280323",
+          "name": "David Boulanger"
+        }
+      ],
+      "abstract": "Automated essay scoring (AES) is a compelling topic in Learning Analytics for the primary reason that recent advances in AI find it as a good testbed to explore artificial supplementation of human creativity. However, a vast swath of research tackles AES only holistically; few have even developed AES models at the rubric level, the very first layer of explanation underlying the prediction of holistic scores. Consequently, the AES black box has remained impenetrable. Although several algorithms from Explainable Artificial Intelligence have recently been published, no research has yet investigated the role that these explanation models can play in: (a) discovering the decision-making process that drives AES, (b) fine-tuning predictive models to improve generalizability and interpretability, and (c) providing personalized, formative, and fine-grained feedback to students during the writing process. Building on previous studies where models were trained to predict both the holistic and rubric scores of essays, using the Automated Student Assessment Prize\u2019s essay datasets, this study focuses on predicting the quality of the writing style of Grade-7 essays and exposes the decision processes that lead to these predictions. In doing so, it evaluates the impact of deep learning (multi-layer perceptron neural networks) on the performance of AES. It has been found that the effect of deep learning can be best viewed when assessing the trustworthiness of explanation models. As more hidden layers were added to the neural network, the descriptive accuracy increased by about 10%. This study shows that faster (up to three orders of magnitude) SHAP implementations are as accurate as the slower model-agnostic one. It leverages the state-of-the-art in natural language processing, applying feature selection on a pool of 1592 linguistic indices that measure aspects of text cohesion, lexical diversity, lexical sophistication, and syntactic sophistication and complexity. In addition to the list of most globally important features, this study reports (a) a list of features that are important for a specific essay (locally), (b) a range of values for each feature that contribute to higher or lower rubric scores, and (c) a model that allows to quantify the impact of the implementation of formative feedback."
+    },
+    {
+      "paperId": "00f75a5f20d6fcda0ebbd2ab256184700fca009d",
+      "externalIds": {
+        "MAG": "3084225452",
+        "DOI": "10.5772/intechopen.92574",
+        "CorpusId": 221902530
+      },
+      "corpusId": 221902530,
+      "url": "https://www.semanticscholar.org/paper/00f75a5f20d6fcda0ebbd2ab256184700fca009d",
+      "title": "Dimensionality and Structure in Cancer Genomics: A Statistical Learning Perspective",
+      "venue": "Artificial Intelligence in Oncology Drug Discovery and Development",
+      "year": 2020,
+      "referenceCount": 41,
+      "citationCount": 0,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://www.intechopen.com/citation-pdf-url/72299",
+        "status": "HYBRID",
+        "license": "CCBYNC",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.5772/intechopen.92574?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.5772/intechopen.92574, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Medicine",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Biology",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": "2020-09-09",
+      "journal": {
+        "name": "Artificial Intelligence in Oncology Drug Discovery and Development"
+      },
+      "authors": [
+        {
+          "authorId": "2047999887",
+          "name": "Jacob R. Bradley"
+        }
+      ],
+      "abstract": "Computational analysis of genomic data has transformed research and clinical practice in oncology. Machine learning and AI advancements hold promise for answering theoretical and practical questions. While the modern researcher has access to a catalogue of tools from disciplines such as natural language processing and image recognition, before browsing for our favourite off-the-shelf technique it is worth asking a sequence of questions. What sort of data are we dealing with in cancer genomics? Do we have enough of it to be successful without designing into our models what we already know about its structure? If our methods do work, will we understand why? Are our tools robust enough to be applied in clinical practice? If so, are the technologies upon which they rely economically viable? While we will not answer all of these questions, we will provide language with which to discuss them. Understanding how much information we can expect to extract from data is a statistical question."
+    },
+    {
+      "paperId": "00fc41ea456fc69aab4f9f7f01b5ec30c76d257a",
+      "externalIds": {
+        "MAG": "3086684764",
+        "DOI": "10.33774/apsa-2020-v9pgw",
+        "CorpusId": 225285388
+      },
+      "corpusId": 225285388,
+      "url": "https://www.semanticscholar.org/paper/00fc41ea456fc69aab4f9f7f01b5ec30c76d257a",
+      "title": "Sharing a Playbook?: The Convergence of Russian and U.S. Narratives about Joe Biden",
+      "venue": "",
+      "year": 2020,
+      "referenceCount": 37,
+      "citationCount": 3,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://doi.org/10.33774/apsa-2020-v9pgw",
+        "status": "GREEN",
+        "license": "CCBYNCND",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.33774/apsa-2020-v9pgw?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.33774/apsa-2020-v9pgw, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Political Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Political Science",
+          "source": "external"
+        },
+        {
+          "category": "Political Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": "2020-09-08",
+      "journal": {
+        "name": "",
+        "volume": ""
+      },
+      "authors": [
+        {
+          "authorId": "12417355",
+          "name": "S. Oates"
+        },
+        {
+          "authorId": "145519521",
+          "name": "Olga Gurevich"
+        },
+        {
+          "authorId": "50482752",
+          "name": "Christopher Walker"
+        },
+        {
+          "authorId": "1870642",
+          "name": "Daniel Deibler"
+        },
+        {
+          "authorId": "2218147010",
+          "name": "J. Anderson"
+        }
+      ],
+      "abstract": "This paper combines human coding and artificial intelligence to compare Russian propaganda narratives with discussion of Democratic Presidential candidate Joe Biden in social and mainstream media in the United States in summer 2020. The research found the presence of the same narratives across Russian English-language outlets, Fox News, rightwing websites, and leftwing Twitter. The research found a particularly strong convergence between the use of Biden attack narratives on Russian English-language sites such as RT and Sputnik with Fox News coverage. Across all these outlets, there was much discussion that Biden was corrupt, too old, a sexual deviant, and a placeholder for leftist conspiracy. All the sources aside from rightwing Twitter highlighted that Biden was also the frontrunner in the presidential race. The analysis was carried out by the MarvelousAI StoryArc system, which measures news narratives by combining human coding, natural language processing, and machine learning"
+    },
+    {
+      "paperId": "00fdb503bd8eb5e5de077859b69dfb553bdc1b6d",
+      "externalIds": {
+        "DOI": "10.1109/CCIP57447.2022.10058622",
+        "CorpusId": 257859417
+      },
+      "corpusId": 257859417,
+      "url": "https://www.semanticscholar.org/paper/00fdb503bd8eb5e5de077859b69dfb553bdc1b6d",
+      "title": "Paying Guest Finder with Sentiment Analysis",
+      "venue": "International Conference on Cognitive Computing and Information Processing",
+      "year": 2022,
+      "referenceCount": 8,
+      "citationCount": 0,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/CCIP57447.2022.10058622?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/CCIP57447.2022.10058622, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Business",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Conference"
+      ],
+      "publicationDate": "2022-12-23",
+      "journal": {
+        "name": "2022 Fourth International Conference on Cognitive Computing and Information Processing (CCIP)",
+        "pages": "1-4"
+      },
+      "authors": [
+        {
+          "authorId": "2213100681",
+          "name": "Pawan Bharadwaj N P"
+        },
+        {
+          "authorId": "2213347648",
+          "name": "Uma Kp"
+        }
+      ],
+      "abstract": "Searching the internet has become incredibly simple in today's advanced hi-tech environment. However, searching a good Paying Guest (PG) nearby is a daunting task. To avoid searching anywhere we propose this project. This website not only allows you to navigate but also consists of booking system, as well as a score system that has been decided with the help of the aid of comments written by the users and uses natural language processing using machine learning. This allows us to accurately decide the score for the PG. Using this system, the Paying guest seeker can decide which one to e-book. The system also has several types of ratings systems for factors such as food and hygiene. In addition to this the site includes blog system for PG customers who can get notification each day of what goes on in adjacent PG. The owner of the PG gets the essential facts supplied by the customer and the system offers a proposal on factors that need to be improved and advanced."
+    },
+    {
+      "paperId": "00ff7357e4f7ec7e77f8a25e8660c30521da59e6",
+      "externalIds": {
+        "MAG": "3184936253",
+        "DOI": "10.21601/JISEM/11098",
+        "CorpusId": 237644917
+      },
+      "corpusId": 237644917,
+      "url": "https://www.semanticscholar.org/paper/00ff7357e4f7ec7e77f8a25e8660c30521da59e6",
+      "title": "Evolution of the Perceptions about Tourist Destinations Affected by Risk Events Using a PANAS-tDL Deep Learning Model",
+      "venue": "Journal of Information Systems Engineering & Management",
+      "year": 2021,
+      "referenceCount": 36,
+      "citationCount": 1,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://doi.org/10.21601/jisem/11098",
+        "status": "GOLD",
+        "license": "CCBY",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.21601/JISEM/11098?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.21601/JISEM/11098, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": null,
+      "publicationDate": "2021-07-19",
+      "journal": {
+        "name": "Journal of Information Systems Engineering and Management"
+      },
+      "authors": [
+        {
+          "authorId": "49841297",
+          "name": "Alejandro Pe\u00f1a"
+        },
+        {
+          "authorId": "102915082",
+          "name": "Jorge M. Mesias"
+        },
+        {
+          "authorId": "144942252",
+          "name": "A. Patino"
+        },
+        {
+          "authorId": "2067742405",
+          "name": "Jo\u00e3o Vidal Carvalho"
+        },
+        {
+          "authorId": "2052400905",
+          "name": "Gregorio Gomez"
+        }
+      ],
+      "abstract": "The tourism industry has dynamized the economy of the countries by offering places, as well as related tourism experiences, products, and services. In the context of the COVID-19 pandemic, some of these tourist destinations were affected by subjective perceptions of users on social networks, within stands out Twitter. To achieve an objective perception from user comments posted on Twitter in front of a tourist destination, we propose a PANAS-tDL (Positive and Negative Affect Schedule - Deep Learning) model which integrates into a single structure a neural model inspired by a Stacked neural deep learning model (SDL), as well as the PANAS-t methodology. For this process, a database of comments was available for four destinations (Colombia, Italy, Spain, USA), and its tourist\u2019s products and services, before and in the context of COVID-19 pandemic throughout the year 2020. The proposed model made it possible to generate objective perceptions of the tourist destinations and their products and services using an automatic classification of comments in each category defined by the PANAS-t methodology (11-sentiments). The results show how users\u2019 perceptions were towards the negative sentiment zone defined by this methodology, according to the evolution of the COVID-19 pandemic worldwide throughout the year 2020. The proposed model also integrated an automatic process of normalisation, lemmatisation and tokenisation (Natural language process - NLP) for the objective characterization of perceptions, and due to its capacity for adaption and learning, it can be extended for the evaluation of new tourist destinations, products or services using comments from different social networks."
+    },
+    {
+      "paperId": "010c9f63c51ccc504de36d2d1693e0ea9d525da1",
+      "externalIds": {
+        "DBLP": "journals/csur/LeCB20",
+        "ArXiv": "2002.05442",
+        "MAG": "3105671517",
+        "DOI": "10.1145/3383458",
+        "CorpusId": 211096967
+      },
+      "corpusId": 211096967,
+      "url": "https://www.semanticscholar.org/paper/010c9f63c51ccc504de36d2d1693e0ea9d525da1",
+      "title": "Deep Learning for Source Code Modeling and Generation",
+      "venue": "ACM Computing Surveys",
+      "year": 2020,
+      "referenceCount": 295,
+      "citationCount": 174,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://arxiv.org/pdf/2002.05442",
+        "status": "GREEN",
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2002.05442, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle",
+        "Review"
+      ],
+      "publicationDate": "2020-02-13",
+      "journal": {
+        "name": "ACM Computing Surveys (CSUR)",
+        "pages": "1 - 38",
+        "volume": "53"
+      },
+      "authors": [
+        {
+          "authorId": "47267142",
+          "name": "T. H. Le"
+        },
+        {
+          "authorId": "2029503517",
+          "name": "Hao Chen"
+        },
+        {
+          "authorId": "2142773270",
+          "name": "M. A. Babar"
+        }
+      ],
+      "abstract": "Deep Learning (DL) techniques for Natural Language Processing have been evolving remarkably fast. Recently, the DL advances in language modeling, machine translation, and paragraph understanding are so prominent that the potential of DL in Software Engineering cannot be overlooked, especially in the field of program learning. To facilitate further research and applications of DL in this field, we provide a comprehensive review to categorize and investigate existing DL methods for source code modeling and generation. To address the limitations of the traditional source code models, we formulate common program learning tasks under an encoder-decoder framework. After that, we introduce recent DL mechanisms suitable to solve such problems. Then, we present the state-of-the-art practices and discuss their challenges with some recommendations for practitioners and researchers as well."
+    },
+    {
+      "paperId": "012155130b294f28a035c416ffd0a16e68d057af",
+      "externalIds": {
+        "DOI": "10.1109/incet54531.2022.9825389",
+        "CorpusId": 250598608
+      },
+      "corpusId": 250598608,
+      "url": "https://www.semanticscholar.org/paper/012155130b294f28a035c416ffd0a16e68d057af",
+      "title": "An Overview of Text Representation Techniques in Text Classification using Deep Learning Models",
+      "venue": "2022 3rd International Conference for Emerging Technology (INCET)",
+      "year": 2022,
+      "referenceCount": 0,
+      "citationCount": 4,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/incet54531.2022.9825389?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/incet54531.2022.9825389, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": null,
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Conference",
+        "Review"
+      ],
+      "publicationDate": "2022-05-27",
+      "journal": {
+        "name": "2022 3rd International Conference for Emerging Technology (INCET)",
+        "pages": "1-4"
+      },
+      "authors": [
+        {
+          "authorId": null,
+          "name": "Darshan Patil"
+        },
+        {
+          "authorId": "1644481818",
+          "name": "Reena Lokare"
+        },
+        {
+          "authorId": "2147312145",
+          "name": "Sunita Patil"
+        }
+      ],
+      "abstract": "Organizations handling huge amount of data needs to preserve privacy of the documents. Every customer has the rights to ask for privacy of their documents. These documents can be classified into different categories like private, public, confidential, etc. Using suitable text classification methods, documents can be classified into different categories. Various approaches like machine learning (ML), deep learning (DL), natural language processing (NLP) is available. Machine learning algorithms are showing acceptable performance but doesn\u2019t work well when data grows in size. In this paper, convolutional neural network(CNN) which is a deep learning model, is used to classify documents into different categories. Deep learning models are beneficial over machine learning models in terms of performance and volume of data to be classified. The performance of the model is evaluated and obtained acceptable performance."
+    },
+    {
+      "paperId": "01295091d318dca8212431590cce2c7a1081469c",
+      "externalIds": {
+        "DBLP": "journals/access/KimKJ21",
+        "DOI": "10.1109/ACCESS.2021.3055513",
+        "CorpusId": 231914275
+      },
+      "corpusId": 231914275,
+      "url": "https://www.semanticscholar.org/paper/01295091d318dca8212431590cce2c7a1081469c",
+      "title": "Compositional Generalization via Parsing Tree Annotation",
+      "venue": "IEEE Access",
+      "year": 2021,
+      "referenceCount": 32,
+      "citationCount": 1,
+      "isOpenAccess": true,
+      "openAccessPdf": {
+        "url": "https://doi.org/10.1109/access.2021.3055513",
+        "status": "GOLD",
+        "license": "CCBYNCND",
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1109/ACCESS.2021.3055513?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1109/ACCESS.2021.3055513, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "JournalArticle"
+      ],
+      "publicationDate": null,
+      "journal": {
+        "name": "IEEE Access",
+        "pages": "24326-24333",
+        "volume": "9"
+      },
+      "authors": [
+        {
+          "authorId": "46207898",
+          "name": "Segwang Kim"
+        },
+        {
+          "authorId": "2117059788",
+          "name": "Joonyoung Kim"
+        },
+        {
+          "authorId": "1731707",
+          "name": "Kyomin Jung"
+        }
+      ],
+      "abstract": "Humans can understand a novel sentence by parsing it into known components like phrases and clauses. To achieve human-level artificial intelligence, compositional generalization tasks are suggested and used to assess machine learning models. Among those tasks, the SCAN tasks are challenging for the standard deep learning models, such as RNN sequence-to-sequence models and Transformers, that show great success across many natural language processing tasks. Even though a long line of deep learning research has developed memory augmented neural networks aimed at the SCAN tasks, their generalities remain questionable for more complex and realistic applications where the standard seq2seq models dominate. Hence, one needs to propose a method that helps the standard models to discover compositional rules. To this end, we propose a data augmentation technique using paring trees. Our technique annotates targets by inserting a new delimiter token in between them according to their parsing trees. For the training stage, the technique needs prior knowledge about the targets\u2019 semantic or syntactic compositionality. On the other hand, for the test stage, the technique uses no such knowledge. Experiments show that our technique enables the standard models to achieve compositional generalization on the SCAN tasks. Furthermore, we validate our technique on a synthetic task and confirm the standard models\u2019 strong performance gains without using prior knowledge about semantic compositionality. As one way to infuse parsing tree information into sequences, our technique can be used for tasks with structured targets like program code generation tasks."
+    },
+    {
+      "paperId": "012ebba5181a8cd02816a77d31c7ccbba7a09547",
+      "externalIds": {
+        "ArXiv": "2212.07126",
+        "CorpusId": 280950436
+      },
+      "corpusId": 280950436,
+      "url": "https://www.semanticscholar.org/paper/012ebba5181a8cd02816a77d31c7ccbba7a09547",
+      "title": "Explainability of Text Processing and Retrieval Methods: A Survey",
+      "venue": "",
+      "year": 2022,
+      "referenceCount": 169,
+      "citationCount": 0,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://arxiv.org/abs/2212.07126, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        },
+        {
+          "category": "Linguistics",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Review"
+      ],
+      "publicationDate": "2022-12-14",
+      "journal": null,
+      "authors": [
+        {
+          "authorId": "152623586",
+          "name": "Sourav Saha"
+        },
+        {
+          "authorId": "1956144",
+          "name": "Debapriyo Majumdar"
+        },
+        {
+          "authorId": "2283940660",
+          "name": "Mandar Mitra"
+        }
+      ],
+      "abstract": "Deep Learning and Machine Learning based models have become extremely popular in text processing and information retrieval. However, the non-linear structures present inside the networks make these models largely inscrutable. A significant body of research has focused on increasing the transparency of these models. This article provides a broad overview of research on the explainability and interpretability of natural language processing and information retrieval methods. More specifically, we survey approaches that have been applied to explain word embeddings, sequence modeling, attention modules, transformers, BERT, and document ranking. The concluding section suggests some possible directions for future research on this topic."
+    },
+    {
+      "paperId": "012fa240ba3d1e3e6425f9c3ce51e36df5256ddb",
+      "externalIds": {
+        "DBLP": "conf/racs/ItoM22",
+        "DOI": "10.1145/3538641.3561488",
+        "CorpusId": 253022178
+      },
+      "corpusId": 253022178,
+      "url": "https://www.semanticscholar.org/paper/012fa240ba3d1e3e6425f9c3ce51e36df5256ddb",
+      "title": "Sentence embedding based emotion recognition from text data",
+      "venue": "Research in Adaptive and Convergent Systems",
+      "year": 2022,
+      "referenceCount": 22,
+      "citationCount": 1,
+      "isOpenAccess": false,
+      "openAccessPdf": {
+        "url": "",
+        "status": null,
+        "license": null,
+        "disclaimer": "Notice: Paper or abstract available at https://api.unpaywall.org/v2/10.1145/3538641.3561488?email=<INSERT_YOUR_EMAIL> or https://doi.org/10.1145/3538641.3561488, which is subject to the license by the author or copyright owner provided with this content. Please go to the source to verify the license and copyright information for your use."
+      },
+      "fieldsOfStudy": [
+        "Computer Science"
+      ],
+      "s2FieldsOfStudy": [
+        {
+          "category": "Computer Science",
+          "source": "external"
+        },
+        {
+          "category": "Computer Science",
+          "source": "s2-fos-model"
+        }
+      ],
+      "publicationTypes": [
+        "Book",
+        "JournalArticle"
+      ],
+      "publicationDate": "2022-10-03",
+      "journal": {
+        "name": "Proceedings of the Conference on Research in Adaptive and Convergent Systems"
+      },
+      "authors": [
+        {
+          "authorId": "2111011841",
+          "name": "M. Ito"
+        },
+        {
+          "authorId": "1781086",
+          "name": "K. Markov"
+        }
+      ],
+      "abstract": "Automatic emotion recognition from text is an important task in the field of natural language processing (NLP) with applications in data mining, e-learning, information filtering systems, human-computer interaction, and internet services. Recent advances in machine learning and deep neural networks have boosted the NLP systems' performance tremendously. The availability of large pre-trained language models has simplified the feature extraction and facilitated the building of systems from small amounts of data by transfer learning. In this study, we investigate and compare various methods of sentence embedding including simple embedding matrix as well as sophisticated models such as BERT. The recognition back-end consists of standard SVR or Feed-Forward DNN regressors. In our experiments, we used the EmoBank corpus where each sentence is labeled with Valence-Arousal scores. The results clearly show the benefits of the transfer learning and fine-tuning of pre-trained models with respect to classical model training from scratch."
+    }
+  ]
+}

@@ -1,0 +1,293 @@
+[
+  {
+    "doi": "10.1101/2021.12.05.21267037",
+    "api_url": "https://api.biorxiv.org/details/medrxiv/10.1101/2021.12.05.21267037",
+    "metadata": {
+      "title": "Understanding Psychiatric Illness Through Natural Language Processing (UNDERPIN): Rationale, Design, and Methodology",
+      "authors": "Kishimoto, T.; Nakamura, H.; Kano, Y.; Eguchi, Y.; Kitazawa, M.; Liang, K.-c.; Kudo, K.; Sento, A.; Takamiya, A.; Horigome, T.; Yamasaki, T.; Sunami, Y.; Kikuchi, T.; Nakajima, K.; Tomita, M.; Bun, S.; Momota, Y.; Sawada, K.; Murakami, J.; Takahashi, H.; Mimura, M.",
+      "author_corresponding": "Taishiro Kishimoto",
+      "author_corresponding_institution": "Hills Joint Research Laboratory for Future Preventive Medicine and Wellness, Keio University School of Medicine, 7F Roppongi Hills North Tower, 6-2-31 Roppongi,",
+      "doi": "10.1101/2021.12.05.21267037",
+      "date": "2021-12-07",
+      "version": "1",
+      "type": "PUBLISHAHEADOFPRINT",
+      "license": "cc_by_nc_nd",
+      "category": "psychiatry and clinical psychology",
+      "jatsxml": "https://www.medrxiv.org/content/early/2021/12/07/2021.12.05.21267037.source.xml",
+      "abstract": "IntroductionPsychiatric disorders are diagnosed according to diagnostic criteria such as the DSM-5 and ICD-11. Basically, psychiatrists extract symptoms and make a diagnosis by conversing with patients. However, such processes often lack objectivity. In contrast, specific linguistic features can be observed in some psychiatric disorders, such as a loosening of associations in schizophrenia. The purposes of the present study are to quantify the language features of psychiatric disorders and neurocognitive disorders using natural language processing and to identify features that differentiate disorders from one another and from healthy subjects.\n\nMethodsThis study will have a multi-center prospective design. Major depressive disorder, bipolar disorder, schizophrenia, anxiety disorder including obsessive compulsive disorder and, major and minor neurocognitive disorders, as well as healthy subjects will be recruited. A psychiatrist or psychologist will conduct 30-to-60-min interviews with each participant and these interviews will be recorded using a microphone headset. In addition, the severity of disorders will be assessed using clinical rating scales. Data will be collected from each participant at least twice during the study period and up to a maximum of five times.\n\nDiscussionThe overall goal of this proposed study, the Understanding Psychiatric Illness Through Natural Language Processing (UNDERPIN), is to develop objective and easy-to-use biomarkers for diagnosing and assessing the severity of each psychiatric disorder using natural language processing. As of August 2021, we have collected a total of >900 datasets from >350 participants. To the best of our knowledge, this data sample is one of the largest in this field.\n\nTrial registrationUMIN000032141, University Hospital Medical Information Network (UMIN).",
+      "funder": "NA",
+      "published": "10.3389/fpsyt.2022.954703",
+      "server": "medRxiv"
+    },
+    "raw_response": {
+      "messages": [
+        {
+          "status": "ok",
+          "category": "all"
+        }
+      ],
+      "collection": [
+        {
+          "title": "Understanding Psychiatric Illness Through Natural Language Processing (UNDERPIN): Rationale, Design, and Methodology",
+          "authors": "Kishimoto, T.; Nakamura, H.; Kano, Y.; Eguchi, Y.; Kitazawa, M.; Liang, K.-c.; Kudo, K.; Sento, A.; Takamiya, A.; Horigome, T.; Yamasaki, T.; Sunami, Y.; Kikuchi, T.; Nakajima, K.; Tomita, M.; Bun, S.; Momota, Y.; Sawada, K.; Murakami, J.; Takahashi, H.; Mimura, M.",
+          "author_corresponding": "Taishiro Kishimoto",
+          "author_corresponding_institution": "Hills Joint Research Laboratory for Future Preventive Medicine and Wellness, Keio University School of Medicine, 7F Roppongi Hills North Tower, 6-2-31 Roppongi,",
+          "doi": "10.1101/2021.12.05.21267037",
+          "date": "2021-12-07",
+          "version": "1",
+          "type": "PUBLISHAHEADOFPRINT",
+          "license": "cc_by_nc_nd",
+          "category": "psychiatry and clinical psychology",
+          "jatsxml": "https://www.medrxiv.org/content/early/2021/12/07/2021.12.05.21267037.source.xml",
+          "abstract": "IntroductionPsychiatric disorders are diagnosed according to diagnostic criteria such as the DSM-5 and ICD-11. Basically, psychiatrists extract symptoms and make a diagnosis by conversing with patients. However, such processes often lack objectivity. In contrast, specific linguistic features can be observed in some psychiatric disorders, such as a loosening of associations in schizophrenia. The purposes of the present study are to quantify the language features of psychiatric disorders and neurocognitive disorders using natural language processing and to identify features that differentiate disorders from one another and from healthy subjects.\n\nMethodsThis study will have a multi-center prospective design. Major depressive disorder, bipolar disorder, schizophrenia, anxiety disorder including obsessive compulsive disorder and, major and minor neurocognitive disorders, as well as healthy subjects will be recruited. A psychiatrist or psychologist will conduct 30-to-60-min interviews with each participant and these interviews will be recorded using a microphone headset. In addition, the severity of disorders will be assessed using clinical rating scales. Data will be collected from each participant at least twice during the study period and up to a maximum of five times.\n\nDiscussionThe overall goal of this proposed study, the Understanding Psychiatric Illness Through Natural Language Processing (UNDERPIN), is to develop objective and easy-to-use biomarkers for diagnosing and assessing the severity of each psychiatric disorder using natural language processing. As of August 2021, we have collected a total of >900 datasets from >350 participants. To the best of our knowledge, this data sample is one of the largest in this field.\n\nTrial registrationUMIN000032141, University Hospital Medical Information Network (UMIN).",
+          "funder": "NA",
+          "published": "10.3389/fpsyt.2022.954703",
+          "server": "medRxiv"
+        }
+      ]
+    }
+  },
+  {
+    "doi": "10.1101/2021.07.13.21260449",
+    "api_url": "https://api.biorxiv.org/details/medrxiv/10.1101/2021.07.13.21260449",
+    "metadata": {
+      "title": "Characterization of long-term patient-reported symptoms of COVID-19: an analysis of social media data",
+      "authors": "Banda, J. M.; Adderley, N.; Ahmed, W.-U.-R.; AlGhoul, H.; Alser, O.; Alser, M.; Areia, C.; Cogenur, M.; Fister, K.; Gombar, S.; Huser, V.; Jonnagaddala, J.; Lai, L.; Leis, A.; Mateu, L.; Mayer, M. A.; Minty, E.; Morales, D. R.; Natarajan, K.; Paredes, R.; Periyakoil, V. S.; Prats-Uribe, A.; Ross, E. G.; Singh, G. V.; Subbian, V.; Vivekanantham, A.; Prieto-Alhambra, D.",
+      "author_corresponding": "Juan M. Banda",
+      "author_corresponding_institution": "Georgia State University / Stanford University, SAGE Center",
+      "doi": "10.1101/2021.07.13.21260449",
+      "date": "2021-07-15",
+      "version": "1",
+      "type": "PUBLISHAHEADOFPRINT",
+      "license": "cc_by_nc_nd",
+      "category": "infectious diseases",
+      "jatsxml": "https://www.medrxiv.org/content/early/2021/07/15/2021.07.13.21260449.source.xml",
+      "abstract": "As the SARS-CoV-2 virus (COVID-19) continues to affect people across the globe, there is limited understanding of the long term implications for infected patients1-3. While some of these patients have documented follow-ups on clinical records, or participate in longitudinal surveys, these datasets are usually designed by clinicians, and not granular enough to understand the natural history or patient experiences of  long COVID. In order to get a complete picture, there is a need to use patient generated data to track the long-term impact of COVID-19 on recovered patients in real time. There is a growing need to meticulously characterize these patients experiences, from infection to months post-infection, and with highly granular patient generated data rather than clinician narratives. In this work, we present a longitudinal characterization of post-COVID-19 symptoms using social media data from Twitter. Using a combination of machine learning, natural language processing techniques, and clinician reviews, we mined 296,154 tweets to characterize the post-acute infection course of the disease, creating detailed timelines of symptoms and conditions, and analyzing their symptomatology during a period of over 150 days.",
+      "funder": "NA",
+      "published": "NA",
+      "server": "medRxiv"
+    },
+    "raw_response": {
+      "messages": [
+        {
+          "status": "ok",
+          "category": "all"
+        }
+      ],
+      "collection": [
+        {
+          "title": "Characterization of long-term patient-reported symptoms of COVID-19: an analysis of social media data",
+          "authors": "Banda, J. M.; Adderley, N.; Ahmed, W.-U.-R.; AlGhoul, H.; Alser, O.; Alser, M.; Areia, C.; Cogenur, M.; Fister, K.; Gombar, S.; Huser, V.; Jonnagaddala, J.; Lai, L.; Leis, A.; Mateu, L.; Mayer, M. A.; Minty, E.; Morales, D. R.; Natarajan, K.; Paredes, R.; Periyakoil, V. S.; Prats-Uribe, A.; Ross, E. G.; Singh, G. V.; Subbian, V.; Vivekanantham, A.; Prieto-Alhambra, D.",
+          "author_corresponding": "Juan M. Banda",
+          "author_corresponding_institution": "Georgia State University / Stanford University, SAGE Center",
+          "doi": "10.1101/2021.07.13.21260449",
+          "date": "2021-07-15",
+          "version": "1",
+          "type": "PUBLISHAHEADOFPRINT",
+          "license": "cc_by_nc_nd",
+          "category": "infectious diseases",
+          "jatsxml": "https://www.medrxiv.org/content/early/2021/07/15/2021.07.13.21260449.source.xml",
+          "abstract": "As the SARS-CoV-2 virus (COVID-19) continues to affect people across the globe, there is limited understanding of the long term implications for infected patients1-3. While some of these patients have documented follow-ups on clinical records, or participate in longitudinal surveys, these datasets are usually designed by clinicians, and not granular enough to understand the natural history or patient experiences of  long COVID. In order to get a complete picture, there is a need to use patient generated data to track the long-term impact of COVID-19 on recovered patients in real time. There is a growing need to meticulously characterize these patients experiences, from infection to months post-infection, and with highly granular patient generated data rather than clinician narratives. In this work, we present a longitudinal characterization of post-COVID-19 symptoms using social media data from Twitter. Using a combination of machine learning, natural language processing techniques, and clinician reviews, we mined 296,154 tweets to characterize the post-acute infection course of the disease, creating detailed timelines of symptoms and conditions, and analyzing their symptomatology during a period of over 150 days.",
+          "funder": "NA",
+          "published": "NA",
+          "server": "medRxiv"
+        }
+      ]
+    }
+  },
+  {
+    "doi": "10.1101/2021.06.14.21258493",
+    "api_url": "https://api.biorxiv.org/details/medrxiv/10.1101/2021.06.14.21258493",
+    "metadata": {
+      "title": "Natural language inference for clinical registry curation",
+      "authors": "Percha, B.; Pisapati, K.; Gao, C.; Schmidt, H.",
+      "author_corresponding": "Bethany Percha",
+      "author_corresponding_institution": "Icahn School of Medicine at Mount Sinai",
+      "doi": "10.1101/2021.06.14.21258493",
+      "date": "2021-06-14",
+      "version": "1",
+      "type": "PUBLISHAHEADOFPRINT",
+      "license": "cc_by_nc_nd",
+      "category": "health informatics",
+      "jatsxml": "https://www.medrxiv.org/content/early/2021/06/14/2021.06.14.21258493.source.xml",
+      "abstract": "Clinical registries - structured databases of demographic, diagnosis, and treatment information for patients with specific diseases or phenotypes - play vital roles in high-quality retrospective studies, operational planning, and assessment of patient eligibility for research, including clinical trials. However, registries are extremely time and resource intensive to curate. Natural language processing (NLP) can help, but standard NLP methods require specially annotated training sets or the construction of separate models for each of dozens or hundreds of different registry fields, rendering them insufficient for registry curation at scale. Natural language inference (NLI), a specific branch of NLP focused on logical relationships between statements, presents a possible solution, but NLI methods are largely unexplored in the clinical domain outside the realm of conference shared tasks and computer science benchmarks. Here we convert registry curation into an NLI problem, applying five state-of-the-art, pretrained, deep learning based NLI models to clinical, laboratory, and pathology notes to infer information about 43 different breast oncology registry fields. We evaluate the models inferences against a manually curated, 7439 patient breast oncology research database. The NLI models show considerable variation in performance, both within and across registry fields. One model, ALBERT, outperforms the others (BART, RoBERTa, XLNet, and ELECTRA) on 22 out of 43 fields. A detailed error analysis reveals that incorrect inferences primarily arise through models misinterpretations of temporality--they interpret historical findings as current and vice versa--as well as confusion based on subtle terminology and abbreviation variants common in clinical notes. However, modern NLI methods show promise for increasing the efficiency of registry curation, even when used \"out of the box\" with no additional training.",
+      "funder": "NA",
+      "published": "10.1093/jamia/ocab243",
+      "server": "medRxiv"
+    },
+    "raw_response": {
+      "messages": [
+        {
+          "status": "ok",
+          "category": "all"
+        }
+      ],
+      "collection": [
+        {
+          "title": "Natural language inference for clinical registry curation",
+          "authors": "Percha, B.; Pisapati, K.; Gao, C.; Schmidt, H.",
+          "author_corresponding": "Bethany Percha",
+          "author_corresponding_institution": "Icahn School of Medicine at Mount Sinai",
+          "doi": "10.1101/2021.06.14.21258493",
+          "date": "2021-06-14",
+          "version": "1",
+          "type": "PUBLISHAHEADOFPRINT",
+          "license": "cc_by_nc_nd",
+          "category": "health informatics",
+          "jatsxml": "https://www.medrxiv.org/content/early/2021/06/14/2021.06.14.21258493.source.xml",
+          "abstract": "Clinical registries - structured databases of demographic, diagnosis, and treatment information for patients with specific diseases or phenotypes - play vital roles in high-quality retrospective studies, operational planning, and assessment of patient eligibility for research, including clinical trials. However, registries are extremely time and resource intensive to curate. Natural language processing (NLP) can help, but standard NLP methods require specially annotated training sets or the construction of separate models for each of dozens or hundreds of different registry fields, rendering them insufficient for registry curation at scale. Natural language inference (NLI), a specific branch of NLP focused on logical relationships between statements, presents a possible solution, but NLI methods are largely unexplored in the clinical domain outside the realm of conference shared tasks and computer science benchmarks. Here we convert registry curation into an NLI problem, applying five state-of-the-art, pretrained, deep learning based NLI models to clinical, laboratory, and pathology notes to infer information about 43 different breast oncology registry fields. We evaluate the models inferences against a manually curated, 7439 patient breast oncology research database. The NLI models show considerable variation in performance, both within and across registry fields. One model, ALBERT, outperforms the others (BART, RoBERTa, XLNet, and ELECTRA) on 22 out of 43 fields. A detailed error analysis reveals that incorrect inferences primarily arise through models misinterpretations of temporality--they interpret historical findings as current and vice versa--as well as confusion based on subtle terminology and abbreviation variants common in clinical notes. However, modern NLI methods show promise for increasing the efficiency of registry curation, even when used \"out of the box\" with no additional training.",
+          "funder": "NA",
+          "published": "10.1093/jamia/ocab243",
+          "server": "medRxiv"
+        },
+        {
+          "title": "Natural language inference for clinical registry curation",
+          "authors": "Percha, B.; Pisapati, K.; Gao, C.; Schmidt, H.",
+          "author_corresponding": "Bethany Percha",
+          "author_corresponding_institution": "Icahn School of Medicine at Mount Sinai",
+          "doi": "10.1101/2021.06.14.21258493",
+          "date": "2021-06-22",
+          "version": "2",
+          "type": "PUBLISHAHEADOFPRINT",
+          "license": "cc_by_nc_nd",
+          "category": "health informatics",
+          "jatsxml": "https://www.medrxiv.org/content/early/2021/06/22/2021.06.14.21258493.source.xml",
+          "abstract": "Clinical registries - structured databases of demographic, diagnosis, and treatment information for patients with specific diseases or phenotypes - play vital roles in high-quality retrospective studies, operational planning, and assessment of patient eligibility for research, including clinical trials. However, registries are extremely time and resource intensive to curate. Natural language processing (NLP) can help, but standard NLP methods require specially annotated training sets or the construction of separate models for each of dozens or hundreds of different registry fields, rendering them insufficient for registry curation at scale. Natural language inference (NLI), a specific branch of NLP focused on logical relationships between statements, presents a possible solution, but NLI methods are largely unexplored in the clinical domain outside the realm of conference shared tasks and computer science benchmarks. Here we convert registry curation into an NLI problem, applying five state-of-the-art, pretrained, deep learning based NLI models to clinical, laboratory, and pathology notes to infer information about 43 different breast oncology registry fields. We evaluate the models inferences against a manually curated, 7439 patient breast oncology research database. The NLI models show considerable variation in performance, both within and across registry fields. One model, ALBERT, outperforms the others (BART, RoBERTa, XLNet, and ELECTRA) on 22 out of 43 fields. A detailed error analysis reveals that incorrect inferences primarily arise through models misinterpretations of temporality--they interpret historical findings as current and vice versa--as well as confusion based on subtle terminology and abbreviation variants common in clinical notes. However, modern NLI methods show promise for increasing the efficiency of registry curation, even when used \"out of the box\" with no additional training.",
+          "funder": "NA",
+          "published": "10.1093/jamia/ocab243",
+          "server": "medRxiv"
+        }
+      ]
+    }
+  },
+  {
+    "doi": "10.1101/2020.07.29.20164814",
+    "api_url": "https://api.biorxiv.org/details/medrxiv/10.1101/2020.07.29.20164814",
+    "metadata": {
+      "title": "Whether the Weather Will Help Us Weather the COVID-19 Pandemic: Using Machine Learning to Measure Twitter Users' Perceptions",
+      "authors": "Gupta, M.; Bansal, A.; Jain, B.; Rochelle, J.; Oak, A.; Jalali, M. S.",
+      "author_corresponding": "Mohammad S. Jalali",
+      "author_corresponding_institution": "Harvard Medical School",
+      "doi": "10.1101/2020.07.29.20164814",
+      "date": "2020-08-01",
+      "version": "1",
+      "type": "PUBLISHAHEADOFPRINT",
+      "license": "cc_by_nc_nd",
+      "category": "epidemiology",
+      "jatsxml": "https://www.medrxiv.org/content/early/2020/08/01/2020.07.29.20164814.source.xml",
+      "abstract": "ObjectiveThe potential ability for weather to affect SARS-CoV-2 transmission has been an area of controversial discussion during the COVID-19 pandemic. Individuals perceptions of the impact of weather can inform their adherence to public health guidelines; however, there is no measure of their perceptions. We quantified Twitter users perceptions of the effect of weather and analyzed how they evolved with respect to real-world events and time.\n\nMaterials and MethodsWe collected 166,005 tweets posted between January 23 and June 22, 2020 and employed machine learning/natural language processing techniques to filter for relevant tweets, classify them by the type of effect they claimed, and identify topics of discussion.\n\nResultsWe identified 28,555 relevant tweets and estimate that 40.4% indicate uncertainty about weathers impact, 33.5% indicate no effect, and 26.1% indicate some effect. We tracked changes in these proportions over time. Topic modeling revealed major latent areas of discussion.\n\nDiscussionThere is no consensus among the public for weathers potential impact. Earlier months were characterized by tweets that were uncertain of weathers effect or claimed no effect; later, the portion of tweets claiming some effect of weather increased. Tweets claiming no effect of weather comprised the largest class by June. Major topics of discussion included comparisons to influenzas seasonality, President Trumps comments on weathers effect, and social distancing.\n\nConclusionThere is a major gap between scientific evidence and public opinion of weathers impacts on COVID-19. We provide evidence of publics misconceptions and topics of discussion, which can inform public health communications.",
+      "funder": "NA",
+      "published": "10.1016/j.ijmedinf.2020.104340",
+      "server": "medRxiv"
+    },
+    "raw_response": {
+      "messages": [
+        {
+          "status": "ok",
+          "category": "all"
+        }
+      ],
+      "collection": [
+        {
+          "title": "Whether the Weather Will Help Us Weather the COVID-19 Pandemic: Using Machine Learning to Measure Twitter Users' Perceptions",
+          "authors": "Gupta, M.; Bansal, A.; Jain, B.; Rochelle, J.; Oak, A.; Jalali, M. S.",
+          "author_corresponding": "Mohammad S. Jalali",
+          "author_corresponding_institution": "Harvard Medical School",
+          "doi": "10.1101/2020.07.29.20164814",
+          "date": "2020-08-01",
+          "version": "1",
+          "type": "PUBLISHAHEADOFPRINT",
+          "license": "cc_by_nc_nd",
+          "category": "epidemiology",
+          "jatsxml": "https://www.medrxiv.org/content/early/2020/08/01/2020.07.29.20164814.source.xml",
+          "abstract": "ObjectiveThe potential ability for weather to affect SARS-CoV-2 transmission has been an area of controversial discussion during the COVID-19 pandemic. Individuals perceptions of the impact of weather can inform their adherence to public health guidelines; however, there is no measure of their perceptions. We quantified Twitter users perceptions of the effect of weather and analyzed how they evolved with respect to real-world events and time.\n\nMaterials and MethodsWe collected 166,005 tweets posted between January 23 and June 22, 2020 and employed machine learning/natural language processing techniques to filter for relevant tweets, classify them by the type of effect they claimed, and identify topics of discussion.\n\nResultsWe identified 28,555 relevant tweets and estimate that 40.4% indicate uncertainty about weathers impact, 33.5% indicate no effect, and 26.1% indicate some effect. We tracked changes in these proportions over time. Topic modeling revealed major latent areas of discussion.\n\nDiscussionThere is no consensus among the public for weathers potential impact. Earlier months were characterized by tweets that were uncertain of weathers effect or claimed no effect; later, the portion of tweets claiming some effect of weather increased. Tweets claiming no effect of weather comprised the largest class by June. Major topics of discussion included comparisons to influenzas seasonality, President Trumps comments on weathers effect, and social distancing.\n\nConclusionThere is a major gap between scientific evidence and public opinion of weathers impacts on COVID-19. We provide evidence of publics misconceptions and topics of discussion, which can inform public health communications.",
+          "funder": "NA",
+          "published": "10.1016/j.ijmedinf.2020.104340",
+          "server": "medRxiv"
+        }
+      ]
+    }
+  },
+  {
+    "doi": "10.1101/2021.12.11.21267504",
+    "api_url": "https://api.biorxiv.org/details/medrxiv/10.1101/2021.12.11.21267504",
+    "metadata": {
+      "title": "Developing A Deep Learning Natural Language Processing Algorithm For Automated Reporting Of Adverse Drug Reactions",
+      "authors": "McMaster, C.; Chan, J.; Liew, D. F.; Su, E.; Frauman, A. G.; Chapman, W. W.; Pires, D. E.",
+      "author_corresponding": "Christopher McMaster",
+      "author_corresponding_institution": "Austin Health",
+      "doi": "10.1101/2021.12.11.21267504",
+      "date": "2021-12-13",
+      "version": "1",
+      "type": "PUBLISHAHEADOFPRINT",
+      "license": "cc_by",
+      "category": "pharmacology and therapeutics",
+      "jatsxml": "https://www.medrxiv.org/content/early/2021/12/13/2021.12.11.21267504.source.xml",
+      "abstract": "The detection of adverse drug reactions (ADRs) is critical to our understanding of the safety and risk-benefit profile of medications. With an incidence that has not changed over the last 30 years, ADRs are a significant source of patient morbidity, responsible for 5-10% of acute care hospital admissions worldwide. Spontaneous reporting of ADRs has long been the standard method of reporting, however this approach is known to have high rates of under-reporting, a problem that limits pharmacovigilance efforts. Automated ADR reporting presents an alternative pathway to increase reporting rates, although this may be limited by over-reporting of other drug-related adverse events.\n\nWe developed a deep learning natural language processing algorithm to identify ADRs in discharge summaries at a single academic hospital centre. Our model was developed in two stages: first, a pre-trained model (DeBERTa) was further pre-trained on 1.1 million unlabelled clinical documents; secondly, this model was fine-tuned to detect ADR mentions in a corpus of 861 annotated discharge summaries. This model was compared to a version without the pre-training step, and a model finetuned from the ClinicalBERT model, which has demonstrated state-of-the-art performance on other pharmacovigilance tasks. To ensure that our algorithm could differentiate ADRs from other drug-related adverse events, the annotated corpus was enriched for both validated ADR reports and confounding drug-related adverse events using. The final model demonstrated good performance with a ROC-AUC of 0.955 (95% CI 0.946 - 0.963) for the task of identifying discharge summaries containing ADR mentions, significantly outperforming the two comparator models.",
+      "funder": "NA",
+      "published": "10.1016/j.jbi.2022.104265",
+      "server": "medRxiv"
+    },
+    "raw_response": {
+      "messages": [
+        {
+          "status": "ok",
+          "category": "all"
+        }
+      ],
+      "collection": [
+        {
+          "title": "Developing A Deep Learning Natural Language Processing Algorithm For Automated Reporting Of Adverse Drug Reactions",
+          "authors": "McMaster, C.; Chan, J.; Liew, D. F.; Su, E.; Frauman, A. G.; Chapman, W. W.; Pires, D. E.",
+          "author_corresponding": "Christopher McMaster",
+          "author_corresponding_institution": "Austin Health",
+          "doi": "10.1101/2021.12.11.21267504",
+          "date": "2021-12-13",
+          "version": "1",
+          "type": "PUBLISHAHEADOFPRINT",
+          "license": "cc_by",
+          "category": "pharmacology and therapeutics",
+          "jatsxml": "https://www.medrxiv.org/content/early/2021/12/13/2021.12.11.21267504.source.xml",
+          "abstract": "The detection of adverse drug reactions (ADRs) is critical to our understanding of the safety and risk-benefit profile of medications. With an incidence that has not changed over the last 30 years, ADRs are a significant source of patient morbidity, responsible for 5-10% of acute care hospital admissions worldwide. Spontaneous reporting of ADRs has long been the standard method of reporting, however this approach is known to have high rates of under-reporting, a problem that limits pharmacovigilance efforts. Automated ADR reporting presents an alternative pathway to increase reporting rates, although this may be limited by over-reporting of other drug-related adverse events.\n\nWe developed a deep learning natural language processing algorithm to identify ADRs in discharge summaries at a single academic hospital centre. Our model was developed in two stages: first, a pre-trained model (DeBERTa) was further pre-trained on 1.1 million unlabelled clinical documents; secondly, this model was fine-tuned to detect ADR mentions in a corpus of 861 annotated discharge summaries. This model was compared to a version without the pre-training step, and a model finetuned from the ClinicalBERT model, which has demonstrated state-of-the-art performance on other pharmacovigilance tasks. To ensure that our algorithm could differentiate ADRs from other drug-related adverse events, the annotated corpus was enriched for both validated ADR reports and confounding drug-related adverse events using. The final model demonstrated good performance with a ROC-AUC of 0.955 (95% CI 0.946 - 0.963) for the task of identifying discharge summaries containing ADR mentions, significantly outperforming the two comparator models.",
+          "funder": "NA",
+          "published": "10.1016/j.jbi.2022.104265",
+          "server": "medRxiv"
+        },
+        {
+          "title": "Developing A Deep Learning Natural Language Processing Algorithm For Automated Reporting Of Adverse Drug Reactions",
+          "authors": "McMaster, C.; Chan, J.; Liew, D. F.; Su, E.; Frauman, A. G.; Chapman, W. W.; Pires, D. E.",
+          "author_corresponding": "Christopher McMaster",
+          "author_corresponding_institution": "Austin Health",
+          "doi": "10.1101/2021.12.11.21267504",
+          "date": "2021-12-15",
+          "version": "2",
+          "type": "PUBLISHAHEADOFPRINT",
+          "license": "cc_by",
+          "category": "pharmacology and therapeutics",
+          "jatsxml": "https://www.medrxiv.org/content/early/2021/12/15/2021.12.11.21267504.source.xml",
+          "abstract": "The detection of adverse drug reactions (ADRs) is critical to our understanding of the safety and risk-benefit profile of medications. With an incidence that has not changed over the last 30 years, ADRs are a significant source of patient morbidity, responsible for 5-10% of acute care hospital admissions worldwide. Spontaneous reporting of ADRs has long been the standard method of reporting, however this approach is known to have high rates of under-reporting, a problem that limits pharmacovigilance efforts. Automated ADR reporting presents an alternative pathway to increase reporting rates, although this may be limited by over-reporting of other drug-related adverse events.\n\nWe developed a deep learning natural language processing algorithm to identify ADRs in discharge summaries at a single academic hospital centre. Our model was developed in two stages: first, a pre-trained model (DeBERTa) was further pre-trained on 1.1 million unlabelled clinical documents; secondly, this model was fine-tuned to detect ADR mentions in a corpus of 861 annotated discharge summaries. This model was compared to a version without the pre-training step, and a model finetuned from the ClinicalBERT model, which has demonstrated state-of-the-art performance on other pharmacovigilance tasks. To ensure that our algorithm could differentiate ADRs from other drug-related adverse events, the annotated corpus was enriched for both validated ADR reports and confounding drug-related adverse events using. The final model demonstrated good performance with a ROC-AUC of 0.955 (95% CI 0.946 - 0.963) for the task of identifying discharge summaries containing ADR mentions, significantly outperforming the two comparator models.",
+          "funder": "NA",
+          "published": "10.1016/j.jbi.2022.104265",
+          "server": "medRxiv"
+        },
+        {
+          "title": "Developing A Deep Learning Natural Language Processing Algorithm For Automated Reporting Of Adverse Drug Reactions",
+          "authors": "McMaster, C.; Chan, J.; Liew, D. F.; Su, E.; Frauman, A. G.; Chapman, W. W.; Pires, D. E.",
+          "author_corresponding": "Christopher McMaster",
+          "author_corresponding_institution": "Austin Health",
+          "doi": "10.1101/2021.12.11.21267504",
+          "date": "2022-04-07",
+          "version": "3",
+          "type": "PUBLISHAHEADOFPRINT",
+          "license": "cc_by",
+          "category": "pharmacology and therapeutics",
+          "jatsxml": "https://www.medrxiv.org/content/early/2022/04/07/2021.12.11.21267504.source.xml",
+          "abstract": "The detection of adverse drug reactions (ADRs) is critical to our understanding of the safety and risk-benefit profile of medications. With an incidence that has not changed over the last 30 years, ADRs are a significant source of patient morbidity, responsible for 5-10% of acute care hospital admissions worldwide. Spontaneous reporting of ADRs has long been the standard method of reporting, however this approach is known to have high rates of under-reporting, a problem that limits pharmacovigilance efforts. Automated ADR reporting presents an alternative pathway to increase reporting rates, although this may be limited by over-reporting of other drug-related adverse events.\n\nWe developed a deep learning natural language processing algorithm to identify ADRs in discharge summaries at a single academic hospital centre. Our model was developed in two stages: first, a pre-trained model (DeBERTa) was further pre-trained on 1.1 million unlabelled clinical documents; secondly, this model was fine-tuned to detect ADR mentions in a corpus of 861 annotated discharge summaries. This model was compared to a version without the pre-training step, and a model finetuned from the ClinicalBERT model, which has demonstrated state-of-the-art performance on other pharmacovigilance tasks. To ensure that our algorithm could differentiate ADRs from other drug-related adverse events, the annotated corpus was enriched for both validated ADR reports and confounding drug-related adverse events using. The final model demonstrated good performance with a ROC-AUC of 0.955 (95% CI 0.946 - 0.963) for the task of identifying discharge summaries containing ADR mentions, significantly outperforming the two comparator models.",
+          "funder": "NA",
+          "published": "10.1016/j.jbi.2022.104265",
+          "server": "medRxiv"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "collected_at": "2026-02-01T15:33:50.076564",
+  "relevance_search": {
+    "api_url": "https://api.semanticscholar.org/graph/v1/paper/search",
+    "query": "machine learning deep learning nlp natural language processing",
+    "year_range": "2020-2022",
+    "limit": 50,
+    "total_results": 11626,
+    "results_returned": 50
+  },
+  "bulk_search": {
+    "api_url": "https://api.semanticscholar.org/graph/v1/paper/search/bulk",
+    "query": "(\"machine learning\" | \"deep learning\") \"natural language processing\"",
+    "year_range": "2020-2022",
+    "total_results": 8269,
+    "results_returned": 50
+  },
+  "api_key_used": true,
+  "fields_requested": "paperId,corpusId,externalIds,url,title,abstract,venue,year,referenceCount,citationCount,isOpenAccess,openAccessPdf,fieldsOfStudy,s2FieldsOfStudy,publicationTypes,publicationDate,journal,authors",
+  "files_created": [
+    "relevance_search_response.json",
+    "bulk_search_response.json",
+    "collection_metadata.json"
+  ]
+}

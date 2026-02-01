@@ -1,0 +1,1594 @@
+{
+  "search-results": {
+    "opensearch:totalResults": "14501",
+    "opensearch:startIndex": "0",
+    "opensearch:itemsPerPage": "25",
+    "opensearch:Query": {
+      "@role": "request",
+      "@searchTerms": "TITLE-ABS-KEY((\"machine learning\" OR \"deep learning\") AND (\"nlp\" OR \"natural language processing\"))",
+      "@startPage": "0"
+    },
+    "link": [
+      {
+        "@_fa": "true",
+        "@ref": "self",
+        "@href": "https://api.elsevier.com/content/search/scopus?start=0&count=25&query=TITLE-ABS-KEY%28%28%22machine+learning%22+OR+%22deep+learning%22%29+AND+%28%22nlp%22+OR+%22natural+language+processing%22%29%29&date=2020-2022&sort=-coverDate&view=STANDARD",
+        "@type": "application/json"
+      },
+      {
+        "@_fa": "true",
+        "@ref": "first",
+        "@href": "https://api.elsevier.com/content/search/scopus?start=0&count=25&query=TITLE-ABS-KEY%28%28%22machine+learning%22+OR+%22deep+learning%22%29+AND+%28%22nlp%22+OR+%22natural+language+processing%22%29%29&date=2020-2022&sort=-coverDate&view=STANDARD",
+        "@type": "application/json"
+      },
+      {
+        "@_fa": "true",
+        "@ref": "next",
+        "@href": "https://api.elsevier.com/content/search/scopus?start=25&count=25&query=TITLE-ABS-KEY%28%28%22machine+learning%22+OR+%22deep+learning%22%29+AND+%28%22nlp%22+OR+%22natural+language+processing%22%29%29&date=2020-2022&sort=-coverDate&view=STANDARD",
+        "@type": "application/json"
+      },
+      {
+        "@_fa": "true",
+        "@ref": "last",
+        "@href": "https://api.elsevier.com/content/search/scopus?start=4975&count=25&query=TITLE-ABS-KEY%28%28%22machine+learning%22+OR+%22deep+learning%22%29+AND+%28%22nlp%22+OR+%22natural+language+processing%22%29%29&date=2020-2022&sort=-coverDate&view=STANDARD",
+        "@type": "application/json"
+      }
+    ],
+    "entry": [
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85145343459"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85145343459?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85145343459&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85145343459&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85145343459",
+        "dc:identifier": "SCOPUS_ID:85145343459",
+        "eid": "2-s2.0-85145343459",
+        "dc:title": "Deep learning for cognitive computing systems: Technological advancements and applications",
+        "dc:creator": "Sumithra M.G.",
+        "prism:publicationName": "Deep Learning for Cognitive Computing Systems Technological Advancements and Applications",
+        "prism:isbn": [
+          {
+            "@_fa": "true",
+            "$": "[9783110750508, 9783110750584]"
+          }
+        ],
+        "prism:pageRange": "1-199",
+        "prism:coverDate": "2022-12-31",
+        "prism:coverDisplayDate": "31 December 2022",
+        "prism:doi": "10.1515/9783110750584",
+        "citedby-count": "5",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "Dr. N.G.P. Institute of Technology",
+            "affiliation-city": "Coimbatore",
+            "affiliation-country": "India"
+          }
+        ],
+        "prism:aggregationType": "Book",
+        "subtype": "bk",
+        "subtypeDescription": "Book",
+        "source-id": "21101129723",
+        "openaccess": "0",
+        "openaccessFlag": false
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85146816438"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85146816438?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85146816438&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85146816438&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85146816438",
+        "dc:identifier": "SCOPUS_ID:85146816438",
+        "eid": "2-s2.0-85146816438",
+        "dc:title": "Automatic Classification of Quran Verses Using Genetic Algorithm for Feature Selection",
+        "dc:creator": "Mert F.",
+        "prism:publicationName": "El Cezeri Journal of Science and Engineering",
+        "prism:eIssn": "21483736",
+        "prism:volume": "9",
+        "prism:issueIdentifier": "4",
+        "prism:pageRange": "1484-1494",
+        "prism:coverDate": "2022-12-31",
+        "prism:coverDisplayDate": "31 December 2022",
+        "prism:doi": "10.31202/ecjse.1135868",
+        "citedby-count": "0",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "Istanbul University-Cerrahpasa",
+            "affiliation-city": "Istanbul",
+            "affiliation-country": "Turkey"
+          },
+          {
+            "@_fa": "true",
+            "affilname": "Ar-Ge Merkezi",
+            "affiliation-city": "Istanbul",
+            "affiliation-country": "Turkey"
+          }
+        ],
+        "prism:aggregationType": "Journal",
+        "subtype": "ar",
+        "subtypeDescription": "Article",
+        "source-id": "21101027394",
+        "openaccess": "1",
+        "openaccessFlag": true,
+        "freetoread": {
+          "value": [
+            {
+              "$": "all"
+            },
+            {
+              "$": "publisherfullgold"
+            }
+          ]
+        },
+        "freetoreadLabel": {
+          "value": [
+            {
+              "$": "All Open Access"
+            },
+            {
+              "$": "Gold"
+            }
+          ]
+        }
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85145877745"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85145877745?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85145877745&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85145877745&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85145877745",
+        "dc:identifier": "SCOPUS_ID:85145877745",
+        "eid": "2-s2.0-85145877745",
+        "dc:title": "RDNN: Rumor Detection Neural Network for Veracity Analysis in Social Media Text",
+        "dc:creator": "Suthanthira Devi P.",
+        "prism:publicationName": "Ksii Transactions on Internet and Information Systems",
+        "prism:issn": "19767277",
+        "prism:eIssn": "22881468",
+        "prism:volume": "16",
+        "prism:issueIdentifier": "12",
+        "prism:pageRange": "3868-3888",
+        "prism:coverDate": "2022-12-31",
+        "prism:coverDisplayDate": "31 December 2022",
+        "prism:doi": "10.3837/tiis.2022.12.005",
+        "citedby-count": "1",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "ST. Joseph College of Engineering",
+            "affiliation-city": "Kanchipuram",
+            "affiliation-country": "India"
+          }
+        ],
+        "prism:aggregationType": "Journal",
+        "subtype": "ar",
+        "subtypeDescription": "Article",
+        "source-id": "17700155805",
+        "openaccess": "1",
+        "openaccessFlag": true,
+        "freetoread": {
+          "value": [
+            {
+              "$": "all"
+            },
+            {
+              "$": "publisherfullgold"
+            }
+          ]
+        },
+        "freetoreadLabel": {
+          "value": [
+            {
+              "$": "All Open Access"
+            },
+            {
+              "$": "Gold"
+            }
+          ]
+        }
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85145341788"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85145341788?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85145341788&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85145341788&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85145341788",
+        "dc:identifier": "SCOPUS_ID:85145341788",
+        "eid": "2-s2.0-85145341788",
+        "dc:title": "A novel deep belief neural network model for abstractive text summarization",
+        "dc:creator": "Dineshnath G.",
+        "prism:publicationName": "Deep Learning for Cognitive Computing Systems Technological Advancements and Applications",
+        "prism:isbn": [
+          {
+            "@_fa": "true",
+            "$": "[9783110750508, 9783110750584]"
+          }
+        ],
+        "prism:pageRange": "179-199",
+        "prism:coverDate": "2022-12-31",
+        "prism:coverDisplayDate": "31 December 2022",
+        "prism:doi": "10.1515/9783110750584-011",
+        "citedby-count": "0",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "Puducherry Technological University",
+            "affiliation-city": "Puducherry",
+            "affiliation-country": "India"
+          }
+        ],
+        "prism:aggregationType": "Book",
+        "subtype": "ch",
+        "subtypeDescription": "Book Chapter",
+        "source-id": "21101129723",
+        "openaccess": "0",
+        "openaccessFlag": false
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85141346311"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85141346311?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85141346311&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85141346311&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85141346311",
+        "dc:identifier": "SCOPUS_ID:85141346311",
+        "eid": "2-s2.0-85141346311",
+        "dc:title": "Identification of online harassment using ensemble fine-tuned pre-trained Bert",
+        "dc:creator": "Ganie A.G.",
+        "prism:publicationName": "Pollack Periodica",
+        "prism:issn": "17881994",
+        "prism:eIssn": "17883911",
+        "prism:volume": "17",
+        "prism:issueIdentifier": "3",
+        "prism:pageRange": "13-18",
+        "prism:coverDate": "2022-12-31",
+        "prism:coverDisplayDate": "31 December 2022",
+        "prism:doi": "10.1556/606.2022.00608",
+        "citedby-count": "3",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "Miskolci Egyetem",
+            "affiliation-city": "Miskolc",
+            "affiliation-country": "Hungary"
+          }
+        ],
+        "prism:aggregationType": "Journal",
+        "subtype": "ar",
+        "subtypeDescription": "Article",
+        "source-id": "7100153120",
+        "openaccess": "1",
+        "openaccessFlag": true,
+        "freetoread": {
+          "value": [
+            {
+              "$": "all"
+            },
+            {
+              "$": "publisherhybridgold"
+            }
+          ]
+        },
+        "freetoreadLabel": {
+          "value": [
+            {
+              "$": "All Open Access"
+            },
+            {
+              "$": "Hybrid Gold"
+            }
+          ]
+        }
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/105005378736"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/105005378736?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=105005378736&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=105005378736&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/105005378736",
+        "dc:identifier": "SCOPUS_ID:105005378736",
+        "eid": "2-s2.0-105005378736",
+        "dc:title": "Pro deep learning with tensorflow 2.0: A mathematical approach to advanced artificial intelligence in python",
+        "dc:creator": "Pattanayak S.",
+        "prism:publicationName": "Pro Deep Learning with Tensorflow 2 0 A Mathematical Approach to Advanced Artificial Intelligence in Python",
+        "prism:isbn": [
+          {
+            "@_fa": "true",
+            "$": "[9781484289303, 9781484289310]"
+          }
+        ],
+        "prism:pageRange": "1-652",
+        "prism:coverDate": "2022-12-31",
+        "prism:coverDisplayDate": "31 December 2022",
+        "prism:doi": "10.1007/978-1-4842-8931-0",
+        "citedby-count": "4",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "Prestige Ozone",
+            "affiliation-city": "Bengaluru",
+            "affiliation-country": "India"
+          }
+        ],
+        "prism:aggregationType": "Book",
+        "subtype": "bk",
+        "subtypeDescription": "Book",
+        "source-id": "21101295964",
+        "openaccess": "0",
+        "openaccessFlag": false
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85181884951"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85181884951?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85181884951&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85181884951&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85181884951",
+        "dc:identifier": "SCOPUS_ID:85181884951",
+        "eid": "2-s2.0-85181884951",
+        "dc:title": "Use of Natural Language Processing to Identify Sexual and Reproductive Health Information in Clinical Text",
+        "dc:creator": "Harrison E.I.",
+        "prism:publicationName": "Methods of Information in Medicine",
+        "prism:issn": "00261270",
+        "prism:eIssn": "2511705X",
+        "prism:volume": "62",
+        "prism:issueIdentifier": "5",
+        "prism:pageRange": "193-201",
+        "prism:coverDate": "2022-12-31",
+        "prism:coverDisplayDate": "31 December 2022",
+        "prism:doi": "10.1055/a-2233-2736",
+        "citedby-count": "0",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "UPMC Children\u2019s Hospital of Pittsburgh",
+            "affiliation-city": "Pittsburgh",
+            "affiliation-country": "United States"
+          }
+        ],
+        "pubmed-id": "38122815",
+        "prism:aggregationType": "Journal",
+        "subtype": "ar",
+        "subtypeDescription": "Article",
+        "source-id": "19016",
+        "openaccess": "0",
+        "openaccessFlag": false
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85145878481"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85145878481?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85145878481&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85145878481&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85145878481",
+        "dc:identifier": "SCOPUS_ID:85145878481",
+        "eid": "2-s2.0-85145878481",
+        "dc:title": "GCNXSS: An Attack Detection Approach for Cross-Site Scripting Based on Graph Convolutional Networks",
+        "dc:creator": "Pan H.",
+        "prism:publicationName": "Ksii Transactions on Internet and Information Systems",
+        "prism:issn": "19767277",
+        "prism:eIssn": "22881468",
+        "prism:volume": "16",
+        "prism:issueIdentifier": "12",
+        "prism:pageRange": "4008-4023",
+        "prism:coverDate": "2022-12-31",
+        "prism:coverDisplayDate": "31 December 2022",
+        "prism:doi": "10.3837/tiis.2022.12.013",
+        "citedby-count": "4",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "Sichuan University",
+            "affiliation-city": "Chengdu",
+            "affiliation-country": "China"
+          }
+        ],
+        "prism:aggregationType": "Journal",
+        "subtype": "ar",
+        "subtypeDescription": "Article",
+        "source-id": "17700155805",
+        "openaccess": "1",
+        "openaccessFlag": true,
+        "freetoread": {
+          "value": [
+            {
+              "$": "all"
+            },
+            {
+              "$": "publisherfullgold"
+            }
+          ]
+        },
+        "freetoreadLabel": {
+          "value": [
+            {
+              "$": "All Open Access"
+            },
+            {
+              "$": "Gold"
+            }
+          ]
+        }
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85147928642"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85147928642?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85147928642&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85147928642&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85147928642",
+        "dc:identifier": "SCOPUS_ID:85147928642",
+        "eid": "2-s2.0-85147928642",
+        "dc:title": "Artificial intelligence techniques to understand braille: A language for visually impaired individuals",
+        "dc:creator": "Ali S.A.",
+        "prism:publicationName": "Handbook of Research on Artificial Intelligence Applications in Literary Works and Social Media",
+        "prism:isbn": [
+          {
+            "@_fa": "true",
+            "$": "[1668462427, 9781668462423, 9781668462447]"
+          }
+        ],
+        "prism:pageRange": "254-276",
+        "prism:coverDate": "2022-12-30",
+        "prism:coverDisplayDate": "30 December 2022",
+        "prism:doi": "10.4018/978-1-6684-6242-3.ch012",
+        "citedby-count": "5",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "Sindh Madressatul Islam University",
+            "affiliation-city": "Karachi",
+            "affiliation-country": "Pakistan"
+          }
+        ],
+        "prism:aggregationType": "Book",
+        "subtype": "ch",
+        "subtypeDescription": "Book Chapter",
+        "source-id": "21101134573",
+        "openaccess": "0",
+        "openaccessFlag": false
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/105026355214"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/105026355214?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=105026355214&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=105026355214&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/105026355214",
+        "dc:identifier": "SCOPUS_ID:105026355214",
+        "eid": "2-s2.0-105026355214",
+        "dc:title": "Fake News Classification using Machine Learning: Count Vectorizer and Support Vector Machine",
+        "dc:creator": "Khan S.",
+        "prism:publicationName": "Journal of Computing and Biomedical Informatics",
+        "prism:issn": "27101606",
+        "prism:eIssn": "27101614",
+        "prism:volume": "4",
+        "prism:issueIdentifier": "1",
+        "prism:pageRange": "54-63",
+        "prism:coverDate": "2022-12-29",
+        "prism:coverDisplayDate": "29 December 2022",
+        "prism:doi": "10.56979/401/2022/85",
+        "citedby-count": "11",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "University of Engineering and Technology Taxila",
+            "affiliation-city": "Taxila",
+            "affiliation-country": "Pakistan"
+          }
+        ],
+        "prism:aggregationType": "Journal",
+        "subtype": "ar",
+        "subtypeDescription": "Article",
+        "article-number": "85-0401/2022",
+        "source-id": "21101375756",
+        "openaccess": "1",
+        "openaccessFlag": true,
+        "freetoread": {
+          "value": [
+            {
+              "$": "all"
+            },
+            {
+              "$": "publisherfullgold"
+            }
+          ]
+        },
+        "freetoreadLabel": {
+          "value": [
+            {
+              "$": "All Open Access"
+            },
+            {
+              "$": "Gold"
+            }
+          ]
+        }
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85144399661"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85144399661?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85144399661&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85144399661&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "full-text",
+            "@href": "https://api.elsevier.com/content/article/eid/1-s2.0-S0006497122011120"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85144399661",
+        "dc:identifier": "SCOPUS_ID:85144399661",
+        "eid": "2-s2.0-85144399661",
+        "dc:title": "Long-term risk of developing immune thrombocytopenia and hematologic neoplasia in adults with mild thrombocytopenia",
+        "dc:creator": "Ayad N.",
+        "prism:publicationName": "Blood",
+        "prism:issn": "00064971",
+        "prism:eIssn": "15280020",
+        "prism:volume": "140",
+        "prism:issueIdentifier": "26",
+        "prism:pageRange": "2849-2852",
+        "prism:coverDate": "2022-12-29",
+        "prism:coverDisplayDate": "29 December 2022",
+        "prism:doi": "10.1182/blood.2022016757",
+        "pii": "S0006497122011120",
+        "citedby-count": "3",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "Harvard Medical School",
+            "affiliation-city": "Boston",
+            "affiliation-country": "United States"
+          }
+        ],
+        "pubmed-id": "36026607",
+        "prism:aggregationType": "Journal",
+        "subtype": "le",
+        "subtypeDescription": "Letter",
+        "source-id": "25454",
+        "openaccess": "1",
+        "openaccessFlag": true,
+        "freetoread": {
+          "value": [
+            {
+              "$": "all"
+            },
+            {
+              "$": "publisherfree2read"
+            },
+            {
+              "$": "repository"
+            },
+            {
+              "$": "repositoryam"
+            }
+          ]
+        },
+        "freetoreadLabel": {
+          "value": [
+            {
+              "$": "All Open Access"
+            },
+            {
+              "$": "Bronze"
+            },
+            {
+              "$": "Green"
+            }
+          ]
+        }
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85152910618"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85152910618?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85152910618&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85152910618&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85152910618",
+        "dc:identifier": "SCOPUS_ID:85152910618",
+        "eid": "2-s2.0-85152910618",
+        "dc:title": "An Object Localization-based Dense Image Captioning Framework in Hindi",
+        "dc:creator": "Mishra S.K.",
+        "prism:publicationName": "ACM Transactions on Asian and Low Resource Language Information Processing",
+        "prism:issn": "23754699",
+        "prism:eIssn": "23754702",
+        "prism:volume": "22",
+        "prism:issueIdentifier": "2",
+        "prism:pageRange": null,
+        "prism:coverDate": "2022-12-27",
+        "prism:coverDisplayDate": "27 December 2022",
+        "prism:doi": "10.1145/3558391",
+        "citedby-count": "15",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "Indian Institute of Technology Patna",
+            "affiliation-city": "Patna",
+            "affiliation-country": "India"
+          }
+        ],
+        "prism:aggregationType": "Journal",
+        "subtype": "ar",
+        "subtypeDescription": "Article",
+        "article-number": "33",
+        "source-id": "21100784666",
+        "openaccess": "0",
+        "openaccessFlag": false
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85143085062"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85143085062?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85143085062&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85143085062&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85143085062",
+        "dc:identifier": "SCOPUS_ID:85143085062",
+        "eid": "2-s2.0-85143085062",
+        "dc:title": "End-to-End Protein Normal Mode Frequency Predictions Using Language and Graph Models and Application to Sonification",
+        "dc:creator": "Hu Y.",
+        "prism:publicationName": "ACS Nano",
+        "prism:issn": "19360851",
+        "prism:eIssn": "1936086X",
+        "prism:volume": "16",
+        "prism:issueIdentifier": "12",
+        "prism:pageRange": "20656-20670",
+        "prism:coverDate": "2022-12-27",
+        "prism:coverDisplayDate": "27 December 2022",
+        "prism:doi": "10.1021/acsnano.2c07681",
+        "citedby-count": "20",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "MIT School of Engineering",
+            "affiliation-city": "Cambridge",
+            "affiliation-country": "United States"
+          }
+        ],
+        "pubmed-id": "36416536",
+        "prism:aggregationType": "Journal",
+        "subtype": "ar",
+        "subtypeDescription": "Article",
+        "source-id": "11500153511",
+        "openaccess": "0",
+        "openaccessFlag": false
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85142592178"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85142592178?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85142592178&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85142592178&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85142592178",
+        "dc:identifier": "SCOPUS_ID:85142592178",
+        "eid": "2-s2.0-85142592178",
+        "dc:title": "Natural language processing with graph and machine learning algorithmsbased large-scale text document summarization and its applications",
+        "dc:creator": "Amir S.A.",
+        "prism:publicationName": "Graph Learning and Network Science for Natural Language Processing",
+        "prism:isbn": [
+          {
+            "@_fa": "true",
+            "$": "[9781032224565, 9781000789300]"
+          }
+        ],
+        "prism:pageRange": "97-104",
+        "prism:coverDate": "2022-12-27",
+        "prism:coverDisplayDate": "27 December 2022",
+        "prism:doi": "10.1201/9781003272649-5",
+        "citedby-count": "1",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "M.H. Saboo Siddik College of Engineering",
+            "affiliation-city": "Mumbai",
+            "affiliation-country": "India"
+          }
+        ],
+        "prism:aggregationType": "Book",
+        "subtype": "ch",
+        "subtypeDescription": "Book Chapter",
+        "source-id": "21101122216",
+        "openaccess": "0",
+        "openaccessFlag": false
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85160442724"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85160442724?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85160442724&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85160442724&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85160442724",
+        "dc:identifier": "SCOPUS_ID:85160442724",
+        "eid": "2-s2.0-85160442724",
+        "dc:title": "Architectural Design of aChatbotused For Artificial Intelligence with NLP Classification using Deep Learning",
+        "dc:creator": "Kohli R.",
+        "prism:publicationName": "International Journal of Intelligent Systems and Applications in Engineering",
+        "prism:eIssn": "21476799",
+        "prism:volume": "10",
+        "prism:issueIdentifier": "3s",
+        "prism:pageRange": "129-132",
+        "prism:coverDate": "2022-12-27",
+        "prism:coverDisplayDate": "27 December 2022",
+        "prism:doi": "10.18201/ijisae.2022.276",
+        "citedby-count": "1",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "Bhagwant University",
+            "affiliation-city": "Ajmer",
+            "affiliation-country": "India"
+          }
+        ],
+        "prism:aggregationType": "Journal",
+        "subtype": "ar",
+        "subtypeDescription": "Article",
+        "source-id": "21101021990",
+        "openaccess": "1",
+        "openaccessFlag": true,
+        "freetoread": {
+          "value": [
+            {
+              "$": "all"
+            },
+            {
+              "$": "publisherfullgold"
+            }
+          ]
+        },
+        "freetoreadLabel": {
+          "value": [
+            {
+              "$": "All Open Access"
+            },
+            {
+              "$": "Gold"
+            }
+          ]
+        }
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85160451629"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85160451629?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85160451629&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85160451629&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85160451629",
+        "dc:identifier": "SCOPUS_ID:85160451629",
+        "eid": "2-s2.0-85160451629",
+        "dc:title": "Transformer Based Implementation for Automatic Book Summarization",
+        "dc:creator": "Porwal S.",
+        "prism:publicationName": "International Journal of Intelligent Systems and Applications in Engineering",
+        "prism:eIssn": "21476799",
+        "prism:volume": "10",
+        "prism:issueIdentifier": "3s",
+        "prism:pageRange": "123-128",
+        "prism:coverDate": "2022-12-27",
+        "prism:coverDisplayDate": "27 December 2022",
+        "citedby-count": "2",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "Vishwakarma Institute of Information Technology",
+            "affiliation-city": "Pune",
+            "affiliation-country": "India"
+          }
+        ],
+        "prism:aggregationType": "Journal",
+        "subtype": "ar",
+        "subtypeDescription": "Article",
+        "source-id": "21101021990",
+        "openaccess": "0",
+        "openaccessFlag": false
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85159963031"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85159963031?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85159963031&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85159963031&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85159963031",
+        "dc:identifier": "SCOPUS_ID:85159963031",
+        "eid": "2-s2.0-85159963031",
+        "dc:title": "Research and Development of Named Entity Recognition in Chinese Electronic Medical Record",
+        "dc:creator": "Du J.H.",
+        "prism:publicationName": "Tien Tzu Hsueh Pao Acta Electronica Sinica",
+        "prism:issn": "03722112",
+        "prism:volume": "50",
+        "prism:issueIdentifier": "12",
+        "prism:pageRange": "3030-3053",
+        "prism:coverDate": "2022-12-25",
+        "prism:coverDisplayDate": "25 December 2022",
+        "prism:doi": "10.12263/DZXB.20220485",
+        "citedby-count": "19",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "Beijing National Research Center for Information Science and Technology",
+            "affiliation-city": "Beijing",
+            "affiliation-country": "China"
+          }
+        ],
+        "prism:aggregationType": "Journal",
+        "subtype": "re",
+        "subtypeDescription": "Review",
+        "source-id": "24288",
+        "openaccess": "0",
+        "openaccessFlag": false
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85140091715"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85140091715?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85140091715&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85140091715&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85140091715",
+        "dc:identifier": "SCOPUS_ID:85140091715",
+        "eid": "2-s2.0-85140091715",
+        "dc:title": "Intelligent deep learning-based hierarchical clustering for unstructured text data",
+        "dc:creator": "Jyothi B.",
+        "prism:publicationName": "Concurrency and Computation Practice and Experience",
+        "prism:issn": "15320626",
+        "prism:eIssn": "15320634",
+        "prism:volume": "34",
+        "prism:issueIdentifier": "28",
+        "prism:pageRange": null,
+        "prism:coverDate": "2022-12-25",
+        "prism:coverDisplayDate": "25 December 2022",
+        "prism:doi": "10.1002/cpe.7388",
+        "citedby-count": "2",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "Jawaharlal Nehru Technological University, Kakinada",
+            "affiliation-city": "Kakinada",
+            "affiliation-country": "India"
+          }
+        ],
+        "prism:aggregationType": "Journal",
+        "subtype": "ar",
+        "subtypeDescription": "Article",
+        "article-number": "e7388",
+        "source-id": "27871",
+        "openaccess": "0",
+        "openaccessFlag": false
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85159964328"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85159964328?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85159964328&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85159964328&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85159964328",
+        "dc:identifier": "SCOPUS_ID:85159964328",
+        "eid": "2-s2.0-85159964328",
+        "dc:title": "The Testing and Repairing Methods for Machine Learning Model Security",
+        "dc:creator": "Zhang X.Y.",
+        "prism:publicationName": "Tien Tzu Hsueh Pao Acta Electronica Sinica",
+        "prism:issn": "03722112",
+        "prism:volume": "50",
+        "prism:issueIdentifier": "12",
+        "prism:pageRange": "2884-2918",
+        "prism:coverDate": "2022-12-25",
+        "prism:coverDisplayDate": "25 December 2022",
+        "prism:doi": "10.12263/DZXB.20220821",
+        "citedby-count": "5",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "Xi'an Jiaotong University",
+            "affiliation-city": "Xi'an",
+            "affiliation-country": "China"
+          }
+        ],
+        "prism:aggregationType": "Journal",
+        "subtype": "ar",
+        "subtypeDescription": "Article",
+        "source-id": "24288",
+        "openaccess": "0",
+        "openaccessFlag": false
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85139767517"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85139767517?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85139767517&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85139767517&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85139767517",
+        "dc:identifier": "SCOPUS_ID:85139767517",
+        "eid": "2-s2.0-85139767517",
+        "dc:title": "A novel TCNN\u2013Bi-LSTM deep learning model for predicting sentiments of tweets about COVID-19 vaccines",
+        "dc:creator": "Aslan S.",
+        "prism:publicationName": "Concurrency and Computation Practice and Experience",
+        "prism:issn": "15320626",
+        "prism:eIssn": "15320634",
+        "prism:volume": "34",
+        "prism:issueIdentifier": "28",
+        "prism:pageRange": null,
+        "prism:coverDate": "2022-12-25",
+        "prism:coverDisplayDate": "25 December 2022",
+        "prism:doi": "10.1002/cpe.7387",
+        "citedby-count": "9",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "Malatya Turgut Ozal University",
+            "affiliation-city": "Malatya",
+            "affiliation-country": "Turkey"
+          }
+        ],
+        "prism:aggregationType": "Journal",
+        "subtype": "ar",
+        "subtypeDescription": "Article",
+        "article-number": "e7387",
+        "source-id": "27871",
+        "openaccess": "2",
+        "openaccessFlag": false,
+        "freetoread": {
+          "value": [
+            {
+              "$": "all"
+            },
+            {
+              "$": "repository"
+            },
+            {
+              "$": "repositoryam"
+            }
+          ]
+        },
+        "freetoreadLabel": {
+          "value": [
+            {
+              "$": "All Open Access"
+            },
+            {
+              "$": "Green"
+            }
+          ]
+        }
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/105005568885"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/105005568885?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=105005568885&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=105005568885&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/105005568885",
+        "dc:identifier": "SCOPUS_ID:105005568885",
+        "eid": "2-s2.0-105005568885",
+        "dc:title": "Productionizing AI: How to deliver AI B2B solutions with Cloud and Python",
+        "dc:creator": "Walsh B.",
+        "prism:publicationName": "Productionizing AI how to Deliver AI B2b Solutions with Cloud and Python",
+        "prism:isbn": [
+          {
+            "@_fa": "true",
+            "$": "[9781484288160, 9781484288177]"
+          }
+        ],
+        "prism:pageRange": "1-390",
+        "prism:coverDate": "2022-12-24",
+        "prism:coverDisplayDate": "24 December 2022",
+        "prism:doi": "10.1007/978-1-4842-8817-7",
+        "citedby-count": "1",
+        "prism:aggregationType": "Book",
+        "subtype": "bk",
+        "subtypeDescription": "Book",
+        "source-id": "21101296107",
+        "openaccess": "0",
+        "openaccessFlag": false
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85152119695"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85152119695?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85152119695&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85152119695&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85152119695",
+        "dc:identifier": "SCOPUS_ID:85152119695",
+        "eid": "2-s2.0-85152119695",
+        "dc:title": "Performance Comparison of Deep Learning Text Embeddings in Sentiment Analysis Tasks with Online Consumer Reviews",
+        "dc:creator": "Yang Z.",
+        "prism:publicationName": "ACM International Conference Proceeding Series",
+        "prism:isbn": [
+          {
+            "@_fa": "true",
+            "$": "[9781450397438]"
+          }
+        ],
+        "prism:pageRange": "1-7",
+        "prism:coverDate": "2022-12-23",
+        "prism:coverDisplayDate": "23 December 2022",
+        "prism:doi": "10.1145/3582197.3582198",
+        "citedby-count": "1",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "Macao Polytechnic University",
+            "affiliation-city": "Macau",
+            "affiliation-country": "Macao"
+          }
+        ],
+        "prism:aggregationType": "Conference Proceeding",
+        "subtype": "cp",
+        "subtypeDescription": "Conference Paper",
+        "source-id": "21101145551",
+        "openaccess": "0",
+        "openaccessFlag": false
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85162270243"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85162270243?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85162270243&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85162270243&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85162270243",
+        "dc:identifier": "SCOPUS_ID:85162270243",
+        "eid": "2-s2.0-85162270243",
+        "dc:title": "A Survey on Various Approaches Used in Named Entity Recognition for Indian Languages",
+        "dc:creator": "Vijayvergia R.",
+        "prism:publicationName": "ACM International Conference Proceeding Series",
+        "prism:isbn": [
+          {
+            "@_fa": "true",
+            "$": "[9781450399937]"
+          }
+        ],
+        "prism:pageRange": null,
+        "prism:coverDate": "2022-12-23",
+        "prism:coverDisplayDate": "23 December 2022",
+        "prism:doi": "10.1145/3590837.3590892",
+        "citedby-count": "0",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "Govt. Khetan Polytechnic College",
+            "affiliation-city": "Jaipur",
+            "affiliation-country": "India"
+          }
+        ],
+        "prism:aggregationType": "Conference Proceeding",
+        "subtype": "cp",
+        "subtypeDescription": "Conference Paper",
+        "article-number": "55",
+        "source-id": "21101158926",
+        "openaccess": "0",
+        "openaccessFlag": false
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85152118966"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85152118966?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85152118966&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85152118966&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85152118966",
+        "dc:identifier": "SCOPUS_ID:85152118966",
+        "eid": "2-s2.0-85152118966",
+        "dc:title": "Research on Chinese short text semantic matching based on lightweight ERNIE",
+        "dc:creator": "Fan X.",
+        "prism:publicationName": "ACM International Conference Proceeding Series",
+        "prism:isbn": [
+          {
+            "@_fa": "true",
+            "$": "[9781450397438]"
+          }
+        ],
+        "prism:pageRange": "22-28",
+        "prism:coverDate": "2022-12-23",
+        "prism:coverDisplayDate": "23 December 2022",
+        "prism:doi": "10.1145/3582197.3582201",
+        "citedby-count": "1",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "China West Normal University",
+            "affiliation-city": "Nanchong",
+            "affiliation-country": "China"
+          },
+          {
+            "@_fa": "true",
+            "affilname": "Nanchong Key Laboratory of IoT Awareness and Distributed Computing",
+            "affiliation-city": "Nanchong",
+            "affiliation-country": "China"
+          }
+        ],
+        "prism:aggregationType": "Conference Proceeding",
+        "subtype": "cp",
+        "subtypeDescription": "Conference Paper",
+        "source-id": "21101145551",
+        "openaccess": "0",
+        "openaccessFlag": false
+      },
+      {
+        "@_fa": "true",
+        "link": [
+          {
+            "@_fa": "true",
+            "@ref": "self",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85152128917"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "author-affiliation",
+            "@href": "https://api.elsevier.com/content/abstract/scopus_id/85152128917?field=author,affiliation"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus",
+            "@href": "https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&scp=85152128917&origin=inward"
+          },
+          {
+            "@_fa": "true",
+            "@ref": "scopus-citedby",
+            "@href": "https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&scp=85152128917&origin=inward"
+          }
+        ],
+        "prism:url": "https://api.elsevier.com/content/abstract/scopus_id/85152128917",
+        "dc:identifier": "SCOPUS_ID:85152128917",
+        "eid": "2-s2.0-85152128917",
+        "dc:title": "Automated Disease Detection Based on Clinical Text Using Topic Modeling",
+        "dc:creator": "Yochum P.",
+        "prism:publicationName": "ACM International Conference Proceeding Series",
+        "prism:isbn": [
+          {
+            "@_fa": "true",
+            "$": "[9781450397438]"
+          }
+        ],
+        "prism:pageRange": "74-79",
+        "prism:coverDate": "2022-12-23",
+        "prism:coverDisplayDate": "23 December 2022",
+        "prism:doi": "10.1145/3582197.3582209",
+        "citedby-count": "1",
+        "affiliation": [
+          {
+            "@_fa": "true",
+            "affilname": "Ever Medical Technologies",
+            "affiliation-city": null,
+            "affiliation-country": null
+          }
+        ],
+        "prism:aggregationType": "Conference Proceeding",
+        "subtype": "cp",
+        "subtypeDescription": "Conference Paper",
+        "source-id": "21101145551",
+        "openaccess": "0",
+        "openaccessFlag": false
+      }
+    ]
+  }
+}

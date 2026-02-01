@@ -1,0 +1,17 @@
+{
+  "collected_at": "2026-02-01T15:51:19.404408",
+  "esearch_url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=%28%28%22machine+learning%22%5Btiab%5D+OR+%22deep+learning%22%5Btiab%5D%29+AND+%28%22nlp%22%5Btiab%5D+OR+%22natural+language+processing%22%5Btiab%5D%29%29&retmax=50&retmode=json&mindate=2020%2F01%2F01&maxdate=2022%2F12%2F31&datetype=pdat&sort=pub_date&api_key=eec70ae393c7bef5a3b5b477d230ea595208",
+  "efetch_url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi",
+  "query": "((\"machine learning\"[tiab] OR \"deep learning\"[tiab]) AND (\"nlp\"[tiab] OR \"natural language processing\"[tiab]))",
+  "date_range": {
+    "from": "2020/01/01",
+    "to": "2022/12/31"
+  },
+  "limit": 50,
+  "total_matches": "1834",
+  "ids_retrieved": 50,
+  "articles_fetched": 50,
+  "search_response_status": 200,
+  "fetch_response_status": 200,
+  "api_key_used": true
+}

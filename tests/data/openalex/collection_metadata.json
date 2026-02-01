@@ -1,0 +1,16 @@
+{
+  "collected_at": "2026-02-01T15:33:38.453347",
+  "api_url": "https://api.openalex.org/works",
+  "full_url": "https://api.openalex.org/works?search=%28%22machine+learning%22+OR+%22deep+learning%22%29+AND+%28%22nlp%22+OR+%22natural+language+processing%22%29&filter=from_publication_date%3A2020-01-01%2Cto_publication_date%3A2022-12-31&page=1&per-page=50&sort=publication_date%3Adesc&api_key=a0k4Oi33Mt8rt6hCHt2V7p",
+  "query": "(\"machine learning\" OR \"deep learning\") AND (\"nlp\" OR \"natural language processing\")",
+  "filter": "from_publication_date:2020-01-01,to_publication_date:2022-12-31",
+  "date_range": {
+    "from": "2020-01-01",
+    "to": "2022-12-31"
+  },
+  "limit": 50,
+  "response_status": 200,
+  "total_results": 65899,
+  "results_returned": 50,
+  "api_key_used": true
+}

@@ -1,0 +1,355 @@
+[
+  {
+    "doi": "10.1101/2020.06.11.145425",
+    "api_url": "https://api.biorxiv.org/details/biorxiv/10.1101/2020.06.11.145425",
+    "metadata": {
+      "title": "Machine Learning Maps Research Needs in COVID-19 Literature",
+      "authors": "Doanvo, A. L.; Qian, X.; Ramjee, D.; Piontkivska, H.; Desai, A. N.; Majumder, M. S.",
+      "author_corresponding": "Anhvinh L Doanvo",
+      "author_corresponding_institution": "Washington, D.C.",
+      "doi": "10.1101/2020.06.11.145425",
+      "date": "2020-06-12",
+      "version": "1",
+      "type": "new results",
+      "license": "cc_by",
+      "category": "scientific communication and education",
+      "jatsxml": "https://www.biorxiv.org/content/early/2020/06/12/2020.06.11.145425.source.xml",
+      "abstract": "SummaryManually assessing the scope of the thousands of publications on the COVID-19 (coronavirus disease 2019) pandemic is an overwhelming task. Shortcuts through metadata analysis (e.g., keywords) assume that studies are properly tagged. However, machine learning approaches can rapidly survey the actual text of coronavirus abstracts to identify research overlap between COVID-19 and other coronavirus diseases, research hotspots, and areas warranting exploration. We propose a fast, scalable, and reusable framework to parse novel disease literature. When applied to the COVID-19 Open Research Dataset (CORD-19), dimensionality reduction suggested that COVID-19 studies to date are primarily clinical-, modeling- or field-based, in contrast to the vast quantity of laboratory-driven research for other (non-COVID-19) coronavirus diseases. Topic modeling also indicated that COVID-19 publications have thus far focused primarily on public health, outbreak reporting, clinical care, and testing for coronaviruses, as opposed to the more limited number focused on basic microbiology, including pathogenesis and transmission.",
+      "funder": "NA",
+      "published": "10.1016/j.patter.2020.100123",
+      "server": "bioRxiv"
+    },
+    "raw_response": {
+      "messages": [
+        {
+          "status": "ok",
+          "category": "all"
+        }
+      ],
+      "collection": [
+        {
+          "title": "Machine Learning Maps Research Needs in COVID-19 Literature",
+          "authors": "Doanvo, A. L.; Qian, X.; Ramjee, D.; Piontkivska, H.; Desai, A. N.; Majumder, M. S.",
+          "author_corresponding": "Anhvinh L Doanvo",
+          "author_corresponding_institution": "Washington, D.C.",
+          "doi": "10.1101/2020.06.11.145425",
+          "date": "2020-06-12",
+          "version": "1",
+          "type": "new results",
+          "license": "cc_by",
+          "category": "scientific communication and education",
+          "jatsxml": "https://www.biorxiv.org/content/early/2020/06/12/2020.06.11.145425.source.xml",
+          "abstract": "SummaryManually assessing the scope of the thousands of publications on the COVID-19 (coronavirus disease 2019) pandemic is an overwhelming task. Shortcuts through metadata analysis (e.g., keywords) assume that studies are properly tagged. However, machine learning approaches can rapidly survey the actual text of coronavirus abstracts to identify research overlap between COVID-19 and other coronavirus diseases, research hotspots, and areas warranting exploration. We propose a fast, scalable, and reusable framework to parse novel disease literature. When applied to the COVID-19 Open Research Dataset (CORD-19), dimensionality reduction suggested that COVID-19 studies to date are primarily clinical-, modeling- or field-based, in contrast to the vast quantity of laboratory-driven research for other (non-COVID-19) coronavirus diseases. Topic modeling also indicated that COVID-19 publications have thus far focused primarily on public health, outbreak reporting, clinical care, and testing for coronaviruses, as opposed to the more limited number focused on basic microbiology, including pathogenesis and transmission.",
+          "funder": "NA",
+          "published": "10.1016/j.patter.2020.100123",
+          "server": "bioRxiv"
+        }
+      ]
+    }
+  },
+  {
+    "doi": "10.1101/2022.04.11.487927",
+    "api_url": "https://api.biorxiv.org/details/biorxiv/10.1101/2022.04.11.487927",
+    "metadata": {
+      "title": "Expansive Linguistic Representations to Predict Interpretable Odor Mixture Discriminability",
+      "authors": "dhurandhar, a.; Cecchi, G.; meyer, p.",
+      "author_corresponding": "pablo  meyer",
+      "author_corresponding_institution": "IBM Research Laboratories",
+      "doi": "10.1101/2022.04.11.487927",
+      "date": "2022-04-11",
+      "version": "1",
+      "type": "new results",
+      "license": "cc_no",
+      "category": "neuroscience",
+      "jatsxml": "https://www.biorxiv.org/content/early/2022/04/11/2022.04.11.487927.source.xml",
+      "abstract": "Language is often thought as being poorly adapted to precisely describe or quantify smell and olfactory attributes. In this work, we show that semantic descriptors of odors can be implemented in a model to successfully predict odor mixture discriminability, an olfactory attribute. We achieved this by taking advantage of the structure-to-percept model we previously developed for monomolecular odorants, using chemical descriptors to predict pleasantness, intensity and 19 semantic descriptors such as  fish,  cold,  burnt,  garlic,  grass and  sweet for odor mixtures, followed by a metric learning to obtain odor mixture discriminability. Through this expansion of the representation of olfactory mixtures, our Semantic model outperforms state of the art methods by taking advantage of the intermediary semantic representations learned from human perception data to enhance and generalize the odor discriminability/similarity predictions. As 10 of the semantic descriptors were selected to predict discriminability/similarity, our approach meets the need of rapidly obtaining interpretable attributes of odor mixtures as illustrated by the difficulty of finding olfactory metamers. More fundamentally, it also shows that language can be used to establish a metric of discriminability in the everyday olfactory space.",
+      "funder": "NA",
+      "published": "10.1093/chemse/bjad018",
+      "server": "bioRxiv"
+    },
+    "raw_response": {
+      "messages": [
+        {
+          "status": "ok",
+          "category": "all"
+        }
+      ],
+      "collection": [
+        {
+          "title": "Expansive Linguistic Representations to Predict Interpretable Odor Mixture Discriminability",
+          "authors": "dhurandhar, a.; Cecchi, G.; meyer, p.",
+          "author_corresponding": "pablo  meyer",
+          "author_corresponding_institution": "IBM Research Laboratories",
+          "doi": "10.1101/2022.04.11.487927",
+          "date": "2022-04-11",
+          "version": "1",
+          "type": "new results",
+          "license": "cc_no",
+          "category": "neuroscience",
+          "jatsxml": "https://www.biorxiv.org/content/early/2022/04/11/2022.04.11.487927.source.xml",
+          "abstract": "Language is often thought as being poorly adapted to precisely describe or quantify smell and olfactory attributes. In this work, we show that semantic descriptors of odors can be implemented in a model to successfully predict odor mixture discriminability, an olfactory attribute. We achieved this by taking advantage of the structure-to-percept model we previously developed for monomolecular odorants, using chemical descriptors to predict pleasantness, intensity and 19 semantic descriptors such as  fish,  cold,  burnt,  garlic,  grass and  sweet for odor mixtures, followed by a metric learning to obtain odor mixture discriminability. Through this expansion of the representation of olfactory mixtures, our Semantic model outperforms state of the art methods by taking advantage of the intermediary semantic representations learned from human perception data to enhance and generalize the odor discriminability/similarity predictions. As 10 of the semantic descriptors were selected to predict discriminability/similarity, our approach meets the need of rapidly obtaining interpretable attributes of odor mixtures as illustrated by the difficulty of finding olfactory metamers. More fundamentally, it also shows that language can be used to establish a metric of discriminability in the everyday olfactory space.",
+          "funder": "NA",
+          "published": "10.1093/chemse/bjad018",
+          "server": "bioRxiv"
+        }
+      ]
+    }
+  },
+  {
+    "doi": "10.1101/2022.11.18.516120",
+    "api_url": "https://api.biorxiv.org/details/biorxiv/10.1101/2022.11.18.516120",
+    "metadata": {
+      "title": "NLP-based tools for localization of the Epileptogenic Zone in patients with drug-resistant focal epilepsy",
+      "authors": "Mora, S.; Turrisi, R.; Chiarella, L.; Tassi, L.; Mai, R.; Nobili, L.; Barla, A.; Arnulfo, G.",
+      "author_corresponding": "Sara Mora",
+      "author_corresponding_institution": "University of Genoa",
+      "doi": "10.1101/2022.11.18.516120",
+      "date": "2022-11-19",
+      "version": "1",
+      "type": "new results",
+      "license": "cc_no",
+      "category": "bioengineering",
+      "jatsxml": "https://www.biorxiv.org/content/early/2022/11/19/2022.11.18.516120.source.xml",
+      "abstract": "BackgroundDrug-resistant focal epilepsy, defined by failure of two antiepileptic drugs, affects about 30% of patients with epilepsy. Epilepsy surgery may represent an alternative options for this population. However, defining the epileptogenic zone to be surgically removed requires highly specialised medical expertise as well as advanced technologies. The aim of this work is building a cost-effective support system based on text, in particular based on the semiological descriptions of the seizures (temporal vs extratemporal lobe; right vs left hemisphere), in order to predict the localization of seizure origin.\n\nMethodsAmong a population of 121 surgically treated and seizure-free drug-resistant patients suffering with focal epilepsy, recruited at the Niguarda Hospital in Milan, we extracted a total number of 509 descriptions of seizures. After a data pre-processing phase, we used natural language processing tools to build numerical representations of the seizures descriptions, both using embedding and countbased methods. We then used machine learning models performing a binary classification into right/left and temporal/extra-temporal.\n\nResultsAll predictive models show a better performance when using the representations relying on embedding models respect to count-based ones. Between all the combinations of representations and classifiers, the best performance obtained in terms of F1-score is 84.7% {+/-} 0.6.\n\nDiscussionThis preliminary work reached encouraging results considering both localization tasks. The main advantage is that no specific knowledge about epilepsy is used to build the models, rendering our pipeline applicable also in other scenarios. The major limitation lies in the fact that the text is highly specific to the writer.",
+      "funder": "NA",
+      "published": "10.1038/s41598-024-51846-6",
+      "server": "bioRxiv"
+    },
+    "raw_response": {
+      "messages": [
+        {
+          "status": "ok",
+          "category": "all"
+        }
+      ],
+      "collection": [
+        {
+          "title": "NLP-based tools for localization of the Epileptogenic Zone in patients with drug-resistant focal epilepsy",
+          "authors": "Mora, S.; Turrisi, R.; Chiarella, L.; Tassi, L.; Mai, R.; Nobili, L.; Barla, A.; Arnulfo, G.",
+          "author_corresponding": "Sara Mora",
+          "author_corresponding_institution": "University of Genoa",
+          "doi": "10.1101/2022.11.18.516120",
+          "date": "2022-11-19",
+          "version": "1",
+          "type": "new results",
+          "license": "cc_no",
+          "category": "bioengineering",
+          "jatsxml": "https://www.biorxiv.org/content/early/2022/11/19/2022.11.18.516120.source.xml",
+          "abstract": "BackgroundDrug-resistant focal epilepsy, defined by failure of two antiepileptic drugs, affects about 30% of patients with epilepsy. Epilepsy surgery may represent an alternative options for this population. However, defining the epileptogenic zone to be surgically removed requires highly specialised medical expertise as well as advanced technologies. The aim of this work is building a cost-effective support system based on text, in particular based on the semiological descriptions of the seizures (temporal vs extratemporal lobe; right vs left hemisphere), in order to predict the localization of seizure origin.\n\nMethodsAmong a population of 121 surgically treated and seizure-free drug-resistant patients suffering with focal epilepsy, recruited at the Niguarda Hospital in Milan, we extracted a total number of 509 descriptions of seizures. After a data pre-processing phase, we used natural language processing tools to build numerical representations of the seizures descriptions, both using embedding and countbased methods. We then used machine learning models performing a binary classification into right/left and temporal/extra-temporal.\n\nResultsAll predictive models show a better performance when using the representations relying on embedding models respect to count-based ones. Between all the combinations of representations and classifiers, the best performance obtained in terms of F1-score is 84.7% {+/-} 0.6.\n\nDiscussionThis preliminary work reached encouraging results considering both localization tasks. The main advantage is that no specific knowledge about epilepsy is used to build the models, rendering our pipeline applicable also in other scenarios. The major limitation lies in the fact that the text is highly specific to the writer.",
+          "funder": "NA",
+          "published": "10.1038/s41598-024-51846-6",
+          "server": "bioRxiv"
+        }
+      ]
+    }
+  },
+  {
+    "doi": "10.1101/2022.08.02.502236",
+    "api_url": "https://api.biorxiv.org/details/biorxiv/10.1101/2022.08.02.502236",
+    "metadata": {
+      "title": "AbBERT: Learning Antibody Humanness via Masked Language Modeling",
+      "authors": "Vashchenko, D.; Nguyen, S.; Goncalves, A.; Leno da Silva, F.; Petersen, B.; Desautels, T.; Faissol, D.",
+      "author_corresponding": "Denis Vashchenko",
+      "author_corresponding_institution": "Lawrence Livermore National Lab",
+      "doi": "10.1101/2022.08.02.502236",
+      "date": "2022-08-04",
+      "version": "1",
+      "type": "new results",
+      "license": "cc_by_nc_nd",
+      "category": "bioinformatics",
+      "jatsxml": "https://www.biorxiv.org/content/early/2022/08/04/2022.08.02.502236.source.xml",
+      "abstract": "Understanding the degree of humanness of antibody sequences is critical to the therapeutic antibody development process to reduce the risk of failure modes like immunogenicity or poor manufacturability. We introduce AbBERT, a transformer-based language model trained on up to 20 million unpaired heavy/light chain sequences from the Observed Antibody Space database. We first validate AbBERT using a novel \"multi-mask\" scoring procedure to demonstrate high accuracy in predicting complementary determining regions--including the challenging hypervariable H3 region. We then demonstrate several uses of AbBERT at various points along the antibody design process. AbBERT enhances in silico antibody optimization via deep reinforcement learning by utilizing its learned embeddings as additional observations during optimization. Within a larger computational antibody design platform, AbBERT has been successfully applied as an additional design objective, where it displays strong correlations with computational tools predicting antibody structural stability. Finally, mutant antibody sequences that have been scored as unfavorable by AbBERT have shown corresponding low yields when expressed in cells. These use cases demonstrate the power of language modeling within computational antibody design.",
+      "funder": "NA",
+      "published": "NA",
+      "server": "bioRxiv"
+    },
+    "raw_response": {
+      "messages": [
+        {
+          "status": "ok",
+          "category": "all"
+        }
+      ],
+      "collection": [
+        {
+          "title": "AbBERT: Learning Antibody Humanness via Masked Language Modeling",
+          "authors": "Vashchenko, D.; Nguyen, S.; Goncalves, A.; Leno da Silva, F.; Petersen, B.; Desautels, T.; Faissol, D.",
+          "author_corresponding": "Denis Vashchenko",
+          "author_corresponding_institution": "Lawrence Livermore National Lab",
+          "doi": "10.1101/2022.08.02.502236",
+          "date": "2022-08-04",
+          "version": "1",
+          "type": "new results",
+          "license": "cc_by_nc_nd",
+          "category": "bioinformatics",
+          "jatsxml": "https://www.biorxiv.org/content/early/2022/08/04/2022.08.02.502236.source.xml",
+          "abstract": "Understanding the degree of humanness of antibody sequences is critical to the therapeutic antibody development process to reduce the risk of failure modes like immunogenicity or poor manufacturability. We introduce AbBERT, a transformer-based language model trained on up to 20 million unpaired heavy/light chain sequences from the Observed Antibody Space database. We first validate AbBERT using a novel \"multi-mask\" scoring procedure to demonstrate high accuracy in predicting complementary determining regions--including the challenging hypervariable H3 region. We then demonstrate several uses of AbBERT at various points along the antibody design process. AbBERT enhances in silico antibody optimization via deep reinforcement learning by utilizing its learned embeddings as additional observations during optimization. Within a larger computational antibody design platform, AbBERT has been successfully applied as an additional design objective, where it displays strong correlations with computational tools predicting antibody structural stability. Finally, mutant antibody sequences that have been scored as unfavorable by AbBERT have shown corresponding low yields when expressed in cells. These use cases demonstrate the power of language modeling within computational antibody design.",
+          "funder": "NA",
+          "published": "NA",
+          "server": "bioRxiv"
+        }
+      ]
+    }
+  },
+  {
+    "doi": "10.1101/2020.07.11.198606",
+    "api_url": "https://api.biorxiv.org/details/biorxiv/10.1101/2020.07.11.198606",
+    "metadata": {
+      "title": "PhageAI - Bacteriophage Life Cycle Recognition with Machine Learning and Natural Language Processing",
+      "authors": "Piotr Tynecki; Arkadiusz Guzinski; Joanna Kazimierczak; Michal Jadczuk; Jaroslaw Dastych; Agnieszka Onisko",
+      "author_corresponding": "Piotr  Tynecki",
+      "author_corresponding_institution": "Bialystok University of Technology",
+      "doi": "10.1101/2020.07.11.198606",
+      "date": "2020-07-12",
+      "version": "1",
+      "type": "new results",
+      "license": "cc_by",
+      "category": "bioinformatics",
+      "jatsxml": "https://www.biorxiv.org/content/early/2020/07/12/2020.07.11.198606.source.xml",
+      "abstract": "BackgroundAs antibiotic resistance is becoming a major problem nowadays in a treatment of infections, bacteriophages (also known as phages) seem to be an alternative. However, to be used in a therapy, their life cycle should be strictly lytic. With the growing popularity of Next Generation Sequencing (NGS) technology, it is possible to gain such information from the genome sequence. A number of tools are available which help to define phage life cycle. However, there is still no unanimous way to deal with this problem, especially in the absence of well-defined open reading frames. To overcome this limitation, a new tool is definitely needed.\n\nResultsWe developed a novel tool, called PhageAI, that allows to access more than 10 000 publicly available bacteriophages and differentiate between their major types of life cycles: lytic and lysogenic. The tool included life cycle classifier which achieved 98.90% accuracy on a validation set and 97.18% average accuracy on a test set. We adopted nucleotide sequences embedding based on the Word2Vec with Ship-gram model and linear Support Vector Machine with 10-fold cross-validation for supervised classification. PhageAI is free of charge and it is available at https://phage.ai/. PhageAI is a REST web service and available as Python package.\n\nConclusionsMachine learning and Natural Language Processing allows to extract information from bacteriophages nucleotide sequences for lifecycle prediction tasks. The PhageAI tool classifies phages into either virulent or temperate with a higher accuracy than any existing methods and shares interactive 3D visualization to help interpreting model classification results.",
+      "funder": "NA",
+      "published": "NA",
+      "server": "bioRxiv"
+    },
+    "raw_response": {
+      "messages": [
+        {
+          "status": "ok",
+          "category": "all"
+        }
+      ],
+      "collection": [
+        {
+          "title": "PhageAI - Bacteriophage Life Cycle Recognition with Machine Learning and Natural Language Processing",
+          "authors": "Piotr Tynecki; Arkadiusz Guzinski; Joanna Kazimierczak; Michal Jadczuk; Jaroslaw Dastych; Agnieszka Onisko",
+          "author_corresponding": "Piotr  Tynecki",
+          "author_corresponding_institution": "Bialystok University of Technology",
+          "doi": "10.1101/2020.07.11.198606",
+          "date": "2020-07-12",
+          "version": "1",
+          "type": "new results",
+          "license": "cc_by",
+          "category": "bioinformatics",
+          "jatsxml": "https://www.biorxiv.org/content/early/2020/07/12/2020.07.11.198606.source.xml",
+          "abstract": "BackgroundAs antibiotic resistance is becoming a major problem nowadays in a treatment of infections, bacteriophages (also known as phages) seem to be an alternative. However, to be used in a therapy, their life cycle should be strictly lytic. With the growing popularity of Next Generation Sequencing (NGS) technology, it is possible to gain such information from the genome sequence. A number of tools are available which help to define phage life cycle. However, there is still no unanimous way to deal with this problem, especially in the absence of well-defined open reading frames. To overcome this limitation, a new tool is definitely needed.\n\nResultsWe developed a novel tool, called PhageAI, that allows to access more than 10 000 publicly available bacteriophages and differentiate between their major types of life cycles: lytic and lysogenic. The tool included life cycle classifier which achieved 98.90% accuracy on a validation set and 97.18% average accuracy on a test set. We adopted nucleotide sequences embedding based on the Word2Vec with Ship-gram model and linear Support Vector Machine with 10-fold cross-validation for supervised classification. PhageAI is free of charge and it is available at https://phage.ai/. PhageAI is a REST web service and available as Python package.\n\nConclusionsMachine learning and Natural Language Processing allows to extract information from bacteriophages nucleotide sequences for lifecycle prediction tasks. The PhageAI tool classifies phages into either virulent or temperate with a higher accuracy than any existing methods and shares interactive 3D visualization to help interpreting model classification results.",
+          "funder": "NA",
+          "published": "NA",
+          "server": "bioRxiv"
+        }
+      ]
+    }
+  },
+  {
+    "doi": "10.1101/2021.09.30.462652",
+    "api_url": "https://api.biorxiv.org/details/biorxiv/10.1101/2021.09.30.462652",
+    "metadata": {
+      "title": "Are Machines-learning Methods More Efficient than Humans in Triaging Literature for Systematic Reviews?",
+      "authors": "Abogunrin, S.; Queiros, L.; Bednarski, M.; Sumner, M.; Baehrens, D.; Witzmann, A.",
+      "author_corresponding": "Luisa  Queiros",
+      "author_corresponding_institution": "Hoffmann-La Roche Ltd",
+      "doi": "10.1101/2021.09.30.462652",
+      "date": "2021-09-30",
+      "version": "1",
+      "type": "new results",
+      "license": "cc_by",
+      "category": "bioinformatics",
+      "jatsxml": "https://www.biorxiv.org/content/early/2021/09/30/2021.09.30.462652.source.xml",
+      "abstract": "Systematic literature reviews provide rigorous assessments of clinical, cost-effectiveness, and humanistic data. Accordingly, there is a growing trend worldwide among healthcare agencies and decision-makers to require them in order to make informed decisions. Because these reviews are labor-intensive and time consuming, we applied advanced analytic methods (AAM) to determine if machine learning methods could classify abstracts as well as humans. Literature searches were run for metastatic non-small cell lung cancer treatments (mNSCLC) and metastatic castration-resistant prostate cancer (mCRPC). Records were reviewed by humans and two AAMs. AAM-1 involved a pre-trained data-mining model specialized in biomedical literature, and AAM-2 was based on support vector machine algorithms. The AAMs assigned an accept/reject status, with reasons for exclusion. Automatic results were compared to those of humans. For mNSCLC, 5820 records were processed by humans and 440 (8%) records were accepted and the remaining items rejected. AAM-1 correctly accepted 6% of records and correctly excluded 79%. AAM-2 correctly accepted 6% of records and correctly excluded 82%. The review was completed by AAM-1 or AAM-2 in 52 hours, compared to 196 hours for humans. Work saved was estimated to be 76% and 79% by AAM-1 and AAM-2, respectively. For mCRPC, 2434 records were processed by humans and 26% of these were accepted and 74% rejected. AAM-1 correctly accepted 23% of records and rejected 62%. AAM-2 correctly accepted 20% of records and rejected 66%. The review was completed by AAM-1, AAM-2, and humans in 25, 25 and 85 hours, respectively. Work saved was estimated to be 61% and 68% by AAM-1 and AAM-2, respectively. AAMs can markedly reduce the time required for searching and triaging records during a systematic review. Methods similar to AAMs should be assessed in future research for how consistent their performances are in SLRs of economic, epidemiological and humanistic evidence.",
+      "funder": "NA",
+      "published": "NA",
+      "server": "bioRxiv"
+    },
+    "raw_response": {
+      "messages": [
+        {
+          "status": "ok",
+          "category": "all"
+        }
+      ],
+      "collection": [
+        {
+          "title": "Are Machines-learning Methods More Efficient than Humans in Triaging Literature for Systematic Reviews?",
+          "authors": "Abogunrin, S.; Queiros, L.; Bednarski, M.; Sumner, M.; Baehrens, D.; Witzmann, A.",
+          "author_corresponding": "Luisa  Queiros",
+          "author_corresponding_institution": "Hoffmann-La Roche Ltd",
+          "doi": "10.1101/2021.09.30.462652",
+          "date": "2021-09-30",
+          "version": "1",
+          "type": "new results",
+          "license": "cc_by",
+          "category": "bioinformatics",
+          "jatsxml": "https://www.biorxiv.org/content/early/2021/09/30/2021.09.30.462652.source.xml",
+          "abstract": "Systematic literature reviews provide rigorous assessments of clinical, cost-effectiveness, and humanistic data. Accordingly, there is a growing trend worldwide among healthcare agencies and decision-makers to require them in order to make informed decisions. Because these reviews are labor-intensive and time consuming, we applied advanced analytic methods (AAM) to determine if machine learning methods could classify abstracts as well as humans. Literature searches were run for metastatic non-small cell lung cancer treatments (mNSCLC) and metastatic castration-resistant prostate cancer (mCRPC). Records were reviewed by humans and two AAMs. AAM-1 involved a pre-trained data-mining model specialized in biomedical literature, and AAM-2 was based on support vector machine algorithms. The AAMs assigned an accept/reject status, with reasons for exclusion. Automatic results were compared to those of humans. For mNSCLC, 5820 records were processed by humans and 440 (8%) records were accepted and the remaining items rejected. AAM-1 correctly accepted 6% of records and correctly excluded 79%. AAM-2 correctly accepted 6% of records and correctly excluded 82%. The review was completed by AAM-1 or AAM-2 in 52 hours, compared to 196 hours for humans. Work saved was estimated to be 76% and 79% by AAM-1 and AAM-2, respectively. For mCRPC, 2434 records were processed by humans and 26% of these were accepted and 74% rejected. AAM-1 correctly accepted 23% of records and rejected 62%. AAM-2 correctly accepted 20% of records and rejected 66%. The review was completed by AAM-1, AAM-2, and humans in 25, 25 and 85 hours, respectively. Work saved was estimated to be 61% and 68% by AAM-1 and AAM-2, respectively. AAMs can markedly reduce the time required for searching and triaging records during a systematic review. Methods similar to AAMs should be assessed in future research for how consistent their performances are in SLRs of economic, epidemiological and humanistic evidence.",
+          "funder": "NA",
+          "published": "NA",
+          "server": "bioRxiv"
+        },
+        {
+          "title": "Are Machines-learning Methods More Efficient than Humans in Triaging Literature for Systematic Reviews?",
+          "authors": "Abogunrin, S.; Queiros, L.; Bednarski, M.; Sumner, M.; Baehrens, D.; Witzmann, A.",
+          "author_corresponding": "Luisa  Queiros",
+          "author_corresponding_institution": "Hoffmann-La Roche Ltd",
+          "doi": "10.1101/2021.09.30.462652",
+          "date": "2022-09-05",
+          "version": "2",
+          "type": "new results",
+          "license": "cc_by",
+          "category": "bioinformatics",
+          "jatsxml": "https://www.biorxiv.org/content/early/2022/09/05/2021.09.30.462652.source.xml",
+          "abstract": "Systematic literature reviews provide rigorous assessments of clinical, cost-effectiveness, and humanistic data. Accordingly, there is a growing trend worldwide among healthcare agencies and decision-makers to require them in order to make informed decisions. Because these reviews are labor-intensive and time consuming, we applied advanced analytic methods (AAM) to determine if machine learning methods could classify abstracts as well as humans. Literature searches were run for metastatic non-small cell lung cancer treatments (mNSCLC) and metastatic castration-resistant prostate cancer (mCRPC). Records were reviewed by humans and two AAMs. AAM-1 involved a pre-trained data-mining model specialized in biomedical literature, and AAM-2 was based on support vector machine algorithms. The AAMs assigned an accept/reject status, with reasons for exclusion. Automatic results were compared to those of humans. For mNSCLC, 5820 records were processed by humans and 440 (8%) records were accepted and the remaining items rejected. AAM-1 correctly accepted 6% of records and correctly excluded 79%. AAM-2 correctly accepted 6% of records and correctly excluded 82%. The review was completed by AAM-1 or AAM-2 in 52 hours, compared to 196 hours for humans. Work saved was estimated to be 76% and 79% by AAM-1 and AAM-2, respectively. For mCRPC, 2434 records were processed by humans and 26% of these were accepted and 74% rejected. AAM-1 correctly accepted 23% of records and rejected 62%. AAM-2 correctly accepted 20% of records and rejected 66%. The review was completed by AAM-1, AAM-2, and humans in 25, 25 and 85 hours, respectively. Work saved was estimated to be 61% and 68% by AAM-1 and AAM-2, respectively. AAMs can markedly reduce the time required for searching and triaging records during a systematic review. Methods similar to AAMs should be assessed in future research for how consistent their performances are in SLRs of economic, epidemiological and humanistic evidence.",
+          "funder": "NA",
+          "published": "NA",
+          "server": "bioRxiv"
+        }
+      ]
+    }
+  },
+  {
+    "doi": "10.1101/2021.09.15.460567",
+    "api_url": "https://api.biorxiv.org/details/biorxiv/10.1101/2021.09.15.460567",
+    "metadata": {
+      "title": "Accurate Name Entity Recognition for Biomedical Literatures: A Combined High-quality Manual Annotation and Deep-learning Natural Language Processing Study",
+      "authors": "Huang, D.-L.; Zeng, Q.; Xiong, Y.; Liu, S.; Pang, C.; Xia, M.; Fang, T.; Ma, Y.; Qiang, C.; Zhang, Y.; Zhang, Y.; Li, H.; Yuan, Y.",
+      "author_corresponding": "Dao-Ling  Huang",
+      "author_corresponding_institution": "BGI-Shenzhen, Shenzhen 518083, China; Clinical Laboratory of BGI Health, BGI-Shenzhen, Shenzhen, 518083, China",
+      "doi": "10.1101/2021.09.15.460567",
+      "date": "2021-09-17",
+      "version": "1",
+      "type": "new results",
+      "license": "cc_by_nc",
+      "category": "bioinformatics",
+      "jatsxml": "https://www.biorxiv.org/content/early/2021/09/17/2021.09.15.460567.source.xml",
+      "abstract": "A combined high-quality manual annotation and deep-learning natural language processing study is reported to make accurate name entity recognition (NER) for biomedical literatures. A home-made version of entity annotation guidelines on biomedical literatures was constructed. Our manual annotations have an overall over 92% consistency for all the four entity types -- gene, variant, disease and species --with the same publicly available annotated corpora from other experts previously. A total of 400 full biomedical articles from PubMed are annotated based on our home-made entity annotation guidelines. Both a BERT-based large model and a DistilBERT-based simplified model were constructed, trained and optimized for offline and online inference, respectively. The F1-scores of NER of gene, variant, disease and species for the BERT-based model are 97.28%, 93.52%, 92.54% and 95.76%, respectively, while those for the DistilBERT-based model are 95.14%, 86.26%, 91.37% and 89.92%, respectively. The F1 scores of the DistilBERT-based NER model retains 97.8%, 92.2%, 98.7% and 93.9% of those of BERT-based NER for gene, variant, disease and species, respectively. Moreover, the performance for both our BERT-based NER model and DistilBERT-based NER model outperforms that of the state-of-art model--BioBERT, indicating the significance to train an NER model on biomedical-domain literatures jointly with high-quality annotated datasets.",
+      "funder": "NA",
+      "published": "NA",
+      "server": "bioRxiv"
+    },
+    "raw_response": {
+      "messages": [
+        {
+          "status": "ok",
+          "category": "all"
+        }
+      ],
+      "collection": [
+        {
+          "title": "Accurate Name Entity Recognition for Biomedical Literatures: A Combined High-quality Manual Annotation and Deep-learning Natural Language Processing Study",
+          "authors": "Huang, D.-L.; Zeng, Q.; Xiong, Y.; Liu, S.; Pang, C.; Xia, M.; Fang, T.; Ma, Y.; Qiang, C.; Zhang, Y.; Zhang, Y.; Li, H.; Yuan, Y.",
+          "author_corresponding": "Dao-Ling  Huang",
+          "author_corresponding_institution": "BGI-Shenzhen, Shenzhen 518083, China; Clinical Laboratory of BGI Health, BGI-Shenzhen, Shenzhen, 518083, China",
+          "doi": "10.1101/2021.09.15.460567",
+          "date": "2021-09-17",
+          "version": "1",
+          "type": "new results",
+          "license": "cc_by_nc",
+          "category": "bioinformatics",
+          "jatsxml": "https://www.biorxiv.org/content/early/2021/09/17/2021.09.15.460567.source.xml",
+          "abstract": "A combined high-quality manual annotation and deep-learning natural language processing study is reported to make accurate name entity recognition (NER) for biomedical literatures. A home-made version of entity annotation guidelines on biomedical literatures was constructed. Our manual annotations have an overall over 92% consistency for all the four entity types -- gene, variant, disease and species --with the same publicly available annotated corpora from other experts previously. A total of 400 full biomedical articles from PubMed are annotated based on our home-made entity annotation guidelines. Both a BERT-based large model and a DistilBERT-based simplified model were constructed, trained and optimized for offline and online inference, respectively. The F1-scores of NER of gene, variant, disease and species for the BERT-based model are 97.28%, 93.52%, 92.54% and 95.76%, respectively, while those for the DistilBERT-based model are 95.14%, 86.26%, 91.37% and 89.92%, respectively. The F1 scores of the DistilBERT-based NER model retains 97.8%, 92.2%, 98.7% and 93.9% of those of BERT-based NER for gene, variant, disease and species, respectively. Moreover, the performance for both our BERT-based NER model and DistilBERT-based NER model outperforms that of the state-of-art model--BioBERT, indicating the significance to train an NER model on biomedical-domain literatures jointly with high-quality annotated datasets.",
+          "funder": "NA",
+          "published": "NA",
+          "server": "bioRxiv"
+        }
+      ]
+    }
+  }
+]

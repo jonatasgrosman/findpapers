@@ -1,0 +1,1356 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/28urs9lxk7btByY9ps1yhz0MOJ0</id>
+  <title>arXiv Query: search_query=( (all:machine AND all:learning) OR (all:deep AND all:learning) AND (all:nlp OR all:natural AND all:language AND all:processing) ) AND submittedDate:"202001010000 TO 202212312359"&amp;id_list=&amp;start=0&amp;max_results=50</title>
+  <updated>2026-02-01T17:54:18Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=((all:machine+AND+all:learning)+OR+((all:deep+AND+all:learning)+AND+(all:nlp+OR+(all:natural+AND+(all:language+AND+all:processing)))))+AND+submittedDate:%22202001010000+TO+202212312359%22&amp;start=0&amp;max_results=50&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>50</opensearch:itemsPerPage>
+  <opensearch:totalResults>96778</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00306v4</id>
+    <title>Strong Partitioning and a Machine Learning Approximation for Accelerating the Global Optimization of Nonconvex QCQPs</title>
+    <updated>2025-08-24T23:38:34Z</updated>
+    <link href="https://arxiv.org/abs/2301.00306v4" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00306v4" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We learn optimal instance-specific heuristics for the global minimization of nonconvex quadratically-constrained quadratic programs (QCQPs). Specifically, we consider partitioning-based convex mixed-integer programming relaxations for nonconvex QCQPs and propose the novel problem of strong partitioning to optimally partition variable domains without sacrificing global optimality. Since solving this max-min strong partitioning problem exactly can be very challenging, we design a local optimization method that leverages generalized gradients of the value function of its inner-minimization problem. However, even solving the strong partitioning problem to local optimality can be time-consuming. To address this, we propose a simple and practical machine learning (ML) approximation for homogeneous families of QCQPs. Motivated by practical applications, we conduct a detailed computational study using the open-source global solver Alpine to evaluate the effectiveness of our ML approximation in accelerating the repeated solution of homogeneous QCQPs with fixed structure. Our study considers randomly generated QCQP families, including instances of the pooling problem, that are benchmarked using state-of-the-art global optimization software. Numerical experiments demonstrate that our ML approximation of strong partitioning reduces Alpine's solution time by a factor of 2 to 4.5 on average, with maximum reduction factors ranging from 10 to 200 across these QCQP families.</summary>
+    <category term="math.OC" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T23:16:12Z</published>
+    <arxiv:primary_category term="math.OC"/>
+    <author>
+      <name>Rohit Kannan</name>
+    </author>
+    <author>
+      <name>Harsha Nagarajan</name>
+    </author>
+    <author>
+      <name>Deepjyoti Deka</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.01286v3</id>
+    <title>Pseudo-Inverted Bottleneck Convolution for DARTS Search Space</title>
+    <updated>2023-03-19T00:49:26Z</updated>
+    <link href="https://arxiv.org/abs/2301.01286v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.01286v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Differentiable Architecture Search (DARTS) has attracted considerable attention as a gradient-based neural architecture search method. Since the introduction of DARTS, there has been little work done on adapting the action space based on state-of-art architecture design principles for CNNs. In this work, we aim to address this gap by incrementally augmenting the DARTS search space with micro-design changes inspired by ConvNeXt and studying the trade-off between accuracy, evaluation layer count, and computational cost. We introduce the Pseudo-Inverted Bottleneck Conv (PIBConv) block intending to reduce the computational footprint of the inverted bottleneck block proposed in ConvNeXt. Our proposed architecture is much less sensitive to evaluation layer count and outperforms a DARTS network with similar size significantly, at layer counts as small as 2. Furthermore, with less layers, not only does it achieve higher accuracy with lower computational footprint (measured in GMACs) and parameter count, GradCAM comparisons show that our network can better detect distinctive features of target objects compared to DARTS. Code is available from https://github.com/mahdihosseini/PIBConv.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.IV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T22:56:04Z</published>
+    <arxiv:comment>5 pages</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Arash Ahmadian</name>
+    </author>
+    <author>
+      <name>Louis S. P. Liu</name>
+    </author>
+    <author>
+      <name>Yue Fei</name>
+    </author>
+    <author>
+      <name>Konstantinos N. Plataniotis</name>
+    </author>
+    <author>
+      <name>Mahdi S. Hosseini</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00301v1</id>
+    <title>Generalized PTR: User-Friendly Recipes for Data-Adaptive Algorithms with Differential Privacy</title>
+    <updated>2022-12-31T22:22:53Z</updated>
+    <link href="https://arxiv.org/abs/2301.00301v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00301v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The ''Propose-Test-Release'' (PTR) framework is a classic recipe for designing differentially private (DP) algorithms that are data-adaptive, i.e. those that add less noise when the input dataset is nice. We extend PTR to a more general setting by privately testing data-dependent privacy losses rather than local sensitivity, hence making it applicable beyond the standard noise-adding mechanisms, e.g. to queries with unbounded or undefined sensitivity. We demonstrate the versatility of generalized PTR using private linear regression as a case study. Additionally, we apply our algorithm to solve an open problem from ''Private Aggregation of Teacher Ensembles (PATE)'' -- privately releasing the entire model with a delicate data-dependent analysis.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T22:22:53Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Rachel Redberg</name>
+    </author>
+    <author>
+      <name>Yuqing Zhu</name>
+    </author>
+    <author>
+      <name>Yu-Xiang Wang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.01148v1</id>
+    <title>MERLIN: Multi-agent offline and transfer learning for occupant-centric energy flexible operation of grid-interactive communities using smart meter data and CityLearn</title>
+    <updated>2022-12-31T21:37:14Z</updated>
+    <link href="https://arxiv.org/abs/2301.01148v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.01148v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The decarbonization of buildings presents new challenges for the reliability of the electrical grid as a result of the intermittency of renewable energy sources and increase in grid load brought about by end-use electrification. To restore reliability, grid-interactive efficient buildings can provide flexibility services to the grid through demand response. Residential demand response programs are hindered by the need for manual intervention by customers. To maximize the energy flexibility potential of residential buildings, an advanced control architecture is needed. Reinforcement learning is well-suited for the control of flexible resources as it is able to adapt to unique building characteristics compared to expert systems. Yet, factors hindering the adoption of RL in real-world applications include its large data requirements for training, control security and generalizability. Here we address these challenges by proposing the MERLIN framework and using a digital twin of a real-world 17-building grid-interactive residential community in CityLearn. We show that 1) independent RL-controllers for batteries improve building and district level KPIs compared to a reference RBC by tailoring their policies to individual buildings, 2) despite unique occupant behaviours, transferring the RL policy of any one of the buildings to other buildings provides comparable performance while reducing the cost of training, 3) training RL-controllers on limited temporal data that does not capture full seasonality in occupant behaviour has little effect on performance. Although, the zero-net-energy (ZNE) condition of the buildings could be maintained or worsened as a result of controlled batteries, KPIs that are typically improved by ZNE condition (electricity price and carbon emissions) are further improved when the batteries are managed by an advanced controller.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.SY" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T21:37:14Z</published>
+    <arxiv:comment>under review</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Kingsley Nweye</name>
+    </author>
+    <author>
+      <name>Siva Sankaranarayanan</name>
+    </author>
+    <author>
+      <name>Zoltan Nagy</name>
+    </author>
+    <arxiv:doi>10.1016/j.apenergy.2023.121323</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1016/j.apenergy.2023.121323" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00281v1</id>
+    <title>Lightmorphic Signatures Analysis Toolkit</title>
+    <updated>2022-12-31T20:37:05Z</updated>
+    <link href="https://arxiv.org/abs/2301.00281v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00281v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>In this paper we discuss the theory used in the design of an open source lightmorphic signatures analysis toolkit (LSAT). In addition to providing a core functionality, the software package enables specific optimizations with its modular and customizable design. To promote its usage and inspire future contributions, LSAT is publicly available. By using a self-supervised neural network and augmented machine learning algorithms, LSAT provides an easy-to-use interface with ample documentation. The experiments demonstrate that LSAT improves the otherwise tedious and error-prone tasks of translating lightmorphic associated data into usable spectrograms, enhanced with parameter tuning and performance analysis. With the provided mathematical functions, LSAT validates the nonlinearity encountered in the data conversion process while ensuring suitability of the forecasting algorithms.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T20:37:05Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>D. Damian</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00280v2</id>
+    <title>RECOMED: A Comprehensive Pharmaceutical Recommendation System</title>
+    <updated>2023-08-21T05:46:48Z</updated>
+    <link href="https://arxiv.org/abs/2301.00280v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00280v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>A comprehensive pharmaceutical recommendation system was designed based on the patients and drugs features extracted from Drugs.com and Druglib.com. First, data from these databases were combined, and a dataset of patients and drug information was built. Secondly, the patients and drugs were clustered, and then the recommendation was performed using different ratings provided by patients, and importantly by the knowledge obtained from patients and drug specifications, and considering drug interactions. To the best of our knowledge, we are the first group to consider patients conditions and history in the proposed approach for selecting a specific medicine appropriate for that particular user. Our approach applies artificial intelligence (AI) models for the implementation. Sentiment analysis using natural language processing approaches is employed in pre-processing along with neural network-based methods and recommender system algorithms for modeling the system. In our work, patients conditions and drugs features are used for making two models based on matrix factorization. Then we used drug interaction to filter drugs with severe or mild interactions with other drugs. We developed a deep learning model for recommending drugs by using data from 2304 patients as a training set, and then we used data from 660 patients as our validation set. After that, we used knowledge from critical information about drugs and combined the outcome of the model into a knowledge-based system with the rules obtained from constraints on taking medicine.</summary>
+    <category term="cs.IR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T20:04:31Z</published>
+    <arxiv:comment>39 pages, 14 figures, 13 tables</arxiv:comment>
+    <arxiv:primary_category term="cs.IR"/>
+    <author>
+      <name>Mariam Zomorodi</name>
+    </author>
+    <author>
+      <name>Ismail Ghodsollahee</name>
+    </author>
+    <author>
+      <name>Jennifer H. Martin</name>
+    </author>
+    <author>
+      <name>Nicholas J. Talley</name>
+    </author>
+    <author>
+      <name>Vahid Salari</name>
+    </author>
+    <author>
+      <name>Pawel Plawiak</name>
+    </author>
+    <author>
+      <name>Kazem Rahimi</name>
+    </author>
+    <author>
+      <name>U. Rajendra Acharya</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.01212v1</id>
+    <title>Assessment of creditworthiness models privacy-preserving training with synthetic data</title>
+    <updated>2022-12-31T19:13:14Z</updated>
+    <link href="https://arxiv.org/abs/2301.01212v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.01212v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Credit scoring models are the primary instrument used by financial institutions to manage credit risk. The scarcity of research on behavioral scoring is due to the difficult data access. Financial institutions have to maintain the privacy and security of borrowers' information refrain them from collaborating in research initiatives. In this work, we present a methodology that allows us to evaluate the performance of models trained with synthetic data when they are applied to real-world data. Our results show that synthetic data quality is increasingly poor when the number of attributes increases. However, creditworthiness assessment models trained with synthetic data show a reduction of 3\% of AUC and 6\% of KS when compared with models trained with real data. These results have a significant impact since they encourage credit risk investigation from synthetic data, making it possible to maintain borrowers' privacy and to address problems that until now have been hampered by the availability of information.</summary>
+    <category term="q-fin.RM" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.SI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T19:13:14Z</published>
+    <arxiv:primary_category term="q-fin.RM"/>
+    <arxiv:journal_ref>Hybrid Artificial Intelligent Systems. HAIS 2022. Lecture Notes in Computer Science(), vol 13469</arxiv:journal_ref>
+    <author>
+      <name>Ricardo Muñoz-Cancino</name>
+    </author>
+    <author>
+      <name>Cristián Bravo</name>
+    </author>
+    <author>
+      <name>Sebastián A. Ríos</name>
+    </author>
+    <author>
+      <name>Manuel Graña</name>
+    </author>
+    <arxiv:doi>10.1007/978-3-031-15471-3_32</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1007/978-3-031-15471-3_32" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00270v3</id>
+    <title>NetEffect: Discovery and Exploitation of Generalized Network Effects</title>
+    <updated>2024-02-12T16:59:06Z</updated>
+    <link href="https://arxiv.org/abs/2301.00270v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00270v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Given a large graph with few node labels, how can we (a) identify whether there is generalized network-effects (GNE) or not, (b) estimate GNE to explain the interrelations among node classes, and (c) exploit GNE efficiently to improve the performance on downstream tasks? The knowledge of GNE is valuable for various tasks like node classification, and targeted advertising. However, identifying GNE such as homophily, heterophily or their combination is challenging in real-world graphs due to limited availability of node labels and noisy edges. We propose NetEffect, a graph mining approach to address the above issues, enjoying the following properties: (i) Principled: a statistical test to determine the presence of GNE in a graph with few node labels; (ii) General and Explainable: a closed-form solution to estimate the specific type of GNE observed; and (iii) Accurate and Scalable: the integration of GNE for accurate and fast node classification. Applied on real-world graphs, NetEffect discovers the unexpected absence of GNE in numerous graphs, which were recognized to exhibit heterophily. Further, we show that incorporating GNE is effective on node classification. On a million-scale real-world graph, NetEffect achieves over 7 times speedup (14 minutes vs. 2 hours) compared to most competitors.</summary>
+    <category term="cs.SI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T19:08:49Z</published>
+    <arxiv:comment>Accepted to PAKDD 2024</arxiv:comment>
+    <arxiv:primary_category term="cs.SI"/>
+    <author>
+      <name>Meng-Chieh Lee</name>
+    </author>
+    <author>
+      <name>Shubhranshu Shekhar</name>
+    </author>
+    <author>
+      <name>Jaemin Yoo</name>
+    </author>
+    <author>
+      <name>Christos Faloutsos</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.03359v1</id>
+    <title>Digital Twin-Enabled Domain Adaptation for Zero-Touch UAV Networks: Survey and Challenges</title>
+    <updated>2022-12-31T19:03:02Z</updated>
+    <link href="https://arxiv.org/abs/2301.03359v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.03359v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>In existing wireless networks, the control programs have been designed manually and for certain predefined scenarios. This process is complicated and error-prone, and the resulting control programs are not resilient to disruptive changes. Data-driven control based on Artificial Intelligence and Machine Learning (AI/ML) has been envisioned as a key technique to automate the modeling, optimization and control of complex wireless systems. However, existing AI/ML techniques rely on sufficient well-labeled data and may suffer from slow convergence and poor generalizability. In this article, focusing on digital twin-assisted wireless unmanned aerial vehicle (UAV) systems, we provide a survey of emerging techniques that can enable fast-converging data-driven control of wireless systems with enhanced generalization capability to new environments. These include SLAM-based sensing and network softwarization for digital twin construction, robust reinforcement learning and system identification for domain adaptation, and testing facility sharing and federation. The corresponding research opportunities are also discussed.</summary>
+    <category term="cs.NI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.SY" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T19:03:02Z</published>
+    <arxiv:primary_category term="cs.NI"/>
+    <author>
+      <name>Maxwell McManus</name>
+      <arxiv:affiliation>Zhaoxi</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Yuqing Cui</name>
+      <arxiv:affiliation>Zhaoxi</arxiv:affiliation>
+    </author>
+    <author>
+      <name> Josh</name>
+      <arxiv:affiliation>Zhaoxi</arxiv:affiliation>
+    </author>
+    <author>
+      <name> Zhang</name>
+    </author>
+    <author>
+      <name>Jiangqi Hu</name>
+    </author>
+    <author>
+      <name>Sabarish Krishna Moorthy</name>
+    </author>
+    <author>
+      <name>Zhangyu Guan</name>
+    </author>
+    <author>
+      <name>Nicholas Mastronarde</name>
+    </author>
+    <author>
+      <name>Elizabeth Serena Bentley</name>
+    </author>
+    <author>
+      <name>Michael Medley</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00265v2</id>
+    <title>Source-Free Unsupervised Domain Adaptation: A Survey</title>
+    <updated>2023-01-06T21:23:38Z</updated>
+    <link href="https://arxiv.org/abs/2301.00265v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00265v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Unsupervised domain adaptation (UDA) via deep learning has attracted appealing attention for tackling domain-shift problems caused by distribution discrepancy across different domains. Existing UDA approaches highly depend on the accessibility of source domain data, which is usually limited in practical scenarios due to privacy protection, data storage and transmission cost, and computation burden. To tackle this issue, many source-free unsupervised domain adaptation (SFUDA) methods have been proposed recently, which perform knowledge transfer from a pre-trained source model to unlabeled target domain with source data inaccessible. A comprehensive review of these works on SFUDA is of great significance. In this paper, we provide a timely and systematic literature review of existing SFUDA approaches from a technical perspective. Specifically, we categorize current SFUDA studies into two groups, i.e., white-box SFUDA and black-box SFUDA, and further divide them into finer subcategories based on different learning strategies they use. We also investigate the challenges of methods in each subcategory, discuss the advantages/disadvantages of white-box and black-box SFUDA methods, conclude the commonly used benchmark datasets, and summarize the popular techniques for improved generalizability of models learned without using source data. We finally discuss several promising future directions in this field.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T18:44:45Z</published>
+    <arxiv:comment>19 pages, 10 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Yuqi Fang</name>
+    </author>
+    <author>
+      <name>Pew-Thian Yap</name>
+    </author>
+    <author>
+      <name>Weili Lin</name>
+    </author>
+    <author>
+      <name>Hongtu Zhu</name>
+    </author>
+    <author>
+      <name>Mingxia Liu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00264v1</id>
+    <title>Application Of ADNN For Background Subtraction In Smart Surveillance System</title>
+    <updated>2022-12-31T18:42:11Z</updated>
+    <link href="https://arxiv.org/abs/2301.00264v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00264v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Object movement identification is one of the most researched problems in the field of computer vision. In this task, we try to classify a pixel as foreground or background. Even though numerous traditional machine learning and deep learning methods already exist for this problem, the two major issues with most of them are the need for large amounts of ground truth data and their inferior performance on unseen videos. Since every pixel of every frame has to be labeled, acquiring large amounts of data for these techniques gets rather expensive. Recently, Zhao et al. [1] proposed one of a kind Arithmetic Distribution Neural Network (ADNN) for universal background subtraction which utilizes probability information from the histogram of temporal pixels and achieves promising results. Building onto this work, we developed an intelligent video surveillance system that uses ADNN architecture for motion detection, trims the video with parts only containing motion, and performs anomaly detection on the trimmed video.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T18:42:11Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Piyush Batra</name>
+    </author>
+    <author>
+      <name>Gagan Raj Singh</name>
+    </author>
+    <author>
+      <name>Neeraj Goyal</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00260v1</id>
+    <title>Confidence Sets under Generalized Self-Concordance</title>
+    <updated>2022-12-31T17:45:11Z</updated>
+    <link href="https://arxiv.org/abs/2301.00260v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00260v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>This paper revisits a fundamental problem in statistical inference from a non-asymptotic theoretical viewpoint $\unicode{x2013}$ the construction of confidence sets. We establish a finite-sample bound for the estimator, characterizing its asymptotic behavior in a non-asymptotic fashion. An important feature of our bound is that its dimension dependency is captured by the effective dimension $\unicode{x2013}$ the trace of the limiting sandwich covariance $\unicode{x2013}$ which can be much smaller than the parameter dimension in some regimes. We then illustrate how the bound can be used to obtain a confidence set whose shape is adapted to the optimization landscape induced by the loss function. Unlike previous works that rely heavily on the strong convexity of the loss function, we only assume the Hessian is lower bounded at optimum and allow it to gradually becomes degenerate. This property is formalized by the notion of generalized self-concordance which originated from convex optimization. Moreover, we demonstrate how the effective dimension can be estimated from data and characterize its estimation accuracy. We apply our results to maximum likelihood estimation with generalized linear models, score matching with exponential families, and hypothesis testing with Rao's score test.</summary>
+    <category term="math.ST" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.ML" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T17:45:11Z</published>
+    <arxiv:primary_category term="math.ST"/>
+    <author>
+      <name>Lang Liu</name>
+    </author>
+    <author>
+      <name>Zaid Harchaoui</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00252v1</id>
+    <title>A Comparative Study of Image Disguising Methods for Confidential Outsourced Learning</title>
+    <updated>2022-12-31T16:59:54Z</updated>
+    <link href="https://arxiv.org/abs/2301.00252v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00252v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large training data and expensive model tweaking are standard features of deep learning for images. As a result, data owners often utilize cloud resources to develop large-scale complex models, which raises privacy concerns. Existing solutions are either too expensive to be practical or do not sufficiently protect the confidentiality of data and models. In this paper, we study and compare novel \emph{image disguising} mechanisms, DisguisedNets and InstaHide, aiming to achieve a better trade-off among the level of protection for outsourced DNN model training, the expenses, and the utility of data. DisguisedNets are novel combinations of image blocktization, block-level random permutation, and two block-level secure transformations: random multidimensional projection (RMT) and AES pixel-level encryption (AES). InstaHide is an image mixup and random pixel flipping technique \cite{huang20}. We have analyzed and evaluated them under a multi-level threat model. RMT provides a better security guarantee than InstaHide, under the Level-1 adversarial knowledge with well-preserved model quality. In contrast, AES provides a security guarantee under the Level-2 adversarial knowledge, but it may affect model quality more. The unique features of image disguising also help us to protect models from model-targeted attacks. We have done an extensive experimental evaluation to understand how these methods work in different settings for different datasets.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T16:59:54Z</published>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Sagar Sharma</name>
+    </author>
+    <author>
+      <name>Yuechun Gu</name>
+    </author>
+    <author>
+      <name>Keke Chen</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00250v1</id>
+    <title>DensePose From WiFi</title>
+    <updated>2022-12-31T16:48:43Z</updated>
+    <link href="https://arxiv.org/abs/2301.00250v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00250v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Advances in computer vision and machine learning techniques have led to significant development in 2D and 3D human pose estimation from RGB cameras, LiDAR, and radars. However, human pose estimation from images is adversely affected by occlusion and lighting, which are common in many scenarios of interest. Radar and LiDAR technologies, on the other hand, need specialized hardware that is expensive and power-intensive. Furthermore, placing these sensors in non-public areas raises significant privacy concerns. To address these limitations, recent research has explored the use of WiFi antennas (1D sensors) for body segmentation and key-point body detection. This paper further expands on the use of the WiFi signal in combination with deep learning architectures, commonly used in computer vision, to estimate dense human pose correspondence. We developed a deep neural network that maps the phase and amplitude of WiFi signals to UV coordinates within 24 human regions. The results of the study reveal that our model can estimate the dense pose of multiple subjects, with comparable performance to image-based approaches, by utilizing WiFi signals as the only input. This paves the way for low-cost, broadly accessible, and privacy-preserving algorithms for human sensing.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T16:48:43Z</published>
+    <arxiv:comment>13 pages, 10 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Jiaqi Geng</name>
+    </author>
+    <author>
+      <name>Dong Huang</name>
+    </author>
+    <author>
+      <name>Fernando De la Torre</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00243v3</id>
+    <title>Approaching Peak Ground Truth</title>
+    <updated>2023-03-18T20:37:43Z</updated>
+    <link href="https://arxiv.org/abs/2301.00243v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00243v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Machine learning models are typically evaluated by computing similarity with reference annotations and trained by maximizing similarity with such. Especially in the biomedical domain, annotations are subjective and suffer from low inter- and intra-rater reliability. Since annotations only reflect one interpretation of the real world, this can lead to sub-optimal predictions even though the model achieves high similarity scores. Here, the theoretical concept of PGT is introduced. PGT marks the point beyond which an increase in similarity with the \emph{reference annotation} stops translating to better RWMP. Additionally, a quantitative technique to approximate PGT by computing inter- and intra-rater reliability is proposed. Finally, four categories of PGT-aware strategies to evaluate and improve model performance are reviewed.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T16:22:24Z</published>
+    <arxiv:comment>7pages, 2 figures (minor corrections to text, affiliations and layout)</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Florian Kofler</name>
+    </author>
+    <author>
+      <name>Johannes Wahle</name>
+    </author>
+    <author>
+      <name>Ivan Ezhov</name>
+    </author>
+    <author>
+      <name>Sophia Wagner</name>
+    </author>
+    <author>
+      <name>Rami Al-Maskari</name>
+    </author>
+    <author>
+      <name>Emilia Gryska</name>
+    </author>
+    <author>
+      <name>Mihail Todorov</name>
+    </author>
+    <author>
+      <name>Christina Bukas</name>
+    </author>
+    <author>
+      <name>Felix Meissen</name>
+    </author>
+    <author>
+      <name>Tingying Peng</name>
+    </author>
+    <author>
+      <name>Ali Ertürk</name>
+    </author>
+    <author>
+      <name>Daniel Rueckert</name>
+    </author>
+    <author>
+      <name>Rolf Heckemann</name>
+    </author>
+    <author>
+      <name>Jan Kirschke</name>
+    </author>
+    <author>
+      <name>Claus Zimmer</name>
+    </author>
+    <author>
+      <name>Benedikt Wiestler</name>
+    </author>
+    <author>
+      <name>Bjoern Menze</name>
+    </author>
+    <author>
+      <name>Marie Piraud</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00241v1</id>
+    <title>Contextual Bandits and Optimistically Universal Learning</title>
+    <updated>2022-12-31T16:15:28Z</updated>
+    <link href="https://arxiv.org/abs/2301.00241v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00241v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We consider the contextual bandit problem on general action and context spaces, where the learner's rewards depend on their selected actions and an observable context. This generalizes the standard multi-armed bandit to the case where side information is available, e.g., patients' records or customers' history, which allows for personalized treatment. We focus on consistency -- vanishing regret compared to the optimal policy -- and show that for large classes of non-i.i.d. contexts, consistency can be achieved regardless of the time-invariant reward mechanism, a property known as universal consistency. Precisely, we first give necessary and sufficient conditions on the context-generating process for universal consistency to be possible. Second, we show that there always exists an algorithm that guarantees universal consistency whenever this is achievable, called an optimistically universal learning rule. Interestingly, for finite action spaces, learnable processes for universal learning are exactly the same as in the full-feedback setting of supervised learning, previously studied in the literature. In other words, learning can be performed with partial feedback without any generalization cost. The algorithms balance a trade-off between generalization (similar to structural risk minimization) and personalization (tailoring actions to specific contexts). Lastly, we consider the case of added continuity assumptions on rewards and show that these lead to universal consistency for significantly larger classes of data-generating processes.</summary>
+    <category term="stat.ML" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="math.ST" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T16:15:28Z</published>
+    <arxiv:primary_category term="stat.ML"/>
+    <author>
+      <name>Moise Blanchard</name>
+    </author>
+    <author>
+      <name>Steve Hanneke</name>
+    </author>
+    <author>
+      <name>Patrick Jaillet</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.05707v2</id>
+    <title>Machine Learning Assisted Vector Atomic Magnetometry</title>
+    <updated>2023-10-03T12:33:10Z</updated>
+    <link href="https://arxiv.org/abs/2301.05707v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.05707v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We propose a novel paradigm to vector magnetometry based on machine learning. Unlike conventional schemes where one measured signal explicitly connects to one parameter, here we encode the three-dimensional magnetic-field information in the set of four simultaneously acquired signals, i.e., the oscillating optical rotation signal's harmonics of a frequency modulated laser beam traversing the atomic sample. The map between the recorded signals and the vectorial field information is established through a pre-trained deep neural network. We demonstrate experimentally a single-shot all optical vector atomic magnetometer, with a simple scalar-magnetometer design employing only one elliptically-polarized laser beam and no additional coils. Magnetic field amplitude sensitivities of about 100 $\textrm{fT}/\sqrt{\textrm{Hz}}$ and angular sensitivities of about 100 $μrad/\sqrt{\textrm{Hz}}$ (for a magnetic field of about 140 nT) are derived from the neural network. Our approach can reduce the complexity of the architecture of vector magnetometers, and may shed light on the general design of multiparameter sensing.</summary>
+    <category term="physics.ins-det" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="physics.optics" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T15:43:13Z</published>
+    <arxiv:comment>8 pages,4 figures</arxiv:comment>
+    <arxiv:primary_category term="physics.ins-det"/>
+    <author>
+      <name>Xin Meng</name>
+    </author>
+    <author>
+      <name>Youwei Zhang</name>
+    </author>
+    <author>
+      <name>Xichang Zhang</name>
+    </author>
+    <author>
+      <name>Shenchao Jin</name>
+    </author>
+    <author>
+      <name>Tingran Wang</name>
+    </author>
+    <author>
+      <name>Liang Jiang</name>
+    </author>
+    <author>
+      <name>Liantuan Xiao</name>
+    </author>
+    <author>
+      <name>Suotang Jia</name>
+    </author>
+    <author>
+      <name>Yanhong Xiao</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00216v1</id>
+    <title>An Efficient Hierarchical Kriging Modeling Method for High-dimension Multi-fidelity Problems</title>
+    <updated>2022-12-31T15:17:07Z</updated>
+    <link href="https://arxiv.org/abs/2301.00216v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00216v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Multi-fidelity Kriging model is a promising technique in surrogate-based design as it can balance the model accuracy and cost of sample preparation by fusing low- and high-fidelity data. However, the cost for building a multi-fidelity Kriging model increases significantly with the increase of the problem dimension. To attack this issue, an efficient Hierarchical Kriging modeling method is proposed. In building the low-fidelity model, the maximal information coefficient is utilized to calculate the relative value of the hyperparameter. With this, the maximum likelihood estimation problem for determining the hyperparameters is transformed as a one-dimension optimization problem, which can be solved in an efficient manner and thus improve the modeling efficiency significantly. A local search is involved further to exploit the search space of hyperparameters to improve the model accuracy. The high-fidelity model is built in a similar manner with the hyperparameter of the low-fidelity model served as the relative value of the hyperparameter for high-fidelity model. The performance of the proposed method is compared with the conventional tuning strategy, by testing them over ten analytic problems and an engineering problem of modeling the isentropic efficiency of a compressor rotor. The empirical results demonstrate that the modeling time of the proposed method is reduced significantly without sacrificing the model accuracy. For the modeling of the isentropic efficiency of the compressor rotor, the cost saving associated with the proposed method is about 90% compared with the conventional strategy. Meanwhile, the proposed method achieves higher accuracy.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T15:17:07Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Youwei He</name>
+    </author>
+    <author>
+      <name>Jinliang Luo</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.01596v1</id>
+    <title>Hospital transfer risk prediction for COVID-19 patients from a medicalized hotel based on Diffusion GraphSAGE</title>
+    <updated>2022-12-31T14:59:35Z</updated>
+    <link href="https://arxiv.org/abs/2301.01596v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.01596v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The global COVID-19 pandemic has caused more than six million deaths worldwide. Medicalized hotels were established in Taiwan as quarantine facilities for COVID-19 patients with no or mild symptoms. Due to limited medical care available at these hotels, it is of paramount importance to identify patients at risk of clinical deterioration. This study aimed to develop and evaluate a graph-based deep learning approach for progressive hospital transfer risk prediction in a medicalized hotel setting. Vital sign measurements were obtained for 632 patients and daily patient similarity graphs were constructed. Inductive graph convolutional network models were trained on top of the temporally integrated graphs to predict hospital transfer risk. The proposed models achieved AUC scores above 0.83 for hospital transfer risk prediction based on the measurements of past 1, 2, and 3 days, outperforming baseline machine learning methods. A post-hoc analysis on the constructed diffusion-based graph using Local Clustering Coefficient discovered a high-risk cluster with significantly older mean age, higher body temperature, lower SpO2, and shorter length of stay. Further time-to-hospital-transfer survival analysis also revealed a significant decrease in survival probability in the discovered high-risk cluster. The obtained results demonstrated promising predictability and interpretability of the proposed graph-based approach. This technique may help preemptively detect high-risk patients at community-based medical facilities similar to a medicalized hotel.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CY" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T14:59:35Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Jun-En Ding</name>
+    </author>
+    <author>
+      <name>Chih-Ho Hsu</name>
+    </author>
+    <author>
+      <name>Kuan-Chia Ling</name>
+    </author>
+    <author>
+      <name>Ling Chen</name>
+    </author>
+    <author>
+      <name>Fang-Ming Hung</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00201v3</id>
+    <title>Exploring Singularities in point clouds with the graph Laplacian: An explicit approach</title>
+    <updated>2025-02-17T06:57:41Z</updated>
+    <link href="https://arxiv.org/abs/2301.00201v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00201v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We develop theory and methods that use the graph Laplacian to analyze the geometry of the underlying manifold of datasets. Our theory provides theoretical guarantees and explicit bounds on the functional forms of the graph Laplacian when it acts on functions defined close to singularities of the underlying manifold. We use these explicit bounds to develop tests for singularities and propose methods that can be used to estimate geometric properties of singularities in the datasets.</summary>
+    <category term="stat.ML" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="math.DG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T13:48:42Z</published>
+    <arxiv:comment>27 pages, 12 figures</arxiv:comment>
+    <arxiv:primary_category term="stat.ML"/>
+    <author>
+      <name>Martin Andersson</name>
+    </author>
+    <author>
+      <name>Benny Avelin</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00199v2</id>
+    <title>Action Codes</title>
+    <updated>2023-02-10T11:15:18Z</updated>
+    <link href="https://arxiv.org/abs/2301.00199v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00199v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We provide a new perspective on the problem how high-level state machine models with abstract actions can be related to low-level models in which these actions are refined by sequences of concrete actions. We describe the connection between high-level and low-level actions using \emph{action codes}, a variation of the prefix codes known from coding theory. For each action code ${\mathcal{R}}$, we introduce a \emph{contraction} operator $α_{\mathcal{R}}$ that turns a low-level model $\mathcal{M}$ into a high-level model, and a \emph{refinement} operator $ρ_{\mathcal{R}}$ that transforms a high-level model $\mathcal{N}$ into a low-level model. We establish a Galois connection $ρ_{\mathcal{R}}(\mathcal{N}) \sqsubseteq \mathcal{M} \Leftrightarrow \mathcal{N} \sqsubseteq α_{\mathcal{R}}(\mathcal{M})$, where $\sqsubseteq$ is the well-known simulation preorder. For conformance, we typically want to obtain an overapproximation of model $\mathcal{M}$. To this end, we also introduce a \emph{concretization} operator $γ_{\mathcal{R}}$, which behaves like the refinement operator but adds arbitrary behavior at intermediate points, giving us a second Galois connection $α_{\mathcal{R}}(\mathcal{M}) \sqsubseteq \mathcal{N} \Leftrightarrow \mathcal{M} \sqsubseteq γ_{\mathcal{R}}(\mathcal{N})$. Action codes may be used to construct adaptors that translate between concrete and abstract actions during learning and testing of Mealy machines. If Mealy machine $\mathcal{M}$ models a black-box system then $α_{\mathcal{R}}(\mathcal{M})$ describes the behavior that can be observed by a learner/tester that interacts with this system via an adaptor derived from code ${\mathcal{R}}$. Whenever $α_{\mathcal{R}}(\mathcal{M})$ implements (or conforms to) $\mathcal{N}$, we may conclude that $\mathcal{M}$ implements (or conforms to) $γ_{\mathcal{R}} (\mathcal{N})$.</summary>
+    <category term="cs.FL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.IT" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T13:43:15Z</published>
+    <arxiv:primary_category term="cs.FL"/>
+    <author>
+      <name>Frits Vaandrager</name>
+    </author>
+    <author>
+      <name>Thorsten Wißmann</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00189v1</id>
+    <title>Mapping Knowledge Representations to Concepts: A Review and New Perspectives</title>
+    <updated>2022-12-31T12:56:12Z</updated>
+    <link href="https://arxiv.org/abs/2301.00189v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00189v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The success of neural networks builds to a large extent on their ability to create internal knowledge representations from real-world high-dimensional data, such as images, sound, or text. Approaches to extract and present these representations, in order to explain the neural network's decisions, is an active and multifaceted research field. To gain a deeper understanding of a central aspect of this field, we have performed a targeted review focusing on research that aims to associate internal representations with human understandable concepts. In doing this, we added a perspective on the existing research by using primarily deductive nomological explanations as a proposed taxonomy. We find this taxonomy and theories of causality, useful for understanding what can be expected, and not expected, from neural network explanations. The analysis additionally uncovers an ambiguity in the reviewed literature related to the goal of model explainability; is it understanding the ML model or, is it actionable explanations useful in the deployment domain?</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T12:56:12Z</published>
+    <arxiv:comment>10 pages, four figures, presented at AAAI-22 workshop-18: Explainable Agency in Artificial Intelligence</arxiv:comment>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Lars Holmberg</name>
+    </author>
+    <author>
+      <name>Paul Davidsson</name>
+    </author>
+    <author>
+      <name>Per Linde</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00188v1</id>
+    <title>New Challenges in Reinforcement Learning: A Survey of Security and Privacy</title>
+    <updated>2022-12-31T12:30:43Z</updated>
+    <link href="https://arxiv.org/abs/2301.00188v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00188v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Reinforcement learning (RL) is one of the most important branches of AI. Due to its capacity for self-adaption and decision-making in dynamic environments, reinforcement learning has been widely applied in multiple areas, such as healthcare, data markets, autonomous driving, and robotics. However, some of these applications and systems have been shown to be vulnerable to security or privacy attacks, resulting in unreliable or unstable services. A large number of studies have focused on these security and privacy problems in reinforcement learning. However, few surveys have provided a systematic review and comparison of existing problems and state-of-the-art solutions to keep up with the pace of emerging threats. Accordingly, we herein present such a comprehensive review to explain and summarize the challenges associated with security and privacy in reinforcement learning from a new perspective, namely that of the Markov Decision Process (MDP). In this survey, we first introduce the key concepts related to this area. Next, we cover the security and privacy issues linked to the state, action, environment, and reward function of the MDP process, respectively. We further highlight the special characteristics of security and privacy methodologies related to reinforcement learning. Finally, we discuss the possible future research directions within this area.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T12:30:43Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Yunjiao Lei</name>
+    </author>
+    <author>
+      <name>Dayong Ye</name>
+    </author>
+    <author>
+      <name>Sheng Shen</name>
+    </author>
+    <author>
+      <name>Yulei Sui</name>
+    </author>
+    <author>
+      <name>Tianqing Zhu</name>
+    </author>
+    <author>
+      <name>Wanlei Zhou</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00181v1</id>
+    <title>Smooth Mathematical Function from Compact Neural Networks</title>
+    <updated>2022-12-31T11:33:24Z</updated>
+    <link href="https://arxiv.org/abs/2301.00181v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00181v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>This is paper for the smooth function approximation by neural networks (NN). Mathematical or physical functions can be replaced by NN models through regression. In this study, we get NNs that generate highly accurate and highly smooth function, which only comprised of a few weight parameters, through discussing a few topics about regression. First, we reinterpret inside of NNs for regression; consequently, we propose a new activation function--integrated sigmoid linear unit (ISLU). Then special charateristics of metadata for regression, which is different from other data like image or sound, is discussed for improving the performance of neural networks. Finally, the one of a simple hierarchical NN that generate models substituting mathematical function is presented, and the new batch concept ``meta-batch" which improves the performance of NN several times more is introduced.
+  The new activation function, meta-batch method, features of numerical data, meta-augmentation with metaparameters, and a structure of NN generating a compact multi-layer perceptron(MLP) are essential in this study.</summary>
+    <category term="cs.NE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T11:33:24Z</published>
+    <arxiv:primary_category term="cs.NE"/>
+    <author>
+      <name>I. K. Hong</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.01214v2</id>
+    <title>Comparison of tree-based ensemble algorithms for merging satellite and earth-observed precipitation data at the daily time scale</title>
+    <updated>2023-03-03T16:10:26Z</updated>
+    <link href="https://arxiv.org/abs/2301.01214v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.01214v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Merging satellite products and ground-based measurements is often required for obtaining precipitation datasets that simultaneously cover large regions with high density and are more accurate than pure satellite precipitation products. Machine and statistical learning regression algorithms are regularly utilized in this endeavour. At the same time, tree-based ensemble algorithms are adopted in various fields for solving regression problems with high accuracy and low computational cost. Still, information on which tree-based ensemble algorithm to select for correcting satellite precipitation products for the contiguous United States (US) at the daily time scale is missing from the literature. In this study, we worked towards filling this methodological gap by conducting an extensive comparison between three algorithms of the category of interest, specifically between random forests, gradient boosting machines (gbm) and extreme gradient boosting (XGBoost). We used daily data from the PERSIANN (Precipitation Estimation from Remotely Sensed Information using Artificial Neural Networks) and the IMERG (Integrated Multi-satellitE Retrievals for GPM) gridded datasets. We also used earth-observed precipitation data from the Global Historical Climatology Network daily (GHCNd) database. The experiments referred to the entire contiguous US and additionally included the application of the linear regression algorithm for benchmarking purposes. The results suggest that XGBoost is the best-performing tree-based ensemble algorithm among those compared...</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.AP" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.CO" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.ME" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T11:14:45Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <arxiv:journal_ref>Hydrology 10 (2023) 50</arxiv:journal_ref>
+    <author>
+      <name>Georgia Papacharalampous</name>
+    </author>
+    <author>
+      <name>Hristos Tyralis</name>
+    </author>
+    <author>
+      <name>Anastasios Doulamis</name>
+    </author>
+    <author>
+      <name>Nikolaos Doulamis</name>
+    </author>
+    <arxiv:doi>10.3390/hydrology10020050</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.3390/hydrology10020050" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00179v1</id>
+    <title>Investigating representation schemes for surrogate modeling of High Entropy Alloys</title>
+    <updated>2022-12-31T11:01:55Z</updated>
+    <link href="https://arxiv.org/abs/2301.00179v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00179v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The design of new High Entropy Alloys that can achieve exceptional mechanical properties is presently of great interest to the materials science community. However, due to the difficulty of designing these alloys using traditional methods, machine learning has recently emerged as an essential tool. Particularly, the screening of candidate alloy compositions using surrogate models has become a mainstay of materials design in recent years. Many of these models use the atomic fractions of the alloying elements as inputs. However, there are many possible representation schemes for encoding alloy compositions, including both unstructured and structured variants. As the input features play a critical role in determining surrogate model performance, we have systematically compared these representation schemes on the basis of their performance in single-task deep learning models and in transfer learning scenarios. The results from these tests indicate that compared to the unstructured and randomly ordered schemes, chemically meaningful arrangements of elements within spatial representation schemes generally lead to better models. However, we also observed that tree-based models using only the atomic fractions as input were able to outperform these models in transfer learning.</summary>
+    <category term="cond-mat.mtrl-sci" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T11:01:55Z</published>
+    <arxiv:primary_category term="cond-mat.mtrl-sci"/>
+    <author>
+      <name>Arindam Debnath</name>
+    </author>
+    <author>
+      <name>Wesley F Reinhart</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00162v1</id>
+    <title>Diagnosis of ultrafast ultraintense laser pulse characteristics by machine-learning-assisted electron spin</title>
+    <updated>2022-12-31T09:17:07Z</updated>
+    <link href="https://arxiv.org/abs/2301.00162v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00162v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Rapid development of ultrafast ultraintense laser technologies continues to create opportunities for studying strong-field physics under extreme conditions. However, accurate determination of the spatial and temporal characteristics of a laser pulse is still a great challenge, especially when laser powers higher than hundreds of terawatts are involved. In this paper, by utilizing the radiative spin-flip effect, we find that the spin depolarization of an electron beam can be employed to diagnose characteristics of ultrafast ultraintense lasers with peak intensities around $10^{20}$-$10^{22}$~W/cm$^2$. With three shots, our machine-learning-assisted model can predict, simultaneously, the pulse duration, peak intensity, and focal radius of a focused Gaussian ultrafast ultraintense laser (in principle, the profile can be arbitrary) with relative errors of $0.1\%$-$10\%$. The underlying physics and an alternative diagnosis method (without the assistance of machine learning) are revealed by the asymptotic approximation of the final spin degree of polarization. Our proposed scheme exhibits robustness and detection accuracy with respect to fluctuations in the electron beam parameters. Accurate measurements of the ultrafast ultraintense laser parameters will lead to much higher precision in, for example, laser nuclear physics investigations and laboratory astrophysics studies. Robust machine learning techniques may also find applications in more general strong-field physics scenarios.</summary>
+    <category term="physics.plasm-ph" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T09:17:07Z</published>
+    <arxiv:primary_category term="physics.plasm-ph"/>
+    <author>
+      <name>Zhi-Wei Lu</name>
+    </author>
+    <author>
+      <name>Xin-Di Hou</name>
+    </author>
+    <author>
+      <name>Feng Wan</name>
+    </author>
+    <author>
+      <name>Yousef I. Salamin</name>
+    </author>
+    <author>
+      <name>Chong Lv</name>
+    </author>
+    <author>
+      <name>Bo Zhang</name>
+    </author>
+    <author>
+      <name>Fei Wang</name>
+    </author>
+    <author>
+      <name>Zhong-Feng Xu</name>
+    </author>
+    <author>
+      <name>Jian-Xing Li</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00153v1</id>
+    <title>Knowledge-Based Dataset for Training PE Malware Detection Models</title>
+    <updated>2022-12-31T08:46:02Z</updated>
+    <link href="https://arxiv.org/abs/2301.00153v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00153v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Ontologies are a standard for semantic schemata in many knowledge-intensive domains of human interest. They are now becoming increasingly important also in areas until very recently dominated by subsymbolic representations and machine-learning-based data processing. One such area is information security, and more specifically malware detection. We propose PE Malware Ontology that offers a reusable semantic schema for Portable Executable (PE, Windows binary format) malware files. The ontology was inspired by the structure of the data in the EMBER dataset and it currently covers the data intended for static malware analysis. With this proposal, we hope to achieve: a) a unified semantic representation for PE malware datasets that are available or will be published in the future; (b) applicability of symbolic, neural-symbolic, or otherwise explainable approaches in the PE Malware domain that may lead to improved interpretability of results which may now be characterized by the terms defined in the ontology; and (c)by joint publishing of semantically treated EMBER data, including fractional datasets, also improved reproducibility of experiments.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T08:46:02Z</published>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Peter Švec</name>
+    </author>
+    <author>
+      <name>Štefan Balogh</name>
+    </author>
+    <author>
+      <name>Martin Homola</name>
+    </author>
+    <author>
+      <name>Ján Kľuka</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00152v1</id>
+    <title>Towards Proactively Forecasting Sentence-Specific Information Popularity within Online News Documents</title>
+    <updated>2022-12-31T08:40:08Z</updated>
+    <link href="https://arxiv.org/abs/2301.00152v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00152v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Multiple studies have focused on predicting the prospective popularity of an online document as a whole, without paying attention to the contributions of its individual parts. We introduce the task of proactively forecasting popularities of sentences within online news documents solely utilizing their natural language content. We model sentence-specific popularity forecasting as a sequence regression task. For training our models, we curate InfoPop, the first dataset containing popularity labels for over 1.7 million sentences from over 50,000 online news documents. To the best of our knowledge, this is the first dataset automatically created using streams of incoming search engine queries to generate sentence-level popularity annotations. We propose a novel transfer learning approach involving sentence salience prediction as an auxiliary task. Our proposed technique coupled with a BERT-based neural model exceeds nDCG values of 0.8 for proactive sentence-specific popularity forecasting. Notably, our study presents a non-trivial takeaway: though popularity and salience are different concepts, transfer learning from salience prediction enhances popularity forecasting. We release InfoPop and make our code publicly available: https://github.com/sayarghoshroy/InfoPopularity</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T08:40:08Z</published>
+    <arxiv:comment>In 33rd ACM Conference on Hypertext and Social Media [HT '22] (Main Track), Link: https://dl.acm.org/doi/10.1145/3511095.3531268</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <arxiv:journal_ref>In HT '22. Association for Computing Machinery, New York, NY, USA, 11-20 (2022)</arxiv:journal_ref>
+    <author>
+      <name>Sayar Ghosh Roy</name>
+    </author>
+    <author>
+      <name>Anshul Padhi</name>
+    </author>
+    <author>
+      <name>Risubh Jain</name>
+    </author>
+    <author>
+      <name>Manish Gupta</name>
+    </author>
+    <author>
+      <name>Vasudeva Varma</name>
+    </author>
+    <arxiv:doi>10.1145/3511095.3531268</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1145/3511095.3531268" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00142v1</id>
+    <title>Computational Charisma -- A Brick by Brick Blueprint for Building Charismatic Artificial Intelligence</title>
+    <updated>2022-12-31T07:27:01Z</updated>
+    <link href="https://arxiv.org/abs/2301.00142v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00142v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Charisma is considered as one's ability to attract and potentially also influence others. Clearly, there can be considerable interest from an artificial intelligence's (AI) perspective to provide it with such skill. Beyond, a plethora of use cases opens up for computational measurement of human charisma, such as for tutoring humans in the acquisition of charisma, mediating human-to-human conversation, or identifying charismatic individuals in big social data. A number of models exist that base charisma on various dimensions, often following the idea that charisma is given if someone could and would help others. Examples include influence (could help) and affability (would help) in scientific studies or power (could help), presence, and warmth (both would help) as a popular concept. Modelling high levels in these dimensions for humanoid robots or virtual agents, seems accomplishable. Beyond, also automatic measurement appears quite feasible with the recent advances in the related fields of Affective Computing and Social Signal Processing. Here, we, thereforem present a blueprint for building machines that can appear charismatic, but also analyse the charisma of others. To this end, we first provide the psychological perspective including different models of charisma and behavioural cues of it. We then switch to conversational charisma in spoken language as an exemplary modality that is essential for human-human and human-computer conversations. The computational perspective then deals with the recognition and generation of charismatic behaviour by AI. This includes an overview of the state of play in the field and the aforementioned blueprint. We then name exemplary use cases of computational charismatic skills before switching to ethical aspects and concluding this overview and perspective on building charisma-enabled AI.</summary>
+    <category term="cs.HC" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.SD" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.AS" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T07:27:01Z</published>
+    <arxiv:primary_category term="cs.HC"/>
+    <author>
+      <name>Björn W. Schuller</name>
+    </author>
+    <author>
+      <name>Shahin Amiriparian</name>
+    </author>
+    <author>
+      <name>Anton Batliner</name>
+    </author>
+    <author>
+      <name>Alexander Gebhard</name>
+    </author>
+    <author>
+      <name>Maurice Gerzcuk</name>
+    </author>
+    <author>
+      <name>Vincent Karas</name>
+    </author>
+    <author>
+      <name>Alexander Kathan</name>
+    </author>
+    <author>
+      <name>Lennart Seizer</name>
+    </author>
+    <author>
+      <name>Johanna Löchner</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00141v1</id>
+    <title>Self-Activating Neural Ensembles for Continual Reinforcement Learning</title>
+    <updated>2022-12-31T07:11:05Z</updated>
+    <link href="https://arxiv.org/abs/2301.00141v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00141v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The ability for an agent to continuously learn new skills without catastrophically forgetting existing knowledge is of critical importance for the development of generally intelligent agents. Most methods devised to address this problem depend heavily on well-defined task boundaries, and thus depend on human supervision. Our task-agnostic method, Self-Activating Neural Ensembles (SANE), uses a modular architecture designed to avoid catastrophic forgetting without making any such assumptions. At the beginning of each trajectory, a module in the SANE ensemble is activated to determine the agent's next policy. During training, new modules are created as needed and only activated modules are updated to ensure that unused modules remain unchanged. This system enables our method to retain and leverage old skills, while growing and learning new ones. We demonstrate our approach on visually rich procedurally generated environments.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T07:11:05Z</published>
+    <arxiv:comment>Code available here: https://github.com/AGI-Labs/continual_rl</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <arxiv:journal_ref>Proceedings of The 1st Conference on Lifelong Learning Agents, PMLR 199:683-704, 2022</arxiv:journal_ref>
+    <author>
+      <name>Sam Powers</name>
+    </author>
+    <author>
+      <name>Eliot Xing</name>
+    </author>
+    <author>
+      <name>Abhinav Gupta</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00139v1</id>
+    <title>On High dimensional Poisson models with measurement error: hypothesis testing for nonlinear nonconvex optimization</title>
+    <updated>2022-12-31T06:58:42Z</updated>
+    <link href="https://arxiv.org/abs/2301.00139v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00139v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We study estimation and testing in the Poisson regression model with noisy high dimensional covariates, which has wide applications in analyzing noisy big data. Correcting for the estimation bias due to the covariate noise leads to a non-convex target function to minimize. Treating the high dimensional issue further leads us to augment an amenable penalty term to the target function. We propose to estimate the regression parameter through minimizing the penalized target function. We derive the L1 and L2 convergence rates of the estimator and prove the variable selection consistency. We further establish the asymptotic normality of any subset of the parameters, where the subset can have infinitely many components as long as its cardinality grows sufficiently slow. We develop Wald and score tests based on the asymptotic normality of the estimator, which permits testing of linear functions of the members if the subset. We examine the finite sample performance of the proposed tests by extensive simulation. Finally, the proposed method is successfully applied to the Alzheimer's Disease Neuroimaging Initiative study, which motivated this work initially.</summary>
+    <category term="math.ST" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T06:58:42Z</published>
+    <arxiv:primary_category term="math.ST"/>
+    <author>
+      <name>Fei Jiang</name>
+    </author>
+    <author>
+      <name>Yeqing Zhou</name>
+    </author>
+    <author>
+      <name>Jianxuan Liu</name>
+    </author>
+    <author>
+      <name>Yanyuan Ma</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00134v1</id>
+    <title>Exploring the Use of Data-Driven Approaches for Anomaly Detection in the Internet of Things (IoT) Environment</title>
+    <updated>2022-12-31T06:28:58Z</updated>
+    <link href="https://arxiv.org/abs/2301.00134v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00134v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The Internet of Things (IoT) is a system that connects physical computing devices, sensors, software, and other technologies. Data can be collected, transferred, and exchanged with other devices over the network without requiring human interactions. One challenge the development of IoT faces is the existence of anomaly data in the network. Therefore, research on anomaly detection in the IoT environment has become popular and necessary in recent years. This survey provides an overview to understand the current progress of the different anomaly detection algorithms and how they can be applied in the context of the Internet of Things. In this survey, we categorize the widely used anomaly detection machine learning and deep learning techniques in IoT into three types: clustering-based, classification-based, and deep learning based. For each category, we introduce some state-of-the-art anomaly detection methods and evaluate the advantages and limitations of each technique.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T06:28:58Z</published>
+    <arxiv:comment>1 figure, 4 tables, and 8 pages</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Eleonora Achiluzzi</name>
+    </author>
+    <author>
+      <name>Menglu Li</name>
+    </author>
+    <author>
+      <name>Md Fahd Al Georgy</name>
+    </author>
+    <author>
+      <name>Rasha Kashef</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00131v1</id>
+    <title>Guided Hybrid Quantization for Object detection in Multimodal Remote Sensing Imagery via One-to-one Self-teaching</title>
+    <updated>2022-12-31T06:14:59Z</updated>
+    <link href="https://arxiv.org/abs/2301.00131v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00131v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Considering the computation complexity, we propose a Guided Hybrid Quantization with One-to-one Self-Teaching (GHOST}) framework. More concretely, we first design a structure called guided quantization self-distillation (GQSD), which is an innovative idea for realizing lightweight through the synergy of quantization and distillation. The training process of the quantization model is guided by its full-precision model, which is time-saving and cost-saving without preparing a huge pre-trained model in advance. Second, we put forward a hybrid quantization (HQ) module to obtain the optimal bit width automatically under a constrained condition where a threshold for distribution distance between the center and samples is applied in the weight value search space. Third, in order to improve information transformation, we propose a one-to-one self-teaching (OST) module to give the student network a ability of self-judgment. A switch control machine (SCM) builds a bridge between the student network and teacher network in the same location to help the teacher to reduce wrong guidance and impart vital knowledge to the student. This distillation method allows a model to learn from itself and gain substantial improvement without any additional supervision. Extensive experiments on a multimodal dataset (VEDAI) and single-modality datasets (DOTA, NWPU, and DIOR) show that object detection based on GHOST outperforms the existing detectors. The tiny parameters (&lt;9.7 MB) and Bit-Operations (BOPs) (&lt;2158 G) compared with any remote sensing-based, lightweight or distillation-based algorithms demonstrate the superiority in the lightweight design domain. Our code and model will be released at https://github.com/icey-zhang/GHOST.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T06:14:59Z</published>
+    <arxiv:comment>This article has been delivered to TRGS and is under review</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Jiaqing Zhang</name>
+    </author>
+    <author>
+      <name>Jie Lei</name>
+    </author>
+    <author>
+      <name>Weiying Xie</name>
+    </author>
+    <author>
+      <name>Yunsong Li</name>
+    </author>
+    <author>
+      <name>Xiuping Jia</name>
+    </author>
+    <arxiv:doi>10.1109/TGRS.2023.3293147</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1109/TGRS.2023.3293147" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00130v1</id>
+    <title>Accuracy-Guaranteed Collaborative DNN Inference in Industrial IoT via Deep Reinforcement Learning</title>
+    <updated>2022-12-31T05:53:17Z</updated>
+    <link href="https://arxiv.org/abs/2301.00130v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00130v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Collaboration among industrial Internet of Things (IoT) devices and edge networks is essential to support computation-intensive deep neural network (DNN) inference services which require low delay and high accuracy. Sampling rate adaption which dynamically configures the sampling rates of industrial IoT devices according to network conditions, is the key in minimizing the service delay. In this paper, we investigate the collaborative DNN inference problem in industrial IoT networks. To capture the channel variation and task arrival randomness, we formulate the problem as a constrained Markov decision process (CMDP). Specifically, sampling rate adaption, inference task offloading and edge computing resource allocation are jointly considered to minimize the average service delay while guaranteeing the long-term accuracy requirements of different inference services. Since CMDP cannot be directly solved by general reinforcement learning (RL) algorithms due to the intractable long-term constraints, we first transform the CMDP into an MDP by leveraging the Lyapunov optimization technique. Then, a deep RL-based algorithm is proposed to solve the MDP. To expedite the training process, an optimization subroutine is embedded in the proposed algorithm to directly obtain the optimal edge computing resource allocation. Extensive simulation results are provided to demonstrate that the proposed RL-based algorithm can significantly reduce the average service delay while preserving long-term inference accuracy with a high probability.</summary>
+    <category term="eess.SY" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T05:53:17Z</published>
+    <arxiv:comment>Accpeted by Transaction on Industrial Informatics (TII)</arxiv:comment>
+    <arxiv:primary_category term="eess.SY"/>
+    <author>
+      <name>Wen Wu</name>
+      <arxiv:affiliation>Sherman</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Peng Yang</name>
+      <arxiv:affiliation>Sherman</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Weiting Zhang</name>
+      <arxiv:affiliation>Sherman</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Conghao Zhou</name>
+      <arxiv:affiliation>Sherman</arxiv:affiliation>
+    </author>
+    <author>
+      <name> Xuemin</name>
+      <arxiv:affiliation>Sherman</arxiv:affiliation>
+    </author>
+    <author>
+      <name> Shen</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00126v1</id>
+    <title>Broad Learning System with Takagi-Sugeno Fuzzy Subsystem for Tobacco Origin Identification based on Near Infrared Spectroscopy</title>
+    <updated>2022-12-31T05:38:37Z</updated>
+    <link href="https://arxiv.org/abs/2301.00126v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00126v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Tobacco origin identification is significantly important in tobacco industry. Modeling analysis for sensor data with near infrared spectroscopy has become a popular method for rapid detection of internal features. However, for sensor data analysis using traditional artificial neural network or deep network models, the training process is extremely time-consuming. In this paper, a novel broad learning system with Takagi-Sugeno (TS) fuzzy subsystem is proposed for rapid identification of tobacco origin. Incremental learning is employed in the proposed method, which obtains the weight matrix of the network after a very small amount of computation, resulting in much shorter training time for the model, with only about 3 seconds for the extra step training. The experimental results show that the TS fuzzy subsystem can extract features from the near infrared data and effectively improve the recognition performance. The proposed method can achieve the highest prediction accuracy (95.59 %) in comparison to the traditional classification algorithms, artificial neural network, and deep convolutional neural network, and has a great advantage in the training time with only about 128 seconds.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.SY" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T05:38:37Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Di Wang</name>
+    </author>
+    <author>
+      <name>Simon X. Yang</name>
+    </author>
+    <arxiv:doi>10.1016/j.asoc.2022.109970</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1016/j.asoc.2022.109970" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00122v3</id>
+    <title>Hair and Scalp Disease Detection using Machine Learning and Image Processing</title>
+    <updated>2023-05-30T04:40:10Z</updated>
+    <link href="https://arxiv.org/abs/2301.00122v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00122v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Almost 80 million Americans suffer from hair loss due to aging, stress, medication, or genetic makeup. Hair and scalp-related diseases often go unnoticed in the beginning. Sometimes, a patient cannot differentiate between hair loss and regular hair fall. Diagnosing hair-related diseases is time-consuming as it requires professional dermatologists to perform visual and medical tests. Because of that, the overall diagnosis gets delayed, which worsens the severity of the illness. Due to the image-processing ability, neural network-based applications are used in various sectors, especially healthcare and health informatics, to predict deadly diseases like cancers and tumors. These applications assist clinicians and patients and provide an initial insight into early-stage symptoms. In this study, we used a deep learning approach that successfully predicts three main types of hair loss and scalp-related diseases: alopecia, psoriasis, and folliculitis. However, limited study in this area, unavailability of a proper dataset, and degree of variety among the images scattered over the internet made the task challenging. 150 images were obtained from various sources and then preprocessed by denoising, image equalization, enhancement, and data balancing, thereby minimizing the error rate. After feeding the processed data into the 2D convolutional neural network (CNN) model, we obtained overall training accuracy of 96.2%, with a validation accuracy of 91.1%. The precision and recall score of alopecia, psoriasis, and folliculitis are 0.895, 0.846, and 1.0, respectively. We also created a dataset of the scalp images for future prospective researchers.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T04:45:45Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <arxiv:journal_ref>EJ-Compute.2023;3(1):7-13</arxiv:journal_ref>
+    <author>
+      <name>Mrinmoy Roy</name>
+    </author>
+    <author>
+      <name>Anica Tasnim Protity</name>
+    </author>
+    <arxiv:doi>10.24018/ejcompute.2023.3.1.85</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.24018/ejcompute.2023.3.1.85" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.01217v4</id>
+    <title>Unlearnable Clusters: Towards Label-agnostic Unlearnable Examples</title>
+    <updated>2023-03-23T11:29:03Z</updated>
+    <link href="https://arxiv.org/abs/2301.01217v4" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.01217v4" rel="related" type="application/pdf" title="pdf"/>
+    <summary>There is a growing interest in developing unlearnable examples (UEs) against visual privacy leaks on the Internet. UEs are training samples added with invisible but unlearnable noise, which have been found can prevent unauthorized training of machine learning models. UEs typically are generated via a bilevel optimization framework with a surrogate model to remove (minimize) errors from the original samples, and then applied to protect the data against unknown target models. However, existing UE generation methods all rely on an ideal assumption called label-consistency, where the hackers and protectors are assumed to hold the same label for a given sample. In this work, we propose and promote a more practical label-agnostic setting, where the hackers may exploit the protected data quite differently from the protectors. E.g., a m-class unlearnable dataset held by the protector may be exploited by the hacker as a n-class dataset. Existing UE generation methods are rendered ineffective in this challenging setting. To tackle this challenge, we present a novel technique called Unlearnable Clusters (UCs) to generate label-agnostic unlearnable examples with cluster-wise perturbations. Furthermore, we propose to leverage VisionandLanguage Pre-trained Models (VLPMs) like CLIP as the surrogate model to improve the transferability of the crafted UCs to diverse domains. We empirically verify the effectiveness of our proposed approach under a variety of settings with different datasets, target models, and even commercial platforms Microsoft Azure and Baidu PaddlePaddle. Code is available at \url{https://github.com/jiamingzhang94/Unlearnable-Clusters}.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T04:26:25Z</published>
+    <arxiv:comment>CVPR2023</arxiv:comment>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Jiaming Zhang</name>
+    </author>
+    <author>
+      <name>Xingjun Ma</name>
+    </author>
+    <author>
+      <name>Qi Yi</name>
+    </author>
+    <author>
+      <name>Jitao Sang</name>
+    </author>
+    <author>
+      <name>Yu-Gang Jiang</name>
+    </author>
+    <author>
+      <name>Yaowei Wang</name>
+    </author>
+    <author>
+      <name>Changsheng Xu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00117v1</id>
+    <title>Adapting Node-Place Model to Predict and Monitor COVID-19 Footprints and Transmission Risks</title>
+    <updated>2022-12-31T04:24:32Z</updated>
+    <link href="https://arxiv.org/abs/2301.00117v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00117v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The node-place model has been widely used to classify and evaluate transit stations, which sheds light on individual travel behaviors and supports urban planning through effectively integrating land use and transportation development. This article adapts this model to investigate whether and how node, place, and mobility would be associated with the transmission risks and presences of the local COVID-19 cases in a city. Similar studies on the model and its relevance to COVID-19, according to our knowledge, have not been undertaken before. Moreover, the unique metric drawn from detailed visit history of the infected, i.e., the COVID-19 footprints, is proposed and exploited. This study then empirically uses the adapted model to examine the station-level factors affecting the local COVID-19 footprints. The model accounts for traditional measures of the node and place as well as actual human mobility patterns associated with the node and place. It finds that stations with high node, place, and human mobility indices normally have more COVID-19 footprints in proximity. A multivariate regression is fitted to see whether and to what degree different indices and indicators can predict the COVID-19 footprints. The results indicate that many of the place, node, and human mobility indicators significantly impact the concentration of COVID-19 footprints. These are useful for policy-makers to predict and monitor hotspots for COVID-19 and other pandemics transmission.</summary>
+    <category term="physics.soc-ph" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.SI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T04:24:32Z</published>
+    <arxiv:primary_category term="physics.soc-ph"/>
+    <arxiv:journal_ref>Communications in Transportation Research 3 (2023): 100110</arxiv:journal_ref>
+    <author>
+      <name>Jiali Zhou</name>
+    </author>
+    <author>
+      <name>Mingzhi Zhou</name>
+    </author>
+    <author>
+      <name>Jiangping Zhou</name>
+    </author>
+    <author>
+      <name>Zhan Zhao</name>
+    </author>
+    <arxiv:doi>10.1016/j.commtr.2023.100110</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1016/j.commtr.2023.100110" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00813v1</id>
+    <title>A Survey on Protein Representation Learning: Retrospect and Prospect</title>
+    <updated>2022-12-31T04:01:16Z</updated>
+    <link href="https://arxiv.org/abs/2301.00813v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00813v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Proteins are fundamental biological entities that play a key role in life activities. The amino acid sequences of proteins can be folded into stable 3D structures in the real physicochemical world, forming a special kind of sequence-structure data. With the development of Artificial Intelligence (AI) techniques, Protein Representation Learning (PRL) has recently emerged as a promising research topic for extracting informative knowledge from massive protein sequences or structures. To pave the way for AI researchers with little bioinformatics background, we present a timely and comprehensive review of PRL formulations and existing PRL methods from the perspective of model architectures, pretext tasks, and downstream applications. We first briefly introduce the motivations for protein representation learning and formulate it in a general and unified framework. Next, we divide existing PRL methods into three main categories: sequence-based, structure-based, and sequence-structure co-modeling. Finally, we discuss some technical challenges and potential directions for improving protein representation learning. The latest advances in PRL methods are summarized in a GitHub repository https://github.com/LirongWu/awesome-protein-representation-learning.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T04:01:16Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Lirong Wu</name>
+    </author>
+    <author>
+      <name>Yufei Huang</name>
+    </author>
+    <author>
+      <name>Haitao Lin</name>
+    </author>
+    <author>
+      <name>Stan Z. Li</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00109v1</id>
+    <title>Quantum Machine Learning Applied to the Classification of Diabetes</title>
+    <updated>2022-12-31T03:43:07Z</updated>
+    <link href="https://arxiv.org/abs/2301.00109v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00109v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Quantum Machine Learning (QML) shows how it maintains certain significant advantages over machine learning methods. It now shows that hybrid quantum methods have great scope for deployment and optimisation, and hold promise for future industries. As a weakness, quantum computing does not have enough qubits to justify its potential. This topic of study gives us encouraging results in the improvement of quantum coding, being the data preprocessing an important point in this research we employ two dimensionality reduction techniques LDA and PCA applying them in a hybrid way Quantum Support Vector Classifier (QSVC) and Variational Quantum Classifier (VQC) in the classification of Diabetes.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T03:43:07Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Juan Kenyhy Hancco-Quispe</name>
+    </author>
+    <author>
+      <name>Jordan Piero Borda-Colque</name>
+    </author>
+    <author>
+      <name>Fred Torres-Cruz</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00106v2</id>
+    <title>Physics-informed Neural Networks approach to solve the Blasius function</title>
+    <updated>2023-02-05T16:34:36Z</updated>
+    <link href="https://arxiv.org/abs/2301.00106v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00106v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Deep learning techniques with neural networks have been used effectively in computational fluid dynamics (CFD) to obtain solutions to nonlinear differential equations. This paper presents a physics-informed neural network (PINN) approach to solve the Blasius function. This method eliminates the process of changing the non-linear differential equation to an initial value problem. Also, it tackles the convergence issue arising in the conventional series solution. It is seen that this method produces results that are at par with the numerical and conventional methods. The solution is extended to the negative axis to show that PINNs capture the singularity of the function at $η=-5.69$</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="physics.comp-ph" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T03:14:42Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Greeshma Krishna</name>
+    </author>
+    <author>
+      <name>Malavika S Nair</name>
+    </author>
+    <author>
+      <name>Pramod P Nair</name>
+    </author>
+    <author>
+      <name>Anil Lal S</name>
+    </author>
+    <arxiv:doi>10.1109/ICECCT56650.2023.10179704</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1109/ICECCT56650.2023.10179704" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00092v2</id>
+    <title>Inference on Time Series Nonparametric Conditional Moment Restrictions Using General Sieves</title>
+    <updated>2023-01-03T02:37:07Z</updated>
+    <link href="https://arxiv.org/abs/2301.00092v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00092v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>General nonlinear sieve learnings are classes of nonlinear sieves that can approximate nonlinear functions of high dimensional variables much more flexibly than various linear sieves (or series). This paper considers general nonlinear sieve quasi-likelihood ratio (GN-QLR) based inference on expectation functionals of time series data, where the functionals of interest are based on some nonparametric function that satisfy conditional moment restrictions and are learned using multilayer neural networks. While the asymptotic normality of the estimated functionals depends on some unknown Riesz representer of the functional space, we show that the optimally weighted GN-QLR statistic is asymptotically Chi-square distributed, regardless whether the expectation functional is regular (root-$n$ estimable) or not. This holds when the data are weakly dependent beta-mixing condition. We apply our method to the off-policy evaluation in reinforcement learning, by formulating the Bellman equation into the conditional moment restriction framework, so that we can make inference about the state-specific value functional using the proposed GN-QLR method with time series data. In addition, estimating the averaged partial means and averaged partial derivatives of nonparametric instrumental variables and quantile IV models are also presented as leading examples. Finally, a Monte Carlo study shows the finite sample performance of the procedure</summary>
+    <category term="stat.ML" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="econ.EM" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T01:44:17Z</published>
+    <arxiv:primary_category term="stat.ML"/>
+    <author>
+      <name>Xiaohong Chen</name>
+    </author>
+    <author>
+      <name>Yuan Liao</name>
+    </author>
+    <author>
+      <name>Weichen Wang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.01218v1</id>
+    <title>Tracing the Origin of Adversarial Attack for Forensic Investigation and Deterrence</title>
+    <updated>2022-12-31T01:38:02Z</updated>
+    <link href="https://arxiv.org/abs/2301.01218v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.01218v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Deep neural networks are vulnerable to adversarial attacks. In this paper, we take the role of investigators who want to trace the attack and identify the source, that is, the particular model which the adversarial examples are generated from. Techniques derived would aid forensic investigation of attack incidents and serve as deterrence to potential attacks. We consider the buyers-seller setting where a machine learning model is to be distributed to various buyers and each buyer receives a slightly different copy with same functionality. A malicious buyer generates adversarial examples from a particular copy $\mathcal{M}_i$ and uses them to attack other copies. From these adversarial examples, the investigator wants to identify the source $\mathcal{M}_i$. To address this problem, we propose a two-stage separate-and-trace framework. The model separation stage generates multiple copies of a model for a same classification task. This process injects unique characteristics into each copy so that adversarial examples generated have distinct and traceable features. We give a parallel structure which embeds a ``tracer'' in each copy, and a noise-sensitive training loss to achieve this goal. The tracing stage takes in adversarial examples and a few candidate models, and identifies the likely source. Based on the unique features induced by the noise-sensitive loss function, we could effectively trace the potential adversarial copy by considering the output logits from each tracer. Empirical results show that it is possible to trace the origin of the adversarial example and the mechanism can be applied to a wide range of architectures and datasets.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-31T01:38:02Z</published>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Han Fang</name>
+    </author>
+    <author>
+      <name>Jiyi Zhang</name>
+    </author>
+    <author>
+      <name>Yupeng Qiu</name>
+    </author>
+    <author>
+      <name>Ke Xu</name>
+    </author>
+    <author>
+      <name>Chengfang Fang</name>
+    </author>
+    <author>
+      <name>Ee-Chien Chang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00012v1</id>
+    <title>GANExplainer: GAN-based Graph Neural Networks Explainer</title>
+    <updated>2022-12-30T23:11:24Z</updated>
+    <link href="https://arxiv.org/abs/2301.00012v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00012v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>With the rapid deployment of graph neural networks (GNNs) based techniques into a wide range of applications such as link prediction, node classification, and graph classification the explainability of GNNs has become an indispensable component for predictive and trustworthy decision-making. Thus, it is critical to explain why graph neural network (GNN) makes particular predictions for them to be believed in many applications. Some GNNs explainers have been proposed recently. However, they lack to generate accurate and real explanations. To mitigate these limitations, we propose GANExplainer, based on Generative Adversarial Network (GAN) architecture. GANExplainer is composed of a generator to create explanations and a discriminator to assist with the Generator development. We investigate the explanation accuracy of our models by comparing the performance of GANExplainer with other state-of-the-art methods. Our empirical results on synthetic datasets indicate that GANExplainer improves explanation accuracy by up to 35\% compared to its alternatives.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-30T23:11:24Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Yiqiao Li</name>
+    </author>
+    <author>
+      <name>Jianlong Zhou</name>
+    </author>
+    <author>
+      <name>Boyuan Zheng</name>
+    </author>
+    <author>
+      <name>Fang Chen</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00061v2</id>
+    <title>A Global Optimization Algorithm for K-Center Clustering of One Billion Samples</title>
+    <updated>2025-08-23T22:25:04Z</updated>
+    <link href="https://arxiv.org/abs/2301.00061v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00061v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>This paper presents a practical global optimization algorithm for the K-center clustering problem, which aims to select K samples as the cluster centers to minimize the maximum within-cluster distance. This algorithm is based on a reduced-space branch and bound scheme and guarantees convergence to the global optimum in a finite number of steps by only branching on the regions of centers. To improve efficiency, we have designed a two-stage decomposable lower bound, the solution of which can be derived in a closed form. In addition, we also propose several acceleration techniques to narrow down the region of centers, including bounds tightening, sample reduction, and parallelization. Extensive studies on synthetic and real-world datasets have demonstrated that our algorithm can solve the K-center problems to global optimal within 4 hours for ten million samples in the serial mode and one billion samples in the parallel mode. Moreover, compared with the state-of-the-art heuristic methods, the global optimum obtained by our algorithm can averagely reduce the objective function by 25.8% on all the synthetic and real-world datasets.</summary>
+    <category term="math.OC" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-30T21:53:08Z</published>
+    <arxiv:comment>34 pages, 6 figures, and 5 tables. This paper is accepted by Managment Science. The final published version of this article is available at: https://pubsonline.informs.org/doi/10.1287/mnsc.2023.00218</arxiv:comment>
+    <arxiv:primary_category term="math.OC"/>
+    <author>
+      <name>Jiayang Ren</name>
+    </author>
+    <author>
+      <name>Ningning You</name>
+    </author>
+    <author>
+      <name>Kaixun Hua</name>
+    </author>
+    <author>
+      <name>Chaojie Ji</name>
+    </author>
+    <author>
+      <name>Yankai Cao</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00060v2</id>
+    <title>Morphology-based non-rigid registration of coronary computed tomography and intravascular images through virtual catheter path optimization</title>
+    <updated>2024-10-02T11:04:09Z</updated>
+    <link href="https://arxiv.org/abs/2301.00060v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00060v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Coronary computed tomography angiography (CCTA) provides 3D information on obstructive coronary artery disease, but cannot fully visualize high-resolution features within the vessel wall. Intravascular imaging, in contrast, can spatially resolve atherosclerotic in cross sectional slices, but is limited in capturing 3D relationships between each slice. Co-registering CCTA and intravascular images enables a variety of clinical research applications but is time consuming and user-dependent. This is due to intravascular images suffering from non-rigid distortions arising from irregularities in the imaging catheter path. To address these issues, we present a morphology-based framework for the rigid and non-rigid matching of intravascular images to CCTA images. To do this, we find the optimal virtual catheter path that samples the coronary artery in CCTA image space to recapitulate the coronary artery morphology observed in the intravascular image. We validate our framework on a multi-center cohort of 40 patients using bifurcation landmarks as ground truth for longitudinal and rotational registration. Our registration approach significantly outperforms other approaches for bifurcation alignment. By providing a differentiable framework for multi-modal vascular co-registration, our framework reduces the manual effort required to conduct large-scale multi-modal clinical studies and enables the development of machine learning-based co-registration approaches.</summary>
+    <category term="eess.IV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-30T21:48:32Z</published>
+    <arxiv:comment>Accepted to IEEE Transactions in Medical Imaging</arxiv:comment>
+    <arxiv:primary_category term="eess.IV"/>
+    <author>
+      <name>Karim Kadry</name>
+    </author>
+    <author>
+      <name>Abhishek Karmakar</name>
+    </author>
+    <author>
+      <name>Andreas Schuh</name>
+    </author>
+    <author>
+      <name>Kersten Peterson</name>
+    </author>
+    <author>
+      <name>Michiel Schaap</name>
+    </author>
+    <author>
+      <name>David Marlevi</name>
+    </author>
+    <author>
+      <name>Charles Taylor</name>
+    </author>
+    <author>
+      <name>Elazer Edelman</name>
+    </author>
+    <author>
+      <name>Farhad Nezami</name>
+    </author>
+    <arxiv:doi>10.1109/TMI.2024.3474053</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1109/TMI.2024.3474053" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00056v1</id>
+    <title>A Bayesian Neural Network Approach to identify Stars and AGNs observed by XMM Newton</title>
+    <updated>2022-12-30T21:29:50Z</updated>
+    <link href="https://arxiv.org/abs/2301.00056v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00056v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>In today's era, a tremendous amount of data is generated by different observatories and manual classification of data is something which is practically impossible. Hence, to classify and categorize the objects there are multiple machine and deep learning techniques used. However, these predictions are overconfident and won't be able to identify if the data actually belongs to the trained class. To solve this major problem of overconfidence, in this study we propose a novel Bayesian Neural Network which randomly samples weights from a distribution as opposed to the fixed weight vector considered in the frequentist approach. The study involves the classification of Stars and AGNs observed by XMM Newton. However, for testing purposes, we consider CV, Pulsars, ULX, and LMX along with Stars and AGNs which the algorithm refuses to predict with higher accuracy as opposed to the frequentist approaches wherein these objects are predicted as either Stars or AGNs. The proposed algorithm is one of the first instances wherein the use of Bayesian Neural Networks is done in observational astronomy. Additionally, we also make our algorithm to identify stars and AGNs in the whole XMM-Newton DR11 catalogue. The algorithm almost identifies 62807 data points as AGNs and 88107 data points as Stars with enough confidence. In all other cases, the algorithm refuses to make predictions due to high uncertainty and hence reduces the error rate.</summary>
+    <category term="astro-ph.IM" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-30T21:29:50Z</published>
+    <arxiv:comment>4 pages</arxiv:comment>
+    <arxiv:primary_category term="astro-ph.IM"/>
+    <author>
+      <name>Sarvesh Gharat</name>
+    </author>
+    <author>
+      <name>Bhaskar Bose</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.01219v1</id>
+    <title>Task-Guided IRL in POMDPs that Scales</title>
+    <updated>2022-12-30T21:08:57Z</updated>
+    <link href="https://arxiv.org/abs/2301.01219v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.01219v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>In inverse reinforcement learning (IRL), a learning agent infers a reward function encoding the underlying task using demonstrations from experts. However, many existing IRL techniques make the often unrealistic assumption that the agent has access to full information about the environment. We remove this assumption by developing an algorithm for IRL in partially observable Markov decision processes (POMDPs). We address two limitations of existing IRL techniques. First, they require an excessive amount of data due to the information asymmetry between the expert and the learner. Second, most of these IRL techniques require solving the computationally intractable forward problem -- computing an optimal policy given a reward function -- in POMDPs. The developed algorithm reduces the information asymmetry while increasing the data efficiency by incorporating task specifications expressed in temporal logic into IRL. Such specifications may be interpreted as side information available to the learner a priori in addition to the demonstrations. Further, the algorithm avoids a common source of algorithmic complexity by building on causal entropy as the measure of the likelihood of the demonstrations as opposed to entropy. Nevertheless, the resulting problem is nonconvex due to the so-called forward problem. We solve the intrinsic nonconvexity of the forward problem in a scalable manner through a sequential linear programming scheme that guarantees to converge to a locally optimal policy. In a series of examples, including experiments in a high-fidelity Unity simulator, we demonstrate that even with a limited amount of data and POMDPs with tens of thousands of states, our algorithm learns reward functions and policies that satisfy the task while inducing similar behavior to the expert by leveraging the provided side information.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.FL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="math.OC" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-30T21:08:57Z</published>
+    <arxiv:comment>Final submission to the Artificial Intelligence journal (Elsevier). arXiv admin note: substantial text overlap with arXiv:2105.14073</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Franck Djeumou</name>
+    </author>
+    <author>
+      <name>Christian Ellis</name>
+    </author>
+    <author>
+      <name>Murat Cubuktepe</name>
+    </author>
+    <author>
+      <name>Craig Lennon</name>
+    </author>
+    <author>
+      <name>Ufuk Topcu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.00051v2</id>
+    <title>Learning from Guided Play: Improving Exploration for Adversarial Imitation Learning with Simple Auxiliary Tasks</title>
+    <updated>2023-10-12T21:47:53Z</updated>
+    <link href="https://arxiv.org/abs/2301.00051v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.00051v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Adversarial imitation learning (AIL) has become a popular alternative to supervised imitation learning that reduces the distribution shift suffered by the latter. However, AIL requires effective exploration during an online reinforcement learning phase. In this work, we show that the standard, naive approach to exploration can manifest as a suboptimal local maximum if a policy learned with AIL sufficiently matches the expert distribution without fully learning the desired task. This can be particularly catastrophic for manipulation tasks, where the difference between an expert and a non-expert state-action pair is often subtle. We present Learning from Guided Play (LfGP), a framework in which we leverage expert demonstrations of multiple exploratory, auxiliary tasks in addition to a main task. The addition of these auxiliary tasks forces the agent to explore states and actions that standard AIL may learn to ignore. Additionally, this particular formulation allows for the reusability of expert data between main tasks. Our experimental results in a challenging multitask robotic manipulation domain indicate that LfGP significantly outperforms both AIL and behaviour cloning, while also being more expert sample efficient than these baselines. To explain this performance gap, we provide further analysis of a toy problem that highlights the coupling between a local maximum and poor exploration, and also visualize the differences between the learned models from AIL and LfGP.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-30T20:38:54Z</published>
+    <arxiv:comment>In IEEE Robotics and Automation Letters (RA-L) and presented at the IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS'23), Detroit, MI, USA, Oct. 1-5, 2023. arXiv admin note: substantial text overlap with arXiv:2112.08932</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <arxiv:journal_ref>IEEE Robotics and Automation Letters (RA-L), Vol. 8, No. 3, pp. 1263-1270, Jan. 2023</arxiv:journal_ref>
+    <author>
+      <name>Trevor Ablett</name>
+    </author>
+    <author>
+      <name>Bryan Chan</name>
+    </author>
+    <author>
+      <name>Jonathan Kelly</name>
+    </author>
+    <arxiv:doi>10.1109/LRA.2023.3236882</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1109/LRA.2023.3236882" title="doi"/>
+  </entry>
+</feed>

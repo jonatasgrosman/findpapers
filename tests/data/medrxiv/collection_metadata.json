@@ -1,0 +1,24 @@
+{
+  "collected_at": "2026-02-01T15:11:29.814184",
+  "database": "medrxiv",
+  "date_range": {
+    "from": "2020-01-01",
+    "to": "2022-12-31"
+  },
+  "search_terms": [
+    "machine+learning+natural+language+processing",
+    "deep+learning+natural+language+processing",
+    "machine+learning+nlp",
+    "deep+learning+nlp"
+  ],
+  "limit": 50,
+  "search_urls_used": 4,
+  "unique_dois_found": 5,
+  "papers_with_metadata": 5,
+  "files_created": [
+    "search_page_sample.html",
+    "search_results.json",
+    "api_responses.json",
+    "collection_metadata.json"
+  ]
+}

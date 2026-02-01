@@ -1,0 +1,10 @@
+{
+  "collected_at": "2026-02-01T15:01:00.820357",
+  "api_url": "https://api.elsevier.com/content/search/scopus",
+  "query": "TITLE-ABS-KEY((\"machine learning\" OR \"deep learning\") AND (\"nlp\" OR \"natural language processing\"))",
+  "date_range": "2020-2022",
+  "limit": 50,
+  "response_status": 200,
+  "total_results": "14501",
+  "entries_returned": 25
+}

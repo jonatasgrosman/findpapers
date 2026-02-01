@@ -1,0 +1,48 @@
+{
+  "collected_at": "2026-02-01T15:11:26.525303",
+  "database": "medrxiv",
+  "date_range": {
+    "from": "2020-01-01",
+    "to": "2022-12-31"
+  },
+  "search_terms": [
+    "machine+learning+natural+language+processing",
+    "deep+learning+natural+language+processing",
+    "machine+learning+nlp",
+    "deep+learning+nlp"
+  ],
+  "results": [
+    {
+      "url": "https://www.medrxiv.org/search/abstract_title%3Amachine%252Blearning%252Bnatural%252Blanguage%252Bprocessing%20abstract_title_flags%3Amatch-all%20jcode%3Amedrxiv%20limit_from%3A2020-01-01%20limit_to%3A2022-12-31%20numresults%3A75%20sort%3Apublication-date%20direction%3Adescending%20format_result%3Acondensed",
+      "total_papers": 4,
+      "dois_found": 4,
+      "dois": [
+        "10.1101/2021.12.05.21267037",
+        "10.1101/2021.07.13.21260449",
+        "10.1101/2021.06.14.21258493",
+        "10.1101/2020.07.29.20164814"
+      ]
+    },
+    {
+      "url": "https://www.medrxiv.org/search/abstract_title%3Adeep%252Blearning%252Bnatural%252Blanguage%252Bprocessing%20abstract_title_flags%3Amatch-all%20jcode%3Amedrxiv%20limit_from%3A2020-01-01%20limit_to%3A2022-12-31%20numresults%3A75%20sort%3Apublication-date%20direction%3Adescending%20format_result%3Acondensed",
+      "total_papers": 1,
+      "dois_found": 1,
+      "dois": [
+        "10.1101/2021.12.11.21267504"
+      ]
+    },
+    {
+      "url": "https://www.medrxiv.org/search/abstract_title%3Amachine%252Blearning%252Bnlp%20abstract_title_flags%3Amatch-all%20jcode%3Amedrxiv%20limit_from%3A2020-01-01%20limit_to%3A2022-12-31%20numresults%3A75%20sort%3Apublication-date%20direction%3Adescending%20format_result%3Acondensed",
+      "total_papers": 0,
+      "dois_found": 0,
+      "dois": []
+    },
+    {
+      "url": "https://www.medrxiv.org/search/abstract_title%3Adeep%252Blearning%252Bnlp%20abstract_title_flags%3Amatch-all%20jcode%3Amedrxiv%20limit_from%3A2020-01-01%20limit_to%3A2022-12-31%20numresults%3A75%20sort%3Apublication-date%20direction%3Adescending%20format_result%3Acondensed",
+      "total_papers": 0,
+      "dois_found": 0,
+      "dois": []
+    }
+  ],
+  "unique_dois_total": 5
+}
