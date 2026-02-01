@@ -13,6 +13,8 @@ from findpapers.exceptions import SearchRunnerNotExecutedError
 from findpapers.models import Paper
 from findpapers.utils.parallel_util import execute_tasks
 
+logger = logging.getLogger(__name__)
+
 
 class DownloadRunner:
     """Runner that downloads PDFs for a provided list of papers."""
@@ -54,7 +56,7 @@ class DownloadRunner:
         Parameters
         ----------
         verbose : bool
-            Enable verbose logging (placeholder).
+            Enable verbose logging and detailed output.
 
         Returns
         -------
@@ -62,6 +64,14 @@ class DownloadRunner:
         """
         if verbose:
             logging.getLogger().setLevel(logging.INFO)
+            logger.info("=== DownloadRunner Configuration ===")
+            logger.info("Total papers to download: %d", len(self._results))
+            logger.info("Output directory: %s", self._output_directory)
+            logger.info("Max workers: %s", self._max_workers or "sequential")
+            logger.info("Timeout: %s", self._timeout or "default")
+            logger.info("Proxy: %s", self._proxy or "none")
+            logger.info("====================================")
+
         start = perf_counter()
         self._results = list(self._results)
         metrics: dict[str, int | float] = {
@@ -105,6 +115,8 @@ class DownloadRunner:
         ):
             if error is not None or result is None:
                 self._log_download_error(error_log_path, paper.title, [])
+                if verbose:
+                    logger.warning("Error downloading paper %s: %s", paper.title, error)
                 continue
             downloaded, attempted_urls = result
             if downloaded:
@@ -115,6 +127,17 @@ class DownloadRunner:
         metrics["runtime_in_seconds"] = perf_counter() - start
         self._metrics = metrics
         self._executed = True
+
+        if verbose:
+            logger.info("=== Download Summary ===")
+            logger.info("Total papers: %d", metrics["total_papers"])
+            logger.info("Downloaded papers: %d", int(metrics["downloaded_papers"]))
+            logger.info(
+                "Failed papers: %d",
+                int(metrics["total_papers"] - metrics["downloaded_papers"]),
+            )
+            logger.info("Runtime: %.2f seconds", metrics["runtime_in_seconds"])
+            logger.info("========================")
 
     def get_metrics(self) -> dict[str, int | float]:
         """Return a copy of numeric metrics after `run()`.

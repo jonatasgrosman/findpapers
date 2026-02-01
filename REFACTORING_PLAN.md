@@ -158,11 +158,11 @@ The following checklist breaks the refactoring into small, reviewable phases. Ea
     entries.
   - Review checklist: parallelism is optional, failures are recorded but do not fail the run.
 
-- [ ] **Stage 7 — Exports (JSON / CSV / BibTeX)**
+- [x] **Stage 7 — Exports (JSON / CSV / BibTeX)**
   - Scope: implement `to_json`, `to_csv`, and `to_bibtex` according to the spec (metadata, papers, metrics; column priorities; BibTeX-only papers).
   - Tests: serialization tests that validate JSON schema, CSV columns order, and BibTeX formatting.
 
-- [ ] **Stage 8 — Metrics, logging & verbose output**
+- [x] **Stage 8 — Metrics, logging & verbose output**
   - Scope: finalize numeric-only metrics, add runtime per stage, and implement `verbose=True` summaries and logger integration with the project logger.
   - Tests: assert metrics keys/types and that verbose run emits expected log messages (use caplog or similar).
   - Review checklist: metrics are stable, documented, and appear in JSON `metrics` section.

@@ -19,7 +19,7 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 * All features or bug fixes must be tested by one or more specs (unit-tests).
 * All methods must have type hints.
 * All methods must have docstrings.
-* The names of variables, functions, classes, and modules should be descriptive.
+* The names of variables, functions, classes, files and modules should be descriptive.
 * Keep functions and methods focused on a single task; avoid large monolithic functions.
 * Line length should not exceed 100 characters.
 * If you changed any code, run `make format`, `make lint` and `make test` before committing.

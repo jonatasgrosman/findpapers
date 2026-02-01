@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import logging
 from time import perf_counter
 
 from findpapers.exceptions import SearchRunnerNotExecutedError
 from findpapers.models import Paper
 from findpapers.utils import enrichment_util
 from findpapers.utils.parallel_util import execute_tasks
+
+logger = logging.getLogger(__name__)
 
 
 class EnrichmentRunner:
@@ -34,28 +37,43 @@ class EnrichmentRunner:
         self._max_workers = max_workers
         self._timeout = timeout
 
-    def run(self, verbose: bool = False) -> None:  # noqa: ARG002
+    def run(self, verbose: bool = False) -> None:
         """Enrich the configured papers.
 
         Parameters
         ----------
         verbose : bool
-            Enable verbose logging (placeholder).
+            Enable verbose logging and detailed output.
 
         Returns
         -------
         None
         """
+        if verbose:
+            logging.getLogger().setLevel(logging.INFO)
+            logger.info("=== EnrichmentRunner Configuration ===")
+            logger.info("Total papers to enrich: %d", len(self._results))
+            logger.info("Max workers: %s", self._max_workers or "sequential")
+            logger.info("Timeout: %s", self._timeout or "default")
+            logger.info("======================================")
+
         start = perf_counter()
         metrics: dict[str, int | float] = {
             "total_papers": len(self._results),
             "runtime_in_seconds": 0.0,
             "enriched_papers": 0,
         }
-        self._enrich_results(metrics)
+        self._enrich_results(metrics, verbose)
         metrics["runtime_in_seconds"] = perf_counter() - start
         self._metrics = metrics
         self._executed = True
+
+        if verbose:
+            logger.info("=== Enrichment Summary ===")
+            logger.info("Total papers: %d", metrics["total_papers"])
+            logger.info("Enriched papers: %d", int(metrics["enriched_papers"]))
+            logger.info("Runtime: %.2f seconds", metrics["runtime_in_seconds"])
+            logger.info("============================")
 
     def get_metrics(self) -> dict[str, int | float]:
         """Return a copy of numeric metrics after `run()`.
@@ -84,13 +102,15 @@ class EnrichmentRunner:
         if not self._executed:
             raise SearchRunnerNotExecutedError("EnrichmentRunner has not been executed yet.")
 
-    def _enrich_results(self, metrics: dict[str, int | float]) -> None:
+    def _enrich_results(self, metrics: dict[str, int | float], verbose: bool = False) -> None:
         """Enrich results as the only stage.
 
         Parameters
         ----------
         metrics : dict[str, int | float]
             Metrics dict to update.
+        verbose : bool
+            Enable verbose logging.
 
         Returns
         -------
@@ -119,6 +139,8 @@ class EnrichmentRunner:
             stop_on_timeout=True,
         ):
             if error is not None:
+                if verbose:
+                    logger.warning("Error enriching paper: %s", error)
                 continue
             if result:
                 enriched += 1

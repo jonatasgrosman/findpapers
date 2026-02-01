@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from collections.abc import Iterator
 from copy import deepcopy
 from datetime import datetime, timezone
@@ -21,6 +22,8 @@ from findpapers.searchers import (
 )
 from findpapers.utils.parallel_util import execute_tasks
 from findpapers.utils.predatory_util import is_predatory_publication
+
+logger = logging.getLogger(__name__)
 
 
 class SearchRunner:
@@ -56,19 +59,30 @@ class SearchRunner:
         self._limits = kwargs.get("limits") or {}
         self._timeout = kwargs.get("timeout")
 
-    def run(self, verbose: bool = False) -> Search:  # noqa: ARG002 - placeholder
+    def run(self, verbose: bool = False) -> Search:
         """Execute the configured pipeline once, resetting previous results.
 
         Parameters
         ----------
         verbose : bool
-            Enable verbose logging (placeholder).
+            Enable verbose logging and detailed output.
 
         Returns
         -------
         Search
             Search object containing results and metadata.
         """
+        if verbose:
+            logging.getLogger().setLevel(logging.INFO)
+            logger.info("=== SearchRunner Configuration ===")
+            logger.info("Databases: %s", [s.name for s in self._searchers])
+            logger.info("Publication types: %s", self._publication_types or "all")
+            logger.info("Parallel search: %s", self._parallel_search)
+            logger.info("Query: %s", self._query or "none")
+            logger.info("Limits: %s", self._limits or "none")
+            logger.info("Timeout: %s", self._timeout or "none")
+            logger.info("=====================================")
+
         start = perf_counter()
         self._results = []
         metrics: dict[str, int | float] = {
@@ -76,15 +90,69 @@ class SearchRunner:
             "runtime_in_seconds": 0.0,
             "total_papers_from_predatory_publication": 0,
         }
-        self._fetch_searchers(metrics)
-        self._filter_by_publication_types(metrics)
-        self._dedupe_and_merge(metrics)
-        self._flag_predatory_publications(metrics)
+
+        # Fetch stage
+        stage_start = perf_counter()
+        self._fetch_searchers(metrics, verbose)
+        fetch_count = len(self._results)
+        if verbose:
+            logger.info("Fetch complete: %d papers collected", fetch_count)
+
+        # Filter stage
+        stage_start = perf_counter()
+        before_filter = len(self._results)
+        self._filter_by_publication_types(metrics, verbose)
+        after_filter = len(self._results)
+        if verbose:
+            logger.info(
+                "Filter complete: %d -> %d papers (removed %d)",
+                before_filter,
+                after_filter,
+                before_filter - after_filter,
+            )
+
+        # Dedupe stage
+        stage_start = perf_counter()
+        before_dedupe = len(self._results)
+        self._dedupe_and_merge(metrics, verbose)
+        after_dedupe = len(self._results)
+        if verbose:
+            logger.info(
+                "Dedupe complete: %d -> %d papers (merged %d)",
+                before_dedupe,
+                after_dedupe,
+                before_dedupe - after_dedupe,
+            )
+
+        # Predatory stage
+        stage_start = perf_counter()
+        self._flag_predatory_publications(metrics, verbose)
+        if verbose:
+            logger.info(
+                "Predatory flagging complete: %d papers flagged",
+                int(metrics["total_papers_from_predatory_publication"]),
+            )
 
         metrics["total_papers"] = len(self._results)
         metrics["runtime_in_seconds"] = perf_counter() - start
         self._metrics = metrics
         self._executed = True
+
+        if verbose:
+            logger.info("=== Final Summary ===")
+            logger.info("Total papers: %d", metrics["total_papers"])
+            logger.info(
+                "Total runtime: %.2f seconds",
+                metrics["runtime_in_seconds"],
+            )
+            logger.info(
+                "Per-database breakdown:",
+            )
+            for searcher in self._searchers:
+                count = int(metrics.get(f"total_papers_from_{searcher.name}", 0))
+                logger.info("  %s: %d papers", searcher.name, count)
+            logger.info("====================")
+
         self._search = Search(
             query=self._query,
             limit=self._limits.get("limit"),
@@ -191,13 +259,15 @@ class SearchRunner:
                 raise ValueError(f"Unknown database: {database}")
         return searchers
 
-    def _fetch_searchers(self, metrics: dict[str, int | float]) -> None:
+    def _fetch_searchers(self, metrics: dict[str, int | float], verbose: bool = False) -> None:
         """Fetch results from all configured searchers, capturing per-searcher counts.
 
         Parameters
         ----------
         metrics : dict[str, int | float]
             Metrics dict to update.
+        verbose : bool
+            Enable verbose logging.
 
         Returns
         -------
@@ -210,6 +280,8 @@ class SearchRunner:
                 plans.append((searcher, iterator, _steps, _papers_per_step, total_papers))
             except Exception:
                 metrics[f"total_papers_from_{searcher.name}"] = 0
+                if verbose:
+                    logger.warning("Error initializing searcher %s", searcher.name)
 
         total_papers = sum(plan[4] for plan in plans)
 
@@ -264,18 +336,24 @@ class SearchRunner:
             searcher = plan[0]
             if error is not None or result is None:
                 metrics[f"total_papers_from_{searcher.name}"] = 0
+                if verbose:
+                    logger.error("Error fetching from %s: %s", searcher.name, error)
                 continue
             papers, count = result
             self._results.extend(papers)
             metrics[f"total_papers_from_{searcher.name}"] = count
 
-    def _filter_by_publication_types(self, metrics: dict[str, int | float]) -> None:
+    def _filter_by_publication_types(
+        self, metrics: dict[str, int | float], verbose: bool = False
+    ) -> None:
         """Filter results by allowed publication categories.
 
         Parameters
         ----------
         metrics : dict[str, int | float]
             Metrics dict to update.
+        verbose : bool
+            Enable verbose logging.
 
         Returns
         -------
@@ -313,13 +391,15 @@ class SearchRunner:
 
         return str(category).strip().lower() in allowed
 
-    def _dedupe_and_merge(self, metrics: dict[str, int | float]) -> None:
+    def _dedupe_and_merge(self, metrics: dict[str, int | float], verbose: bool = False) -> None:
         """Deduplicate results and merge using the most-complete rule.
 
         Parameters
         ----------
         metrics : dict[str, int | float]
             Metrics dict to update.
+        verbose : bool
+            Enable verbose logging.
 
         Returns
         -------
@@ -335,13 +415,17 @@ class SearchRunner:
                 merged[key] = paper
         self._results = list(merged.values())
 
-    def _flag_predatory_publications(self, metrics: dict[str, int | float]) -> None:
+    def _flag_predatory_publications(
+        self, metrics: dict[str, int | float], verbose: bool = False
+    ) -> None:
         """Flag potentially predatory publications in results.
 
         Parameters
         ----------
         metrics : dict[str, int | float]
             Metrics dict to update.
+        verbose : bool
+            Enable verbose logging.
 
         Returns
         -------
