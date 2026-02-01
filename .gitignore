@@ -31,3 +31,22 @@ _ignore*
 # venv
 venv
 .venv
+
+# Coverage artifacts
+.coverage
+.coverage*
+coverage.xml
+coverage-*.xml
+coverage.json
+htmlcov/
+reports/coverage.xml
+
+# Caches and tool artifacts
+.cache
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# IDE files
+.idea/
+.vscode/
