@@ -151,27 +151,34 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 ## <a name="commit"></a> Commit Message Guidelines
 
 Each commit message consists of a **header** and a **body**.  The header has a special
-format that includes a **type** and a **subject**:
+format that includes a **type**, an optional **scope**, and a **subject**:
 
 ```
-<type>: <subject>
+<type>(<scope>): <subject>
 <BLANK LINE>
 <body>
 ```
 
-The **header** is mandatory. The **body** is optional.
+- The **header** is mandatory. The **body** is optional.
 
 Any line of the commit message cannot be longer 100 characters! This allows the message to be easier
 to read in various git tools.
 
+Examples:
+
 ```
 docs: update changelog to 0.2
 ```
+
 ```
-fix: need to depend on latest rxjs and zone.js
+fix: error when exporting to CSV with empty paper list
 
-The version in our package.json gets copied to the one we publish, and users need the latest of these.
+When the paper list was empty, exporting to CSV raised an unhandled exception.
 
+```
+
+```
+feat(runners): add verbose logging and numeric metrics
 ```
 
 ### Type
@@ -184,6 +191,13 @@ We use a concise set of commit types. Use one of the following in the commit hea
 * **docs**: Documentation changes
 * **test**: Tests and related changes
 * **chore**: Maintenance, build, CI, or refactor tasks
+
+## Scope
+
+Scope is optional and should be a short lowercase identifier (no spaces). The scope could be
+the name of the module, package being changed or a broader category that the change falls under.
+There is no strict list of scopes, but here are some examples to guide you: `runners`,
+`utils`, `search`, `export`...
 
 ### Subject
 
