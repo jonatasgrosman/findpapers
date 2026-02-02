@@ -1,20 +1,24 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
+from typing import TYPE_CHECKING
 
 from .base import SearcherBase
+
+if TYPE_CHECKING:
+    from findpapers.models import Query
 
 
 class IeeeSearcher(SearcherBase):
     """Minimal IEEE searcher placeholder for the new OO pipeline."""
 
-    def __init__(self, query: str | None = None) -> None:
+    def __init__(self, query: "Query | None" = None) -> None:
         """Create an IEEE searcher placeholder.
 
         Parameters
         ----------
-        query : str | None
-            Raw query string.
+        query : Query | None
+            Parsed query object.
         """
         self._query = query
 

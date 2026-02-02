@@ -9,7 +9,7 @@ from time import perf_counter
 from tqdm import tqdm
 
 from findpapers.exceptions import SearchRunnerNotExecutedError
-from findpapers.models import Paper, Search
+from findpapers.models import Paper, Query, Search
 from findpapers.searchers import (
     ArxivSearcher,
     BiorxivSearcher,
@@ -47,17 +47,25 @@ class SearchRunner:
             Allowed publication categories for filtering.
         parallel_search : bool
             Whether to execute database searches in parallel.
+
+        Raises
+        ------
+        QueryValidationError
+            If the query string is invalid.
         """
         self._executed = False
         self._results: list[Paper] = []
         self._metrics: dict[str, int | float] = {}
         self._search: Search | None = None
-        self._searchers = self._build_searchers(databases)
         self._publication_types = publication_types
         self._parallel_search = parallel_search
-        self._query = kwargs.get("query") or ""
+        self._query_string = kwargs.get("query") or ""
+        self._query: Query | None = None
+        if self._query_string:
+            self._query = Query(self._query_string)
         self._limits = kwargs.get("limits") or {}
         self._timeout = kwargs.get("timeout")
+        self._searchers = self._build_searchers(databases)
 
     def run(self, verbose: bool = False) -> Search:
         """Execute the configured pipeline once, resetting previous results.
@@ -78,7 +86,7 @@ class SearchRunner:
             logger.info("Databases: %s", [s.name for s in self._searchers])
             logger.info("Publication types: %s", self._publication_types or "all")
             logger.info("Parallel search: %s", self._parallel_search)
-            logger.info("Query: %s", self._query or "none")
+            logger.info("Query: %s", self._query_string or "none")
             logger.info("Limits: %s", self._limits or "none")
             logger.info("Timeout: %s", self._timeout or "none")
             logger.info("=====================================")
@@ -92,14 +100,12 @@ class SearchRunner:
         }
 
         # Fetch stage
-        stage_start = perf_counter()
         self._fetch_searchers(metrics, verbose)
         fetch_count = len(self._results)
         if verbose:
             logger.info("Fetch complete: %d papers collected", fetch_count)
 
         # Filter stage
-        stage_start = perf_counter()
         before_filter = len(self._results)
         self._filter_by_publication_types(metrics, verbose)
         after_filter = len(self._results)
@@ -112,7 +118,6 @@ class SearchRunner:
             )
 
         # Dedupe stage
-        stage_start = perf_counter()
         before_dedupe = len(self._results)
         self._dedupe_and_merge(metrics, verbose)
         after_dedupe = len(self._results)
@@ -125,7 +130,6 @@ class SearchRunner:
             )
 
         # Predatory stage
-        stage_start = perf_counter()
         self._flag_predatory_publications(metrics, verbose)
         if verbose:
             logger.info(
@@ -154,7 +158,7 @@ class SearchRunner:
             logger.info("====================")
 
         self._search = Search(
-            query=self._query,
+            query=self._query_string,
             limit=self._limits.get("limit"),
             limit_per_database=self._limits.get("limit_per_database"),
             processed_at=datetime.now(timezone.utc),
@@ -244,17 +248,17 @@ class SearchRunner:
             else:
                 key = database.strip().lower()
             if key == "arxiv":
-                searchers.append(ArxivSearcher())
+                searchers.append(ArxivSearcher(query=self._query))
             elif key == "biorxiv":
-                searchers.append(BiorxivSearcher())
+                searchers.append(BiorxivSearcher(query=self._query))
             elif key == "ieee":
-                searchers.append(IeeeSearcher())
+                searchers.append(IeeeSearcher(query=self._query))
             elif key == "medrxiv":
-                searchers.append(MedrxivSearcher())
+                searchers.append(MedrxivSearcher(query=self._query))
             elif key == "pubmed":
-                searchers.append(PubmedSearcher())
+                searchers.append(PubmedSearcher(query=self._query))
             elif key == "scopus":
-                searchers.append(ScopusSearcher())
+                searchers.append(ScopusSearcher(query=self._query))
             else:
                 raise ValueError(f"Unknown database: {database}")
         return searchers

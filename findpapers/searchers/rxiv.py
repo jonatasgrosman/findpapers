@@ -1,20 +1,24 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
+from typing import TYPE_CHECKING
 
 from .base import SearcherBase
+
+if TYPE_CHECKING:
+    from findpapers.models import Query
 
 
 class RxivSearcher(SearcherBase):
     """Base rxiv searcher placeholder shared by bioRxiv and medRxiv."""
 
-    def __init__(self, query: str | None = None, database: str = "rxiv") -> None:
+    def __init__(self, query: "Query | None" = None, database: str = "rxiv") -> None:
         """Create a shared rxiv searcher placeholder for a specific database.
 
         Parameters
         ----------
-        query : str | None
-            Raw query string.
+        query : Query | None
+            Parsed query object.
         database : str
             Target database identifier.
         """
