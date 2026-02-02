@@ -22,9 +22,9 @@ class TestSearchRunnerMetrics:
             "total_papers_from_predatory_publication",
         }
 
-        assert all(key in metrics for key in expected_keys), (
-            f"Missing metric keys. Expected: {expected_keys}, Got: {set(metrics.keys())}"
-        )
+        assert all(
+            key in metrics for key in expected_keys
+        ), f"Missing metric keys. Expected: {expected_keys}, Got: {set(metrics.keys())}"
 
     def test_metrics_are_numeric_only(self):
         """Verify all metrics are numeric (int or float)."""
@@ -33,9 +33,9 @@ class TestSearchRunnerMetrics:
         metrics = runner.get_metrics()
 
         for key, value in metrics.items():
-            assert isinstance(value, (int, float)), (
-                f"Metric '{key}' has non-numeric value: {value} ({type(value).__name__})"
-            )
+            assert isinstance(
+                value, (int, float)
+            ), f"Metric '{key}' has non-numeric value: {value} ({type(value).__name__})"
 
     def test_per_searcher_metrics_present(self):
         """Verify per-searcher metrics are recorded."""

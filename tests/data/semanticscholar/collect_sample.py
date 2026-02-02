@@ -57,9 +57,8 @@ FIELDS = "paperId,corpusId,externalIds,url,title,abstract,venue,year,referenceCo
 def load_api_key() -> str | None:
     """Load Semantic Scholar API key from environment or .env file."""
     # Try both variable names
-    api_key = (
-        os.environ.get("FINDPAPERS_SEMANTIC_SCHOLAR_API_TOKEN")
-        or os.environ.get("SEMANTIC_SCHOLAR_API_KEY")
+    api_key = os.environ.get("FINDPAPERS_SEMANTIC_SCHOLAR_API_TOKEN") or os.environ.get(
+        "SEMANTIC_SCHOLAR_API_KEY"
     )
     if api_key:
         return api_key

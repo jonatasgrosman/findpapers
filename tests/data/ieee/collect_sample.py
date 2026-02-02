@@ -23,6 +23,7 @@ OUTPUT_DIR = Path(__file__).parent
 PROJECT_ROOT = OUTPUT_DIR.parent.parent.parent
 LIMIT = 50
 
+
 # Try to load API key from environment or .env file
 def load_api_key() -> str | None:
     """Load IEEE API key from environment or .env file."""

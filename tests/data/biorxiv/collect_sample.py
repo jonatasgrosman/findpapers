@@ -159,7 +159,9 @@ def collect_biorxiv_sample() -> None:
 
         new_dois = [d for d in result["dois"] if d not in all_dois]
         all_dois.update(new_dois)
-        print(f"  Found {len(result['dois'])} DOIs ({len(new_dois)} new), total unique: {len(all_dois)}")
+        print(
+            f"  Found {len(result['dois'])} DOIs ({len(new_dois)} new), total unique: {len(all_dois)}"
+        )
 
     # Save first search HTML as sample
     if all_search_results:

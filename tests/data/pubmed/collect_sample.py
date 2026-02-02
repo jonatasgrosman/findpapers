@@ -54,7 +54,9 @@ def load_api_key() -> str | None:
     if env_file.exists():
         for line in env_file.read_text().splitlines():
             line = line.strip()
-            if line.startswith("FINDPAPERS_PUBMED_API_TOKEN=") or line.startswith("PUBMED_API_KEY="):
+            if line.startswith("FINDPAPERS_PUBMED_API_TOKEN=") or line.startswith(
+                "PUBMED_API_KEY="
+            ):
                 return line.split("=", 1)[1].strip().strip('"').strip("'")
 
     return None
@@ -90,13 +92,13 @@ def collect_pubmed_sample() -> None:
 
     encoded_params = urllib.parse.urlencode(search_params)
     search_url = f"{ESEARCH_URL}?{encoded_params}"
-    print(f"\nStep 1: Search for article IDs")
+    print("\nStep 1: Search for article IDs")
     print(f"Query: {QUERY}")
     print(f"Date range: {DATE_FROM} to {DATE_TO}")
 
     try:
         # Search for IDs
-        print(f"\nFetching article IDs from PubMed...")
+        print("\nFetching article IDs from PubMed...")
         search_response = requests.get(ESEARCH_URL, params=search_params, timeout=60)
         search_response.raise_for_status()
 
