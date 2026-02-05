@@ -37,11 +37,18 @@ class QueryNode:
         The value for TERM and CONNECTOR nodes.
     children : list[QueryNode]
         Child nodes for ROOT and GROUP nodes.
+    field : str | None
+        Field specifier for TERM and GROUP nodes.
+        When None, defaults to 'tiabs' at conversion time.
+        Valid field codes: ti (title), abs (abstract), key (keywords),
+        au (author), pu (publication), af (affiliation),
+        tiabs (title + abstract), tiabskey (title + abstract + keywords).
     """
 
     node_type: NodeType
     value: Optional[str] = None
     children: List["QueryNode"] = field(default_factory=list)
+    field: Optional[str] = None
 
     def to_dict(self) -> dict:
         """Convert the node to a dictionary representation.
@@ -54,6 +61,8 @@ class QueryNode:
         result: dict = {"node_type": self.node_type.value}
         if self.value is not None:
             result["value"] = self.value
+        if self.field is not None:
+            result["field"] = self.field
         if self.children:
             result["children"] = [child.to_dict() for child in self.children]
         return result
@@ -65,7 +74,7 @@ class QueryNode:
         Parameters
         ----------
         data : dict
-            Dictionary with node_type, optional value, and optional children.
+            Dictionary with node_type, optional value, optional field, and optional children.
 
         Returns
         -------
@@ -74,8 +83,9 @@ class QueryNode:
         """
         node_type = NodeType(data["node_type"])
         value = data.get("value")
+        field_value = data.get("field")
         children = [cls.from_dict(child) for child in data.get("children", [])]
-        return cls(node_type=node_type, value=value, children=children)
+        return cls(node_type=node_type, value=value, children=children, field=field_value)
 
     def get_all_terms(self) -> List[str]:
         """Get all term values from this node and its children.
@@ -91,6 +101,56 @@ class QueryNode:
         for child in self.children:
             terms.extend(child.get_all_terms())
         return terms
+
+    def get_all_fields(self) -> List[str]:
+        """Get all unique field codes used in this node and its children.
+
+        Returns
+        -------
+        list[str]
+            List of unique field codes (e.g., ['ti', 'abs', 'tiabs']).
+        """
+        all_fields: set[str] = set()
+        if self.field:
+            all_fields.add(self.field)
+        for child in self.children:
+            all_fields.update(child.get_all_fields())
+        return list(all_fields)
+
+    def propagate_fields(self, parent_field: Optional[str] = None) -> None:
+        """Propagate field specifier from parent nodes to children.
+
+        This method applies inheritance rules for field specifiers:
+        1. If a node has an explicit field, it takes precedence (override)
+        2. If a node has no field, it inherits from its parent
+        3. After propagation, GROUP nodes have their field cleared
+
+        The innermost group always wins - field closest to a term is applied.
+
+        Parameters
+        ----------
+        parent_field : str | None
+            Field inherited from the parent node.
+        """
+        # Determine current field: explicit field overrides inherited one
+        current_field = self.field if self.field is not None else parent_field
+
+        if self.node_type == NodeType.TERM:
+            # Terminal node: assign final field
+            self.field = current_field
+        elif self.node_type in (NodeType.ROOT, NodeType.GROUP):
+            # Propagate to children
+            for child in self.children:
+                child.propagate_fields(current_field)
+            # Clear field from GROUP nodes after propagation
+            if self.node_type == NodeType.GROUP:
+                self.field = None
+
+
+# Valid field codes for query field specifiers (case-insensitive)
+# Single fields: ti, abs, key, au, pu, af
+# Combined fields: tiabs (title + abstract), tiabskey (title + abstract + keywords)
+VALID_FIELD_CODES = frozenset({"ti", "abs", "key", "au", "pu", "af", "tiabs", "tiabskey"})
 
 
 class QueryValidationError(ValueError):
@@ -116,6 +176,14 @@ class Query:
     - Asterisk can only be at the end of a term
     - Only one wildcard per term
     - Wildcards only in single terms (no spaces)
+    - Field specifiers can be added before terms or groups:
+      - Syntax: field[term] or field([group])
+      - Valid field codes: ti (title), abs (abstract), key (keywords),
+        au (author), pu (publication), af (affiliation),
+        tiabs (title + abstract), tiabskey (title + abstract + keywords)
+      - Field codes are case-insensitive (TI[term] == ti[term])
+      - When omitted, defaults to tiabs (title + abstract)
+      - Group fields propagate to child terms (innermost wins)
 
     Parameters
     ----------
@@ -132,6 +200,12 @@ class Query:
     >>> query = Query("[happiness] AND ([joy] OR [peace of mind]) AND NOT [stressful]")
     >>> query.root.children[0].value
     'happiness'
+    >>> query = Query("ti[title term] AND abs[abstract term]")
+    >>> query.root.children[0].field
+    'ti'
+    >>> query = Query("tiabs([term a] OR [term b])")
+    >>> query.root.children[0].children[0].field
+    'tiabs'
     """
 
     def __init__(self, query_string: str) -> None:
@@ -150,6 +224,8 @@ class Query:
         self._raw_query = query_string.strip()
         self._validate_query_string()
         self._root = self._parse_query()
+        # Propagate field specifiers from groups to their child terms
+        self._root.propagate_fields()
 
     @property
     def raw_query(self) -> str:
@@ -182,6 +258,16 @@ class Query:
             List of all term values.
         """
         return self._root.get_all_terms()
+
+    def get_all_fields(self) -> List[str]:
+        """Get all unique field codes used in the query.
+
+        Returns
+        -------
+        list[str]
+            List of unique field codes (e.g., ['ti', 'abs', 'key']).
+        """
+        return self._root.get_all_fields()
 
     def to_dict(self) -> dict:
         """Convert the query to a dictionary representation.
@@ -238,6 +324,9 @@ class Query:
         if "[]" in query:
             raise QueryValidationError("Terms cannot be empty: found []")
 
+        # Validate field specifiers
+        self._validate_field_codes(query)
+
         # Extract and validate all terms
         terms = re.findall(r"\[([^\]]*)\]", query)
         for term in terms:
@@ -251,6 +340,40 @@ class Query:
 
         # Validate query structure (must have at least one term)
         self._validate_query_structure(query)
+
+    def _validate_field_codes(self, query: str) -> None:
+        """Validate field specifier codes in the query.
+
+        Field codes are case-insensitive (TI is the same as ti).
+
+        Parameters
+        ----------
+        query : str
+            The query string.
+
+        Raises
+        ------
+        QueryValidationError
+            If invalid field codes are found.
+        """
+        # Pattern to match field prefixes before terms or groups
+        # Matches patterns like: ti, abs, tiabs, TIABS, etc. directly before [ or (
+        # Case-insensitive to catch both valid and invalid cases
+        field_prefix_pattern = r"(?<![a-zA-Z])([a-zA-Z]+)(?=\[|\()"
+
+        matches = re.finditer(field_prefix_pattern, query)
+        for match in matches:
+            field_code = match.group(1)
+            # Normalize to lowercase for validation
+            field_code_lower = field_code.lower()
+            # Skip if it's a boolean operator (AND, OR, NOT)
+            if field_code_lower in {"and", "or", "not"}:
+                continue
+            if field_code_lower not in VALID_FIELD_CODES:
+                raise QueryValidationError(
+                    f"Invalid field code '{field_code}'. "
+                    f"Valid codes are: {', '.join(sorted(VALID_FIELD_CODES))}"
+                )
 
     def _check_balanced_brackets(self, query: str) -> None:
         """Check that square brackets are balanced.
@@ -517,17 +640,25 @@ class Query:
         # Validate connector placement - connectors must be between terms/groups
         self._validate_connector_placement(structure)
 
+        # Remove all field prefixes before checking for invalid content
+        # A field prefix is a sequence of letters directly followed by ( or TERM
+        # First handle field prefixes before TERM (from original brackets)
+        structure_cleaned = re.sub(r"[a-zA-Z]+(?=\s*TERM)", " ", structure)
+        # Then handle field prefixes before ( (groups)
+        structure_cleaned = re.sub(r"[a-zA-Z]+(?=\s*\()", " ", structure_cleaned)
+
         # Check between terms/groups for invalid content
         # Split by TERM and check each segment
-        segments = structure.split("TERM")
+        segments = structure_cleaned.split("TERM")
 
         for i, segment in enumerate(segments):
             # Skip empty segments
             if not segment.strip():
                 continue
 
-            # Remove parentheses and check what's left
-            cleaned = segment.replace("(", " ").replace(")", " ").strip()
+            # Remove parentheses
+            cleaned = segment.replace("(", " ").replace(")", " ")
+            cleaned = cleaned.strip()
 
             if not cleaned:
                 continue
@@ -553,6 +684,39 @@ class Query:
         """
         return self._parse_query_recursive(self._raw_query, None)
 
+    def _extract_field_prefix(self, text: str) -> tuple[Optional[str], str]:
+        """Extract field prefix from the end of a text buffer.
+
+        Given text like "something ti", extracts the field code and returns
+        the remaining text without the field prefix.
+
+        Field codes are case-insensitive and normalized to lowercase.
+
+        Parameters
+        ----------
+        text : str
+            Text that may end with a field prefix.
+
+        Returns
+        -------
+        tuple[str | None, str]
+            Tuple of (field_code, remaining_text). field_code is None if no
+            valid field prefix was found. Field code is normalized to lowercase.
+        """
+        # Match field prefix pattern at the end: ti, abs, tiabs, TI, etc.
+        # The pattern should be at the end and followed by nothing (we're at [ or ()
+        # Case-insensitive pattern
+        pattern = r"([a-zA-Z]+)$"
+        match = re.search(pattern, text.strip())
+        if match:
+            field_code = match.group(1).lower()
+            # Verify field is valid
+            if field_code in VALID_FIELD_CODES:
+                # Remove the field prefix from text
+                remaining = text[: match.start()] + text[match.end() :]
+                return field_code, remaining.rstrip()
+        return None, text
+
     def _parse_query_recursive(self, query: str, parent: Optional[QueryNode]) -> QueryNode:
         """Recursively parse a query or subquery.
 
@@ -577,14 +741,17 @@ class Query:
 
         while current_character is not None:
             if current_character == "(":  # Beginning of a group
-                if current_connector.strip():
+                # Extract any field prefix from current_connector
+                fields, remaining_connector = self._extract_field_prefix(current_connector)
+
+                if remaining_connector.strip():
                     parent.children.append(
                         QueryNode(
                             node_type=NodeType.CONNECTOR,
-                            value=current_connector.strip().upper(),
+                            value=remaining_connector.strip().upper(),
                         )
                     )
-                    current_connector = ""
+                current_connector = ""
 
                 subquery = ""
                 subquery_group_level = 1
@@ -617,19 +784,22 @@ class Query:
 
                     subquery += current_character
 
-                group_node = QueryNode(node_type=NodeType.GROUP, children=[])
+                group_node = QueryNode(node_type=NodeType.GROUP, children=[], field=fields)
                 parent.children.append(group_node)
                 self._parse_query_recursive(subquery, group_node)
 
             elif current_character == "[":  # Beginning of a term
-                if current_connector.strip():
+                # Extract any field prefix from current_connector
+                fields, remaining_connector = self._extract_field_prefix(current_connector)
+
+                if remaining_connector.strip():
                     parent.children.append(
                         QueryNode(
                             node_type=NodeType.CONNECTOR,
-                            value=current_connector.strip().upper(),
+                            value=remaining_connector.strip().upper(),
                         )
                     )
-                    current_connector = ""
+                current_connector = ""
 
                 term_value = ""
                 while True:
@@ -643,7 +813,9 @@ class Query:
 
                     term_value += current_character
 
-                parent.children.append(QueryNode(node_type=NodeType.TERM, value=term_value))
+                parent.children.append(
+                    QueryNode(node_type=NodeType.TERM, value=term_value, field=fields)
+                )
 
             else:  # Part of a connector
                 current_connector += current_character

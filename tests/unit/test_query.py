@@ -3,7 +3,7 @@
 import pytest
 
 from findpapers.models import Query, QueryNode, QueryValidationError
-from findpapers.models.query import ConnectorType, NodeType
+from findpapers.models.query import VALID_FIELD_CODES, ConnectorType, NodeType
 
 
 class TestQueryValidCases:
@@ -470,3 +470,173 @@ class TestQueryEdgeCases:
         query = Query(terms)
         all_terms = query.get_all_terms()
         assert len(all_terms) == 10
+
+
+class TestQueryFieldSpecifiers:
+    """Test field specifier parsing and propagation."""
+
+    def test_single_field_on_term(self):
+        """Single field specifier on term should be parsed."""
+        query = Query("ti[machine learning]")
+        term_node = query.root.children[0]
+        assert term_node.field == "ti"
+
+    def test_combined_field_tiabs(self):
+        """Combined field tiabs should be parsed."""
+        query = Query("tiabs[neural networks]")
+        term_node = query.root.children[0]
+        assert term_node.field == "tiabs"
+
+    def test_combined_field_tiabskey(self):
+        """Combined field tiabskey should be parsed."""
+        query = Query("tiabskey[deep learning]")
+        term_node = query.root.children[0]
+        assert term_node.field == "tiabskey"
+
+    def test_field_on_group(self):
+        """Field on group should propagate to child terms."""
+        query = Query("abs([a] OR [b])")
+        group_node = query.root.children[0]
+        # After propagation, group field should be None
+        assert group_node.field is None
+        # But children should have inherited the field
+        term_a = group_node.children[0]
+        term_b = group_node.children[2]
+        assert term_a.field == "abs"
+        assert term_b.field == "abs"
+
+    def test_nested_field_override(self):
+        """Inner field should override outer field."""
+        query = Query("abs(ti[a] OR [b])")
+        group_node = query.root.children[0]
+        term_a = group_node.children[0]
+        term_b = group_node.children[2]
+        # First term has explicit ti, should override abs
+        assert term_a.field == "ti"
+        # Second term inherits abs from group
+        assert term_b.field == "abs"
+
+    def test_deeply_nested_field_propagation(self):
+        """Deeply nested groups should propagate fields correctly."""
+        query = Query("ti(abs([a] OR [b]))")
+        outer_group = query.root.children[0]
+        inner_group = outer_group.children[0]
+        term_a = inner_group.children[0]
+        term_b = inner_group.children[2]
+        # Inner group has abs, which overrides outer ti
+        assert term_a.field == "abs"
+        assert term_b.field == "abs"
+
+    def test_term_without_field_defaults_to_none(self):
+        """Terms without field specifiers should have None (default applied later)."""
+        query = Query("[term]")
+        term_node = query.root.children[0]
+        assert term_node.field is None
+
+    def test_mixed_fields_in_query(self):
+        """Query with mixed field specifiers should parse correctly."""
+        query = Query("ti[a] AND abs[b] OR key[c]")
+        assert query.root.children[0].field == "ti"
+        assert query.root.children[2].field == "abs"
+        assert query.root.children[4].field == "key"
+
+    def test_all_valid_field_codes(self):
+        """All valid field codes should be accepted."""
+        for field_code in VALID_FIELD_CODES:
+            query = Query(f"{field_code}[test]")
+            assert query.root.children[0].field == field_code
+
+    def test_get_all_fields(self):
+        """get_all_fields should return all unique fields from query."""
+        query = Query("ti[a] AND abs[b] OR ti[c]")
+        fields = query.get_all_fields()
+        assert set(fields) == {"ti", "abs"}
+
+    def test_get_all_fields_from_groups(self):
+        """get_all_fields should extract fields from groups."""
+        query = Query("ti([a] OR [b]) AND key[c]")
+        fields = query.get_all_fields()
+        assert set(fields) == {"ti", "key"}
+
+    def test_field_in_serialization(self):
+        """Fields should be preserved in to_dict/from_dict."""
+        original = Query("tiabs[machine learning]")
+        data = original.to_dict()
+        reconstructed = Query.from_dict(data)
+        assert reconstructed.root.children[0].field == "tiabs"
+
+
+class TestQueryFieldValidation:
+    """Test field specifier validation."""
+
+    def test_invalid_field_code(self):
+        """Invalid field code should raise error."""
+        with pytest.raises(QueryValidationError, match="Invalid field code"):
+            Query("invalid[test]")
+
+    def test_field_codes_are_case_insensitive(self):
+        """Field codes are case-insensitive and normalized to lowercase."""
+        query = Query("TI[test]")
+        # Should be normalized to lowercase
+        assert query.root.children[0].field == "ti"
+
+    def test_field_codes_mixed_case(self):
+        """Mixed case field codes should be normalized to lowercase."""
+        query = Query("TiAbS[test]")
+        assert query.root.children[0].field == "tiabs"
+
+    def test_invalid_field_code_case_insensitive(self):
+        """Invalid field codes should be rejected regardless of case."""
+        with pytest.raises(QueryValidationError, match="Invalid field code"):
+            Query("INVALID[test]")
+
+    def test_field_on_empty_term(self):
+        """Field on empty term should still raise empty term error."""
+        with pytest.raises(QueryValidationError, match="empty"):
+            Query("ti[]")
+
+    def test_field_with_wildcard(self):
+        """Fields should work with wildcards."""
+        query = Query("ti[mach*]")
+        assert query.root.children[0].field == "ti"
+        assert query.root.children[0].value == "mach*"
+
+    def test_field_with_operators(self):
+        """Fields should work with all operators."""
+        query = Query("ti[a] AND abs[b] OR key[c] AND NOT au[d]")
+        assert query.root.children[0].field == "ti"
+        assert query.root.children[2].field == "abs"
+        assert query.root.children[4].field == "key"
+        assert query.root.children[6].field == "au"
+
+
+class TestQueryNodeMethods:
+    """Test QueryNode new methods."""
+
+    def test_get_all_fields_empty(self):
+        """get_all_fields on node without field should return empty list."""
+        node = QueryNode(node_type=NodeType.TERM, value="test")
+        assert node.get_all_fields() == []
+
+    def test_get_all_fields_with_children(self):
+        """get_all_fields should collect from children."""
+        child1 = QueryNode(node_type=NodeType.TERM, value="a", field="ti")
+        child2 = QueryNode(node_type=NodeType.TERM, value="b", field="abs")
+        parent = QueryNode(node_type=NodeType.GROUP, children=[child1, child2])
+        fields = parent.get_all_fields()
+        assert set(fields) == {"ti", "abs"}
+
+    def test_propagate_fields_with_override(self):
+        """propagate_fields should respect explicit field."""
+        child1 = QueryNode(node_type=NodeType.TERM, value="a", field="ti")
+        child2 = QueryNode(node_type=NodeType.TERM, value="b")
+        group = QueryNode(node_type=NodeType.GROUP, children=[child1, child2], field="abs")
+
+        group.propagate_fields()
+
+        # child1 has explicit ti, should keep it
+        assert child1.field == "ti"
+        # child2 inherits from group
+        assert child2.field == "abs"
+        # Group should have field cleared after propagation
+        assert group.field is None
