@@ -17,6 +17,7 @@ lxml = ">=4.5.2,<7"
 requests = "^2.32.0"
 curl-cffi = ">=0.7.0"
 tqdm = "^4.67.0"
+defusedxml = "^0.7.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^9.0.0"
@@ -76,7 +77,7 @@ line-length = 100
 # I = isort-compatible import sorting (replaces standalone isort).
 select = ["E", "F", "W", "I", "B", "SIM", "PT", "UP", "C4", "RUF"]
 # E501 is handled by ruff format, so we ignore it in the linter.
-# RUF002/RUF003: allow EN DASH (–) in docstrings/comments — intentional typography.
+# RUF002/RUF003: allow EN DASH () in docstrings/comments  intentional typography.
 ignore = ["E501", "RUF002", "RUF003"]
 
 [tool.ruff.format]
@@ -86,4 +87,3 @@ quote-style = "double"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
