@@ -8,6 +8,7 @@ import logging
 from collections.abc import Callable
 from typing import ClassVar
 import defusedxml.ElementTree as ET
+from defusedxml.common import DefusedXmlException
 
 import requests
 
@@ -170,7 +171,7 @@ class PubmedConnector(SearchConnectorBase, DOILookupConnectorBase):
 
         try:
             articles = self._fetch_details(ids[:1])
-        except (requests.RequestException, ET.ParseError):
+        except (requests.RequestException, ET.ParseError, DefusedXmlException):
             logger.warning("PubMed: efetch failed for DOI %s (pmid=%s).", doi, ids[0])
             return None
 
@@ -493,7 +494,7 @@ class PubmedConnector(SearchConnectorBase, DOILookupConnectorBase):
 
             try:
                 article_elements = self._fetch_details(ids)
-            except (requests.RequestException, ET.ParseError):
+            except (requests.RequestException, ET.ParseError, DefusedXmlException):
                 logger.exception("PubMed efetch failed (pmids=%s).", ids)
                 break
 
