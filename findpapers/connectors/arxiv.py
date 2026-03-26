@@ -7,8 +7,9 @@ import datetime
 import logging
 import re
 from collections.abc import Callable
-
 import defusedxml.ElementTree as ET
+from defusedxml.common import DefusedXmlException
+
 import requests
 
 from findpapers.connectors.doi_lookup_base import DOILookupConnectorBase
@@ -32,7 +33,7 @@ _MIN_REQUEST_INTERVAL = 3.0
 _NS = {"atom": "http://www.w3.org/2005/Atom", "arxiv": "http://arxiv.org/schemas/atom"}
 
 # Regex to extract the arXiv paper ID from the Atom <id> element.
-# Example: http://arxiv.org/abs/1706.03762v5  1706.03762
+# Example: http://arxiv.org/abs/1706.03762v5 → 1706.03762
 _ARXIV_ID_RE = re.compile(r"arxiv\.org/abs/([\d.]+)", re.IGNORECASE)
 
 # Regex to extract arXiv paper ID from an arXiv-assigned DOI.
@@ -127,15 +128,15 @@ class ArxivConnector(SearchConnectorBase, DOILookupConnectorBase):
         """
         m = _ARXIV_DOI_RE.match(doi.strip())
         if not m:
-            # Not an arXiv-native DOI  cannot resolve via arXiv API.
-            logger.debug("arXiv: DOI %s is not an arXiv-native DOI  skipping.", doi)
+            # Not an arXiv-native DOI — cannot resolve via arXiv API.
+            logger.debug("arXiv: DOI %s is not an arXiv-native DOI — skipping.", doi)
             return None
 
         arxiv_id = m.group(1)
         try:
             response = self._get(_BASE_URL, params={"id_list": arxiv_id, "max_results": 1})
             tree = ET.fromstring(response.text)
-        except (requests.RequestException, ET.ParseError):
+        except (requests.RequestException, ET.ParseError, DefusedXmlException):
             logger.debug("arXiv: failed to fetch arXiv ID %s for DOI %s.", arxiv_id, doi)
             return None
 
@@ -190,7 +191,7 @@ class ArxivConnector(SearchConnectorBase, DOILookupConnectorBase):
             (published_el.text or "").strip() if published_el is not None else None
         )
 
-        # DOI  prefer the explicit <arxiv:doi> element (publisher DOI).
+        # DOI — prefer the explicit <arxiv:doi> element (publisher DOI).
         # When absent, derive the canonical arXiv DOI from the entry ID.
         doi: str | None = None
         doi_el = entry.find("arxiv:doi", _NS)
@@ -212,7 +213,7 @@ class ArxivConnector(SearchConnectorBase, DOILookupConnectorBase):
 
         # Derive arXiv DOI when none was provided by the API.
         # The canonical DOI format is 10.48550/arXiv.<id>, e.g.
-        # http://arxiv.org/abs/1706.03762v5  10.48550/arXiv.1706.03762
+        # http://arxiv.org/abs/1706.03762v5 → 10.48550/arXiv.1706.03762
         if doi is None and url:
             m = _ARXIV_ID_RE.search(url)
             if m:
@@ -227,7 +228,7 @@ class ArxivConnector(SearchConnectorBase, DOILookupConnectorBase):
                 pdf_url = href
                 break
 
-        # Journal ref  source.
+        # Journal ref → source.
         # Papers with a journal reference were formally published in a journal.
         journal_ref_el = entry.find("arxiv:journal_ref", _NS)
         source: Source | None = None
@@ -244,7 +245,7 @@ class ArxivConnector(SearchConnectorBase, DOILookupConnectorBase):
             # Paper is an arXiv preprint without a formal publication venue.
             source = Source(title="arXiv", source_type=SourceType.REPOSITORY)
 
-        # Comments  optional free-text note (e.g. "39 pages, 14 figures")
+        # Comments — optional free-text note (e.g. "39 pages, 14 figures")
         comment: str | None = None
         comment_el = entry.find("arxiv:comment", _NS)
         if comment_el is not None and comment_el.text and comment_el.text.strip():
@@ -255,7 +256,7 @@ class ArxivConnector(SearchConnectorBase, DOILookupConnectorBase):
         if source is not None and source.source_type is not None:
             paper_type = _ARXIV_PAPER_TYPE_MAP.get(source.source_type)
 
-        # Extract arXiv categories  fields_of_study and subjects.
+        # Extract arXiv categories → fields_of_study and subjects.
         fields_of_study: set[str] = set()
         subjects: set[str] = set()
         for cat_el in entry.findall("atom:category", _NS):
@@ -323,7 +324,7 @@ class ArxivConnector(SearchConnectorBase, DOILookupConnectorBase):
         arxiv_query = self._query_builder.convert_query(query)
 
         # Append arXiv submittedDate range filter when date bounds are given.
-        # Use plain spaces  ``requests`` encodes them as ``+`` in the URL,
+        # Use plain spaces – ``requests`` encodes them as ``+`` in the URL,
         # which is what the arXiv API expects.  Literal ``+`` characters were
         # previously double-encoded as ``%2B``, causing the filter to be
         # silently ignored.
@@ -423,10 +424,10 @@ def _infer_source_type_from_journal_ref(text: str) -> SourceType | None:
 
     The function applies keyword heuristics in priority order:
 
-    1. **CONFERENCE**  contains words like *proceedings*, *conference*,
+    1. **CONFERENCE** – contains words like *proceedings*, *conference*,
        *workshop*, or *symposium*.
-    2. **BOOK**  contains *lecture notes*, *book*, or *chapter*.
-    3. **JOURNAL**  contains common journal indicators such as *journal*,
+    2. **BOOK** – contains *lecture notes*, *book*, or *chapter*.
+    3. **JOURNAL** – contains common journal indicators such as *journal*,
        *review*, *letters*, *transactions*, abbreviated forms like
        *J.*, *Rev.*, *Lett.*, etc.
 
