@@ -7,7 +7,7 @@ import datetime
 import logging
 from collections.abc import Callable
 from typing import ClassVar
-from xml.etree import ElementTree as ET
+import defusedxml.ElementTree as ET
 
 import requests
 
