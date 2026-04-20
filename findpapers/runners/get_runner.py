@@ -361,10 +361,8 @@ class GetRunner:
                         base_paper = self._scraper.fetch_paper_from_url(
                             self._identifier, timeout=self._timeout
                         )
-                    except Exception:
-                        logger.debug(
-                            "Web scraping failed for URL %s.", self._identifier, exc_info=True
-                        )
+                    except Exception as exc:
+                        logger.debug("Web scraping failed for URL %s: %s", self._identifier, exc)
                     doi = base_paper.doi if base_paper is not None else None
                     if verbose:
                         if doi:
@@ -391,11 +389,11 @@ class GetRunner:
                         base_paper = self._scraper.fetch_paper_from_url(
                             doi_redirect_url, timeout=self._timeout
                         )
-                    except Exception:
+                    except Exception as exc:
                         logger.debug(
-                            "Web scraping failed for DOI URL %s.",
+                            "Web scraping failed for DOI URL %s: %s",
                             doi_redirect_url,
-                            exc_info=True,
+                            exc,
                         )
                     if verbose:
                         if base_paper is not None:
