@@ -607,6 +607,27 @@ class TestConnectorBaseRetry:
         assert delay_rl >= 10.0
         assert delay_rl < 12.5 + 0.01  # 10 * 1.25 upper bound + tolerance
 
+    def test_error_response_body_logged_at_debug(self, caplog) -> None:
+        """Non-2xx response body is logged at DEBUG before raising HTTPError."""
+        connector = _StubConnector()
+        connector._retry_base_delay = 0.0
+
+        resp_512 = self._make_response(512, "Server Error")
+        resp_512.ok = False
+        resp_512.json.return_value = {"details": "Unexpected server error."}
+
+        connector._http_session = MagicMock()
+        connector._http_session.get.return_value = resp_512
+
+        with (
+            caplog.at_level(logging.DEBUG, logger="findpapers.connectors.connector_base"),
+            pytest.raises(requests.HTTPError),
+        ):
+            connector._get("https://api.example.com/test")
+
+        debug_messages = [r.message for r in caplog.records if r.levelno == logging.DEBUG]
+        assert any("Unexpected server error" in str(m) for m in debug_messages)
+
 
 class TestConnectorBaseThreadSafety:
     """Tests for thread-safe rate limiting."""

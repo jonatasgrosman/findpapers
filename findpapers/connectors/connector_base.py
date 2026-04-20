@@ -360,6 +360,18 @@ class ConnectorBase(ABC):
                     continue
                     # General retries exhausted — fall through to raise.
 
+                if not response.ok:
+                    try:
+                        body = response.json()
+                    except ValueError:
+                        body = response.text
+                    logger.debug(
+                        "[%s] HTTP %d response body from %s: %s",
+                        self.name,
+                        response.status_code,
+                        url,
+                        body,
+                    )
                 response.raise_for_status()
                 return response
 
