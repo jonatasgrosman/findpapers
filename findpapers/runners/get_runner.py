@@ -341,10 +341,7 @@ class GetRunner:
         _saved_log_level = _root_logger.level
         if verbose:
             configure_verbose_logging()
-            logger.info("=== GetRunner ===")
-            logger.info("Identifier: %s", self._identifier)
-            logger.info("Timeout: %s", self._timeout or "default")
-            logger.info("=================")
+            logger.debug("[GetRunner] %s", self._identifier)
 
         start = perf_counter()
 
@@ -356,7 +353,7 @@ class GetRunner:
                 if self._scraper is not None:
                     # Stage 1: try URL-API connectors first; fall back to HTML scraping.
                     if verbose:
-                        logger.info("Stage 1 — web scraping: %s", self._identifier)
+                        logger.debug("Stage 1 — web scraping: %s", self._identifier)
                     try:
                         base_paper = self._scraper.fetch_paper_from_url(
                             self._identifier, timeout=self._timeout
@@ -366,12 +363,12 @@ class GetRunner:
                     doi = base_paper.doi if base_paper is not None else None
                     if verbose:
                         if doi:
-                            logger.info("  Scraped DOI: %s", doi)
+                            logger.debug("  Scraped DOI: %s", doi)
                         else:
-                            logger.info("  No DOI found — Stage 2 will be skipped.")
+                            logger.debug("  No DOI found — Stage 2 will be skipped.")
                 else:
                     if verbose:
-                        logger.info(
+                        logger.debug(
                             "Stage 1 — web scraping: skipped (disabled via databases filter)"
                         )
             else:
@@ -384,7 +381,7 @@ class GetRunner:
                 if self._scraper is not None and doi:
                     doi_redirect_url = f"https://doi.org/{doi}"
                     if verbose:
-                        logger.info("Stage 1 — web scraping via DOI URL: %s", doi_redirect_url)
+                        logger.debug("Stage 1 — web scraping via DOI URL: %s", doi_redirect_url)
                     try:
                         base_paper = self._scraper.fetch_paper_from_url(
                             doi_redirect_url, timeout=self._timeout
@@ -397,9 +394,9 @@ class GetRunner:
                         )
                     if verbose:
                         if base_paper is not None:
-                            logger.info("  Scraped: %s", base_paper.title)
+                            logger.debug("  Scraped: %s", base_paper.title)
                         else:
-                            logger.info("  No paper found via web scraping.")
+                            logger.debug("  No paper found via web scraping.")
 
             if doi is None:
                 # No DOI available; return whatever the scraper found (may be None).
@@ -409,7 +406,7 @@ class GetRunner:
 
             # Stage 2: DOI-based lookup — CrossRef first, then all others.
             if verbose:
-                logger.info("Stage 2 — DOI lookup: %s", doi)
+                logger.debug("Stage 2 — DOI lookup: %s", doi)
 
             # Preserve the web-scraping URL (Stage 1 result) before Stage 2 merges
             # can overwrite it.  The scraped URL is the actual final URL after all
@@ -441,8 +438,7 @@ class GetRunner:
                 (self._wos, "WoS", Database.WOS),
             ):
                 if self._should_skip_connector(database, doi, self._identifier):
-                    if verbose:
-                        logger.info("  %s: skipped (source heuristic)", name)
+                    logger.debug("  %s: skipped (source heuristic)", name)
                     continue
                 base_paper = self._run_and_merge(connector, name, doi, base_paper, verbose=verbose)
 
@@ -467,9 +463,9 @@ class GetRunner:
         if verbose:
             if self._result is not None:
                 dbs = ", ".join(sorted(self._result.databases or []))
-                logger.info("Lookup found — databases: %s (%.2f s)", dbs, runtime)
+                logger.debug("Lookup found — databases: %s (%.2f s)", dbs, runtime)
             else:
-                logger.info("Lookup not found (%.2f s)", runtime)
+                logger.debug("Lookup not found (%.2f s)", runtime)
 
         _root_logger.setLevel(_saved_log_level)
         return self._result
@@ -507,12 +503,10 @@ class GetRunner:
             Paper returned by the connector, or ``None`` when the connector
             is absent, the DOI is not found, or an error occurs.
         """
-        if verbose:
-            logger.info("Querying %s…", name)
         if connector is None:
-            if verbose:
-                logger.info("  %s: skipped", name)
             return None
+        if verbose:
+            logger.debug("Querying %s\u2026", name)
         try:
             paper = connector.fetch_paper_by_doi(doi)
         except Exception:
@@ -520,9 +514,9 @@ class GetRunner:
             paper = None
         if paper is None:
             if verbose:
-                logger.info("  %s: not found", name)
+                logger.debug("  %s: not found", name)
         elif verbose:
-            logger.info("  %s: found", name)
+            logger.debug("  %s: found", name)
         return paper
 
     def _run_and_merge(
