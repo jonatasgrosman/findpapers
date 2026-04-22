@@ -111,6 +111,7 @@ def save_to_json(data: Persistable, path: str) -> None:
     None
     """
     payload = _serialize_to_dict(data)
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
     with Path(path).open("w", encoding="utf-8") as handle:
         json.dump(payload, handle, ensure_ascii=False, indent=2)
 
@@ -130,6 +131,7 @@ def save_to_bibtex(papers: list[Paper], path: str) -> None:
     None
     """
     bibtex_output = "".join(paper_to_bibtex(paper) for paper in papers)
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
     with Path(path).open("w", encoding="utf-8") as handle:
         handle.write(bibtex_output)
 
@@ -682,6 +684,7 @@ def save_to_csv(papers: list[Paper], path: str) -> None:
     -------
     None
     """
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
     with Path(path).open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=_CSV_COLUMNS)
         writer.writeheader()
