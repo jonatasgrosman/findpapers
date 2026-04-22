@@ -249,5 +249,5 @@ class DiscoveryRunner:
             progress_desc="Enriching",
             use_progress=show_progress,
         ):
-            if error is not None and verbose:
+            if error is not None:
                 logger.warning("Enrichment error: %s", error)

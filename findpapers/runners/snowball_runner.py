@@ -263,21 +263,21 @@ class SnowballRunner(DiscoveryRunner):
         _saved_log_level = _root_logger.level
         if verbose:
             configure_verbose_logging()
-            logger.info("=== SnowballRunner Configuration ===")
-            logger.info(
-                "Seed papers: %d (skipped %d without DOI)",
-                len(self._seed_papers),
-                self._skipped_seeds,
-            )
-            logger.info("Max depth: %d", self._max_depth)
-            logger.info("Direction: %s", self._direction)
-            logger.info(
-                "Top N per level: %s",
-                str(self._top_n_per_level) if self._top_n_per_level else "unlimited",
-            )
-            logger.info("Connectors: %s", [c.name for c in self._connectors])
-            logger.info("Num workers: %d", self._num_workers)
-            logger.info("=====================================")
+        logger.debug("=== SnowballRunner Configuration ===")
+        logger.debug(
+            "Seed papers: %d (skipped %d without DOI)",
+            len(self._seed_papers),
+            self._skipped_seeds,
+        )
+        logger.debug("Max depth: %d", self._max_depth)
+        logger.debug("Direction: %s", self._direction)
+        logger.debug(
+            "Top N per level: %s",
+            str(self._top_n_per_level) if self._top_n_per_level else "unlimited",
+        )
+        logger.debug("Connectors: %s", [c.name for c in self._connectors])
+        logger.debug("Num workers: %d", self._num_workers)
+        logger.debug("=====================================")
 
         start = perf_counter()
 
@@ -360,13 +360,12 @@ class SnowballRunner(DiscoveryRunner):
                     if not frontier:
                         break
 
-                    if verbose:
-                        logger.info(
-                            "Level %d/%d: processing %d papers.",
-                            level,
-                            self._max_depth,
-                            len(frontier),
-                        )
+                    logger.debug(
+                        "Level %d/%d: processing %d papers.",
+                        level,
+                        self._max_depth,
+                        len(frontier),
+                    )
 
                     next_frontier: list[Paper] = []
 
@@ -432,14 +431,13 @@ class SnowballRunner(DiscoveryRunner):
 
                     frontier = next_frontier
 
-                    if verbose:
-                        logger.info(
-                            "Level %d/%d complete: %d new papers discovered%s.",
-                            level,
-                            self._max_depth,
-                            len(next_frontier),
-                            f" (top {self._top_n_per_level} kept)" if self._top_n_per_level else "",
-                        )
+                    logger.debug(
+                        "Level %d/%d complete: %d new papers discovered%s.",
+                        level,
+                        self._max_depth,
+                        len(next_frontier),
+                        f" (top {self._top_n_per_level} kept)" if self._top_n_per_level else "",
+                    )
             finally:
                 if pool is not None:
                     pool.shutdown(wait=True)
@@ -470,12 +468,11 @@ class SnowballRunner(DiscoveryRunner):
                 num_workers=self._num_workers,
             )
 
-        if verbose:
-            logger.info("=== Snowball Results ===")
-            logger.info("Total nodes: %d", graph.node_count)
-            logger.info("Total edges: %d", graph.edge_count)
-            logger.info("Runtime: %.2f s", elapsed)
-            logger.info("========================")
+        logger.debug("=== Snowball Results ===")
+        logger.debug("Total nodes: %d", graph.node_count)
+        logger.debug("Total edges: %d", graph.edge_count)
+        logger.debug("Runtime: %.2f s", elapsed)
+        logger.debug("========================")
 
         _root_logger.setLevel(_saved_log_level)
         return graph

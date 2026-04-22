@@ -341,7 +341,7 @@ class GetRunner:
         _saved_log_level = _root_logger.level
         if verbose:
             configure_verbose_logging()
-            logger.debug("[GetRunner] %s", self._identifier)
+        logger.debug("[GetRunner] %s", self._identifier)
 
         start = perf_counter()
 
@@ -352,8 +352,7 @@ class GetRunner:
             if self._is_landing_page_url(self._identifier):
                 if self._scraper is not None:
                     # Stage 1: try URL-API connectors first; fall back to HTML scraping.
-                    if verbose:
-                        logger.debug("Stage 1 — web scraping: %s", self._identifier)
+                    logger.debug("Stage 1 — web scraping: %s", self._identifier)
                     try:
                         base_paper = self._scraper.fetch_paper_from_url(
                             self._identifier, timeout=self._timeout
@@ -361,16 +360,12 @@ class GetRunner:
                     except Exception as exc:
                         logger.debug("Web scraping failed for URL %s: %s", self._identifier, exc)
                     doi = base_paper.doi if base_paper is not None else None
-                    if verbose:
-                        if doi:
-                            logger.debug("  Scraped DOI: %s", doi)
-                        else:
-                            logger.debug("  No DOI found — Stage 2 will be skipped.")
+                    if doi:
+                        logger.debug("  Scraped DOI: %s", doi)
+                    else:
+                        logger.debug("  No DOI found — Stage 2 will be skipped.")
                 else:
-                    if verbose:
-                        logger.debug(
-                            "Stage 1 — web scraping: skipped (disabled via databases filter)"
-                        )
+                    logger.debug("Stage 1 — web scraping: skipped (disabled via databases filter)")
             else:
                 # Bare DOI or doi.org URL: strip prefix and go straight to Stage 2.
                 doi = self._sanitize_doi(self._identifier)
@@ -380,8 +375,7 @@ class GetRunner:
                 # the actual publisher or repository page.
                 if self._scraper is not None and doi:
                     doi_redirect_url = f"https://doi.org/{doi}"
-                    if verbose:
-                        logger.debug("Stage 1 — web scraping via DOI URL: %s", doi_redirect_url)
+                    logger.debug("Stage 1 — web scraping via DOI URL: %s", doi_redirect_url)
                     try:
                         base_paper = self._scraper.fetch_paper_from_url(
                             doi_redirect_url, timeout=self._timeout
@@ -392,11 +386,10 @@ class GetRunner:
                             doi_redirect_url,
                             exc,
                         )
-                    if verbose:
-                        if base_paper is not None:
-                            logger.debug("  Scraped: %s", base_paper.title)
-                        else:
-                            logger.debug("  No paper found via web scraping.")
+                    if base_paper is not None:
+                        logger.debug("  Scraped: %s", base_paper.title)
+                    else:
+                        logger.debug("  No paper found via web scraping.")
 
             if doi is None:
                 # No DOI available; return whatever the scraper found (may be None).
@@ -405,17 +398,14 @@ class GetRunner:
                 return self._result
 
             # Stage 2: DOI-based lookup — CrossRef first, then all others.
-            if verbose:
-                logger.debug("Stage 2 — DOI lookup: %s", doi)
+            logger.debug("Stage 2 — DOI lookup: %s", doi)
 
             # Preserve the web-scraping URL (Stage 1 result) before Stage 2 merges
             # can overwrite it.  The scraped URL is the actual final URL after all
             # HTTP redirects and has priority over the CrossRef-registered URL.
             scraped_url: str | None = base_paper.url if base_paper is not None else None
 
-            crossref_paper = self._run_doi_connector(
-                self._crossref, "CrossRef", doi, verbose=verbose
-            )
+            crossref_paper = self._run_doi_connector(self._crossref, "CrossRef", doi)
             # Preserve the CrossRef URL before subsequent merges can overwrite it.
             # Paper.merge() picks the longer string, which could replace a short but
             # authoritative CrossRef URL with a lengthier one from another source.
@@ -440,7 +430,7 @@ class GetRunner:
                 if self._should_skip_connector(database, doi, self._identifier):
                     logger.debug("  %s: skipped (source heuristic)", name)
                     continue
-                base_paper = self._run_and_merge(connector, name, doi, base_paper, verbose=verbose)
+                base_paper = self._run_and_merge(connector, name, doi, base_paper)
 
             # URL priority: scraped URL (final URL after all HTTP redirects) >
             # CrossRef URL.  Only fall back to the CrossRef URL when web scraping
@@ -460,12 +450,11 @@ class GetRunner:
         self._result = base_paper
         runtime = perf_counter() - start
 
-        if verbose:
-            if self._result is not None:
-                dbs = ", ".join(sorted(self._result.databases or []))
-                logger.debug("Lookup found — databases: %s (%.2f s)", dbs, runtime)
-            else:
-                logger.debug("Lookup not found (%.2f s)", runtime)
+        if self._result is not None:
+            dbs = ", ".join(sorted(self._result.databases or []))
+            logger.debug("Lookup found — databases: %s (%.2f s)", dbs, runtime)
+        else:
+            logger.debug("Lookup not found (%.2f s)", runtime)
 
         _root_logger.setLevel(_saved_log_level)
         return self._result
@@ -479,8 +468,6 @@ class GetRunner:
         connector: DOILookupConnectorBase | None,
         name: str,
         doi: str,
-        *,
-        verbose: bool,
     ) -> Paper | None:
         """Query one DOI connector and return its result without merging.
 
@@ -494,8 +481,6 @@ class GetRunner:
             Human-readable connector name used in log messages.
         doi : str
             Bare DOI to look up.
-        verbose : bool
-            Whether verbose logging is active.
 
         Returns
         -------
@@ -505,17 +490,15 @@ class GetRunner:
         """
         if connector is None:
             return None
-        if verbose:
-            logger.debug("Querying %s\u2026", name)
+        logger.debug("Querying %s\u2026", name)
         try:
             paper = connector.fetch_paper_by_doi(doi)
         except Exception:
             logger.debug("%s lookup failed for DOI %s.", name, doi, exc_info=True)
             paper = None
         if paper is None:
-            if verbose:
-                logger.debug("  %s: not found", name)
-        elif verbose:
+            logger.debug("  %s: not found", name)
+        else:
             logger.debug("  %s: found", name)
         return paper
 
@@ -525,8 +508,6 @@ class GetRunner:
         name: str,
         doi: str,
         base_paper: Paper | None,
-        *,
-        verbose: bool,
     ) -> Paper | None:
         """Query a connector and merge its result into *base_paper*.
 
@@ -545,8 +526,6 @@ class GetRunner:
             Bare DOI to look up.
         base_paper : Paper | None
             The accumulated result so far (may be ``None``).
-        verbose : bool
-            Whether verbose logging is active.
 
         Returns
         -------
@@ -554,7 +533,7 @@ class GetRunner:
             Updated *base_paper* with the connector's data merged in, or the
             original *base_paper* when the connector returns nothing new.
         """
-        paper = self._run_doi_connector(connector, name, doi, verbose=verbose)
+        paper = self._run_doi_connector(connector, name, doi)
         if paper is None:
             return base_paper
         if base_paper is None:

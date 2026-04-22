@@ -262,12 +262,12 @@ class SearchRunner(DiscoveryRunner):
         _saved_log_level = _root_logger.level
         if verbose:
             configure_verbose_logging()
-            logger.info("=== SearchRunner Configuration ===")
-            logger.info("Databases: %s", [s.name for s in self._searchers])
-            logger.info("Num workers: %d", self._num_workers)
-            logger.info("Query: %s", self._query_string)
-            logger.info("Max papers per database: %s", self._max_papers_per_database or "none")
-            logger.info("==================================")
+        logger.debug("=== SearchRunner Configuration ===")
+        logger.debug("Databases: %s", [s.name for s in self._searchers])
+        logger.debug("Num workers: %d", self._num_workers)
+        logger.debug("Query: %s", self._query_string)
+        logger.debug("Max papers per database: %s", self._max_papers_per_database or "none")
+        logger.debug("==================================")
 
         start = perf_counter()
         self._results = []
@@ -281,23 +281,19 @@ class SearchRunner(DiscoveryRunner):
         failed_databases: list[str] = []
         db_runtimes: dict[str, float] = {}
         try:
-            failed_databases, db_runtimes = self._fetch_papers(
-                metrics, verbose, show_progress=show_progress
-            )
+            failed_databases, db_runtimes = self._fetch_papers(metrics, show_progress=show_progress)
         finally:
             for searcher in self._searchers:
                 searcher.close()
 
         before_dedupe = len(self._results)
         self._deduplicate_and_merge(metrics)
-        if verbose:
-            merged = before_dedupe - len(self._results)
-            logger.info(
-                "Dedupe: %d -> %d papers (%d merged)",
-                before_dedupe,
-                len(self._results),
-                merged,
-            )
+        logger.debug(
+            "Dedupe: %d -> %d papers (%d merged)",
+            before_dedupe,
+            len(self._results),
+            before_dedupe - len(self._results),
+        )
 
         # Apply post-fetch date filters.  Connectors that only support
         # year-level date filtering may return papers outside the requested
@@ -305,13 +301,12 @@ class SearchRunner(DiscoveryRunner):
         if self._since is not None or self._until is not None:
             before_filter = len(self._results)
             self._results = [p for p in self._results if self._matches_filters(p)]
-            if verbose:
-                logger.info(
-                    "Post-fetch filter: %d -> %d papers (%d removed)",
-                    before_filter,
-                    len(self._results),
-                    before_filter - len(self._results),
-                )
+            logger.debug(
+                "Post-fetch filter: %d -> %d papers (%d removed)",
+                before_filter,
+                len(self._results),
+                before_filter - len(self._results),
+            )
 
         # Enrich the filtered papers via per-paper get() lookups.
         # enrichment_databases=None  → enrich with all available databases.
@@ -330,13 +325,12 @@ class SearchRunner(DiscoveryRunner):
         metrics["runtime_in_seconds"] = perf_counter() - start
         self._metrics = metrics
 
-        if verbose:
-            logger.info("=== Results ===")
-            logger.info("Total papers: %d", metrics["total_papers"])
-            logger.info("Runtime: %.2f s", metrics["runtime_in_seconds"])
-            for searcher in self._searchers:
-                count = int(metrics.get(f"total_papers_from_{searcher.name}", 0))
-                logger.info("  %s: %d papers", searcher.name, count)
+        logger.debug("=== Results ===")
+        logger.debug("Total papers: %d", metrics["total_papers"])
+        logger.debug("Runtime: %.2f s", metrics["runtime_in_seconds"])
+        for searcher in self._searchers:
+            count = int(metrics.get(f"total_papers_from_{searcher.name}", 0))
+            logger.debug("  %s: %d papers", searcher.name, count)
 
         self._search = SearchResult(
             query=self._query_string,
@@ -447,7 +441,6 @@ class SearchRunner(DiscoveryRunner):
     def _fetch_papers(
         self,
         metrics: dict[str, int | float],
-        verbose: bool = False,
         *,
         show_progress: bool = True,
     ) -> tuple[list[str], dict[str, float]]:
@@ -459,8 +452,6 @@ class SearchRunner(DiscoveryRunner):
         ----------
         metrics : dict[str, int | float]
             Metrics dict to update in-place.
-        verbose : bool
-            Enable verbose logging.
         show_progress : bool
             Display tqdm progress bars.
 

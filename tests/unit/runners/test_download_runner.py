@@ -230,7 +230,7 @@ class TestDownloadRunnerVerbose:
         runner = DownloadRunner(papers=[make_paper()], output_directory=str(tmp_path))
         with (
             patch.object(runner, "_download_paper", return_value=(True, ["http://url"], None)),
-            caplog.at_level(logging.INFO, logger="findpapers.runners.download_runner"),
+            caplog.at_level(logging.DEBUG, logger="findpapers.runners.download_runner"),
         ):
             runner.run(verbose=True)
         assert "DownloadRunner Configuration" in " ".join(caplog.messages)
@@ -242,7 +242,7 @@ class TestDownloadRunnerVerbose:
         runner = DownloadRunner(papers=[make_paper()], output_directory=str(tmp_path))
         with (
             patch.object(runner, "_download_paper", return_value=(True, ["http://url"], None)),
-            caplog.at_level(logging.INFO, logger="findpapers.runners.download_runner"),
+            caplog.at_level(logging.DEBUG, logger="findpapers.runners.download_runner"),
         ):
             runner.run(verbose=True)
         messages = " ".join(caplog.messages)
@@ -318,7 +318,7 @@ class TestDownloadRunnerVerbose:
             output_directory=str(tmp_path),
             proxy="http://user:secret@proxy.example.com:8080",
         )
-        with caplog.at_level(logging.INFO, logger="findpapers.runners.download_runner"):
+        with caplog.at_level(logging.DEBUG, logger="findpapers.runners.download_runner"):
             runner.run(verbose=True)
         messages = " ".join(caplog.messages)
         assert "secret" not in messages
@@ -495,7 +495,7 @@ class TestDownloadRunnerSslVerify:
             output_directory=str(tmp_path),
             ssl_verify=False,
         )
-        with caplog.at_level(logging.INFO, logger="findpapers.runners.download_runner"):
+        with caplog.at_level(logging.DEBUG, logger="findpapers.runners.download_runner"):
             runner.run(verbose=True)
         messages = " ".join(caplog.messages)
         assert "SSL verify" in messages

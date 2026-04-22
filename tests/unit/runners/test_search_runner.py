@@ -528,7 +528,7 @@ class TestSearchRunnerVerbose:
     def test_verbose_true_emits_configuration_header(self, make_paper, caplog):
         """verbose=True logs the configuration header."""
         runner = self._make_runner_with_mock_papers([make_paper()])
-        with caplog.at_level(logging.INFO, logger="findpapers.runners.search_runner"):
+        with caplog.at_level(logging.DEBUG, logger="findpapers.runners.search_runner"):
             runner.run(verbose=True)
         messages = " ".join(caplog.messages)
         assert "SearchRunner Configuration" in messages
@@ -536,7 +536,7 @@ class TestSearchRunnerVerbose:
     def test_verbose_true_emits_results_summary(self, make_paper, caplog):
         """verbose=True logs the results summary."""
         runner = self._make_runner_with_mock_papers([make_paper()])
-        with caplog.at_level(logging.INFO, logger="findpapers.runners.search_runner"):
+        with caplog.at_level(logging.DEBUG, logger="findpapers.runners.search_runner"):
             runner.run(verbose=True)
         messages = " ".join(caplog.messages)
         assert "Results" in messages

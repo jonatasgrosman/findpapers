@@ -103,14 +103,14 @@ class DownloadRunner:
         _saved_log_level = _root_logger.level
         if verbose:
             configure_verbose_logging()
-            logger.info("=== DownloadRunner Configuration ===")
-            logger.info("Total papers: %d", len(self._results))
-            logger.info("Output directory: %s", self._output_directory)
-            logger.info("Num workers: %d", self._num_workers)
-            logger.info("Timeout: %s", self._timeout or "default")
-            logger.info("Proxy: %s", self._mask_proxy_credentials(self._proxy))
-            logger.info("SSL verify: %s", self._ssl_verify)
-            logger.info("====================================")
+        logger.debug("=== DownloadRunner Configuration ===")
+        logger.debug("Total papers: %d", len(self._results))
+        logger.debug("Output directory: %s", self._output_directory)
+        logger.debug("Num workers: %d", self._num_workers)
+        logger.debug("Timeout: %s", self._timeout or "default")
+        logger.debug("Proxy: %s", self._mask_proxy_credentials(self._proxy))
+        logger.debug("SSL verify: %s", self._ssl_verify)
+        logger.debug("====================================")
 
         start = perf_counter()
         self._results = list(self._results)
@@ -158,8 +158,7 @@ class DownloadRunner:
                     f"https://doi.org/{paper.doi}" if paper.doi is not None else None
                 )
                 self._log_download_error(log_path, paper.title, paper_url, [])
-                if verbose:
-                    logger.warning("Error downloading '%s': %s", paper.title, error)
+                logger.warning("Error downloading '%s': %s", paper.title, error)
                 continue
             downloaded, attempted_urls, resolved_landing_url = result
             # Prefer the publisher landing page URL obtained after following DOI
@@ -180,14 +179,12 @@ class DownloadRunner:
         metrics["runtime_in_seconds"] = perf_counter() - start
         self._metrics = metrics
 
-        if verbose:
-            logger.info("=== Download Summary ===")
-            logger.info("Total papers: %d", int(metrics["total_papers"]))
-            logger.info("Downloaded: %d", int(metrics["downloaded_papers"]))
-            failed = int(metrics["total_papers"] - metrics["downloaded_papers"])
-            logger.info("Failed: %d", failed)
-            logger.info("Runtime: %.2f s", metrics["runtime_in_seconds"])
-            logger.info("========================")
+        logger.debug("=== Download Summary ===")
+        logger.debug("Total papers: %d", int(metrics["total_papers"]))
+        logger.debug("Downloaded: %d", int(metrics["downloaded_papers"]))
+        logger.debug("Failed: %d", int(metrics["total_papers"] - metrics["downloaded_papers"]))
+        logger.debug("Runtime: %.2f s", metrics["runtime_in_seconds"])
+        logger.debug("========================")
 
         _root_logger.setLevel(_saved_log_level)
         return dict(self._metrics)
