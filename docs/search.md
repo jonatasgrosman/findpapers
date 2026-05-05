@@ -40,11 +40,10 @@ result = engine.search(
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `query` | `str` | *(required)* | Boolean query string following the [Query Syntax](https://github.com/jonatasgrosman/findpapers/blob/main/docs/query-syntax.md) |
-| `databases` | `list[str] \| None` | `None` | Database identifiers to query. `None` selects all databases whose required API keys are available |
+| `databases` | `list[str] \| None` | `None` | Database identifiers to query. Accepted values: `"arxiv"`, `"ieee"`, `"openalex"`, `"pubmed"`, `"scopus"`, `"semantic_scholar"`, `"wos"`. Pass `None` to select all databases |
 | `max_papers_per_database` | `int \| None` | `None` | Cap on the number of papers retrieved from each database. `None` means no limit |
 | `since` | `datetime.date \| None` | `None` | Only return papers published on or after this date |
 | `until` | `datetime.date \| None` | `None` | Only return papers published on or before this date |
-
 | `num_workers` | `int` | `1` | Number of parallel workers used to query databases concurrently |
 | `verbose` | `bool` | `False` | Enable detailed DEBUG-level log messages |
 | `show_progress` | `bool` | `True` | Display tqdm progress bars while papers are being fetched |
