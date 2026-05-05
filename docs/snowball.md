@@ -44,7 +44,6 @@ graph = engine.snowball(
 | `databases` | `list[str] \| None` | `None` | Citation databases to query during snowballing. `None` uses all available citation databases. Accepted values: `"crossref"`, `"openalex"`, `"semantic_scholar"` |
 | `since` | `datetime.date \| None` | `None` | Only add discovered papers published on or after this date. Seed papers are never filtered |
 | `until` | `datetime.date \| None` | `None` | Only add discovered papers published on or before this date. Seed papers are never filtered |
-
 | `num_workers` | `int` | `1` | Number of parallel workers used to query connectors |
 | `verbose` | `bool` | `False` | Enable detailed DEBUG-level log messages |
 | `show_progress` | `bool` | `True` | Display tqdm progress bars while papers are being expanded |

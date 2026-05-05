@@ -35,7 +35,7 @@ paper = engine.get(
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `identifier` | `str` | *(required)* | DOI, DOI URL, or paper landing-page URL |
-| `databases` | `list[str] \| None` | `None` | Sources to consult (see below). `None` uses all sources |
+| `databases` | `list[str] \| None` | `None` | Sources to consult. Accepted values: `"arxiv"`, `"crossref"`, `"ieee"`, `"openalex"`, `"pubmed"`, `"scopus"`, `"semantic_scholar"`, `"web_scraping"`, `"wos".` Pass `None` to use all sources |
 | `timeout` | `float \| None` | `10.0` | HTTP request timeout in seconds. `None` disables the timeout |
 | `verbose` | `bool` | `False` | Enable detailed DEBUG-level log messages |
 
@@ -44,17 +44,6 @@ paper = engine.get(
 `get()` queries multiple sources and merges their results into a single paper.
 The `databases` parameter controls which sources to include.  When `None`
 (the default), all available sources are used.
-
-| Value | Description |
-|-------|-------------|
-| `"web_scraping"` | Fetch metadata directly from the paper's landing page using HTML scraping. When a bare DOI is the identifier, the doi.org redirect URL is followed to the actual page. |
-| `"crossref"` | CrossRef DOI registration authority — canonical URL and structured metadata. |
-| `"arxiv"` | arXiv preprint API. |
-| `"ieee"` | IEEE Xplore API (requires `ieee_api_key`). |
-| `"openalex"` | OpenAlex scholarly graph. |
-| `"pubmed"` | NCBI PubMed / E-utilities. |
-| `"scopus"` | Elsevier Scopus API (requires `scopus_api_key`). |
-| `"semantic_scholar"` | Semantic Scholar API. |
 
 ```python
 # CrossRef only — fast, authoritative structured metadata
@@ -84,7 +73,7 @@ Returns a `Paper` object, or `None` when the paper cannot be found or the page y
 
 ### Bare DOI
 
-Queries each configured database (CrossRef, arXiv, PubMed, IEEE, Scopus, OpenAlex, Semantic Scholar) via their APIs and merges the results.
+Queries each configured database via their APIs and merges the results.
 
 ```python
 paper = engine.get("10.1038/nature12373")
@@ -101,7 +90,7 @@ paper = engine.get("http://dx.doi.org/10.1038/nature12373")
 
 ### Landing-page URL
 
-For URLs belonging to a supported database (arXiv, PubMed, IEEE Xplore, OpenAlex, Semantic Scholar), the paper is fetched directly via that database's API — no HTML scraping involved. For all other URLs the page is downloaded and metadata is extracted from HTML `<meta>` tags.
+For URLs belonging to a supported database (arXiv, PubMed, IEEE Xplore, OpenAlex, Semantic Scholar), the paper is fetched directly via that database's API (no HTML scraping involved). For all other URLs the page is downloaded and metadata is extracted from HTML `<meta>` tags.
 
 ```python
 # arXiv — fetched via arXiv API
