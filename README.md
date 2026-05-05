@@ -86,7 +86,6 @@ The table below summarizes each supported database - for full details on authent
 
 | Document | Description |
 |----------|-------------|
-| [Getting Started](https://github.com/jonatasgrosman/findpapers/blob/main/docs/getting-started.md) | Installation, configuration, and first search |
 | [Databases](https://github.com/jonatasgrosman/findpapers/blob/main/docs/databases.md) | Supported databases, authentication, and per-database details |
 | [Query Syntax](https://github.com/jonatasgrosman/findpapers/blob/main/docs/query-syntax.md) | How to write search queries, boolean operators, wildcards, and filter codes |
 | [Configuration](https://github.com/jonatasgrosman/findpapers/blob/main/docs/configuration.md) | Environment variables, proxy, SSL, and API keys |
