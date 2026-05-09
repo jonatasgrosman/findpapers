@@ -1,4 +1,4 @@
-.PHONY: help clean setup test test_integration test_report lint format
+.PHONY: help clean setup test test_integration lint format complexity security docstrings dead-code coverage check
 
 VENV ?= .venv
 VENV_BIN = $(VENV)/bin
@@ -35,8 +35,18 @@ help:
 	@echo "                 make test PYTEST_ARGS='tests/unit/test_query.py::TestClass -v'"
 	@echo "make test_integration [PYTEST_ARGS='args']"
 	@echo "       run integration/smoke tests that hit real external APIs"
-	@echo "make test_report"
-	@echo "       run tests and save tests and coverage reports"
+	@echo "make complexity"
+	@echo "       check cyclomatic complexity (fails if project average degrades below grade B)"
+	@echo "make security"
+	@echo "       security checks: static analysis (bandit) and dependency vulnerabilities (pip-audit)"
+	@echo "make docstrings"
+	@echo "       check docstring coverage (fails if below 95%)"
+	@echo "make dead-code"
+	@echo "       detect unused code (vulture)"
+	@echo "make coverage"
+	@echo "       run tests and fail if coverage drops below the configured threshold"
+	@echo "make check"
+	@echo "       run all quality checks: lint, complexity, security, docstrings, dead-code and coverage"
 
 setup:
 	@python -m venv $(VENV)
@@ -58,9 +68,6 @@ test:
 test_integration:
 	@$(POETRY) run pytest -v -m integration $(PYTEST_ARGS)
 
-test_report:
-	@$(POETRY) run pytest --durations=3 -v --cov=${PWD}/findpapers --cov-report xml:reports/coverage.xml --junitxml=reports/tests.xml $(PYTEST_ARGS)
-
 lint:
 	@$(POETRY) run ruff check $(TARGET)
 	@$(POETRY) run ruff format --check $(TARGET)
@@ -69,6 +76,35 @@ lint:
 	else \
 		MYPYPATH=typings $(POETRY) run mypy $(TARGET); \
 	fi
+
+complexity:
+	# --max-absolute F: allows existing high-complexity legacy functions.
+	# --max-average B: fails if the overall project average degrades above grade B (>10).
+	# Use stricter per-file thresholds (e.g. --max-absolute C) in CI on changed files only.
+	@$(POETRY) run xenon --max-absolute F --max-average B findpapers/
+
+security:
+	@$(POETRY) run bandit -r findpapers/ -c pyproject.toml
+	# PYSEC-2022-42969 (py): no fix available upstream; py is a transitive dep of
+	# interrogate and the vulnerable code path (py.path.svn) is never exercised here.
+	@$(POETRY) run pip-audit --ignore-vuln PYSEC-2022-42969
+
+docstrings:
+	@$(POETRY) run interrogate findpapers/
+
+dead-code:
+	@$(POETRY) run vulture findpapers/
+
+coverage:
+	@$(POETRY) run pytest --durations=3 -q --cov=${PWD}/findpapers --cov-report=term-missing $(PYTEST_ARGS)
+
+check:
+	@$(MAKE) --no-print-directory lint
+	@$(MAKE) --no-print-directory complexity
+	@$(MAKE) --no-print-directory security
+	@$(MAKE) --no-print-directory docstrings
+	@$(MAKE) --no-print-directory dead-code
+	@$(MAKE) --no-print-directory coverage
 
 format:
 	@$(POETRY) run ruff check $(TARGET) --fix

@@ -137,9 +137,9 @@ class ConnectorBase(ABC):
 
     def __exit__(
         self,
-        exc_type: type[BaseException] | None,
-        exc_val: BaseException | None,
-        exc_tb: TracebackType | None,
+        _exc_type: type[BaseException] | None,
+        _exc_val: BaseException | None,
+        _exc_tb: TracebackType | None,
     ) -> None:
         """Exit the runtime context, closing the HTTP session."""
         self.close()
@@ -236,7 +236,9 @@ class ConnectorBase(ABC):
                     backoff = max(backoff, float(retry_after))
 
         # Add jitter (0–25 %) to avoid thundering-herd effects.
-        jitter: float = backoff * 0.25 * random.random()
+        # nosec B311 — random is intentionally used here for timing jitter only, not for
+        # cryptographic or security-sensitive purposes.
+        jitter: float = backoff * 0.25 * random.random()  # nosec B311
         return backoff + jitter
 
     def _request_with_retry(

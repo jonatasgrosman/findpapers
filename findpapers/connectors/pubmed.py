@@ -7,10 +7,15 @@ import datetime
 import logging
 import re
 from collections.abc import Callable
-from typing import ClassVar
-from xml.etree import ElementTree as ET
+from typing import TYPE_CHECKING, ClassVar
 
 import requests
+from defusedxml import ElementTree as ET
+
+if TYPE_CHECKING:
+    # Element is the concrete type returned by defusedxml at runtime;
+    # we import it from stdlib only for static type annotations.
+    from xml.etree.ElementTree import Element  # nosec B405
 
 from findpapers.connectors.doi_lookup_base import DOILookupConnectorBase
 from findpapers.connectors.search_base import SearchConnectorBase
@@ -263,7 +268,7 @@ class PubmedConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConn
         total = int(esearch_result.get("count", 0))
         return ids, total
 
-    def _fetch_details(self, pmids: list[str]) -> list[ET.Element]:
+    def _fetch_details(self, pmids: list[str]) -> list[Element]:
         """Fetch full records for a list of PMIDs via efetch.
 
         Parameters
@@ -273,7 +278,7 @@ class PubmedConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConn
 
         Returns
         -------
-        list[ET.Element]
+        list[Element]
             List of PubmedArticle XML elements.
         """
         if not pmids:
@@ -288,12 +293,12 @@ class PubmedConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConn
         tree = ET.fromstring(response.text)
         return tree.findall(".//PubmedArticle")
 
-    def _parse_paper(self, article_el: ET.Element) -> Paper | None:
+    def _parse_paper(self, article_el: Element) -> Paper | None:
         """Parse a PubmedArticle element into a :class:`Paper`.
 
         Parameters
         ----------
-        article_el : ET.Element
+        article_el : Element
             ``PubmedArticle`` XML element.
 
         Returns
@@ -604,12 +609,12 @@ def _normalize_month(month: str) -> str:
         return "01"
 
 
-def _parse_date_element(el: ET.Element) -> datetime.date | None:
+def _parse_date_element(el: Element) -> datetime.date | None:
     """Parse a date from a PubMed XML element containing Year/Month/Day children.
 
     Parameters
     ----------
-    el : ET.Element
+    el : Element
         XML element with optional ``Year``, ``Month``, and ``Day`` sub-elements.
 
     Returns

@@ -7,9 +7,15 @@ import datetime
 import logging
 import re
 from collections.abc import Callable
-from xml.etree import ElementTree as ET
+from typing import TYPE_CHECKING
 
 import requests
+from defusedxml import ElementTree as ET
+
+if TYPE_CHECKING:
+    # Element is the concrete type returned by defusedxml at runtime;
+    # we import it from stdlib only for static type annotations.
+    from xml.etree.ElementTree import Element  # nosec B405
 
 from findpapers.connectors.doi_lookup_base import DOILookupConnectorBase
 from findpapers.connectors.search_base import SearchConnectorBase
@@ -187,12 +193,12 @@ class ArxivConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConne
 
         return self.fetch_paper_by_id(m.group(1))
 
-    def _parse_paper(self, entry: ET.Element) -> Paper | None:
+    def _parse_paper(self, entry: Element) -> Paper | None:
         """Parse a single Atom entry element into a :class:`Paper`.
 
         Parameters
         ----------
-        entry : ET.Element
+        entry : Element
             Atom entry XML element.
 
         Returns
@@ -276,7 +282,7 @@ class ArxivConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConne
             journal_ref_el is not None and journal_ref_el.text and journal_ref_el.text.strip()
         )
         if has_journal_ref:
-            ref_text = journal_ref_el.text.strip()  # type: ignore[union-attr]
+            ref_text = journal_ref_el.text.strip()  # type: ignore[union-attr]  # narrowing via has_journal_ref
             source = Source(
                 title=ref_text,
                 source_type=_infer_source_type_from_journal_ref(ref_text),

@@ -15,19 +15,27 @@ keywords = ["academic", "academic publications", "academic publishing", "arxiv",
 python = "^3.11"
 lxml = ">=6.1.0,<7"
 requests = "^2.32.0"
-curl-cffi = ">=0.7.0"
+curl-cffi = ">=0.15.0"
 tqdm = "^4.67.0"
+defusedxml = "^0.7.0"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^9.0.0"
+pytest = "^9.0.3"
 pytest-cov = "^7.0.0"
 pytest-randomly = "^4.0.0"
 coverage = {version = "^7.13.0", extras = ["toml"]}
 types-requests = "^2.32.0"
 lxml-stubs = "^0.5.0"
 types-tqdm = "^4.67.0"
+types-defusedxml = ">=0.7.0"
 ruff = "^0.15.0"
 mypy = "^1.19.1"
+xenon = "^0.9.0"
+pip-audit = "^2.9.0"
+bandit = {version = "^1.9.0", extras = ["toml"]}
+interrogate = "^1.7.0"
+vulture = "^2.14.0"
+pygments = ">=2.20.0"
 
 [tool.poetry.urls]
 issues = "https://github.com/jonatasgrosman/findpapers/issues"
@@ -86,4 +94,18 @@ quote-style = "double"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.bandit]
+# B311: random.random() used only for jitter — not for cryptographic purposes.
+skips = ["B311"]
+
+[tool.interrogate]
+ignore-init-method = true
+ignore-init-module = true
+fail-under = 95
+quiet = false
+verbose = 0
+
+[tool.vulture]
+min_confidence = 80
 
