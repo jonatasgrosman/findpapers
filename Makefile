@@ -14,7 +14,7 @@ export VIRTUAL_ENV := $(abspath $(VENV))
 export POETRY_VIRTUALENVS_CREATE := false
 
 -include .env
-export $(shell [ -f .env ] && sed 's/=.*//' .env)
+export $(shell [ -f .env ] && grep -v '^\s*#' .env | grep -v '^\s*$$' | sed 's/=.*//')
 
 help:
 	@echo "make clean"
@@ -27,6 +27,7 @@ help:
 	@echo "                 make lint TARGET='findpapers/models/query.py'"
 	@echo "make format [TARGET='path']"
 	@echo "       auto-fix formatting and lint issues (optional: specify target path)"
+	@echo "       note: type errors (mypy) are NOT auto-fixed; run 'make lint' to review them"
 	@echo "       examples: make format TARGET='findpapers/models'"
 	@echo "                 make format TARGET='tests/unit/test_query.py'"
 	@echo "make test [PYTEST_ARGS='args']"
@@ -46,10 +47,10 @@ help:
 	@echo "make coverage"
 	@echo "       run tests and fail if coverage drops below the configured threshold"
 	@echo "make check"
-	@echo "       run all quality checks: lint, complexity, security, docstrings, dead-code and coverage"
+	@echo "       run all quality checks: lint, complexity, security, docstrings, dead-code and coverage (includes running the test suite)"
 
 setup:
-	@python -m venv $(VENV)
+	@[ -d $(VENV) ] || python -m venv $(VENV)
 	@$(PIP) install --upgrade pip poetry
 	@$(POETRY) install --with dev --no-interaction --no-ansi -vvv
 	@touch poetry.lock
@@ -63,7 +64,7 @@ clean:
 	@find . -type f -name "*.py[co]" -exec rm -rf {} +
 
 test:
-	@$(POETRY) run pytest --durations=3 -v --cov=${PWD}/findpapers $(PYTEST_ARGS)
+	@$(POETRY) run pytest --durations=3 -v --cov=${PWD}/findpapers --cov-report=term-missing $(PYTEST_ARGS)
 
 test_integration:
 	@$(POETRY) run pytest -v -m integration $(PYTEST_ARGS)
