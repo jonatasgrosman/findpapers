@@ -60,6 +60,58 @@ def merge_authors(base: list[Author], incoming: list[Author]) -> list[Author]:
     return winner
 
 
+def _dedup_concat(seq1: Any, seq2: Any) -> list[Any]:
+    """Concatenate two sequences with order-preserving deduplication.
+
+    Tolerates unhashable items by falling back to linear scan.
+
+    Parameters
+    ----------
+    seq1 : Any
+        First sequence.
+    seq2 : Any
+        Second sequence.
+
+    Returns
+    -------
+    list[Any]
+        Merged list without duplicates, preserving insertion order.
+    """
+    seen: set[Any] = set()
+    result: list[Any] = []
+    for item in list(seq1) + list(seq2):
+        try:
+            if item not in seen:
+                seen.add(item)
+                result.append(item)
+        except TypeError:
+            # Unhashable item — fall back to linear scan.
+            if item not in result:
+                result.append(item)
+    return result
+
+
+def _merge_dict(base: dict[Any, Any], incoming: dict[Any, Any]) -> dict[Any, Any]:
+    """Recursively merge two dicts by merging each shared key's value.
+
+    Parameters
+    ----------
+    base : dict
+        Base dictionary.
+    incoming : dict
+        Incoming dictionary.
+
+    Returns
+    -------
+    dict
+        New dict with all keys from both inputs, values merged recursively.
+    """
+    merged = dict(base)
+    for key in set(base.keys()) | set(incoming.keys()):
+        merged[key] = merge_value(base.get(key), incoming.get(key))
+    return merged
+
+
 def merge_value(base: Any, incoming: Any) -> Any:
     """Merge two values, keeping the most complete result.
 
@@ -91,37 +143,11 @@ def merge_value(base: Any, incoming: Any) -> Any:
     if isinstance(base, set) and isinstance(incoming, set):
         return base | incoming
     if isinstance(base, list) and isinstance(incoming, list):
-        # Preserve insertion order and tolerate unhashable items.
-        seen: set[Any] = set()
-        merged_list: list[Any] = []
-        for item in base + incoming:
-            try:
-                if item not in seen:
-                    seen.add(item)
-                    merged_list.append(item)
-            except TypeError:
-                # Unhashable item — fall back to linear scan.
-                if item not in merged_list:
-                    merged_list.append(item)
-        return merged_list
+        return _dedup_concat(base, incoming)
     if isinstance(base, tuple) and isinstance(incoming, tuple):
-        # Same order-preserving dedup for tuples.
-        seen_t: set[Any] = set()
-        merged_tuple: list[Any] = []
-        for item in base + incoming:
-            try:
-                if item not in seen_t:
-                    seen_t.add(item)
-                    merged_tuple.append(item)
-            except TypeError:
-                if item not in merged_tuple:
-                    merged_tuple.append(item)
-        return tuple(merged_tuple)
+        return tuple(_dedup_concat(base, incoming))
     if isinstance(base, dict) and isinstance(incoming, dict):
-        merged = dict(base)
-        for key in set(base.keys()) | set(incoming.keys()):
-            merged[key] = merge_value(base.get(key), incoming.get(key))
-        return merged
+        return _merge_dict(base, incoming)
 
     # Fall back to the base value for unsupported types.
     return base

@@ -496,6 +496,143 @@ class SemanticScholarConnector(
             progress_callback=progress_callback,
         )
 
+    @staticmethod
+    def _parse_ss_pub_date(item: dict[str, Any]) -> datetime.date | None:
+        """Extract publication date from a Semantic Scholar item.
+
+        Prefers ``publicationDate``; falls back to ``year`` when absent.
+
+        Parameters
+        ----------
+        item : dict
+            Semantic Scholar paper metadata dict.
+
+        Returns
+        -------
+        datetime.date | None
+            Parsed date or ``None``.
+        """
+        date_str = (item.get("publicationDate") or "").strip()
+        if date_str:
+            with contextlib.suppress(ValueError):
+                return datetime.date.fromisoformat(date_str[:10])
+        if item.get("year"):
+            with contextlib.suppress(ValueError, TypeError):
+                return datetime.date(int(item["year"]), 1, 1)
+        return None
+
+    @staticmethod
+    def _parse_ss_doi(item: dict[str, Any]) -> str | None:
+        """Extract DOI from Semantic Scholar external IDs.
+
+        Prefers the explicit DOI field; falls back to deriving a canonical
+        arXiv DOI (``10.48550/arXiv.<id>``) when only the ArXivId is available.
+
+        Parameters
+        ----------
+        item : dict
+            Semantic Scholar paper metadata dict.
+
+        Returns
+        -------
+        str | None
+            DOI string or ``None``.
+        """
+        external_ids = item.get("externalIds") or {}
+        doi = (external_ids.get("DOI") or "").strip() or None
+        if doi is None:
+            arxiv_id = (external_ids.get("ArXivId") or "").strip()
+            if arxiv_id:
+                doi = f"10.48550/arXiv.{arxiv_id}"
+        return doi
+
+    @staticmethod
+    def _parse_ss_fos_subjects(
+        item: dict[str, Any],
+    ) -> tuple[set[str], set[str]]:
+        """Extract fields of study and subjects from a Semantic Scholar item.
+
+        ``fieldsOfStudy`` → broad fields; ``s2FieldsOfStudy`` → subjects
+        (categories not already in fields).
+
+        Parameters
+        ----------
+        item : dict
+            Semantic Scholar paper metadata dict.
+
+        Returns
+        -------
+        tuple[set[str], set[str]]
+            ``(fields_of_study, subjects)`` sets.
+        """
+        fields_of_study: set[str] = set()
+        for field in item.get("fieldsOfStudy") or []:
+            if isinstance(field, str) and field.strip():
+                fields_of_study.add(field.strip())
+        subjects: set[str] = set()
+        for entry in item.get("s2FieldsOfStudy") or []:
+            if isinstance(entry, dict):
+                cat = (entry.get("category") or "").strip()
+                if cat and cat not in fields_of_study:
+                    subjects.add(cat)
+        return fields_of_study, subjects
+
+    @staticmethod
+    def _parse_ss_source(
+        item: dict[str, Any],
+    ) -> tuple[Source | None, str | None]:
+        """Build a source and page range from a Semantic Scholar item.
+
+        Parameters
+        ----------
+        item : dict
+            Semantic Scholar paper metadata dict.
+
+        Returns
+        -------
+        tuple[Source | None, str | None]
+            ``(source, pages)`` pair.
+        """
+        journal = item.get("journal") or {}
+        venue = (item.get("venue") or "").strip()
+        pub_title = (journal.get("name") or venue or "").strip()
+
+        source_type: SourceType | None = None
+        pub_venue = item.get("publicationVenue") or {}
+        venue_type = (pub_venue.get("type") or "").strip().lower()
+        if venue_type:
+            source_type = _SS_VENUE_TYPE_MAP.get(venue_type)
+        if source_type is None:
+            for pt in item.get("publicationTypes") or []:
+                if isinstance(pt, str) and pt in _SS_PUB_TYPE_MAP:
+                    source_type = _SS_PUB_TYPE_MAP[pt]
+                    break
+
+        source: Source | None = (
+            Source(title=pub_title, source_type=source_type) if pub_title else None
+        )
+        pages: str | None = (journal.get("pages") or "").strip() or None
+        return source, pages
+
+    @staticmethod
+    def _parse_ss_paper_type(item: dict[str, Any]) -> PaperType | None:
+        """Infer paper type from Semantic Scholar publication types list.
+
+        Parameters
+        ----------
+        item : dict
+            Semantic Scholar paper metadata dict.
+
+        Returns
+        -------
+        PaperType | None
+            Inferred paper type or ``None``.
+        """
+        for pt in item.get("publicationTypes") or []:
+            if isinstance(pt, str) and pt in _SS_PAPER_TYPE_MAP:
+                return _SS_PAPER_TYPE_MAP[pt]
+        return None
+
     def _parse_paper(self, item: dict[str, Any]) -> Paper | None:
         """Parse a single Semantic Scholar paper record.
 
@@ -522,25 +659,8 @@ class SemanticScholarConnector(
             if name:
                 authors.append(Author(name=name))
 
-        # Publication date
-        pub_date: datetime.date | None = None
-        _pub_date_str = (item.get("publicationDate") or "").strip()
-        if _pub_date_str:
-            with contextlib.suppress(ValueError):
-                pub_date = datetime.date.fromisoformat(_pub_date_str[:10])
-        if pub_date is None and item.get("year"):
-            with contextlib.suppress(ValueError, TypeError):
-                pub_date = datetime.date(int(item["year"]), 1, 1)
-
-        # External IDs → DOI.
-        # Prefer the explicit DOI field; fall back to deriving a canonical
-        # arXiv DOI (10.48550/arXiv.<id>) when only the ArXivId is available.
-        external_ids = item.get("externalIds") or {}
-        doi: str | None = (external_ids.get("DOI") or "").strip() or None
-        if doi is None:
-            arxiv_id = (external_ids.get("ArXivId") or "").strip()
-            if arxiv_id:
-                doi = f"10.48550/arXiv.{arxiv_id}"
+        pub_date = self._parse_ss_pub_date(item)
+        doi = self._parse_ss_doi(item)
 
         # URL
         url: str | None = (item.get("url") or "").strip() or None
@@ -554,65 +674,9 @@ class SemanticScholarConnector(
         # Citations
         citations: int | None = item.get("citationCount")
 
-        # Keywords from fields of study
-        keywords: set[str] = set()
-
-        # fields_of_study: broad areas from fieldsOfStudy
-        fields_of_study: set[str] = set()
-        for field in item.get("fieldsOfStudy") or []:
-            if isinstance(field, str) and field.strip():
-                fields_of_study.add(field.strip())
-
-        # subjects: more specific categories from s2FieldsOfStudy
-        subjects: set[str] = set()
-        for entry in item.get("s2FieldsOfStudy") or []:
-            if isinstance(entry, dict):
-                cat = (entry.get("category") or "").strip()
-                if cat and cat not in fields_of_study:
-                    subjects.add(cat)
-
-        # Source
-        source: Source | None = None
-        journal = item.get("journal") or {}
-        venue = (item.get("venue") or "").strip()
-        pub_title = (journal.get("name") or venue or "").strip()
-
-        # Determine source_type from publicationVenue.type (preferred),
-        # falling back to publicationTypes list.
-        source_type: SourceType | None = None
-        pub_venue = item.get("publicationVenue") or {}
-        venue_type = (pub_venue.get("type") or "").strip().lower()
-        if venue_type:
-            source_type = _SS_VENUE_TYPE_MAP.get(venue_type)
-
-        if source_type is None:
-            pub_types = item.get("publicationTypes") or []
-            for pt in pub_types:
-                if isinstance(pt, str) and pt in _SS_PUB_TYPE_MAP:
-                    source_type = _SS_PUB_TYPE_MAP[pt]
-                    break
-
-        if pub_title:
-            source = Source(title=pub_title, source_type=source_type)
-
-        # Pages from journal info
-        pages: str | None = None
-        if journal:
-            raw_pages = (journal.get("pages") or "").strip()
-            if raw_pages:
-                pages = raw_pages
-
-        # Infer paper_type from publicationTypes list.
-        # Full list from the Semantic Scholar API docs:
-        # Review, JournalArticle, CaseReport, ClinicalTrial, Conference,
-        # Dataset, Editorial, LettersAndComments, MetaAnalysis, News,
-        # Study, Book, BookSection
-        paper_type: PaperType | None = None
-        pub_types = item.get("publicationTypes") or []
-        for pt in pub_types:
-            if isinstance(pt, str) and pt in _SS_PAPER_TYPE_MAP:
-                paper_type = _SS_PAPER_TYPE_MAP[pt]
-                break
+        fields_of_study, subjects = self._parse_ss_fos_subjects(item)
+        source, pages = self._parse_ss_source(item)
+        paper_type = self._parse_ss_paper_type(item)
 
         # Open access flag from Semantic Scholar.
         raw_is_oa = item.get("isOpenAccess")
@@ -629,7 +693,7 @@ class SemanticScholarConnector(
                 pdf_url=pdf_url,
                 doi=doi,
                 citations=citations,
-                keywords=keywords if keywords else None,
+                keywords=None,
                 page_range=pages,
                 databases={self.name},
                 paper_type=paper_type,
@@ -721,15 +785,13 @@ class SemanticScholarConnector(
             Retrieved papers.
         """
         ss_params = self._query_builder.convert_query(query)
+        date_param = SemanticScholarConnector._build_ss_date_param(since, until)
+        if date_param is not None:
+            ss_params["publicationDateOrYear"] = date_param
 
-        # Semantic Scholar supports publicationDateOrYear range filter.
-        if since or until:
-            from_part = since.isoformat() if since else ""
-            to_part = until.isoformat() if until else ""
-            ss_params["publicationDateOrYear"] = f"{from_part}:{to_part}"
         papers: list[Paper] = []
         author_id_to_authors: dict[str, list[Author]] = {}
-        token: str | None = None  # Semantic Scholar uses token-based pagination
+        token: str | None = None
         total: int | None = None
 
         while True:
@@ -764,14 +826,7 @@ class SemanticScholarConnector(
                 paper = self._parse_paper(item)
                 if paper is not None:
                     papers.append(paper)
-                    # Collect author-ID → Author mapping for batch affiliation fetch
-                    raw_authors = item.get("authors", [])
-                    for idx, author_entry in enumerate(raw_authors):
-                        author_id = author_entry.get("authorId")
-                        if author_id and idx < len(paper.authors):
-                            author_id_to_authors.setdefault(author_id, []).append(
-                                paper.authors[idx]
-                            )
+                    SemanticScholarConnector._collect_author_ids(item, paper, author_id_to_authors)
 
             if progress_callback is not None:
                 progress_callback(len(papers), total)
@@ -783,16 +838,63 @@ class SemanticScholarConnector(
             if not token or len(items) < page_size:
                 break
 
-        # Ensure the progress bar is updated even when the loop exits early
-        # (e.g. on the first request returning no items or a request error),
-        # so the bar never stays frozen at its initial 0-paper state.
         if progress_callback is not None:
             progress_callback(len(papers), total)
 
         result = papers[:max_papers] if max_papers is not None else papers
 
-        # Batch-fetch author affiliations after paper retrieval
         if author_id_to_authors:
             self._enrich_author_affiliations(author_id_to_authors)
 
         return result
+
+    @staticmethod
+    def _build_ss_date_param(
+        since: datetime.date | None, until: datetime.date | None
+    ) -> str | None:
+        """Build the Semantic Scholar ``publicationDateOrYear`` filter value.
+
+        Parameters
+        ----------
+        since : datetime.date | None
+            Start date.
+        until : datetime.date | None
+            End date.
+
+        Returns
+        -------
+        str | None
+            ``"FROM:TO"`` ISO-date string or ``None`` when no filter is needed.
+        """
+        if not since and not until:
+            return None
+        from_part = since.isoformat() if since else ""
+        to_part = until.isoformat() if until else ""
+        return f"{from_part}:{to_part}"
+
+    @staticmethod
+    def _collect_author_ids(
+        item: dict,
+        paper: Paper,
+        author_id_to_authors: dict[str, list[Author]],
+    ) -> None:
+        """Accumulate the author-ID → Author mapping from a parsed paper.
+
+        Parameters
+        ----------
+        item : dict
+            Raw Semantic Scholar paper item.
+        paper : Paper
+            Parsed paper object (authors are indexed positionally).
+        author_id_to_authors : dict[str, list[Author]]
+            Mapping to accumulate into (mutated in place).
+
+        Returns
+        -------
+        None
+        """
+        raw_authors = item.get("authors", [])
+        for idx, author_entry in enumerate(raw_authors):
+            author_id = author_entry.get("authorId")
+            if author_id and idx < len(paper.authors):
+                author_id_to_authors.setdefault(author_id, []).append(paper.authors[idx])

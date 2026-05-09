@@ -193,6 +193,153 @@ class ArxivConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConne
 
         return self.fetch_paper_by_id(m.group(1))
 
+    @staticmethod
+    def _parse_arxiv_authors(entry: Element) -> list[Author]:
+        """Extract authors from an arXiv Atom entry element.
+
+        Parameters
+        ----------
+        entry : Element
+            Atom entry XML element.
+
+        Returns
+        -------
+        list[Author]
+            Parsed author list.
+        """
+        authors: list[Author] = []
+        for author_el in entry.findall("atom:author", _NS):
+            name_el = author_el.find("atom:name", _NS)
+            if name_el is None or not (name_el.text or "").strip():
+                continue
+            name = (name_el.text or "").strip()
+            affiliation_parts = [
+                (aff_el.text or "").strip()
+                for aff_el in author_el.findall("arxiv:affiliation", _NS)
+                if aff_el is not None and (aff_el.text or "").strip()
+            ]
+            affiliation = "; ".join(affiliation_parts) if affiliation_parts else None
+            authors.append(Author(name=name, affiliation=affiliation))
+        return authors
+
+    @staticmethod
+    def _parse_arxiv_links(entry: Element) -> tuple[str | None, str | None]:
+        """Extract HTML landing-page URL and PDF URL from an arXiv entry.
+
+        Parameters
+        ----------
+        entry : Element
+            Atom entry XML element.
+
+        Returns
+        -------
+        tuple[str | None, str | None]
+            ``(url, pdf_url)`` pair.
+        """
+        url: str | None = None
+        for link_el in entry.findall("atom:link", _NS):
+            rel = link_el.get("rel", "")
+            href = link_el.get("href", "")
+            if rel == "alternate" and href:
+                url = href
+                break
+        if url is None:
+            id_el = entry.find("atom:id", _NS)
+            if id_el is not None and id_el.text:
+                url = id_el.text.strip()
+        pdf_url: str | None = None
+        for link_el in entry.findall("atom:link", _NS):
+            if (link_el.get("title") or "") == "pdf" and link_el.get("href"):
+                pdf_url = link_el.get("href") or ""
+                break
+        return url, pdf_url
+
+    @staticmethod
+    def _parse_arxiv_doi(entry: Element, url: str | None) -> str | None:
+        """Resolve the DOI for an arXiv entry.
+
+        Prefers the explicit ``<arxiv:doi>`` element (publisher DOI).  When
+        absent, derives the canonical arXiv DOI (``10.48550/arXiv.<id>``)
+        from the landing-page URL.
+
+        Parameters
+        ----------
+        entry : Element
+            Atom entry XML element.
+        url : str | None
+            Landing-page URL already extracted from the entry.
+
+        Returns
+        -------
+        str | None
+            Resolved DOI or ``None``.
+        """
+        doi_el = entry.find("arxiv:doi", _NS)
+        if doi_el is not None and doi_el.text:
+            return doi_el.text.strip()
+        if url:
+            m = _ARXIV_ID_RE.search(url)
+            if m:
+                return f"10.48550/arXiv.{m.group(1)}"
+        return None
+
+    @staticmethod
+    def _parse_arxiv_source(entry: Element) -> Source:
+        """Build a :class:`~findpapers.core.source.Source` from an arXiv entry.
+
+        Papers with a ``<arxiv:journal_ref>`` element were formally published;
+        all others are arXiv preprints hosted in a repository.
+
+        Parameters
+        ----------
+        entry : Element
+            Atom entry XML element.
+
+        Returns
+        -------
+        Source
+            Populated source.
+        """
+        journal_ref_el = entry.find("arxiv:journal_ref", _NS)
+        has_journal_ref = (
+            journal_ref_el is not None and journal_ref_el.text and journal_ref_el.text.strip()
+        )
+        if has_journal_ref:
+            ref_text = journal_ref_el.text.strip()  # type: ignore[union-attr]
+            return Source(
+                title=ref_text,
+                source_type=_infer_source_type_from_journal_ref(ref_text),
+            )
+        return Source(title="arXiv", source_type=SourceType.REPOSITORY)
+
+    @staticmethod
+    def _parse_arxiv_categories(entry: Element) -> tuple[set[str], set[str]]:
+        """Map arXiv category codes to fields of study and subjects.
+
+        Parameters
+        ----------
+        entry : Element
+            Atom entry XML element.
+
+        Returns
+        -------
+        tuple[set[str], set[str]]
+            ``(fields_of_study, subjects)`` sets.
+        """
+        fields_of_study: set[str] = set()
+        subjects: set[str] = set()
+        for cat_el in entry.findall("atom:category", _NS):
+            term = (cat_el.get("term") or "").strip()
+            if not term:
+                continue
+            field = arxiv_category_to_field(term)
+            if field:
+                fields_of_study.add(field)
+            subject = arxiv_category_to_subject(term)
+            if subject:
+                subjects.add(subject)
+        return fields_of_study, subjects
+
     def _parse_paper(self, entry: Element) -> Paper | None:
         """Parse a single Atom entry element into a :class:`Paper`.
 
@@ -216,20 +363,7 @@ class ArxivConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConne
             (abstract_el.text or "").strip().replace("\n", " ") if abstract_el is not None else ""
         )
 
-        # Authors
-        authors: list[Author] = []
-        for author_el in entry.findall("atom:author", _NS):
-            name_el = author_el.find("atom:name", _NS)
-            if name_el is None or not (name_el.text or "").strip():
-                continue
-            name = (name_el.text or "").strip()
-            affiliation_parts = [
-                (aff_el.text or "").strip()
-                for aff_el in author_el.findall("arxiv:affiliation", _NS)
-                if aff_el is not None and (aff_el.text or "").strip()
-            ]
-            affiliation = "; ".join(affiliation_parts) if affiliation_parts else None
-            authors.append(Author(name=name, affiliation=affiliation))
+        authors = self._parse_arxiv_authors(entry)
 
         # Published date
         published_el = entry.find("atom:published", _NS)
@@ -237,59 +371,9 @@ class ArxivConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConne
             (published_el.text or "").strip() if published_el is not None else None
         )
 
-        # DOI — prefer the explicit <arxiv:doi> element (publisher DOI).
-        # When absent, derive the canonical arXiv DOI from the entry ID.
-        doi: str | None = None
-        doi_el = entry.find("arxiv:doi", _NS)
-        if doi_el is not None and doi_el.text:
-            doi = doi_el.text.strip()
-
-        # URL - prefer HTML link
-        url: str | None = None
-        for link_el in entry.findall("atom:link", _NS):
-            rel = link_el.get("rel", "")
-            href = link_el.get("href", "")
-            if rel == "alternate" and href:
-                url = href
-                break
-        if url is None:
-            id_el = entry.find("atom:id", _NS)
-            if id_el is not None and id_el.text:
-                url = id_el.text.strip()
-
-        # Derive arXiv DOI when none was provided by the API.
-        # The canonical DOI format is 10.48550/arXiv.<id>, e.g.
-        # http://arxiv.org/abs/1706.03762v5 → 10.48550/arXiv.1706.03762
-        if doi is None and url:
-            m = _ARXIV_ID_RE.search(url)
-            if m:
-                doi = f"10.48550/arXiv.{m.group(1)}"
-
-        # PDF URL
-        pdf_url: str | None = None
-        for link_el in entry.findall("atom:link", _NS):
-            title_attr = link_el.get("title", "")
-            href = link_el.get("href", "")
-            if title_attr == "pdf" and href:
-                pdf_url = href
-                break
-
-        # Journal ref → source.
-        # Papers with a journal reference were formally published in a journal.
-        journal_ref_el = entry.find("arxiv:journal_ref", _NS)
-        source: Source | None = None
-        has_journal_ref = (
-            journal_ref_el is not None and journal_ref_el.text and journal_ref_el.text.strip()
-        )
-        if has_journal_ref:
-            ref_text = journal_ref_el.text.strip()  # type: ignore[union-attr]  # narrowing via has_journal_ref
-            source = Source(
-                title=ref_text,
-                source_type=_infer_source_type_from_journal_ref(ref_text),
-            )
-        else:
-            # Paper is an arXiv preprint without a formal publication venue.
-            source = Source(title="arXiv", source_type=SourceType.REPOSITORY)
+        url, pdf_url = self._parse_arxiv_links(entry)
+        doi = self._parse_arxiv_doi(entry, url)
+        source = self._parse_arxiv_source(entry)
 
         # Comments — optional free-text note (e.g. "39 pages, 14 figures")
         comment: str | None = None
@@ -302,19 +386,7 @@ class ArxivConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConne
         if source is not None and source.source_type is not None:
             paper_type = _ARXIV_PAPER_TYPE_MAP.get(source.source_type)
 
-        # Extract arXiv categories → fields_of_study and subjects.
-        fields_of_study: set[str] = set()
-        subjects: set[str] = set()
-        for cat_el in entry.findall("atom:category", _NS):
-            term = (cat_el.get("term") or "").strip()
-            if not term:
-                continue
-            field = arxiv_category_to_field(term)
-            if field:
-                fields_of_study.add(field)
-            subject = arxiv_category_to_subject(term)
-            if subject:
-                subjects.add(subject)
+        fields_of_study, subjects = self._parse_arxiv_categories(entry)
 
         try:
             paper = Paper(

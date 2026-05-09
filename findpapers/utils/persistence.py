@@ -6,7 +6,7 @@ import datetime
 import json
 import re
 from pathlib import Path
-from typing import TypeAlias
+from typing import Any, TypeAlias
 
 from findpapers.core.author import Author
 from findpapers.core.citation_graph import CitationGraph
@@ -283,21 +283,7 @@ def paper_to_bibtex(paper: Paper) -> str:
     if how_published:
         lines.append(f"{default_tab}howpublished = {{{how_published}}},")
 
-    # journal field for @article entries
-    if paper.paper_type == PaperType.ARTICLE and source is not None:
-        lines.append(f"{default_tab}journal = {{{_escape_bibtex(source.title)}}},")
-
-    # booktitle field for @inproceedings / @incollection entries
-    if paper.paper_type in {PaperType.INPROCEEDINGS, PaperType.INCOLLECTION} and source is not None:
-        lines.append(f"{default_tab}booktitle = {{{_escape_bibtex(source.title)}}},")
-
-    # institution field for @techreport / @phdthesis / @mastersthesis entries
-    if (
-        paper.paper_type in {PaperType.TECHREPORT, PaperType.PHDTHESIS, PaperType.MASTERSTHESIS}
-        and source is not None
-        and source.publisher is not None
-    ):
-        lines.append(f"{default_tab}institution = {{{_escape_bibtex(source.publisher)}}},")
+    lines.extend(_bibtex_venue_lines(paper, source, default_tab))
 
     if paper.doi is not None:
         lines.append(f"{default_tab}doi = {{{paper.doi}}},")
@@ -330,6 +316,37 @@ def paper_to_bibtex(paper: Paper) -> str:
     entry = "\n".join(lines)
     entry = entry.rstrip(",") + "\n" if entry.endswith(",") else entry
     return f"{entry}\n}}\n\n"
+
+
+def _bibtex_venue_lines(paper: Paper, source: Source | None, default_tab: str) -> list[str]:
+    """Build venue-specific BibTeX lines (journal / booktitle / institution).
+
+    Parameters
+    ----------
+    paper : Paper
+        Paper instance.
+    source : Source | None
+        Paper source (may be ``None``).
+    default_tab : str
+        Indentation string.
+
+    Returns
+    -------
+    list[str]
+        Zero or more BibTeX field lines.
+    """
+    lines: list[str] = []
+    if paper.paper_type == PaperType.ARTICLE and source is not None:
+        lines.append(f"{default_tab}journal = {{{_escape_bibtex(source.title)}}},")
+    if paper.paper_type in {PaperType.INPROCEEDINGS, PaperType.INCOLLECTION} and source is not None:
+        lines.append(f"{default_tab}booktitle = {{{_escape_bibtex(source.title)}}},")
+    if (
+        paper.paper_type in {PaperType.TECHREPORT, PaperType.PHDTHESIS, PaperType.MASTERSTHESIS}
+        and source is not None
+        and source.publisher is not None
+    ):
+        lines.append(f"{default_tab}institution = {{{_escape_bibtex(source.publisher)}}},")
+    return lines
 
 
 def citation_key_for(paper: Paper) -> str:
@@ -692,6 +709,45 @@ def save_to_csv(papers: list[Paper], path: str) -> None:
             writer.writerow(_paper_to_csv_row(paper))
 
 
+def _bool_to_csv(value: bool | None) -> str:
+    """Convert a nullable boolean to a CSV cell string.
+
+    Parameters
+    ----------
+    value : bool | None
+        Boolean value to convert.
+
+    Returns
+    -------
+    str
+        ``"true"``, ``"false"``, or ``""`` for ``None``.
+    """
+    if value is None:
+        return ""
+    return "true" if value else "false"
+
+
+def _csv_parse_bool(raw: str) -> bool | None:
+    """Parse a CSV boolean cell back to ``bool | None``.
+
+    Parameters
+    ----------
+    raw : str
+        Cell value (case-insensitive ``"true"``/``"false"`` or ``""``).
+
+    Returns
+    -------
+    bool | None
+        Parsed boolean or ``None`` for empty/unknown strings.
+    """
+    lower = raw.strip().lower()
+    if lower == "true":
+        return True
+    if lower == "false":
+        return False
+    return None
+
+
 def _paper_to_csv_row(paper: Paper) -> dict[str, str]:
     """Convert a paper to a flat CSV row dictionary.
 
@@ -705,6 +761,24 @@ def _paper_to_csv_row(paper: Paper) -> dict[str, str]:
     dict[str, str]
         Column name → string value mapping.
     """
+    row = _paper_to_csv_core_fields(paper)
+    row.update(_paper_to_csv_meta_fields(paper))
+    return row
+
+
+def _paper_to_csv_core_fields(paper: Paper) -> dict[str, str]:
+    """Build core identity CSV fields for a paper.
+
+    Parameters
+    ----------
+    paper : Paper
+        Paper instance.
+
+    Returns
+    -------
+    dict[str, str]
+        Core field subset: title, authors, abstract, dates, DOI/URL fields and source.
+    """
     s = _sanitize_csv_value
     return {
         "title": s(paper.title or ""),
@@ -717,6 +791,24 @@ def _paper_to_csv_row(paper: Paper) -> dict[str, str]:
         "source": s(paper.source.title if paper.source else ""),
         "publisher": s(paper.source.publisher if paper.source and paper.source.publisher else ""),
         "citations": str(paper.citations) if paper.citations is not None else "",
+    }
+
+
+def _paper_to_csv_meta_fields(paper: Paper) -> dict[str, str]:
+    """Build classification and metadata CSV fields for a paper.
+
+    Parameters
+    ----------
+    paper : Paper
+        Paper instance.
+
+    Returns
+    -------
+    dict[str, str]
+        Meta field subset: keywords, paper_type, databases, subjects, etc.
+    """
+    s = _sanitize_csv_value
+    return {
         "keywords": s("; ".join(sorted(paper.keywords)) if paper.keywords else ""),
         "paper_type": paper.paper_type.value if paper.paper_type else "",
         "page_range": paper.page_range or "",
@@ -726,12 +818,8 @@ def _paper_to_csv_row(paper: Paper) -> dict[str, str]:
         ),
         "subjects": s("; ".join(sorted(paper.subjects)) if paper.subjects else ""),
         "language": paper.language or "",
-        "is_open_access": (
-            "" if paper.is_open_access is None else ("true" if paper.is_open_access else "false")
-        ),
-        "is_retracted": (
-            "" if paper.is_retracted is None else ("true" if paper.is_retracted else "false")
-        ),
+        "is_open_access": _bool_to_csv(paper.is_open_access),
+        "is_retracted": _bool_to_csv(paper.is_retracted),
         "funders": s("; ".join(sorted(paper.funders)) if paper.funders else ""),
         "comments": s(paper.comments or ""),
     }
@@ -784,66 +872,23 @@ def _csv_row_to_paper(row: dict[str, str]) -> Paper | None:
 
     raw_authors = u(row.get("authors", ""))
     authors = [Author(name=a.strip()) for a in raw_authors.split(";") if a.strip()]
-
     abstract = u(row.get("abstract", ""))
-
-    publication_date: datetime.date | None = None
-    raw_date = row.get("publication_date", "").strip()
-    if raw_date:
-        with contextlib.suppress(ValueError):
-            publication_date = datetime.date.fromisoformat(raw_date)
-
+    publication_date = _csv_parse_date(row.get("publication_date", ""))
     doi = u(row.get("doi", "")).strip() or None
     url = u(row.get("url", "")).strip() or None
     pdf_url = u(row.get("pdf_url", "")).strip() or None
-
-    source_title = u(row.get("source", "")).strip()
-    publisher = u(row.get("publisher", "")).strip() or None
-    source: Source | None = None
-    if source_title:
-        source = Source(title=source_title, publisher=publisher)
-
-    raw_citations = row.get("citations", "").strip()
-    citations: int | None = None
-    if raw_citations:
-        with contextlib.suppress(ValueError):
-            citations = int(raw_citations)
-
-    raw_keywords = u(row.get("keywords", ""))
-    keywords = {k.strip() for k in raw_keywords.split(";") if k.strip()} or None
-
-    raw_paper_type = row.get("paper_type", "").strip()
-    paper_type: PaperType | None = None
-    if raw_paper_type:
-        with contextlib.suppress(ValueError):
-            paper_type = PaperType(raw_paper_type)
-
+    source = _csv_parse_source(row, u)
+    citations = _csv_parse_int(row.get("citations", ""))
+    keywords = _csv_str_set(u(row.get("keywords", "")))
+    paper_type = _csv_parse_paper_type(row.get("paper_type", ""))
     page_range = row.get("page_range", "").strip() or None
-
-    raw_databases = row.get("databases", "")
-    databases = {d.strip() for d in raw_databases.split(";") if d.strip()} or None
-
-    raw_fos = u(row.get("fields_of_study", ""))
-    fields_of_study = {f.strip() for f in raw_fos.split(";") if f.strip()} or None
-
-    raw_subjects = u(row.get("subjects", ""))
-    subjects = {s.strip() for s in raw_subjects.split(";") if s.strip()} or None
-
-    raw_funders = u(row.get("funders", ""))
-    funders = {f.strip() for f in raw_funders.split(";") if f.strip()} or None
-
+    databases = _csv_str_set(row.get("databases", ""))
+    fields_of_study = _csv_str_set(u(row.get("fields_of_study", "")))
+    subjects = _csv_str_set(u(row.get("subjects", "")))
+    funders = _csv_str_set(u(row.get("funders", "")))
     language = row.get("language", "").strip() or None
-
-    raw_is_open_access = row.get("is_open_access", "").strip().lower()
-    is_open_access: bool | None = (
-        True if raw_is_open_access == "true" else False if raw_is_open_access == "false" else None
-    )
-
-    raw_is_retracted = row.get("is_retracted", "").strip().lower()
-    is_retracted: bool | None = (
-        True if raw_is_retracted == "true" else False if raw_is_retracted == "false" else None
-    )
-
+    is_open_access = _csv_parse_bool(row.get("is_open_access", ""))
+    is_retracted = _csv_parse_bool(row.get("is_retracted", ""))
     comments = u(row.get("comments", "")).strip() or None
 
     return Paper(
@@ -868,3 +913,108 @@ def _csv_row_to_paper(row: dict[str, str]) -> Paper | None:
         is_retracted=is_retracted,
         funders=funders,
     )
+
+
+def _csv_str_set(raw: str) -> set[str] | None:
+    """Parse a semicolon-separated string into a set.
+
+    Parameters
+    ----------
+    raw : str
+        Semicolon-separated cell value (already unsanitized when applicable).
+
+    Returns
+    -------
+    set[str] | None
+        Non-empty set of stripped tokens, or ``None`` when the input is blank.
+    """
+    result = {token.strip() for token in raw.split(";") if token.strip()}
+    return result or None
+
+
+def _csv_parse_date(raw: str) -> datetime.date | None:
+    """Parse an ISO-format date string from a CSV cell.
+
+    Parameters
+    ----------
+    raw : str
+        Raw cell value.
+
+    Returns
+    -------
+    datetime.date | None
+        Parsed date or ``None`` for empty/invalid strings.
+    """
+    raw = raw.strip()
+    if not raw:
+        return None
+    with contextlib.suppress(ValueError):
+        return datetime.date.fromisoformat(raw)
+    return None
+
+
+def _csv_parse_int(raw: str) -> int | None:
+    """Parse an integer from a CSV cell.
+
+    Parameters
+    ----------
+    raw : str
+        Raw cell value.
+
+    Returns
+    -------
+    int | None
+        Parsed integer or ``None`` for empty/invalid strings.
+    """
+    raw = raw.strip()
+    if not raw:
+        return None
+    with contextlib.suppress(ValueError):
+        return int(raw)
+    return None
+
+
+def _csv_parse_source(
+    row: dict[str, str],
+    unsanitize: Any,
+) -> Source | None:
+    """Parse a Source from CSV row fields.
+
+    Parameters
+    ----------
+    row : dict[str, str]
+        CSV row dict.
+    unsanitize : callable
+        Unsanitize function to apply to cell values.
+
+    Returns
+    -------
+    Source | None
+        Parsed source or ``None`` when no title is present.
+    """
+    source_title = unsanitize(row.get("source", "")).strip()
+    if not source_title:
+        return None
+    publisher = unsanitize(row.get("publisher", "")).strip() or None
+    return Source(title=source_title, publisher=publisher)
+
+
+def _csv_parse_paper_type(raw: str) -> PaperType | None:
+    """Parse a PaperType from a CSV cell value.
+
+    Parameters
+    ----------
+    raw : str
+        Raw cell value.
+
+    Returns
+    -------
+    PaperType | None
+        Parsed paper type or ``None`` for unknown/empty strings.
+    """
+    raw = raw.strip()
+    if not raw:
+        return None
+    with contextlib.suppress(ValueError):
+        return PaperType(raw)
+    return None

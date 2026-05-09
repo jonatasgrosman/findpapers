@@ -457,6 +457,99 @@ class WosConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConnect
     # Parsing helpers
     # ------------------------------------------------------------------
 
+    @staticmethod
+    def _parse_wos_source(doc: dict[str, Any]) -> Source | None:
+        """Build a :class:`~findpapers.core.source.Source` from WoS metadata.
+
+        Parameters
+        ----------
+        doc : dict
+            WoS ``hit`` document dict.
+
+        Returns
+        -------
+        Source | None
+            Populated source or ``None`` when no title is present.
+        """
+        source_meta = doc.get("source") or {}
+        source_title = (source_meta.get("sourceTitle") or "").strip()
+        if not source_title:
+            return None
+        issn, eissn, isbn = WosConnector._parse_wos_issn_isbn(doc)
+        source_type = WosConnector._parse_wos_source_type(doc)
+        return Source(
+            title=source_title,
+            issn=issn or eissn or None,
+            isbn=isbn,
+            source_type=source_type,
+        )
+
+    @staticmethod
+    def _parse_wos_issn_isbn(
+        doc: dict[str, Any],
+    ) -> tuple[str | None, str | None, str | None]:
+        """Extract ISSN, eISSN, and ISBN from WoS identifiers.
+
+        Parameters
+        ----------
+        doc : dict
+            WoS ``hit`` document dict.
+
+        Returns
+        -------
+        tuple[str | None, str | None, str | None]
+            ``(issn, eissn, isbn)``.
+        """
+        identifiers = doc.get("identifiers") or {}
+        issn = (identifiers.get("issn") or "").strip() or None
+        eissn = (identifiers.get("eissn") or "").strip() or None
+        isbn = (identifiers.get("isbn") or "").strip() or None
+        return issn, eissn, isbn
+
+    @staticmethod
+    def _parse_wos_source_type(doc: dict[str, Any]) -> SourceType | None:
+        """Determine the :class:`~findpapers.core.source.SourceType` for a WoS record.
+
+        Parameters
+        ----------
+        doc : dict
+            WoS ``hit`` document dict.
+
+        Returns
+        -------
+        SourceType | None
+            Matched source type or ``None``.
+        """
+        raw_types: list[str] = [(t or "").lower() for t in (doc.get("sourceTypes") or [])]
+        return next(
+            (_WOS_SOURCE_TYPE_MAP[t] for t in raw_types if t in _WOS_SOURCE_TYPE_MAP),
+            None,
+        )
+
+    @staticmethod
+    def _parse_wos_pages(doc: dict[str, Any]) -> tuple[str | None, int | None]:
+        """Extract page range and page count from WoS metadata.
+
+        Parameters
+        ----------
+        doc : dict
+            WoS ``hit`` document dict.
+
+        Returns
+        -------
+        tuple[str | None, int | None]
+            ``(page_range, page_count)`` pair.
+        """
+        source_meta = doc.get("source") or {}
+        pages_meta = source_meta.get("pages") or {}
+        page_range: str | None = (pages_meta.get("range") or "").strip() or None
+        page_count: int | None = None
+        raw_count = pages_meta.get("count")
+        if raw_count is not None:
+            with contextlib.suppress(ValueError, TypeError):
+                page_count = int(raw_count)
+        return page_range, page_count
+
     def _parse_document(self, doc: dict[str, Any]) -> Paper | None:
         """Parse a single WoS API document object into a :class:`Paper`.
 
@@ -475,83 +568,25 @@ class WosConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConnect
         if not title:
             return None
 
-        # Authors — WoS Starter does not include affiliations.
-        authors: list[Author] = []
-        names = doc.get("names") or {}
-        for author_entry in names.get("authors") or []:
-            display_name = (author_entry.get("displayName") or "").strip()
-            if display_name:
-                authors.append(Author(name=display_name))
-
-        # Publication date
+        authors = WosConnector._parse_wos_authors(doc)
         source_meta = doc.get("source") or {}
         pub_date = _parse_wos_date(
             source_meta.get("publishYear"),
             source_meta.get("publishMonth"),
         )
-
-        # Identifiers
         identifiers = doc.get("identifiers") or {}
         doi: str | None = (identifiers.get("doi") or "").strip() or None
-
-        # URLs — prefer the Web of Science record link.
         links = doc.get("links") or {}
         url: str | None = (links.get("record") or "").strip() or None
-
-        # Keywords (author-provided)
-        keywords_data = doc.get("keywords") or {}
-        keywords: set[str] = set()
-        for kw in keywords_data.get("authorKeywords") or []:
-            kw_clean = (kw or "").strip()
-            if kw_clean:
-                keywords.add(kw_clean)
-
-        # Citation count (only present for institutional-plan API keys)
+        keywords = WosConnector._parse_wos_keywords(doc)
         citations = _extract_citation_count(doc.get("citations") or [])
-
-        # Source
-        source_title = (source_meta.get("sourceTitle") or "").strip()
-        source: Source | None = None
-        if source_title:
-            issn = (identifiers.get("issn") or "").strip() or None
-            eissn = (identifiers.get("eissn") or "").strip() or None
-            isbn = (identifiers.get("isbn") or "").strip() or None
-
-            # Combine print and electronic ISSN — store the print ISSN as the
-            # canonical value, and use eISSN as a fallback.
-            canonical_issn = issn or eissn or None
-
-            # Infer SourceType from source type list.
-            raw_source_types: list[str] = [
-                (t or "").lower() for t in (doc.get("sourceTypes") or [])
-            ]
-            source_type: SourceType | None = next(
-                (_WOS_SOURCE_TYPE_MAP[t] for t in raw_source_types if t in _WOS_SOURCE_TYPE_MAP),
-                None,
-            )
-
-            source = Source(
-                title=source_title,
-                issn=canonical_issn,
-                isbn=isbn,
-                source_type=source_type,
-            )
-
-        # Paper type — WoS may return multiple types; take the first match.
+        source = self._parse_wos_source(doc)
         raw_types: list[str] = [(t or "").lower() for t in (doc.get("types") or [])]
         paper_type: PaperType | None = next(
             (_WOS_PAPER_TYPE_MAP[t] for t in raw_types if t in _WOS_PAPER_TYPE_MAP),
             None,
         )
-
-        # Page info
-        pages_meta = source_meta.get("pages") or {}
-        page_range: str | None = (pages_meta.get("range") or "").strip() or None
-        page_count_raw = pages_meta.get("count")
-        page_count: int | None = None
-        if page_count_raw is not None:
-            with contextlib.suppress(ValueError, TypeError):
-                page_count = int(page_count_raw)
+        page_range, page_count = self._parse_wos_pages(doc)
 
         try:
             paper = Paper(
@@ -573,3 +608,47 @@ class WosConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConnect
             return None
 
         return paper
+
+    @staticmethod
+    def _parse_wos_authors(doc: dict[str, Any]) -> list[Author]:
+        """Extract authors from WoS document metadata.
+
+        Parameters
+        ----------
+        doc : dict
+            WoS ``hit`` document dict.
+
+        Returns
+        -------
+        list[Author]
+            Parsed author list.
+        """
+        authors: list[Author] = []
+        names = doc.get("names") or {}
+        for author_entry in names.get("authors") or []:
+            display_name = (author_entry.get("displayName") or "").strip()
+            if display_name:
+                authors.append(Author(name=display_name))
+        return authors
+
+    @staticmethod
+    def _parse_wos_keywords(doc: dict[str, Any]) -> set[str]:
+        """Extract author-provided keywords from WoS document metadata.
+
+        Parameters
+        ----------
+        doc : dict
+            WoS ``hit`` document dict.
+
+        Returns
+        -------
+        set[str]
+            Set of cleaned keyword strings.
+        """
+        keywords_data = doc.get("keywords") or {}
+        keywords: set[str] = set()
+        for kw in keywords_data.get("authorKeywords") or []:
+            kw_clean = (kw or "").strip()
+            if kw_clean:
+                keywords.add(kw_clean)
+        return keywords

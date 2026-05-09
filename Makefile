@@ -78,15 +78,12 @@ lint:
 	fi
 
 complexity:
-	# --max-absolute F: allows existing high-complexity legacy functions.
-	# --max-average B: fails if the overall project average degrades above grade B (>10).
-	# Use stricter per-file thresholds (e.g. --max-absolute C) in CI on changed files only.
-	@$(POETRY) run xenon --max-absolute F --max-average B findpapers/
+	@$(POETRY) run xenon --max-absolute C --max-average B findpapers/
 
+# PYSEC-2022-42969 (py): no fix available upstream; py is a transitive dep of
+# interrogate and the vulnerable code path (py.path.svn) is never exercised here.
 security:
 	@$(POETRY) run bandit -r findpapers/ -c pyproject.toml
-	# PYSEC-2022-42969 (py): no fix available upstream; py is a transitive dep of
-	# interrogate and the vulnerable code path (py.path.svn) is never exercised here.
 	@$(POETRY) run pip-audit --ignore-vuln PYSEC-2022-42969
 
 docstrings:

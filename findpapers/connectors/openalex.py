@@ -547,6 +547,264 @@ class OpenAlexConnector(
 
         return all_papers
 
+    @staticmethod
+    def _parse_oa_abstract(work: dict[str, Any]) -> str:
+        """Reconstruct the abstract from OpenAlex's inverted index.
+
+        Parameters
+        ----------
+        work : dict
+            OpenAlex work metadata dict.
+
+        Returns
+        -------
+        str
+            Reconstructed abstract text (empty string when not available).
+        """
+        inverted_index = work.get("abstract_inverted_index")
+        return _reconstruct_abstract(inverted_index) if inverted_index else ""
+
+    @staticmethod
+    def _parse_oa_authors(work: dict[str, Any]) -> list[Author]:
+        """Extract authors and their affiliations from an OpenAlex work.
+
+        Parameters
+        ----------
+        work : dict
+            OpenAlex work metadata dict.
+
+        Returns
+        -------
+        list[Author]
+            Parsed author list.
+        """
+        authors: list[Author] = []
+        for authorship in work.get("authorships", []):
+            author_info = authorship.get("author") or {}
+            name = (author_info.get("display_name") or "").strip()
+            if not name:
+                continue
+            institutions = authorship.get("institutions") or []
+            affiliation_parts = [
+                (inst.get("display_name") or "").strip()
+                for inst in institutions
+                if isinstance(inst, dict) and (inst.get("display_name") or "").strip()
+            ]
+            affiliation = "; ".join(affiliation_parts) if affiliation_parts else None
+            authors.append(Author(name=name, affiliation=affiliation))
+        return authors
+
+    @staticmethod
+    def _parse_oa_doi_url_pdf(
+        work: dict[str, Any],
+    ) -> tuple[str | None, str | None, str | None]:
+        """Extract DOI, landing-page URL, and PDF URL from an OpenAlex work.
+
+        Parameters
+        ----------
+        work : dict
+            OpenAlex work metadata dict.
+
+        Returns
+        -------
+        tuple[str | None, str | None, str | None]
+            ``(doi, url, pdf_url)`` triple.
+        """
+        doi_raw = (work.get("doi") or "").strip() or None
+        doi = normalize_doi(doi_raw) if doi_raw else None
+
+        open_access = work.get("open_access") or {}
+        url: str | None = (open_access.get("oa_url") or "").strip() or None
+        if not url:
+            primary = work.get("primary_location") or {}
+            url = (primary.get("landing_page_url") or "").strip() or None
+
+        pdf_url: str | None = None
+        for loc in work.get("locations", []):
+            if isinstance(loc, dict) and loc.get("pdf_url"):
+                pdf_url = loc["pdf_url"]
+                break
+
+        return doi, url, pdf_url
+
+    @staticmethod
+    def _parse_oa_keywords(work: dict[str, Any]) -> set[str]:
+        """Extract keywords from OpenAlex concepts and keywords fields.
+
+        Parameters
+        ----------
+        work : dict
+            OpenAlex work metadata dict.
+
+        Returns
+        -------
+        set[str]
+            Keyword set.
+        """
+        keywords: set[str] = set()
+        for concept in work.get("concepts", []):
+            kw = (concept.get("display_name") or "").strip()
+            if kw:
+                keywords.add(kw)
+        for kw_entry in work.get("keywords", []):
+            if isinstance(kw_entry, str):
+                kw = kw_entry.strip()
+            elif isinstance(kw_entry, dict):
+                kw = (kw_entry.get("display_name") or "").strip()
+            else:
+                kw = ""
+            if kw:
+                keywords.add(kw)
+        return keywords
+
+    @staticmethod
+    def _parse_oa_source(work: dict[str, Any]) -> Source | None:
+        """Build a :class:`~findpapers.core.source.Source` from an OpenAlex work.
+
+        Prefers a journal or conference venue over a repository.  When no
+        formal source is found and the work is a preprint, creates a
+        repository-type source from the repository location.
+
+        Parameters
+        ----------
+        work : dict
+            OpenAlex work metadata dict.
+
+        Returns
+        -------
+        Source | None
+            Populated source or ``None`` when no usable venue is found.
+        """
+        source_data = _find_best_source(work)
+        if source_data:
+            pub_title = (source_data.get("display_name") or "").strip()
+            if pub_title:
+                issn_list = source_data.get("issn_l") or source_data.get("issn") or []
+                issn = (
+                    issn_list[0]
+                    if isinstance(issn_list, list) and issn_list
+                    else str(issn_list)
+                    if issn_list
+                    else None
+                )
+                raw_src_type = (source_data.get("type") or "").strip().lower()
+                source_type = _OPENALEX_SOURCE_TYPE_MAP.get(raw_src_type)
+                return Source(title=pub_title, issn=issn, source_type=source_type)
+
+        repo_source = _find_repository_source(work)
+        if repo_source:
+            repo_name = (repo_source.get("display_name") or "").strip()
+            if repo_name:
+                return Source(title=repo_name, source_type=SourceType.REPOSITORY)
+        return None
+
+    @staticmethod
+    def _parse_oa_pages(work: dict[str, Any]) -> str | None:
+        """Extract page range from OpenAlex biblio metadata.
+
+        Parameters
+        ----------
+        work : dict
+            OpenAlex work metadata dict.
+
+        Returns
+        -------
+        str | None
+            Page range string (en-dash separated) or ``None``.
+        """
+        biblio = work.get("biblio") or {}
+        first_page = (biblio.get("first_page") or "").strip()
+        last_page = (biblio.get("last_page") or "").strip()
+        if first_page and last_page:
+            return f"{first_page}\u2013{last_page}"
+        return first_page or None
+
+    @staticmethod
+    def _parse_oa_paper_type(work: dict[str, Any], source: Source | None) -> PaperType | None:
+        """Infer paper type from OpenAlex work type and source type.
+
+        Conference papers reported as ``article`` are promoted to
+        ``inproceedings`` when the source is a conference venue.
+
+        Parameters
+        ----------
+        work : dict
+            OpenAlex work metadata dict.
+        source : Source | None
+            Already-resolved source for this work.
+
+        Returns
+        -------
+        PaperType | None
+            Inferred paper type or ``None``.
+        """
+        raw_work_type = (work.get("type") or "").strip().lower()
+        paper_type = _OPENALEX_PAPER_TYPE_MAP.get(raw_work_type)
+        if (
+            paper_type is PaperType.ARTICLE
+            and source is not None
+            and source.source_type is SourceType.CONFERENCE
+        ):
+            paper_type = PaperType.INPROCEEDINGS
+        return paper_type
+
+    @staticmethod
+    def _parse_oa_topics(
+        work: dict[str, Any],
+    ) -> tuple[set[str], set[str]]:
+        """Extract fields of study and subjects from OpenAlex primary_topic.
+
+        Parameters
+        ----------
+        work : dict
+            OpenAlex work metadata dict.
+
+        Returns
+        -------
+        tuple[set[str], set[str]]
+            ``(fields_of_study, subjects)`` sets.
+        """
+        fields_of_study: set[str] = set()
+        subjects: set[str] = set()
+        primary_topic = work.get("primary_topic") or {}
+        if not primary_topic:
+            return fields_of_study, subjects
+        field_name = (((primary_topic.get("field") or {}).get("display_name")) or "").strip()
+        if field_name:
+            fields_of_study.add(field_name)
+        domain_name = (((primary_topic.get("domain") or {}).get("display_name")) or "").strip()
+        if domain_name and domain_name != field_name:
+            fields_of_study.add(domain_name)
+        subfield_name = (((primary_topic.get("subfield") or {}).get("display_name")) or "").strip()
+        if subfield_name:
+            subjects.add(subfield_name)
+        topic_name = (primary_topic.get("display_name") or "").strip()
+        if topic_name:
+            subjects.add(topic_name)
+        return fields_of_study, subjects
+
+    @staticmethod
+    def _parse_oa_funders(work: dict[str, Any]) -> set[str]:
+        """Extract funder names from an OpenAlex work.
+
+        Parameters
+        ----------
+        work : dict
+            OpenAlex work metadata dict.
+
+        Returns
+        -------
+        set[str]
+            Funder name set.
+        """
+        funders: set[str] = set()
+        for funder in work.get("funders") or []:
+            if isinstance(funder, dict):
+                name = (funder.get("display_name") or "").strip()
+                if name:
+                    funders.add(name)
+        return funders
+
     def _parse_paper(self, work: dict[str, Any]) -> Paper | None:
         """Parse a single OpenAlex work object into a :class:`Paper`.
 
@@ -564,27 +822,8 @@ class OpenAlexConnector(
         if not title:
             return None
 
-        # Abstract — stored as inverted index in OpenAlex
-        abstract = ""
-        inverted_index = work.get("abstract_inverted_index")
-        if inverted_index:
-            abstract = _reconstruct_abstract(inverted_index)
-
-        # Authors
-        authors: list[Author] = []
-        for authorship in work.get("authorships", []):
-            author_info = authorship.get("author") or {}
-            name = (author_info.get("display_name") or "").strip()
-            if name:
-                # OpenAlex provides institutions per authorship entry.
-                institutions = authorship.get("institutions") or []
-                affiliation_parts = [
-                    (inst.get("display_name") or "").strip()
-                    for inst in institutions
-                    if isinstance(inst, dict) and (inst.get("display_name") or "").strip()
-                ]
-                affiliation = "; ".join(affiliation_parts) if affiliation_parts else None
-                authors.append(Author(name=name, affiliation=affiliation))
+        abstract = self._parse_oa_abstract(work)
+        authors = self._parse_oa_authors(work)
 
         # Publication date
         pub_date: datetime.date | None = None
@@ -593,129 +832,18 @@ class OpenAlexConnector(
             with contextlib.suppress(ValueError):
                 pub_date = datetime.date.fromisoformat(_pub_date_str[:10])
 
-        # DOI / URL
-        doi_raw: str | None = (work.get("doi") or "").strip() or None
-        doi = normalize_doi(doi_raw) if doi_raw else None
-
-        url: str | None = None
-        open_access = work.get("open_access") or {}
-        url = (open_access.get("oa_url") or "").strip() or None
-        if not url:
-            primary = work.get("primary_location") or {}
-            url = (primary.get("landing_page_url") or "").strip() or None
-
-        pdf_url: str | None = None
-        for loc in work.get("locations", []):
-            if isinstance(loc, dict) and loc.get("pdf_url"):
-                pdf_url = loc["pdf_url"]
-                break
+        doi, url, pdf_url = self._parse_oa_doi_url_pdf(work)
+        keywords = self._parse_oa_keywords(work)
+        source = self._parse_oa_source(work)
+        pages = self._parse_oa_pages(work)
+        paper_type = self._parse_oa_paper_type(work, source)
+        fields_of_study, subjects = self._parse_oa_topics(work)
+        funders = self._parse_oa_funders(work)
 
         # Citations
         citations: int | None = work.get("cited_by_count")
 
-        # Keywords / concepts
-        keywords: set[str] = set()
-        for concept in work.get("concepts", []):
-            kw = (concept.get("display_name") or "").strip()
-            if kw:
-                keywords.add(kw)
-        for kw_entry in work.get("keywords", []):
-            if isinstance(kw_entry, str):
-                kw = kw_entry.strip()
-            elif isinstance(kw_entry, dict):
-                kw = (kw_entry.get("display_name") or "").strip()
-            else:
-                kw = ""
-            if kw:
-                keywords.add(kw)
-
-        # Source – prefer a journal or conference venue over a repository.
-        # OpenAlex ``source.type`` may be "journal", "conference", "repository",
-        # "ebook platform", or "book series".  Repository sources (e.g.
-        # institutional repos, Zenodo) should not be used as the paper's
-        # publication source since they represent the *hosting location*, not
-        # the actual venue.
-        source: Source | None = None
-        source_data = _find_best_source(work)
-        if source_data:
-            pub_title = (source_data.get("display_name") or "").strip()
-            if pub_title:
-                issn_list = source_data.get("issn_l") or source_data.get("issn") or []
-                issn = (
-                    issn_list[0]
-                    if isinstance(issn_list, list) and issn_list
-                    else str(issn_list)
-                    if issn_list
-                    else None
-                )
-                raw_src_type = (source_data.get("type") or "").strip().lower()
-                source_type = _OPENALEX_SOURCE_TYPE_MAP.get(raw_src_type)
-                source = Source(title=pub_title, issn=issn, source_type=source_type)
-
-        # When no formal source was found and the work is a preprint,
-        # create a repository-type source from the repository location.
-        if source is None:
-            repo_source = _find_repository_source(work)
-            if repo_source:
-                repo_name = (repo_source.get("display_name") or "").strip()
-                if repo_name:
-                    source = Source(title=repo_name, source_type=SourceType.REPOSITORY)
-
-        # Pages from biblio
-        pages: str | None = None
-        biblio = work.get("biblio") or {}
-        first_page = (biblio.get("first_page") or "").strip()
-        last_page = (biblio.get("last_page") or "").strip()
-        if first_page and last_page:
-            pages = f"{first_page}\u2013{last_page}"
-        elif first_page:
-            pages = first_page
-
-        # Infer paper_type from the work-level "type" field.
-        raw_work_type = (work.get("type") or "").strip().lower()
-        paper_type = _OPENALEX_PAPER_TYPE_MAP.get(raw_work_type)
-
-        # OpenAlex classifies conference papers as work.type "article".
-        # When the source is a conference venue, promote to INPROCEEDINGS.
-        if (
-            paper_type is PaperType.ARTICLE
-            and source is not None
-            and source.source_type is SourceType.CONFERENCE
-        ):
-            paper_type = PaperType.INPROCEEDINGS
-
-        # Extract fields_of_study and subjects from primary_topic.
-        fields_of_study: set[str] = set()
-        subjects: set[str] = set()
-        primary_topic = work.get("primary_topic") or {}
-        if primary_topic:
-            # field → fields_of_study (broad area)
-            field_info = primary_topic.get("field") or {}
-            field_name = (field_info.get("display_name") or "").strip()
-            if field_name:
-                fields_of_study.add(field_name)
-            # domain can serve as an additional broad classifier
-            domain_info = primary_topic.get("domain") or {}
-            domain_name = (domain_info.get("display_name") or "").strip()
-            if domain_name and domain_name != field_name:
-                fields_of_study.add(domain_name)
-            # subfield → subjects (specific)
-            subfield_info = primary_topic.get("subfield") or {}
-            subfield_name = (subfield_info.get("display_name") or "").strip()
-            if subfield_name:
-                subjects.add(subfield_name)
-            # topic display_name → subjects (even more specific)
-            topic_name = (primary_topic.get("display_name") or "").strip()
-            if topic_name:
-                subjects.add(topic_name)
-
-        # Funders — extracted from the funders list
-        funders: set[str] = set()
-        for funder in work.get("funders") or []:
-            if isinstance(funder, dict):
-                funder_name = (funder.get("display_name") or "").strip()
-                if funder_name:
-                    funders.add(funder_name)
+        open_access = work.get("open_access") or {}
 
         try:
             paper = Paper(
@@ -774,8 +902,6 @@ class OpenAlexConnector(
         total: int | None = None
         processed = 0
 
-        # Cap results to at most 1 year in the future to avoid placeholder
-        # dates (e.g. 2050-01-01) that some upstream metadata sources produce.
         _max_pub_date = (datetime.date.today() + datetime.timedelta(days=365)).isoformat()
 
         while True:
@@ -785,33 +911,9 @@ class OpenAlexConnector(
             remaining = (max_papers - len(papers)) if max_papers is not None else _PAGE_SIZE
             page_size = min(_PAGE_SIZE, remaining)
 
-            params: dict = {
-                **query_params,
-                "per-page": page_size,
-                "cursor": cursor,
-                "sort": "publication_date:desc",
-                "select": (
-                    "id,doi,title,display_name,publication_date,authorships,"
-                    "abstract_inverted_index,cited_by_count,open_access,locations,"
-                    "primary_location,concepts,keywords,type,biblio,primary_topic,language,"
-                    "is_retracted,funders"
-                ),
-            }
-
-            # Inject the date cap into the existing filter string.
-            existing_filter = params.get("filter", "")
-            date_cap = f"to_publication_date:{_max_pub_date}"
-            if existing_filter:
-                params["filter"] = f"{existing_filter},{date_cap}"
-            else:
-                params["filter"] = date_cap
-
-            # Apply user-specified date bounds on top of the automatic cap.
-            if since is not None:
-                params["filter"] += f",from_publication_date:{since.isoformat()}"
-            if until is not None and until.isoformat() < _max_pub_date:
-                # Only override the cap when the user's bound is tighter.
-                params["filter"] += f",to_publication_date:{until.isoformat()}"
+            params = OpenAlexConnector._build_oa_page_params(
+                query_params, page_size, cursor, _max_pub_date, since, until
+            )
 
             try:
                 response = self._get(_BASE_URL, params)
@@ -847,11 +949,60 @@ class OpenAlexConnector(
 
             cursor = next_cursor
 
-        # Ensure the progress bar is updated even when the loop exits early
-        # (e.g. on the first request returning no results or a request error),
-        # so the bar never stays frozen at its initial 0-paper state.
         if progress_callback is not None:
             progress_callback(processed, total)
+
+    @staticmethod
+    def _build_oa_page_params(
+        query_params: dict[str, Any],
+        page_size: int,
+        cursor: str,
+        max_pub_date: str,
+        since: datetime.date | None,
+        until: datetime.date | None,
+    ) -> dict[str, Any]:
+        """Build the full OpenAlex request parameters for one page.
+
+        Parameters
+        ----------
+        query_params : dict
+            Base query parameters from the query builder.
+        page_size : int
+            Number of results requested.
+        cursor : str
+            Pagination cursor (``"*"`` for the first page).
+        max_pub_date : str
+            ISO-format upper date cap (future-date guard).
+        since : datetime.date | None
+            User lower bound.
+        until : datetime.date | None
+            User upper bound (only applied when tighter than *max_pub_date*).
+
+        Returns
+        -------
+        dict[str, Any]
+            Complete params dict ready to pass to the HTTP request.
+        """
+        params: dict[str, Any] = {
+            **query_params,
+            "per-page": page_size,
+            "cursor": cursor,
+            "sort": "publication_date:desc",
+            "select": (
+                "id,doi,title,display_name,publication_date,authorships,"
+                "abstract_inverted_index,cited_by_count,open_access,locations,"
+                "primary_location,concepts,keywords,type,biblio,primary_topic,language,"
+                "is_retracted,funders"
+            ),
+        }
+        existing_filter = params.get("filter", "")
+        date_cap = f"to_publication_date:{max_pub_date}"
+        params["filter"] = f"{existing_filter},{date_cap}" if existing_filter else date_cap
+        if since is not None:
+            params["filter"] += f",from_publication_date:{since.isoformat()}"
+        if until is not None and until.isoformat() < max_pub_date:
+            params["filter"] += f",to_publication_date:{until.isoformat()}"
+        return params
 
     def _fetch_papers(
         self,

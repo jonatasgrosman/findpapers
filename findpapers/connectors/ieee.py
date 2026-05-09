@@ -247,6 +247,102 @@ class IEEEConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConnec
 
         return self._parse_paper(articles[0])
 
+    def _parse_ieee_keywords_subjects(self, item: dict[str, Any]) -> tuple[set[str], set[str]]:
+        """Extract keywords and subjects from IEEE index_terms.
+
+        ``ieee_terms`` (INSPEC controlled vocabulary) map to *subjects*;
+        ``author_terms`` and ``mesh_terms`` map to *keywords*.
+
+        Parameters
+        ----------
+        item : dict
+            IEEE article metadata dict.
+
+        Returns
+        -------
+        tuple[set[str], set[str]]
+            ``(keywords, subjects)`` sets.
+        """
+        keywords: set[str] = set()
+        subjects: set[str] = set()
+        index_terms = item.get("index_terms") or {}
+        for term in index_terms.get("ieee_terms", {}).get("terms", []):
+            t = term.strip()
+            if t:
+                subjects.add(t)
+        for kw_group in ("author_terms", "mesh_terms"):
+            for kw in index_terms.get(kw_group, {}).get("terms", []):
+                k = kw.strip()
+                if k:
+                    keywords.add(k)
+        return keywords, subjects
+
+    def _parse_ieee_source(self, item: dict[str, Any]) -> Source | None:
+        """Build a :class:`~findpapers.core.source.Source` from IEEE metadata.
+
+        Parameters
+        ----------
+        item : dict
+            IEEE article metadata dict.
+
+        Returns
+        -------
+        Source | None
+            Populated source or ``None`` when no publication title is present.
+        """
+        source_title = (item.get("publication_title") or "").strip()
+        if not source_title:
+            return None
+        raw_content_type = (item.get("content_type") or "").strip().lower()
+        return Source(
+            title=source_title,
+            issn=(item.get("issn") or "").strip() or None,
+            isbn=(item.get("isbn") or "").strip() or None,
+            publisher=(item.get("publisher") or "").strip() or None,
+            source_type=_IEEE_CONTENT_TYPE_MAP.get(raw_content_type),
+        )
+
+    @staticmethod
+    def _parse_ieee_pages(item: dict[str, Any]) -> str | None:
+        """Extract page range from IEEE metadata.
+
+        Parameters
+        ----------
+        item : dict
+            IEEE article metadata dict.
+
+        Returns
+        -------
+        str | None
+            Page range string or ``None``.
+        """
+        start_page = str(item.get("start_page") or "").strip()
+        end_page = str(item.get("end_page") or "").strip()
+        if start_page and end_page:
+            return f"{start_page}-{end_page}"
+        return start_page or None
+
+    @staticmethod
+    def _parse_ieee_is_open_access(item: dict[str, Any]) -> bool | None:
+        """Determine open-access status from IEEE ``access_type``.
+
+        Parameters
+        ----------
+        item : dict
+            IEEE article metadata dict.
+
+        Returns
+        -------
+        bool | None
+            ``True`` for ``OPEN_ACCESS``, ``False`` for ``LOCKED``, else ``None``.
+        """
+        raw = (item.get("access_type") or "").strip().upper()
+        if raw == "OPEN_ACCESS":
+            return True
+        if raw == "LOCKED":
+            return False
+        return None
+
     def _parse_paper(self, item: dict[str, Any]) -> Paper | None:
         """Parse a single IEEE API result item.
 
@@ -265,87 +361,18 @@ class IEEEConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConnec
             return None
 
         abstract = (item.get("abstract") or "").strip()
-
-        # Authors
-        authors: list[Author] = []
-        for author_entry in item.get("authors", {}).get("authors", []):
-            full_name = (author_entry.get("full_name") or "").strip()
-            if full_name:
-                affiliation = (author_entry.get("affiliation") or "").strip() or None
-                authors.append(Author(name=full_name, affiliation=affiliation))
-
-        # Publication date
-        pub_date: datetime.date | None = None
-        pub_year = item.get("publication_year")
-        if pub_year:
-            with contextlib.suppress(ValueError, TypeError):
-                pub_date = datetime.date(int(pub_year), 1, 1)
-
-        # DOI / URL
+        authors = IEEEConnector._parse_ieee_authors(item)
+        pub_date = IEEEConnector._parse_ieee_pub_date(item)
         doi: str | None = (item.get("doi") or "").strip() or None
         url: str | None = (item.get("html_url") or item.get("pdf_url") or "").strip() or None
         pdf_url: str | None = (item.get("pdf_url") or "").strip() or None
-
-        # Keywords and subjects from index_terms
-        # ieee_terms are INSPEC controlled vocabulary → subjects
-        # author_terms and mesh_terms → keywords
-        keywords: set[str] = set()
-        subjects: set[str] = set()
-        index_terms = item.get("index_terms") or {}
-        for kw_el in index_terms.get("ieee_terms", {}).get("terms", []):
-            term = kw_el.strip()
-            if term:
-                subjects.add(term)
-        for kw_group in ["author_terms", "mesh_terms"]:
-            for kw_el in index_terms.get(kw_group, {}).get("terms", []):
-                kw = kw_el.strip()
-                if kw:
-                    keywords.add(kw)
-
-        # Citations
-        citations: int | None = None
-        citation_count = item.get("citing_paper_count")
-        if citation_count is not None:
-            with contextlib.suppress(ValueError, TypeError):
-                citations = int(citation_count)
-
-        # Source
-        source_title = (item.get("publication_title") or "").strip()
+        keywords, subjects = self._parse_ieee_keywords_subjects(item)
+        citations = IEEEConnector._parse_ieee_citations(item)
+        source = self._parse_ieee_source(item)
         raw_content_type = (item.get("content_type") or "").strip().lower()
-        source: Source | None = None
-        if source_title:
-            issn = (item.get("issn") or "").strip() or None
-            isbn = (item.get("isbn") or "").strip() or None
-            publisher = (item.get("publisher") or "").strip() or None
-            # Map content_type to SourceType.
-            source_type = _IEEE_CONTENT_TYPE_MAP.get(raw_content_type)
-            source = Source(
-                title=source_title,
-                issn=issn,
-                isbn=isbn,
-                publisher=publisher,
-                source_type=source_type,
-            )
-
-        # Infer paper_type from content_type.
         paper_type = _IEEE_PAPER_TYPE_MAP.get(raw_content_type)
-
-        # Pages
-        start_page = item.get("start_page") or ""
-        end_page = item.get("end_page") or ""
-        pages: str | None = None
-        if start_page and end_page:
-            pages = f"{start_page}-{end_page}"
-        elif start_page:
-            pages = str(start_page)
-
-        # Open access — "OPEN_ACCESS" → True, "LOCKED" → False, else None.
-        raw_access_type = (item.get("access_type") or "").strip().upper()
-        is_open_access: bool | None = None
-        if raw_access_type == "OPEN_ACCESS":
-            is_open_access = True
-        elif raw_access_type == "LOCKED":
-            is_open_access = False
+        pages = self._parse_ieee_pages(item)
+        is_open_access = self._parse_ieee_is_open_access(item)
 
         try:
             paper = Paper(
@@ -369,6 +396,70 @@ class IEEEConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConnec
             return None
 
         return paper
+
+    @staticmethod
+    def _parse_ieee_authors(item: dict[str, Any]) -> list[Author]:
+        """Extract authors from an IEEE item dict.
+
+        Parameters
+        ----------
+        item : dict
+            IEEE article metadata dict.
+
+        Returns
+        -------
+        list[Author]
+            Parsed author list.
+        """
+        authors: list[Author] = []
+        for author_entry in item.get("authors", {}).get("authors", []):
+            full_name = (author_entry.get("full_name") or "").strip()
+            if full_name:
+                affiliation = (author_entry.get("affiliation") or "").strip() or None
+                authors.append(Author(name=full_name, affiliation=affiliation))
+        return authors
+
+    @staticmethod
+    def _parse_ieee_pub_date(item: dict[str, Any]) -> datetime.date | None:
+        """Parse publication date from IEEE item metadata.
+
+        Parameters
+        ----------
+        item : dict
+            IEEE article metadata dict.
+
+        Returns
+        -------
+        datetime.date | None
+            Publication date or ``None``.
+        """
+        pub_date: datetime.date | None = None
+        pub_year = item.get("publication_year")
+        if pub_year:
+            with contextlib.suppress(ValueError, TypeError):
+                pub_date = datetime.date(int(pub_year), 1, 1)
+        return pub_date
+
+    @staticmethod
+    def _parse_ieee_citations(item: dict[str, Any]) -> int | None:
+        """Extract citation count from an IEEE item dict.
+
+        Parameters
+        ----------
+        item : dict
+            IEEE article metadata dict.
+
+        Returns
+        -------
+        int | None
+            Citation count or ``None``.
+        """
+        citations: int | None = None
+        citation_count = item.get("citing_paper_count")
+        if citation_count is not None:
+            with contextlib.suppress(ValueError, TypeError):
+                citations = int(citation_count)
+        return citations
 
     def _fetch_papers(
         self,

@@ -326,124 +326,14 @@ class PubmedConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConn
         ]
         abstract = " ".join(filter(None, abstract_parts))
 
-        # Authors
-        authors: list[Author] = []
-        for author_el in article.findall(".//Author"):
-            last = (author_el.findtext("LastName") or "").strip()
-            fore = (author_el.findtext("ForeName") or "").strip()
-            initials = (author_el.findtext("Initials") or "").strip()
-            if last and fore:
-                name = f"{fore} {last}"
-            elif last and initials:
-                name = f"{initials} {last}"
-            elif last:
-                name = last
-            else:
-                continue
-            # PubMed provides affiliation info inside AffiliationInfo.
-            aff_parts = [
-                (aff_el.text or "").strip()
-                for aff_el in author_el.findall(".//AffiliationInfo/Affiliation")
-                if aff_el is not None and (aff_el.text or "").strip()
-            ]
-            affiliation = "; ".join(aff_parts) if aff_parts else None
-            authors.append(Author(name=name, affiliation=affiliation))
-
-        # Publication date
-        # Prefer ArticleDate (electronic publication) over Journal/JournalIssue/PubDate
-        # (print issue date).  PubMed's esearch ``pdat`` filter matches against
-        # the electronic publication date, so using the same date here avoids a
-        # mismatch where esearch returns a paper within the requested range but
-        # the parsed date falls outside it (common with epub-ahead-of-print).
-        pub_date: datetime.date | None = None
-
-        article_date_el = article.find("ArticleDate")
-        if article_date_el is not None:
-            pub_date = _parse_date_element(article_date_el)
-
-        if pub_date is None:
-            pub_date_el = article.find(".//PubDate")
-            if pub_date_el is not None:
-                pub_date = _parse_date_element(pub_date_el)
-
-        # DOI
-        doi: str | None = None
-        for id_el in article_el.findall(".//ArticleId"):
-            if id_el.get("IdType") == "doi" and id_el.text and id_el.text.strip():
-                doi = id_el.text.strip()
-                break
-
-        # URL via PMID
-        pmid_el = medline.find("PMID")
-        url: str | None = None
-        if pmid_el is not None and pmid_el.text and pmid_el.text.strip():
-            url = f"https://pubmed.ncbi.nlm.nih.gov/{pmid_el.text.strip()}/"
-
-        # Keywords
-        keywords: set[str] = set()
-        for kw_el in article_el.findall(".//Keyword"):
-            kw = (kw_el.text or "").strip()
-            if kw:
-                keywords.add(kw)
-        for mh_el in article_el.findall(".//DescriptorName"):
-            kw = (mh_el.text or "").strip()
-            if kw:
-                keywords.add(kw)
-
-        # Subjects: MeSH descriptors marked as major topics of the paper.
-        subjects: set[str] = set()
-        for mh_el in article_el.findall(".//MeshHeading/DescriptorName"):
-            if mh_el.get("MajorTopicYN") == "Y":
-                descriptor = (mh_el.text or "").strip()
-                if descriptor:
-                    subjects.add(descriptor)
-
-        # Pages
-        pages: str | None = None
-        pagination_el = article.find(".//Pagination")
-        if pagination_el is not None:
-            medline_pgn = (pagination_el.findtext("MedlinePgn") or "").strip()
-            if medline_pgn:
-                pages = medline_pgn
-            else:
-                start_pg = (pagination_el.findtext("StartPage") or "").strip()
-                end_pg = (pagination_el.findtext("EndPage") or "").strip()
-                if start_pg and end_pg:
-                    pages = f"{start_pg}\u2013{end_pg}"
-                elif start_pg:
-                    pages = start_pg
-
-        # Source (journal)
-        journal_el = article.find(".//Journal")
-        source: Source | None = None
-        if journal_el is not None:
-            journal_title = journal_el.findtext("Title") or ""
-            abbrev = journal_el.findtext("ISOAbbreviation") or ""
-            pub_title = journal_title or abbrev
-            issn_el = journal_el.find("ISSN")
-            issn = (issn_el.text or "").strip() if issn_el is not None else None
-            if pub_title.strip():
-                source = Source(
-                    title=pub_title.strip(),
-                    issn=issn,
-                    source_type=SourceType.JOURNAL,
-                )
-
-        # Publication type (paper_type)
-        pub_type_texts = [
-            (pt_el.text or "").strip().lower()
-            for pt_el in article.findall(".//PublicationTypeList/PublicationType")
-            if pt_el.text
-        ]
-        paper_type: PaperType | None = None
-        for rule_key, rule_type in self._PUBMED_PAPER_TYPE_RULES:
-            if any(rule_key in pt for pt in pub_type_texts):
-                paper_type = rule_type
-                break
-
-        # is_retracted — "Retracted Publication" means this paper was retracted.
-        # ("Retraction of Publication" means the paper IS the retraction notice — not what we want.)
-        is_retracted = "retracted publication" in pub_type_texts
+        authors = self._parse_pubmed_authors(article)
+        pub_date = self._parse_pubmed_pub_date(article, article_el)
+        doi = self._parse_pubmed_doi(article_el)
+        url = self._parse_pubmed_url(medline)
+        keywords, subjects = self._parse_pubmed_keywords_subjects(article_el)
+        pages = self._parse_pubmed_pages(article)
+        source = self._parse_pubmed_source(article)
+        paper_type, is_retracted = self._parse_pubmed_type_retracted(article)
 
         # Language — first <Language> element inside the Article
         language: str | None = None
@@ -451,12 +341,7 @@ class PubmedConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConn
         if lang_el is not None and lang_el.text:
             language = normalize_language(lang_el.text.strip())
 
-        # Funders — Agency names from GrantList/Grant elements
-        funders: set[str] = set()
-        for grant_el in article_el.findall(".//GrantList/Grant"):
-            agency = (grant_el.findtext("Agency") or "").strip()
-            if agency:
-                funders.add(agency)
+        funders = self._parse_pubmed_funders(article_el)
 
         try:
             paper = Paper(
@@ -480,6 +365,240 @@ class PubmedConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConn
             return None
 
         return paper
+
+    @staticmethod
+    def _parse_pubmed_authors(article: Element) -> list[Author]:
+        """Extract authors with affiliations from a PubMed Article element.
+
+        Parameters
+        ----------
+        article : Element
+            ``Article`` XML element.
+
+        Returns
+        -------
+        list[Author]
+            Parsed author list.
+        """
+        authors: list[Author] = []
+        for author_el in article.findall(".//Author"):
+            last = (author_el.findtext("LastName") or "").strip()
+            fore = (author_el.findtext("ForeName") or "").strip()
+            initials = (author_el.findtext("Initials") or "").strip()
+            if last and fore:
+                name = f"{fore} {last}"
+            elif last and initials:
+                name = f"{initials} {last}"
+            elif last:
+                name = last
+            else:
+                continue
+            aff_parts = [
+                (aff_el.text or "").strip()
+                for aff_el in author_el.findall(".//AffiliationInfo/Affiliation")
+                if aff_el is not None and (aff_el.text or "").strip()
+            ]
+            affiliation = "; ".join(aff_parts) if aff_parts else None
+            authors.append(Author(name=name, affiliation=affiliation))
+        return authors
+
+    @staticmethod
+    def _parse_pubmed_pub_date(article: Element, article_el: Element) -> datetime.date | None:
+        """Resolve the publication date for a PubMed paper.
+
+        Prefers ``ArticleDate`` (electronic) over ``PubDate`` (print).
+
+        Parameters
+        ----------
+        article : Element
+            ``Article`` XML element.
+        article_el : Element
+            ``PubmedArticle`` root XML element (for ``PubDate`` fallback).
+
+        Returns
+        -------
+        datetime.date | None
+            Parsed date or ``None``.
+        """
+        article_date_el = article.find("ArticleDate")
+        if article_date_el is not None:
+            pub_date = _parse_date_element(article_date_el)
+            if pub_date is not None:
+                return pub_date
+        pub_date_el = article_el.find(".//PubDate")
+        if pub_date_el is not None:
+            return _parse_date_element(pub_date_el)
+        return None
+
+    @staticmethod
+    def _parse_pubmed_doi(article_el: Element) -> str | None:
+        """Extract DOI from PubMed ArticleId elements.
+
+        Parameters
+        ----------
+        article_el : Element
+            ``PubmedArticle`` root XML element.
+
+        Returns
+        -------
+        str | None
+            DOI string or ``None``.
+        """
+        for id_el in article_el.findall(".//ArticleId"):
+            if id_el.get("IdType") == "doi" and id_el.text and id_el.text.strip():
+                return id_el.text.strip()
+        return None
+
+    @staticmethod
+    def _parse_pubmed_url(medline: Element) -> str | None:
+        """Build a PubMed URL from the PMID element.
+
+        Parameters
+        ----------
+        medline : Element
+            ``MedlineCitation`` XML element.
+
+        Returns
+        -------
+        str | None
+            Full PubMed URL or ``None``.
+        """
+        pmid_el = medline.find("PMID")
+        if pmid_el is not None and pmid_el.text and pmid_el.text.strip():
+            return f"https://pubmed.ncbi.nlm.nih.gov/{pmid_el.text.strip()}/"
+        return None
+
+    @staticmethod
+    def _parse_pubmed_keywords_subjects(
+        article_el: Element,
+    ) -> tuple[set[str], set[str]]:
+        """Extract keywords and MeSH-based subjects from a PubMed article.
+
+        Parameters
+        ----------
+        article_el : Element
+            ``PubmedArticle`` root XML element.
+
+        Returns
+        -------
+        tuple[set[str], set[str]]
+            ``(keywords, subjects)`` sets.
+        """
+        keywords: set[str] = set()
+        for kw_el in article_el.findall(".//Keyword"):
+            kw = (kw_el.text or "").strip()
+            if kw:
+                keywords.add(kw)
+        for mh_el in article_el.findall(".//DescriptorName"):
+            kw = (mh_el.text or "").strip()
+            if kw:
+                keywords.add(kw)
+        subjects: set[str] = set()
+        for mh_el in article_el.findall(".//MeshHeading/DescriptorName"):
+            if mh_el.get("MajorTopicYN") == "Y":
+                descriptor = (mh_el.text or "").strip()
+                if descriptor:
+                    subjects.add(descriptor)
+        return keywords, subjects
+
+    @staticmethod
+    def _parse_pubmed_pages(article: Element) -> str | None:
+        """Extract page range from a PubMed Article element.
+
+        Parameters
+        ----------
+        article : Element
+            ``Article`` XML element.
+
+        Returns
+        -------
+        str | None
+            Page range string or ``None``.
+        """
+        pagination_el = article.find(".//Pagination")
+        if pagination_el is None:
+            return None
+        medline_pgn = (pagination_el.findtext("MedlinePgn") or "").strip()
+        if medline_pgn:
+            return medline_pgn
+        start_pg = (pagination_el.findtext("StartPage") or "").strip()
+        end_pg = (pagination_el.findtext("EndPage") or "").strip()
+        if start_pg and end_pg:
+            return f"{start_pg}\u2013{end_pg}"
+        return start_pg or None
+
+    @staticmethod
+    def _parse_pubmed_source(article: Element) -> Source | None:
+        """Build a :class:`~findpapers.core.source.Source` from a PubMed Article.
+
+        Parameters
+        ----------
+        article : Element
+            ``Article`` XML element.
+
+        Returns
+        -------
+        Source | None
+            Journal source or ``None`` when no usable journal is found.
+        """
+        journal_el = article.find(".//Journal")
+        if journal_el is None:
+            return None
+        journal_title = journal_el.findtext("Title") or ""
+        abbrev = journal_el.findtext("ISOAbbreviation") or ""
+        pub_title = journal_title or abbrev
+        issn_el = journal_el.find("ISSN")
+        issn = (issn_el.text or "").strip() if issn_el is not None else None
+        if pub_title.strip():
+            return Source(title=pub_title.strip(), issn=issn, source_type=SourceType.JOURNAL)
+        return None
+
+    def _parse_pubmed_type_retracted(self, article: Element) -> tuple[PaperType | None, bool]:
+        """Infer paper type and retraction status from PublicationTypeList.
+
+        Parameters
+        ----------
+        article : Element
+            ``Article`` XML element.
+
+        Returns
+        -------
+        tuple[PaperType | None, bool]
+            ``(paper_type, is_retracted)`` pair.
+        """
+        pub_type_texts = [
+            (pt_el.text or "").strip().lower()
+            for pt_el in article.findall(".//PublicationTypeList/PublicationType")
+            if pt_el.text
+        ]
+        paper_type: PaperType | None = None
+        for rule_key, rule_type in self._PUBMED_PAPER_TYPE_RULES:
+            if any(rule_key in pt for pt in pub_type_texts):
+                paper_type = rule_type
+                break
+        is_retracted = "retracted publication" in pub_type_texts
+        return paper_type, is_retracted
+
+    @staticmethod
+    def _parse_pubmed_funders(article_el: Element) -> set[str]:
+        """Extract funder names from PubMed GrantList.
+
+        Parameters
+        ----------
+        article_el : Element
+            ``PubmedArticle`` root XML element.
+
+        Returns
+        -------
+        set[str]
+            Funder name set.
+        """
+        funders: set[str] = set()
+        for grant_el in article_el.findall(".//GrantList/Grant"):
+            agency = (grant_el.findtext("Agency") or "").strip()
+            if agency:
+                funders.add(agency)
+        return funders
 
     def _fetch_papers(
         self,

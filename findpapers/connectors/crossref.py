@@ -488,6 +488,42 @@ class CrossRefConnector(CitationConnectorBase, DOILookupConnectorBase):
         return None
 
     @staticmethod
+    def _parse_crossref_source(work: dict[str, Any]) -> Source | None:
+        """Build a :class:`~findpapers.core.source.Source` from a CrossRef work.
+
+        Parameters
+        ----------
+        work : dict[str, Any]
+            CrossRef work record.
+
+        Returns
+        -------
+        Source | None
+            Populated source or ``None`` when no container title is present.
+        """
+        container_titles = work.get("container-title") or []
+        source_title = (
+            container_titles[0].strip()
+            if isinstance(container_titles, list) and container_titles
+            else ""
+        )
+        if not source_title:
+            return None
+        issn_list = work.get("ISSN") or []
+        issn = issn_list[0] if isinstance(issn_list, list) and issn_list else None
+        isbn_list = work.get("ISBN") or []
+        isbn = isbn_list[0] if isinstance(isbn_list, list) and isbn_list else None
+        publisher = (work.get("publisher") or "").strip() or None
+        crossref_type = (work.get("type") or "").strip().lower()
+        return Source(
+            title=source_title,
+            issn=issn,
+            isbn=isbn,
+            publisher=publisher,
+            source_type=_CROSSREF_TYPE_MAP.get(crossref_type),
+        )
+
+    @staticmethod
     def _build_paper(work: dict[str, Any]) -> Paper | None:
         """Build a :class:`~findpapers.core.paper.Paper` from a CrossRef work record.
 
@@ -552,37 +588,7 @@ class CrossRefConnector(CitationConnectorBase, DOILookupConnectorBase):
         if not url:
             url = (work.get("URL") or "").strip() or None
 
-        # Source (journal, conference, book, etc.)
-        source: Source | None = None
-        container_titles = work.get("container-title") or []
-        source_title = (
-            container_titles[0].strip()
-            if isinstance(container_titles, list) and container_titles
-            else ""
-        )
-        if source_title:
-            # ISSN — CrossRef returns a list of ISSNs.
-            issn_list = work.get("ISSN") or []
-            issn = issn_list[0] if isinstance(issn_list, list) and issn_list else None
-
-            # ISBN
-            isbn_list = work.get("ISBN") or []
-            isbn = isbn_list[0] if isinstance(isbn_list, list) and isbn_list else None
-
-            # Publisher
-            publisher = (work.get("publisher") or "").strip() or None
-
-            # Source type
-            crossref_type = (work.get("type") or "").strip().lower()
-            source_type = _CROSSREF_TYPE_MAP.get(crossref_type)
-
-            source = Source(
-                title=source_title,
-                issn=issn,
-                isbn=isbn,
-                publisher=publisher,
-                source_type=source_type,
-            )
+        source = CrossRefConnector._parse_crossref_source(work)
 
         return Paper(
             title=title,

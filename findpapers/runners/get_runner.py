@@ -233,15 +233,7 @@ class GetRunner:
             {Database.IEEE, Database.SCOPUS, Database.WOS}
         )
 
-        # Build DOI-lookup connectors from the registry.
-        _doi_map: dict[Database, DOILookupConnectorBase] = {}
-        for _source, _cls in DOI_LOOKUP_REGISTRY.items():
-            if _source.value not in active_dbs:
-                continue
-            _creds = _credentials.get(_source, {})
-            if _source in _key_required and not _creds.get("api_key"):
-                continue
-            _doi_map[_source] = _cls(**_creds)
+        _doi_map = GetRunner._build_doi_map(active_dbs, _credentials, _key_required)
 
         self._crossref: DOILookupConnectorBase | None = _doi_map.get(Database.CROSSREF)
         self._arxiv: DOILookupConnectorBase | None = _doi_map.get(Database.ARXIV)
@@ -258,17 +250,7 @@ class GetRunner:
             for connector in self._doi_connectors:
                 connector._timeout = timeout
 
-        # Build URL-lookup connectors for the web scraper.  These are separate
-        # instances so the scraper can use them independently from the DOI
-        # connectors above.
-        url_lookup: list[URLLookupConnectorBase] = []
-        for _url_source, _url_cls in URL_LOOKUP_REGISTRY.items():
-            if _url_source.value not in active_dbs:
-                continue
-            _url_creds = _credentials.get(_url_source, {})
-            if _url_source in _key_required and not _url_creds.get("api_key"):
-                continue
-            url_lookup.append(_url_cls(**_url_creds))
+        url_lookup = GetRunner._build_url_connectors(active_dbs, _credentials, _key_required)
 
         self._scraper: WebScrapingConnector | None = (
             WebScrapingConnector(
@@ -283,6 +265,70 @@ class GetRunner:
             self._scraper._timeout = timeout
 
         self._result: Paper | None = None
+
+    @staticmethod
+    def _build_doi_map(
+        active_dbs: frozenset[str],
+        credentials: dict[Database, dict[str, object]],
+        key_required: frozenset[Database],
+    ) -> dict[Database, DOILookupConnectorBase]:
+        """Instantiate DOI-lookup connectors for the enabled databases.
+
+        Parameters
+        ----------
+        active_dbs : frozenset[str]
+            Set of lowercase database names to enable.
+        credentials : dict[Database, dict[str, object]]
+            Per-source constructor kwargs.
+        key_required : frozenset[Database]
+            Sources that need a non-empty ``api_key`` credential.
+
+        Returns
+        -------
+        dict[Database, DOILookupConnectorBase]
+            Mapping from database enum to instantiated connector.
+        """
+        doi_map: dict[Database, DOILookupConnectorBase] = {}
+        for source, cls in DOI_LOOKUP_REGISTRY.items():
+            if source.value not in active_dbs:
+                continue
+            creds = credentials.get(source, {})
+            if source in key_required and not creds.get("api_key"):
+                continue
+            doi_map[source] = cls(**creds)
+        return doi_map
+
+    @staticmethod
+    def _build_url_connectors(
+        active_dbs: frozenset[str],
+        credentials: dict[Database, dict[str, object]],
+        key_required: frozenset[Database],
+    ) -> list[URLLookupConnectorBase]:
+        """Instantiate URL-lookup connectors for the enabled databases.
+
+        Parameters
+        ----------
+        active_dbs : frozenset[str]
+            Set of lowercase database names to enable.
+        credentials : dict[Database, dict[str, object]]
+            Per-source constructor kwargs.
+        key_required : frozenset[Database]
+            Sources that need a non-empty ``api_key`` credential.
+
+        Returns
+        -------
+        list[URLLookupConnectorBase]
+            Instantiated URL-lookup connectors.
+        """
+        url_lookup: list[URLLookupConnectorBase] = []
+        for url_source, url_cls in URL_LOOKUP_REGISTRY.items():
+            if url_source.value not in active_dbs:
+                continue
+            url_creds = credentials.get(url_source, {})
+            if url_source in key_required and not url_creds.get("api_key"):
+                continue
+            url_lookup.append(url_cls(**url_creds))
+        return url_lookup
 
     @property
     def _doi_connectors(self) -> list[ConnectorBase]:
@@ -349,97 +395,14 @@ class GetRunner:
         doi: str | None = None
 
         try:
-            if self._is_landing_page_url(self._identifier):
-                if self._scraper is not None:
-                    # Stage 1: try URL-API connectors first; fall back to HTML scraping.
-                    logger.debug("Stage 1 — web scraping: %s", self._identifier)
-                    try:
-                        base_paper = self._scraper.fetch_paper_from_url(
-                            self._identifier, timeout=self._timeout
-                        )
-                    except Exception as exc:
-                        logger.debug("Web scraping failed for URL %s: %s", self._identifier, exc)
-                    doi = base_paper.doi if base_paper is not None else None
-                    if doi:
-                        logger.debug("  Scraped DOI: %s", doi)
-                    else:
-                        logger.debug("  No DOI found — Stage 2 will be skipped.")
-                else:
-                    logger.debug("Stage 1 — web scraping: skipped (disabled via databases filter)")
-            else:
-                # Bare DOI or doi.org URL: strip prefix and go straight to Stage 2.
-                doi = self._sanitize_doi(self._identifier)
-                # When web scraping is enabled, follow the doi.org redirect to the
-                # landing page and extract metadata via HTML scraping.  curl_cffi
-                # follows HTTP redirects automatically, so the scraper processes
-                # the actual publisher or repository page.
-                if self._scraper is not None and doi:
-                    doi_redirect_url = f"https://doi.org/{doi}"
-                    logger.debug("Stage 1 — web scraping via DOI URL: %s", doi_redirect_url)
-                    try:
-                        base_paper = self._scraper.fetch_paper_from_url(
-                            doi_redirect_url, timeout=self._timeout
-                        )
-                    except Exception as exc:
-                        logger.debug(
-                            "Web scraping failed for DOI URL %s: %s",
-                            doi_redirect_url,
-                            exc,
-                        )
-                    if base_paper is not None:
-                        logger.debug("  Scraped: %s", base_paper.title)
-                    else:
-                        logger.debug("  No paper found via web scraping.")
+            base_paper, doi = self._run_stage1(self._identifier)
 
             if doi is None:
-                # No DOI available; return whatever the scraper found (may be None).
                 self._result = base_paper
                 _root_logger.setLevel(_saved_log_level)
                 return self._result
 
-            # Stage 2: DOI-based lookup — CrossRef first, then all others.
-            logger.debug("Stage 2 — DOI lookup: %s", doi)
-
-            # Preserve the web-scraping URL (Stage 1 result) before Stage 2 merges
-            # can overwrite it.  The scraped URL is the actual final URL after all
-            # HTTP redirects and has priority over the CrossRef-registered URL.
-            scraped_url: str | None = base_paper.url if base_paper is not None else None
-
-            crossref_paper = self._run_doi_connector(self._crossref, "CrossRef", doi)
-            # Preserve the CrossRef URL before subsequent merges can overwrite it.
-            # Paper.merge() picks the longer string, which could replace a short but
-            # authoritative CrossRef URL with a lengthier one from another source.
-            crossref_url: str | None = crossref_paper.url if crossref_paper is not None else None
-
-            if crossref_paper is not None:
-                if base_paper is None:
-                    base_paper = crossref_paper
-                else:
-                    base_paper.merge(crossref_paper)
-
-            # Iterate through the remaining connectors in priority order.
-            for connector, name, database in (
-                (self._arxiv, "arXiv", Database.ARXIV),
-                (self._ieee, "IEEE", Database.IEEE),
-                (self._pubmed, "PubMed", Database.PUBMED),
-                (self._scopus, "Scopus", Database.SCOPUS),
-                (self._semantic_scholar, "Semantic Scholar", Database.SEMANTIC_SCHOLAR),
-                (self._openalex, "OpenAlex", Database.OPENALEX),
-                (self._wos, "WoS", Database.WOS),
-            ):
-                if self._should_skip_connector(database, doi, self._identifier):
-                    logger.debug("  %s: skipped (source heuristic)", name)
-                    continue
-                base_paper = self._run_and_merge(connector, name, doi, base_paper)
-
-            # URL priority: scraped URL (final URL after all HTTP redirects) >
-            # CrossRef URL.  Only fall back to the CrossRef URL when web scraping
-            # did not yield any URL.
-            if base_paper is not None:
-                if scraped_url is not None:
-                    base_paper.url = scraped_url
-                elif crossref_url is not None:
-                    base_paper.url = crossref_url
+            base_paper = self._run_stage2(doi, base_paper)
 
         finally:
             for doi_connector in self._doi_connectors:
@@ -462,6 +425,110 @@ class GetRunner:
     # ------------------------------------------------------------------
     # Private helpers
     # ------------------------------------------------------------------
+
+    def _run_stage1(self, identifier: str) -> tuple[Paper | None, str | None]:
+        """Run Stage 1 — web scraping / URL resolution.
+
+        Parameters
+        ----------
+        identifier : str
+            The raw identifier passed to the runner.
+
+        Returns
+        -------
+        tuple[Paper | None, str | None]
+            The scraped paper (or ``None``) and the resolved DOI (or ``None``).
+        """
+        base_paper: Paper | None = None
+        doi: str | None = None
+
+        if self._is_landing_page_url(identifier):
+            if self._scraper is not None:
+                logger.debug("Stage 1 — web scraping: %s", identifier)
+                try:
+                    base_paper = self._scraper.fetch_paper_from_url(
+                        identifier, timeout=self._timeout
+                    )
+                except Exception as exc:
+                    logger.debug("Web scraping failed for URL %s: %s", identifier, exc)
+                doi = base_paper.doi if base_paper is not None else None
+                if doi:
+                    logger.debug("  Scraped DOI: %s", doi)
+                else:
+                    logger.debug("  No DOI found — Stage 2 will be skipped.")
+            else:
+                logger.debug("Stage 1 — web scraping: skipped (disabled via databases filter)")
+        else:
+            doi = self._sanitize_doi(identifier)
+            if self._scraper is not None and doi:
+                doi_redirect_url = f"https://doi.org/{doi}"
+                logger.debug("Stage 1 — web scraping via DOI URL: %s", doi_redirect_url)
+                try:
+                    base_paper = self._scraper.fetch_paper_from_url(
+                        doi_redirect_url, timeout=self._timeout
+                    )
+                except Exception as exc:
+                    logger.debug(
+                        "Web scraping failed for DOI URL %s: %s",
+                        doi_redirect_url,
+                        exc,
+                    )
+                if base_paper is not None:
+                    logger.debug("  Scraped: %s", base_paper.title)
+                else:
+                    logger.debug("  No paper found via web scraping.")
+
+        return base_paper, doi
+
+    def _run_stage2(self, doi: str, base_paper: Paper | None) -> Paper | None:
+        """Run Stage 2 — DOI-based API lookup and merging.
+
+        Parameters
+        ----------
+        doi : str
+            The resolved DOI.
+        base_paper : Paper | None
+            Optional paper seeded from Stage 1 scraping.
+
+        Returns
+        -------
+        Paper | None
+            Merged paper with metadata from all available connectors.
+        """
+        logger.debug("Stage 2 — DOI lookup: %s", doi)
+
+        scraped_url: str | None = base_paper.url if base_paper is not None else None
+
+        crossref_paper = self._run_doi_connector(self._crossref, "CrossRef", doi)
+        crossref_url: str | None = crossref_paper.url if crossref_paper is not None else None
+
+        if crossref_paper is not None:
+            if base_paper is None:
+                base_paper = crossref_paper
+            else:
+                base_paper.merge(crossref_paper)
+
+        for connector, name, database in (
+            (self._arxiv, "arXiv", Database.ARXIV),
+            (self._ieee, "IEEE", Database.IEEE),
+            (self._pubmed, "PubMed", Database.PUBMED),
+            (self._scopus, "Scopus", Database.SCOPUS),
+            (self._semantic_scholar, "Semantic Scholar", Database.SEMANTIC_SCHOLAR),
+            (self._openalex, "OpenAlex", Database.OPENALEX),
+            (self._wos, "WoS", Database.WOS),
+        ):
+            if self._should_skip_connector(database, doi, self._identifier):
+                logger.debug("  %s: skipped (source heuristic)", name)
+                continue
+            base_paper = self._run_and_merge(connector, name, doi, base_paper)
+
+        if base_paper is not None:
+            if scraped_url is not None:
+                base_paper.url = scraped_url
+            elif crossref_url is not None:
+                base_paper.url = crossref_url
+
+        return base_paper
 
     def _run_doi_connector(
         self,

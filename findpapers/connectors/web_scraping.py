@@ -359,6 +359,48 @@ class WebScrapingConnector(ConnectorBase):
         return self.build_paper_from_metadata(metadata, str(response.url))
 
     @classmethod
+    def _build_source_from_metadata(
+        cls,
+        metadata: dict[str, Any],
+        source_title: str | None,
+    ) -> Source | None:
+        """Build a :class:`~findpapers.core.source.Source` from metadata dict.
+
+        Returns ``None`` when ``source_title`` is absent or matches a known
+        preprint server name.
+
+        Parameters
+        ----------
+        metadata : dict
+            Metadata extracted from an HTML page.
+        source_title : str | None
+            Already-resolved source title string (may be ``None``).
+
+        Returns
+        -------
+        Source | None
+            Populated source or ``None``.
+        """
+        if not source_title or source_title.lower() in _PREPRINT_SERVERS:
+            return None
+        source_type: SourceType | None = None
+        for key in _SOURCE_TITLE_KEYS:
+            raw_val = metadata.get(key)
+            if raw_val:
+                val_str = raw_val[0].strip() if isinstance(raw_val, list) else str(raw_val).strip()
+                if val_str:
+                    type_str = _SOURCE_KEY_TYPE_MAP.get(key)
+                    source_type = SourceType(type_str) if type_str else None
+                    break
+        return Source(
+            title=source_title,
+            issn=cls._pick_metadata_value(metadata, _SOURCE_ISSN_KEYS),
+            isbn=cls._pick_metadata_value(metadata, _SOURCE_ISBN_KEYS),
+            publisher=cls._pick_metadata_value(metadata, _SOURCE_PUBLISHER_KEYS),
+            source_type=source_type,
+        )
+
+    @classmethod
     def build_paper_from_metadata(cls, metadata: dict[str, Any], page_url: str) -> Paper | None:
         """Assemble a :class:`~findpapers.core.paper.Paper` from a metadata dict.
 
@@ -428,26 +470,7 @@ class WebScrapingConnector(ConnectorBase):
                 page_count = int(str(num_pages_raw).strip())
 
         source_title = cls._pick_metadata_value(metadata, _SOURCE_TITLE_KEYS)
-        source = None
-        if source_title and source_title.lower() not in _PREPRINT_SERVERS:
-            source_type: SourceType | None = None
-            for key in _SOURCE_TITLE_KEYS:
-                raw_val = metadata.get(key)
-                if raw_val:
-                    val_str = (
-                        raw_val[0].strip() if isinstance(raw_val, list) else str(raw_val).strip()
-                    )
-                    if val_str:
-                        type_str = _SOURCE_KEY_TYPE_MAP.get(key)
-                        source_type = SourceType(type_str) if type_str else None
-                        break
-            source = Source(
-                title=source_title,
-                issn=cls._pick_metadata_value(metadata, _SOURCE_ISSN_KEYS),
-                isbn=cls._pick_metadata_value(metadata, _SOURCE_ISBN_KEYS),
-                publisher=cls._pick_metadata_value(metadata, _SOURCE_PUBLISHER_KEYS),
-                source_type=source_type,
-            )
+        source = cls._build_source_from_metadata(metadata, source_title)
 
         pdf_url_val = cls._pick_metadata_value(metadata, _PDF_URL_KEYS)
 
@@ -892,27 +915,7 @@ class WebScrapingConnector(ConnectorBase):
             if key not in metadata and value:
                 metadata[key] = value
 
-        # Authors — stored as a list so _parse_authors handles it correctly.
-        authors = [a.get("name", "").strip() for a in data.get("authors", []) if a.get("name")]
-        if authors:
-            _set_if_absent("citation_author", authors if len(authors) > 1 else authors[0])
-
-        # Per-author affiliations embedded in the authors list.
-        affiliations: list[str] = []
-        for a in data.get("authors", []):
-            if not a.get("name"):
-                continue
-            raw_aff = a.get("affiliation") or ""
-            if isinstance(raw_aff, list):
-                aff_str = "; ".join(s.strip() for s in raw_aff if isinstance(s, str) and s.strip())
-            else:
-                aff_str = str(raw_aff).strip()
-            affiliations.append(aff_str)
-        if affiliations and any(affiliations):
-            _set_if_absent(
-                "citation_author_institution",
-                affiliations if len(affiliations) > 1 else affiliations[0],
-            )
+        cls._extract_ieee_authors_data(data, metadata, _set_if_absent)
 
         _set_if_absent("citation_doi", data.get("doi"))
         _set_if_absent("citation_title", data.get("title") or data.get("displayDocTitle"))
@@ -925,17 +928,7 @@ class WebScrapingConnector(ConnectorBase):
         if kw_list:
             _set_if_absent("citation_keywords", ", ".join(kw_list))
 
-        # Publication title — choose the right key based on content type.
-        pub_title = data.get("displayPublicationTitle") or data.get("publicationTitle")
-        if pub_title:
-            if data.get("isJournal") or data.get("contentType", "").lower() == "periodicals":
-                _set_if_absent("citation_journal_title", pub_title)
-            elif data.get("isConference"):
-                _set_if_absent("citation_conference_title", pub_title)
-            elif data.get("isBook") or data.get("isBookWithoutChapters"):
-                _set_if_absent("citation_book_title", pub_title)
-            else:
-                _set_if_absent("citation_journal_title", pub_title)
+        cls._extract_ieee_pub_title(data, metadata, _set_if_absent)
 
         _set_if_absent("citation_volume", data.get("volume"))
         _set_if_absent("citation_firstpage", data.get("startPage"))
@@ -968,6 +961,81 @@ class WebScrapingConnector(ConnectorBase):
                 break
 
         _set_if_absent("citation_publisher", data.get("publisher"))
+
+    @classmethod
+    def _extract_ieee_authors_data(
+        cls,
+        data: dict[str, Any],
+        metadata: dict[str, Any],
+        _set_if_absent: Any,
+    ) -> None:
+        """Extract authors and affiliations from an IEEE JS-blob data dict.
+
+        Parameters
+        ----------
+        data : dict
+            Parsed IEEE JS-blob.
+        metadata : dict
+            Metadata dict to update in-place.
+        _set_if_absent : callable
+            Helper that writes a key only when absent.
+
+        Returns
+        -------
+        None
+        """
+        authors = [a.get("name", "").strip() for a in data.get("authors", []) if a.get("name")]
+        if authors:
+            _set_if_absent("citation_author", authors if len(authors) > 1 else authors[0])
+        affiliations: list[str] = []
+        for a in data.get("authors", []):
+            if not a.get("name"):
+                continue
+            raw_aff = a.get("affiliation") or ""
+            if isinstance(raw_aff, list):
+                aff_str = "; ".join(s.strip() for s in raw_aff if isinstance(s, str) and s.strip())
+            else:
+                aff_str = str(raw_aff).strip()
+            affiliations.append(aff_str)
+        if affiliations and any(affiliations):
+            _set_if_absent(
+                "citation_author_institution",
+                affiliations if len(affiliations) > 1 else affiliations[0],
+            )
+
+    @classmethod
+    def _extract_ieee_pub_title(
+        cls,
+        data: dict[str, Any],
+        metadata: dict[str, Any],
+        _set_if_absent: Any,
+    ) -> None:
+        """Map IEEE publication title to the right citation_* key.
+
+        Parameters
+        ----------
+        data : dict
+            Parsed IEEE JS-blob.
+        metadata : dict
+            Metadata dict to update in-place.
+        _set_if_absent : callable
+            Helper that writes a key only when absent.
+
+        Returns
+        -------
+        None
+        """
+        pub_title = data.get("displayPublicationTitle") or data.get("publicationTitle")
+        if not pub_title:
+            return
+        if data.get("isJournal") or data.get("contentType", "").lower() == "periodicals":
+            _set_if_absent("citation_journal_title", pub_title)
+        elif data.get("isConference"):
+            _set_if_absent("citation_conference_title", pub_title)
+        elif data.get("isBook") or data.get("isBookWithoutChapters"):
+            _set_if_absent("citation_book_title", pub_title)
+        else:
+            _set_if_absent("citation_journal_title", pub_title)
 
     @classmethod
     def _merge_jsonld_metadata(cls, doc: HtmlElement, metadata: dict[str, Any]) -> None:
@@ -1047,116 +1115,16 @@ class WebScrapingConnector(ConnectorBase):
             if description:
                 _set_if_absent("citation_abstract", str(description).strip())
 
-            # DOI — may be a bare string, a doi.org URL, or a
-            # PropertyValue dict: {"@type": "PropertyValue", "propertyID": "DOI", "value": "..."}
-            doi_raw = data.get("doi") or data.get("identifier")
-            if isinstance(doi_raw, dict):
-                if (
-                    str(doi_raw.get("propertyID", "")).upper() == "DOI"
-                    or str(doi_raw.get("@type", "")).lower() == "propertyvalue"
-                ):
-                    doi_raw = doi_raw.get("value")
-                else:
-                    doi_raw = None
-            elif isinstance(doi_raw, list):
-                # Pick the first entry that looks like a DOI.
-                doi_raw = next(
-                    (
-                        item
-                        if isinstance(item, str)
-                        else (
-                            item.get("value")
-                            if isinstance(item, dict)
-                            and str(item.get("propertyID", "")).upper() == "DOI"
-                            else None
-                        )
-                        for item in doi_raw
-                    ),
-                    None,
-                )
-            if doi_raw:
-                _set_if_absent("citation_doi", str(doi_raw).strip())
-
-            # DOI fallback — many publishers (e.g. De Gruyter) set ``@id`` to
-            # a URL containing the DOI rather than exposing it in ``doi`` or
-            # ``identifier``.  Extract from patterns like
-            # ``https://host/document/doi/<DOI>/html``.
-            if "citation_doi" not in metadata:
-                at_id = str(data.get("@id") or "")
-                doi_in_id = re.search(
-                    r"(?:doi\.org/|/doi/)((10\.\d{4,}/[^/?&#\s]+))",
-                    at_id,
-                )
-                if doi_in_id:
-                    _set_if_absent("citation_doi", doi_in_id.group(1).rstrip("/"))
-
-            # Authors — may be a list of objects with a "name" key.
-            # Fall back to ``editor`` when ``author`` is absent or empty
-            # (common for edited books such as De Gruyter volumes).
-            authors_raw = data.get("author") or data.get("creator")
-            if not authors_raw:
-                authors_raw = data.get("editor")
-            if isinstance(authors_raw, list):
-                names = [
-                    str(a.get("name", "")).strip()
-                    for a in authors_raw
-                    if isinstance(a, dict) and a.get("name")
-                ]
-                if names:
-                    _set_if_absent("citation_author", names if len(names) > 1 else names[0])
-                # Per-author affiliations.
-                affiliations: list[str] = []
-                for author in authors_raw:
-                    if not isinstance(author, dict):
-                        affiliations.append("")
-                        continue
-                    aff_raw = author.get("affiliation")
-                    if isinstance(aff_raw, list):
-                        aff_str = "; ".join(
-                            str(a.get("name", a) if isinstance(a, dict) else a).strip()
-                            for a in aff_raw
-                            if a
-                        )
-                    elif isinstance(aff_raw, dict):
-                        aff_str = str(aff_raw.get("name", "")).strip()
-                    else:
-                        aff_str = str(aff_raw or "").strip()
-                    affiliations.append(aff_str)
-                if any(affiliations):
-                    _set_if_absent(
-                        "citation_author_institution",
-                        affiliations if len(affiliations) > 1 else affiliations[0],
-                    )
-            elif isinstance(authors_raw, str):
-                _set_if_absent("citation_author", authors_raw.strip())
+            cls._extract_jsonld_doi(data, metadata, _set_if_absent)
+            cls._extract_jsonld_authors(data, metadata, _set_if_absent)
 
             # Publication date.
             date_raw = data.get("datePublished") or data.get("dateCreated")
             if date_raw:
                 _set_if_absent("citation_publication_date", str(date_raw).strip())
 
-            # Keywords.
-            kw_raw = data.get("keywords")
-            if isinstance(kw_raw, list):
-                kw_str = ", ".join(str(k).strip() for k in kw_raw if k)
-            elif isinstance(kw_raw, str):
-                kw_str = kw_raw.strip()
-            else:
-                kw_str = ""
-            if kw_str:
-                _set_if_absent("citation_keywords", kw_str)
-
-            # Publisher.
-            publisher_raw = data.get("publisher")
-            if isinstance(publisher_raw, dict):
-                _set_if_absent("citation_publisher", str(publisher_raw.get("name", "")).strip())
-            elif isinstance(publisher_raw, str):
-                _set_if_absent("citation_publisher", publisher_raw.strip())
-
-            # ISBN (books/chapters).
-            isbn_raw = data.get("isbn") or data.get("ISBN")
-            if isbn_raw:
-                _set_if_absent("citation_isbn", str(isbn_raw).strip())
+            cls._extract_jsonld_keywords(data, metadata, _set_if_absent)
+            cls._extract_jsonld_source_fields(data, metadata, _set_if_absent)
 
             # Open-access flag — Schema.org uses ``isAccessibleForFree``.
             # Use direct assignment (not _set_if_absent) because False is a
@@ -1167,6 +1135,187 @@ class WebScrapingConnector(ConnectorBase):
 
             # Once the first usable JSON-LD block is processed, stop.
             break
+
+    @classmethod
+    def _extract_jsonld_doi(
+        cls,
+        data: dict[str, Any],
+        metadata: dict[str, Any],
+        _set_if_absent: Any,
+    ) -> None:
+        """Extract DOI from a JSON-LD data dict and write into *metadata*.
+
+        Parameters
+        ----------
+        data : dict
+            Parsed JSON-LD block.
+        metadata : dict
+            Metadata dict to update in-place.
+        _set_if_absent : callable
+            Helper that writes a key only when absent.
+
+        Returns
+        -------
+        None
+        """
+        doi_raw = data.get("doi") or data.get("identifier")
+        if isinstance(doi_raw, dict):
+            if (
+                str(doi_raw.get("propertyID", "")).upper() == "DOI"
+                or str(doi_raw.get("@type", "")).lower() == "propertyvalue"
+            ):
+                doi_raw = doi_raw.get("value")
+            else:
+                doi_raw = None
+        elif isinstance(doi_raw, list):
+            doi_raw = next(
+                (
+                    item
+                    if isinstance(item, str)
+                    else (
+                        item.get("value")
+                        if isinstance(item, dict)
+                        and str(item.get("propertyID", "")).upper() == "DOI"
+                        else None
+                    )
+                    for item in doi_raw
+                ),
+                None,
+            )
+        if doi_raw:
+            _set_if_absent("citation_doi", str(doi_raw).strip())
+
+        # DOI fallback via @id
+        if "citation_doi" not in metadata:
+            at_id = str(data.get("@id") or "")
+            doi_in_id = re.search(
+                r"(?:doi\.org/|/doi/)((10\.\d{4,}/[^/?&#\s]+))",
+                at_id,
+            )
+            if doi_in_id:
+                _set_if_absent("citation_doi", doi_in_id.group(1).rstrip("/"))
+
+    @classmethod
+    def _extract_jsonld_authors(
+        cls,
+        data: dict[str, Any],
+        metadata: dict[str, Any],
+        _set_if_absent: Any,
+    ) -> None:
+        """Extract authors and affiliations from a JSON-LD data dict.
+
+        Parameters
+        ----------
+        data : dict
+            Parsed JSON-LD block.
+        metadata : dict
+            Metadata dict to update in-place.
+        _set_if_absent : callable
+            Helper that writes a key only when absent.
+
+        Returns
+        -------
+        None
+        """
+        authors_raw = data.get("author") or data.get("creator")
+        if not authors_raw:
+            authors_raw = data.get("editor")
+        if isinstance(authors_raw, list):
+            names = [
+                str(a.get("name", "")).strip()
+                for a in authors_raw
+                if isinstance(a, dict) and a.get("name")
+            ]
+            if names:
+                _set_if_absent("citation_author", names if len(names) > 1 else names[0])
+            affiliations: list[str] = []
+            for author in authors_raw:
+                if not isinstance(author, dict):
+                    affiliations.append("")
+                    continue
+                aff_raw = author.get("affiliation")
+                if isinstance(aff_raw, list):
+                    aff_str = "; ".join(
+                        str(a.get("name", a) if isinstance(a, dict) else a).strip()
+                        for a in aff_raw
+                        if a
+                    )
+                elif isinstance(aff_raw, dict):
+                    aff_str = str(aff_raw.get("name", "")).strip()
+                else:
+                    aff_str = str(aff_raw or "").strip()
+                affiliations.append(aff_str)
+            if any(affiliations):
+                _set_if_absent(
+                    "citation_author_institution",
+                    affiliations if len(affiliations) > 1 else affiliations[0],
+                )
+        elif isinstance(authors_raw, str):
+            _set_if_absent("citation_author", authors_raw.strip())
+
+    @classmethod
+    def _extract_jsonld_keywords(
+        cls,
+        data: dict[str, Any],
+        metadata: dict[str, Any],
+        _set_if_absent: Any,
+    ) -> None:
+        """Extract keywords from a JSON-LD data dict.
+
+        Parameters
+        ----------
+        data : dict
+            Parsed JSON-LD block.
+        metadata : dict
+            Metadata dict to update in-place.
+        _set_if_absent : callable
+            Helper that writes a key only when absent.
+
+        Returns
+        -------
+        None
+        """
+        kw_raw = data.get("keywords")
+        if isinstance(kw_raw, list):
+            kw_str = ", ".join(str(k).strip() for k in kw_raw if k)
+        elif isinstance(kw_raw, str):
+            kw_str = kw_raw.strip()
+        else:
+            kw_str = ""
+        if kw_str:
+            _set_if_absent("citation_keywords", kw_str)
+
+    @classmethod
+    def _extract_jsonld_source_fields(
+        cls,
+        data: dict[str, Any],
+        metadata: dict[str, Any],
+        _set_if_absent: Any,
+    ) -> None:
+        """Extract publisher, ISBN and journal fields from a JSON-LD data dict.
+
+        Parameters
+        ----------
+        data : dict
+            Parsed JSON-LD block.
+        metadata : dict
+            Metadata dict to update in-place.
+        _set_if_absent : callable
+            Helper that writes a key only when absent.
+
+        Returns
+        -------
+        None
+        """
+        publisher_raw = data.get("publisher")
+        if isinstance(publisher_raw, dict):
+            _set_if_absent("citation_publisher", str(publisher_raw.get("name", "")).strip())
+        elif isinstance(publisher_raw, str):
+            _set_if_absent("citation_publisher", publisher_raw.strip())
+
+        isbn_raw = data.get("isbn") or data.get("ISBN")
+        if isbn_raw:
+            _set_if_absent("citation_isbn", str(isbn_raw).strip())
 
     # ------------------------------------------------------------------
     # Private helpers — field parsers

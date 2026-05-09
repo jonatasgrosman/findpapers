@@ -462,6 +462,129 @@ class Paper:
 
         self.paper_type = merge_value(self.paper_type, paper.paper_type)
 
+    @staticmethod
+    def _from_dict_parse_authors(paper_dict: dict) -> list[Author]:
+        """Parse the ``authors`` field from a paper dictionary.
+
+        Parameters
+        ----------
+        paper_dict : dict
+            Raw paper dictionary.
+
+        Returns
+        -------
+        list[Author]
+            Parsed author list.
+        """
+        raw = paper_dict.get("authors") or []
+        if isinstance(raw, (list, set, tuple)):
+            return [Author.from_dict(a) for a in raw]
+        return [Author.from_dict(raw)]
+
+    @staticmethod
+    def _from_dict_parse_date(paper_dict: dict) -> datetime.date | None:
+        """Parse the ``publication_date`` field from a paper dictionary.
+
+        Parameters
+        ----------
+        paper_dict : dict
+            Raw paper dictionary.
+
+        Returns
+        -------
+        datetime.date | None
+            Parsed date or ``None``.
+        """
+        raw = paper_dict.get("publication_date")
+        if isinstance(raw, str):
+            try:
+                return datetime.date.fromisoformat(raw)
+            except ValueError:
+                return None
+        return None
+
+    @staticmethod
+    def _from_dict_str_set(paper_dict: dict, key: str) -> set[str]:
+        """Parse a string-collection field into a ``set[str]``.
+
+        Handles the case where the raw value is a list/set/tuple, a single
+        non-collection value, or missing altogether.
+
+        Parameters
+        ----------
+        paper_dict : dict
+            Raw paper dictionary.
+        key : str
+            Field name to extract.
+
+        Returns
+        -------
+        set[str]
+            Extracted string set (may be empty).
+        """
+        raw = paper_dict.get(key) or []
+        if isinstance(raw, (list, set, tuple)):
+            return {str(item) for item in raw}
+        return {str(raw)} if raw else set()
+
+    @staticmethod
+    def _from_dict_optional_str(val: Any) -> str | None:
+        """Coerce a value to ``str`` or ``None`` when it is already a string.
+
+        Parameters
+        ----------
+        val : Any
+            Raw value to coerce.
+
+        Returns
+        -------
+        str | None
+            String representation or ``None``.
+        """
+        if val is None:
+            return None
+        return val if isinstance(val, str) else str(val)
+
+    @staticmethod
+    def _from_dict_optional_bool(raw: Any) -> bool | None:
+        """Coerce a value to ``bool | None``.
+
+        Parameters
+        ----------
+        raw : Any
+            Raw value.
+
+        Returns
+        -------
+        bool | None
+            ``True``/``False`` or ``None`` when the raw value is ``None``.
+        """
+        if isinstance(raw, bool):
+            return raw
+        if raw is not None:
+            return bool(raw)
+        return None
+
+    @staticmethod
+    def _from_dict_paper_type(paper_dict: dict) -> PaperType | None:
+        """Parse the ``paper_type`` field from a paper dictionary.
+
+        Parameters
+        ----------
+        paper_dict : dict
+            Raw paper dictionary.
+
+        Returns
+        -------
+        PaperType | None
+            Parsed paper type or ``None``.
+        """
+        raw = paper_dict.get("paper_type")
+        if isinstance(raw, str):
+            with contextlib.suppress(ValueError):
+                return PaperType(raw)
+        return None
+
     @classmethod
     def from_dict(cls, paper_dict: dict) -> Paper:
         """Create a paper from a dict.
@@ -489,88 +612,31 @@ class Paper:
         if not isinstance(abstract, str):
             abstract = str(abstract)
 
-        raw_authors = paper_dict.get("authors") or []
-        if isinstance(raw_authors, (list, set, tuple)):
-            authors = [Author.from_dict(author) for author in raw_authors]
-        else:
-            authors = [Author.from_dict(raw_authors)]
+        authors = cls._from_dict_parse_authors(paper_dict)
 
         source_data = paper_dict.get("source")
         source = Source.from_dict(source_data) if isinstance(source_data, dict) else None
-        publication_date = paper_dict.get("publication_date")
-        if isinstance(publication_date, str):
-            try:
-                publication_date = datetime.date.fromisoformat(publication_date)
-            except ValueError:
-                publication_date = None
 
-        url = paper_dict.get("url")
-        if url is not None and not isinstance(url, str):
-            url = str(url)
+        publication_date = cls._from_dict_parse_date(paper_dict)
+        url = cls._from_dict_optional_str(paper_dict.get("url"))
+        pdf_url = cls._from_dict_optional_str(paper_dict.get("pdf_url"))
+        doi = cls._from_dict_optional_str(paper_dict.get("doi"))
+        language = cls._from_dict_optional_str(paper_dict.get("language"))
 
-        pdf_url = paper_dict.get("pdf_url")
-        if pdf_url is not None and not isinstance(pdf_url, str):
-            pdf_url = str(pdf_url)
-
-        doi = paper_dict.get("doi")
-        if doi is not None and not isinstance(doi, str):
-            doi = str(doi)
         citations = paper_dict.get("citations")
-        raw_keywords = paper_dict.get("keywords") or []
-        if isinstance(raw_keywords, (list, set, tuple)):
-            keywords = {str(keyword) for keyword in raw_keywords}
-        else:
-            keywords = {str(raw_keywords)} if raw_keywords else set()
         comments = paper_dict.get("comments")
         page_count = paper_dict.get("page_count")
         page_range = paper_dict.get("page_range")
-        raw_databases = paper_dict.get("databases") or []
-        if isinstance(raw_databases, (list, set, tuple)):
-            databases = {str(database) for database in raw_databases}
-        else:
-            databases = {str(raw_databases)} if raw_databases else set()
 
-        raw_paper_type = paper_dict.get("paper_type")
-        paper_type: PaperType | None = None
-        if isinstance(raw_paper_type, str):
-            with contextlib.suppress(ValueError):
-                paper_type = PaperType(raw_paper_type)
+        keywords = cls._from_dict_str_set(paper_dict, "keywords")
+        databases = cls._from_dict_str_set(paper_dict, "databases")
+        fields_of_study = cls._from_dict_str_set(paper_dict, "fields_of_study")
+        subjects = cls._from_dict_str_set(paper_dict, "subjects")
+        funders = cls._from_dict_str_set(paper_dict, "funders")
 
-        raw_fos = paper_dict.get("fields_of_study") or []
-        if isinstance(raw_fos, (list, set, tuple)):
-            fields_of_study = {str(f) for f in raw_fos}
-        else:
-            fields_of_study = {str(raw_fos)} if raw_fos else set()
-
-        raw_subjects = paper_dict.get("subjects") or []
-        if isinstance(raw_subjects, (list, set, tuple)):
-            subjects = {str(s) for s in raw_subjects}
-        else:
-            subjects = {str(raw_subjects)} if raw_subjects else set()
-
-        language = paper_dict.get("language")
-        if language is not None and not isinstance(language, str):
-            language = str(language)
-
-        raw_is_open_access = paper_dict.get("is_open_access")
-        is_open_access: bool | None = None
-        if isinstance(raw_is_open_access, bool):
-            is_open_access = raw_is_open_access
-        elif raw_is_open_access is not None:
-            is_open_access = bool(raw_is_open_access)
-
-        raw_is_retracted = paper_dict.get("is_retracted")
-        is_retracted: bool | None = None
-        if isinstance(raw_is_retracted, bool):
-            is_retracted = raw_is_retracted
-        elif raw_is_retracted is not None:
-            is_retracted = bool(raw_is_retracted)
-
-        raw_funders = paper_dict.get("funders") or []
-        if isinstance(raw_funders, (list, set, tuple)):
-            funders = {str(f) for f in raw_funders}
-        else:
-            funders = {str(raw_funders)} if raw_funders else set()
+        paper_type = cls._from_dict_paper_type(paper_dict)
+        is_open_access = cls._from_dict_optional_bool(paper_dict.get("is_open_access"))
+        is_retracted = cls._from_dict_optional_bool(paper_dict.get("is_retracted"))
 
         return cls(
             title=title,

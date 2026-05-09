@@ -7,6 +7,7 @@ import logging
 import os
 import re
 import urllib.parse
+from collections.abc import Callable
 from datetime import UTC
 from time import perf_counter
 from typing import cast
@@ -311,35 +312,35 @@ class DownloadRunner:
         host = f"{parts.scheme}://{parts.hostname}"
 
         if host == "https://dl.acm.org":
-            resolved_doi = doi
-            if resolved_doi is None and path.startswith("/doi/") and "/doi/pdf/" not in path:
-                resolved_doi = path[5:]
-            if resolved_doi is None:
-                return None
-            return f"https://dl.acm.org/doi/pdf/{resolved_doi}"
+            return DownloadRunner._resolve_acm_pdf_url(response_url, path, doi)
 
         if host == "https://ieeexplore.ieee.org":
-            # stampPDF/getPDF.jsp is the endpoint that serves the actual PDF
-            # binary.  stamp/stamp.jsp is just an HTML iframe loader — it
-            # never returns application/pdf and should never be used as a
-            # final download target.
-            if path.startswith("/stamp/stamp.jsp"):
-                # Already at the viewer; extract arnumber and jump to PDF.
-                arnumber = qs.get("arnumber", [None])[0]
-                if arnumber is None:
-                    return None
-                return f"{host}/stampPDF/getPDF.jsp?tp=&arnumber={arnumber}&ref="
-            if path.startswith("/document/"):
-                doc_id = path[10:]
-            elif qs.get("arnumber"):
-                doc_id = qs["arnumber"][0]
-            else:
-                return None
-            # Go directly to the PDF endpoint, skipping the stamp viewer.
-            return f"{host}/stampPDF/getPDF.jsp?tp=&arnumber={doc_id}&ref="
+            return DownloadRunner._resolve_ieee_pdf_url(host, path, qs)
 
-        if host == "https://pubs.rsc.org":
-            return response_url.replace("/articlelanding/", "/articlepdf/")
+        # Simple path-pattern transforms
+        _SIMPLE: dict[str, Callable[[str], str]] = {
+            "https://pubs.rsc.org": lambda u: u.replace("/articlelanding/", "/articlepdf/"),
+            "https://link.springer.com": lambda u: (
+                u.replace("/article/", "/content/pdf/").replace("%2F", "/") + ".pdf"
+            ),
+            "https://www.isca-speech.org": lambda u: u.replace("/abstracts/", "/pdfs/").replace(
+                ".html", ".pdf"
+            ),
+            "https://onlinelibrary.wiley.com": lambda u: u.replace("/full/", "/pdfdirect/").replace(
+                "/abs/", "/pdfdirect/"
+            ),
+            "https://www.pnas.org": lambda u: (
+                u.replace("/content/", "/content/pnas/") + ".full.pdf"
+            ),
+            "https://www.jneurosci.org": lambda u: (
+                u.replace("/content/", "/content/jneuro/") + ".full.pdf"
+            ),
+            "https://asmp-eurasipjournals.springeropen.com": lambda u: u.replace(
+                "/articles/", "/track/pdf/"
+            ),
+        }
+        if host in _SIMPLE:
+            return _SIMPLE[host](response_url)
 
         if host in ("https://www.tandfonline.com", "https://www.frontiersin.org"):
             return response_url.replace("/full", "/pdf")
@@ -349,37 +350,74 @@ class DownloadRunner:
             "https://journals.sagepub.com",
             "https://royalsocietypublishing.org",
         ):
-            # Guard against double-insertion when the URL already contains /doi/pdf/.
             if "/doi/pdf/" in path:
                 return None
             return response_url.replace("/doi", "/doi/pdf")
 
-        if host == "https://link.springer.com":
-            return response_url.replace("/article/", "/content/pdf/").replace("%2F", "/") + ".pdf"
-
-        if host == "https://www.isca-speech.org":
-            return response_url.replace("/abstracts/", "/pdfs/").replace(".html", ".pdf")
-
-        if host == "https://onlinelibrary.wiley.com":
-            return response_url.replace("/full/", "/pdfdirect/").replace("/abs/", "/pdfdirect/")
-
         if host in ("https://www.jmir.org", "https://www.mdpi.com"):
             return f"{response_url}/pdf"
-
-        if host == "https://www.pnas.org":
-            return response_url.replace("/content/", "/content/pnas/") + ".full.pdf"
-
-        if host == "https://www.jneurosci.org":
-            return response_url.replace("/content/", "/content/jneuro/") + ".full.pdf"
 
         if host == "https://www.ijcai.org":
             paper_id = response_url.split("/")[-1].zfill(4)
             return "/".join(response_url.split("/")[:-1]) + "/" + paper_id + ".pdf"
 
-        if host == "https://asmp-eurasipjournals.springeropen.com":
-            return response_url.replace("/articles/", "/track/pdf/")
-
         return None
+
+    @staticmethod
+    def _resolve_acm_pdf_url(response_url: str, path: str, doi: str | None) -> str | None:
+        """Build the ACM direct-PDF URL from the landing-page URL.
+
+        Parameters
+        ----------
+        response_url : str
+            Final ACM landing-page URL.
+        path : str
+            URL path component (no query string).
+        doi : str | None
+            Paper DOI when known.
+
+        Returns
+        -------
+        str | None
+            Direct PDF URL or ``None`` when DOI cannot be determined.
+        """
+        resolved_doi = doi
+        if resolved_doi is None and path.startswith("/doi/") and "/doi/pdf/" not in path:
+            resolved_doi = path[5:]
+        if resolved_doi is None:
+            return None
+        return f"https://dl.acm.org/doi/pdf/{resolved_doi}"
+
+    @staticmethod
+    def _resolve_ieee_pdf_url(host: str, path: str, qs: dict[str, list[str]]) -> str | None:
+        """Build the IEEE Xplore direct-PDF URL from the landing-page URL.
+
+        Parameters
+        ----------
+        host : str
+            IEEE host (scheme + hostname).
+        path : str
+            URL path component (no query string).
+        qs : dict[str, list[str]]
+            Parsed query string parameters.
+
+        Returns
+        -------
+        str | None
+            Direct PDF URL or ``None`` when the document ID cannot be found.
+        """
+        if path.startswith("/stamp/stamp.jsp"):
+            arnumber = qs.get("arnumber", [None])[0]
+            if arnumber is None:
+                return None
+            return f"{host}/stampPDF/getPDF.jsp?tp=&arnumber={arnumber}&ref="
+        if path.startswith("/document/"):
+            doc_id = path[10:]
+        elif qs.get("arnumber"):
+            doc_id = qs["arnumber"][0]
+        else:
+            return None
+        return f"{host}/stampPDF/getPDF.jsp?tp=&arnumber={doc_id}&ref="
 
     @staticmethod
     def _build_filename(year: int | None, title: str | None) -> str:

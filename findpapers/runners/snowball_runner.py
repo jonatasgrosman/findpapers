@@ -289,10 +289,6 @@ class SnowballRunner(DiscoveryRunner):
 
         frontier = list(self._seed_papers)
 
-        # Create a single ThreadPoolExecutor for the entire run to avoid
-        # the overhead of creating/destroying one per paper.  When
-        # num_workers <= 1 connectors are called sequentially, so no pool
-        # is needed.
         use_pool = self._num_workers > 1 and len(self._connectors) > 1
         pool: ThreadPoolExecutor | None = (
             ThreadPoolExecutor(max_workers=min(self._num_workers, len(self._connectors)))
@@ -300,60 +296,9 @@ class SnowballRunner(DiscoveryRunner):
             else None
         )
 
-        # Pre-create persistent progress bars for every connector direction so
-        # they remain visible at fixed terminal rows in both serial and parallel
-        # modes.  Bars are reset via ``pbar.reset()`` for each new paper rather
-        # than being created and destroyed, avoiding the flicker that ``leave=False``
-        # produces and the blank output that occurred when parallel mode disabled
-        # inner bars entirely.  Each bar description is updated before every paper
-        # expansion to embed the current level/seed context (e.g.
-        # "Level 1/3 - seed 2/3 - backward: crossref").
-        _bar_pos = 0
-        _connector_bar_positions: dict[str, tuple[int | None, int | None]] = {}
-        for _c in self._connectors:
-            _b_pos: int | None = None
-            _f_pos: int | None = None
-            if self._direction in ("both", "backward") and _c.supports_backward:
-                _b_pos = _bar_pos
-                _bar_pos += 1
-            if self._direction in ("both", "forward") and _c.supports_forward:
-                _f_pos = _bar_pos
-                _bar_pos += 1
-            _connector_bar_positions[_c.name] = (_b_pos, _f_pos)
-
         self._connector_bars = {}
         with contextlib.ExitStack() as _bar_stack:
-            for _c in self._connectors:
-                _b_pos, _f_pos = _connector_bar_positions[_c.name]
-                _b_bar: tqdm | None = (
-                    _bar_stack.enter_context(
-                        make_progress_bar(
-                            desc=f"{_c.name} backward",
-                            total=None,
-                            unit="paper",
-                            disable=not show_progress,
-                            leave=True,
-                            position=_b_pos,
-                        )
-                    )
-                    if _b_pos is not None
-                    else None
-                )
-                _f_bar: tqdm | None = (
-                    _bar_stack.enter_context(
-                        make_progress_bar(
-                            desc=f"{_c.name} forward",
-                            total=None,
-                            unit="paper",
-                            disable=not show_progress,
-                            leave=True,
-                            position=_f_pos,
-                        )
-                    )
-                    if _f_pos is not None
-                    else None
-                )
-                self._connector_bars[_c.name] = (_b_bar, _f_bar)
+            self._setup_connector_bars(_bar_stack, show_progress)
 
             try:
                 for level in range(1, self._max_depth + 1):
@@ -367,68 +312,7 @@ class SnowballRunner(DiscoveryRunner):
                         len(frontier),
                     )
 
-                    next_frontier: list[Paper] = []
-
-                    if self._top_n_per_level is None:
-                        # No limit: add every discovered paper to the graph.
-                        for seed_i, paper in enumerate(frontier, 1):
-                            self._set_connector_bar_descs(level, len(frontier), seed_i)
-                            discovered = self._expand_paper(
-                                paper, graph, pool, show_progress=show_progress
-                            )
-                            next_frontier.extend(discovered)
-                    else:
-                        # Collect all candidates from the whole frontier
-                        # WITHOUT adding them to the graph so we can rank
-                        # and filter before committing anything.
-                        all_raw: list[tuple[Paper, Paper, bool]] = []
-                        for seed_i, paper in enumerate(frontier, 1):
-                            self._set_connector_bar_descs(level, len(frontier), seed_i)
-                            all_raw.extend(
-                                self._collect_candidates(paper, pool, show_progress=show_progress)
-                            )
-
-                        # Group novel candidates by graph key.
-                        # For duplicates, keep the representation with the
-                        # highest known citation count (for ranking) and
-                        # accumulate all (source, is_ref) edge tuples.
-                        best: dict[str, Paper] = {}
-                        edge_map: dict[str, list[tuple[Paper, bool]]] = {}
-                        for candidate, source, is_ref in all_raw:
-                            key = CitationGraph._paper_key(candidate)
-                            if key is None or graph.contains(candidate):
-                                continue
-                            if not self._matches_filters(candidate):
-                                continue
-                            if key not in best:
-                                best[key] = candidate
-                                edge_map[key] = []
-                            elif candidate.citations is not None and (
-                                best[key].citations is None
-                                or candidate.citations > (best[key].citations or 0)
-                            ):
-                                best[key] = candidate
-                            edge_map[key].append((source, is_ref))
-
-                        # Rank by citation count descending and take top N.
-                        top_keys = sorted(
-                            best,
-                            key=lambda k: best[k].citations or 0,
-                            reverse=True,
-                        )[: self._top_n_per_level]
-
-                        # Add only the top-N papers to the graph.
-                        for key in top_keys:
-                            paper_repr = best[key]
-                            first_source = edge_map[key][0][0]
-                            canonical = graph.add_node(paper_repr, discovered_from=first_source)
-                            for source, is_ref in edge_map[key]:
-                                if is_ref:
-                                    graph.add_edge(source, canonical)
-                                else:
-                                    graph.add_edge(canonical, source)
-                            next_frontier.append(canonical)
-
+                    next_frontier = self._process_level(frontier, graph, level, pool, show_progress)
                     frontier = next_frontier
 
                     logger.debug(
@@ -480,6 +364,203 @@ class SnowballRunner(DiscoveryRunner):
     # ------------------------------------------------------------------
     # Private helpers
     # ------------------------------------------------------------------
+
+    def _setup_connector_bars(self, bar_stack: contextlib.ExitStack, show_progress: bool) -> None:
+        """Create persistent tqdm progress bars for all connectors.
+
+        Bars are stored in ``self._connector_bars`` keyed by connector name.
+
+        Parameters
+        ----------
+        bar_stack : contextlib.ExitStack
+            Context manager stack that owns the bar lifetimes.
+        show_progress : bool
+            Whether progress bars should be visible.
+
+        Returns
+        -------
+        None
+        """
+        _bar_pos = 0
+        _connector_bar_positions: dict[str, tuple[int | None, int | None]] = {}
+        for _c in self._connectors:
+            _b_pos: int | None = None
+            _f_pos: int | None = None
+            if self._direction in ("both", "backward") and _c.supports_backward:
+                _b_pos = _bar_pos
+                _bar_pos += 1
+            if self._direction in ("both", "forward") and _c.supports_forward:
+                _f_pos = _bar_pos
+                _bar_pos += 1
+            _connector_bar_positions[_c.name] = (_b_pos, _f_pos)
+
+        for _c in self._connectors:
+            _b_pos, _f_pos = _connector_bar_positions[_c.name]
+            _b_bar: tqdm | None = (
+                bar_stack.enter_context(
+                    make_progress_bar(
+                        desc=f"{_c.name} backward",
+                        total=None,
+                        unit="paper",
+                        disable=not show_progress,
+                        leave=True,
+                        position=_b_pos,
+                    )
+                )
+                if _b_pos is not None
+                else None
+            )
+            _f_bar: tqdm | None = (
+                bar_stack.enter_context(
+                    make_progress_bar(
+                        desc=f"{_c.name} forward",
+                        total=None,
+                        unit="paper",
+                        disable=not show_progress,
+                        leave=True,
+                        position=_f_pos,
+                    )
+                )
+                if _f_pos is not None
+                else None
+            )
+            self._connector_bars[_c.name] = (_b_bar, _f_bar)
+
+    def _process_level(
+        self,
+        frontier: list[Paper],
+        graph: CitationGraph,
+        level: int,
+        pool: ThreadPoolExecutor | None,
+        show_progress: bool,
+    ) -> list[Paper]:
+        """Expand one BFS level and return the next frontier.
+
+        Parameters
+        ----------
+        frontier : list[Paper]
+            Papers to expand in this level.
+        graph : CitationGraph
+            The citation graph being built.
+        level : int
+            Current BFS depth (1-based).
+        pool : ThreadPoolExecutor | None
+            Thread pool for parallel connector calls, or ``None`` for serial.
+        show_progress : bool
+            Whether to update progress bar descriptions.
+
+        Returns
+        -------
+        list[Paper]
+            Newly discovered papers for the next frontier.
+        """
+        if self._top_n_per_level is None:
+            return self._process_level_unlimited(frontier, graph, level, pool, show_progress)
+        return self._process_level_limited(frontier, graph, level, pool, show_progress)
+
+    def _process_level_unlimited(
+        self,
+        frontier: list[Paper],
+        graph: CitationGraph,
+        level: int,
+        pool: ThreadPoolExecutor | None,
+        show_progress: bool,
+    ) -> list[Paper]:
+        """Process a BFS level without any per-level paper limit.
+
+        Parameters
+        ----------
+        frontier : list[Paper]
+            Papers to expand in this level.
+        graph : CitationGraph
+            The citation graph being built.
+        level : int
+            Current BFS depth (1-based).
+        pool : ThreadPoolExecutor | None
+            Thread pool for parallel connector calls.
+        show_progress : bool
+            Whether to update progress bar descriptions.
+
+        Returns
+        -------
+        list[Paper]
+            All newly discovered papers.
+        """
+        next_frontier: list[Paper] = []
+        for seed_i, paper in enumerate(frontier, 1):
+            self._set_connector_bar_descs(level, len(frontier), seed_i)
+            discovered = self._expand_paper(paper, graph, pool, show_progress=show_progress)
+            next_frontier.extend(discovered)
+        return next_frontier
+
+    def _process_level_limited(
+        self,
+        frontier: list[Paper],
+        graph: CitationGraph,
+        level: int,
+        pool: ThreadPoolExecutor | None,
+        show_progress: bool,
+    ) -> list[Paper]:
+        """Process a BFS level keeping only top-N papers per level.
+
+        Parameters
+        ----------
+        frontier : list[Paper]
+            Papers to expand in this level.
+        graph : CitationGraph
+            The citation graph being built.
+        level : int
+            Current BFS depth (1-based).
+        pool : ThreadPoolExecutor | None
+            Thread pool for parallel connector calls.
+        show_progress : bool
+            Whether to update progress bar descriptions.
+
+        Returns
+        -------
+        list[Paper]
+            Top-N newly discovered papers sorted by citation count.
+        """
+        all_raw: list[tuple[Paper, Paper, bool]] = []
+        for seed_i, paper in enumerate(frontier, 1):
+            self._set_connector_bar_descs(level, len(frontier), seed_i)
+            all_raw.extend(self._collect_candidates(paper, pool, show_progress=show_progress))
+
+        best: dict[str, Paper] = {}
+        edge_map: dict[str, list[tuple[Paper, bool]]] = {}
+        for candidate, source, is_ref in all_raw:
+            key = CitationGraph._paper_key(candidate)
+            if key is None or graph.contains(candidate):
+                continue
+            if not self._matches_filters(candidate):
+                continue
+            if key not in best:
+                best[key] = candidate
+                edge_map[key] = []
+            elif candidate.citations is not None and (
+                best[key].citations is None or candidate.citations > (best[key].citations or 0)
+            ):
+                best[key] = candidate
+            edge_map[key].append((source, is_ref))
+
+        top_keys = sorted(
+            best,
+            key=lambda k: best[k].citations or 0,
+            reverse=True,
+        )[: self._top_n_per_level]
+
+        next_frontier: list[Paper] = []
+        for key in top_keys:
+            paper_repr = best[key]
+            first_source = edge_map[key][0][0]
+            canonical = graph.add_node(paper_repr, discovered_from=first_source)
+            for source, is_ref in edge_map[key]:
+                if is_ref:
+                    graph.add_edge(source, canonical)
+                else:
+                    graph.add_edge(canonical, source)
+            next_frontier.append(canonical)
+        return next_frontier
 
     def _set_connector_bar_descs(self, level: int, total_seeds: int, seed_i: int) -> None:
         """Update all connector progress bar descriptions with current phase context.

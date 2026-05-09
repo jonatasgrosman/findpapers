@@ -194,6 +194,101 @@ class ScopusConnector(SearchConnectorBase, DOILookupConnectorBase):
 
         return self._parse_paper(first)
 
+    @staticmethod
+    def _parse_scopus_authors(entry: dict[str, Any]) -> list[Author]:
+        """Extract authors from a Scopus search result entry.
+
+        Scopus returns only the first author via ``dc:creator``.  When a
+        single author is returned, the first affiliation (if any) is assigned
+        to that author.
+
+        Parameters
+        ----------
+        entry : dict
+            Scopus entry dict.
+
+        Returns
+        -------
+        list[Author]
+            Parsed author list.
+        """
+        raw_creator = entry.get("dc:creator") or ""
+        if isinstance(raw_creator, list):
+            authors = [Author(name=a.strip()) for a in raw_creator if (a or "").strip()]
+        elif raw_creator:
+            authors = [Author(name=raw_creator.strip())]
+        else:
+            authors = []
+
+        if len(authors) == 1:
+            raw_affiliation = entry.get("affiliation")
+            if isinstance(raw_affiliation, list) and raw_affiliation:
+                affilname = (raw_affiliation[0].get("affilname") or "").strip()
+                if affilname:
+                    authors[0] = Author(name=authors[0].name, affiliation=affilname)
+        return authors
+
+    @staticmethod
+    def _parse_scopus_source(entry: dict[str, Any]) -> Source | None:
+        """Build a :class:`~findpapers.core.source.Source` from Scopus metadata.
+
+        Parameters
+        ----------
+        entry : dict
+            Scopus entry dict.
+
+        Returns
+        -------
+        Source | None
+            Populated source or ``None`` when no title is present.
+        """
+        pub_title = (
+            entry.get("prism:publicationName") or entry.get("prism:issueName") or ""
+        ).strip()
+        if not pub_title:
+            return None
+        issn = (entry.get("prism:issn") or entry.get("prism:eIssn") or "").strip() or None
+        raw_isbn = entry.get("prism:isbn")
+        if isinstance(raw_isbn, list):
+            isbn = raw_isbn[0].get("$", "").strip() if raw_isbn else None
+        else:
+            isbn = (raw_isbn or "").strip() or None
+        publisher = (entry.get("dc:publisher") or "").strip() or None
+        raw_agg_type = (entry.get("prism:aggregationType") or "").strip().lower()
+        return Source(
+            title=pub_title,
+            issn=issn,
+            isbn=isbn,
+            publisher=publisher,
+            source_type=_SCOPUS_AGGREGATION_TYPE_MAP.get(raw_agg_type),
+        )
+
+    @staticmethod
+    def _parse_scopus_is_open_access(entry: dict[str, Any]) -> bool | None:
+        """Determine open-access status from Scopus flags.
+
+        Prefers the boolean ``openaccessFlag`` when present; falls back to
+        the integer ``openaccess`` field (``1`` = OA, ``0`` = not OA).
+
+        Parameters
+        ----------
+        entry : dict
+            Scopus entry dict.
+
+        Returns
+        -------
+        bool | None
+            Open-access flag or ``None`` when unknown.
+        """
+        raw_oa_flag = entry.get("openaccessFlag")
+        if isinstance(raw_oa_flag, bool):
+            return raw_oa_flag
+        raw_oa_int = entry.get("openaccess")
+        if raw_oa_int is not None:
+            with contextlib.suppress(ValueError, TypeError):
+                return bool(int(raw_oa_int))
+        return None
+
     def _parse_paper(self, entry: dict[str, Any]) -> Paper | None:
         """Parse a single Scopus search result entry.
 
@@ -212,26 +307,7 @@ class ScopusConnector(SearchConnectorBase, DOILookupConnectorBase):
             return None
 
         abstract = (entry.get("dc:description") or entry.get("prism:teaser") or "").strip()
-
-        # Authors — Scopus search API returns only the first author in dc:creator.
-        raw_creator = entry.get("dc:creator") or ""
-        if isinstance(raw_creator, list):
-            authors: list[Author] = [
-                Author(name=a.strip()) for a in raw_creator if (a or "").strip()
-            ]
-        elif raw_creator:
-            authors = [Author(name=raw_creator.strip())]
-        else:
-            authors = []
-
-        # Affiliation — Scopus provides entry-level affiliations. When a single
-        # author is returned we assign the first affiliation to that author.
-        if len(authors) == 1:
-            raw_affiliation = entry.get("affiliation")
-            if isinstance(raw_affiliation, list) and raw_affiliation:
-                affilname = (raw_affiliation[0].get("affilname") or "").strip()
-                if affilname:
-                    authors[0] = Author(name=authors[0].name, affiliation=affilname)
+        authors = self._parse_scopus_authors(entry)
 
         # Publication date
         cover_date = (entry.get("prism:coverDate") or "").strip()
@@ -255,54 +331,11 @@ class ScopusConnector(SearchConnectorBase, DOILookupConnectorBase):
             with contextlib.suppress(ValueError, TypeError):
                 citations = int(cite_count)
 
-        # Source
-        pub_title = (
-            entry.get("prism:publicationName") or entry.get("prism:issueName") or ""
-        ).strip()
-        source: Source | None = None
-        if pub_title:
-            issn = (entry.get("prism:issn") or entry.get("prism:eIssn") or "").strip() or None
-            # prism:isbn may be a list of dicts in some responses
-            raw_isbn = entry.get("prism:isbn")
-            if isinstance(raw_isbn, list):
-                isbn = raw_isbn[0].get("$", "").strip() if raw_isbn else None
-            else:
-                isbn = (raw_isbn or "").strip() or None
-            publisher = (entry.get("dc:publisher") or "").strip() or None
-            # Map aggregationType to SourceType.
-            raw_agg_type = (entry.get("prism:aggregationType") or "").strip().lower()
-            source_type = _SCOPUS_AGGREGATION_TYPE_MAP.get(raw_agg_type)
-            source = Source(
-                title=pub_title,
-                issn=issn,
-                isbn=isbn,
-                publisher=publisher,
-                source_type=source_type,
-            )
-
-        # Infer paper_type from subtypeDescription.
-        # Full Scopus subtypeDescription values:
-        # Article, Abstract Report, Book, Book Chapter, Business Article,
-        # Conference Paper, Conference Review, Data Paper, Editorial,
-        # Erratum, Letter, Note, Press Release, Report, Retracted, Review,
-        # Short Survey, Undefined
+        source = self._parse_scopus_source(entry)
         raw_subtype = (entry.get("subtypeDescription") or "").strip().lower()
         paper_type = _SCOPUS_PAPER_TYPE_MAP.get(raw_subtype)
-
-        # Pages
         pages: str | None = (entry.get("prism:pageRange") or "").strip() or None
-
-        # Open access — prefer the boolean openaccessFlag when present;
-        # fall back to the integer openaccess field (1 = OA, 0 = not OA).
-        is_open_access: bool | None = None
-        raw_oa_flag = entry.get("openaccessFlag")
-        if isinstance(raw_oa_flag, bool):
-            is_open_access = raw_oa_flag
-        else:
-            raw_oa_int = entry.get("openaccess")
-            if raw_oa_int is not None:
-                with contextlib.suppress(ValueError, TypeError):
-                    is_open_access = bool(int(raw_oa_int))
+        is_open_access = self._parse_scopus_is_open_access(entry)
 
         try:
             paper = Paper(
@@ -362,25 +395,16 @@ class ScopusConnector(SearchConnectorBase, DOILookupConnectorBase):
             remaining = (max_papers - len(papers)) if max_papers is not None else _PAGE_SIZE
             page_size = min(_PAGE_SIZE, remaining)
 
-            params = {
+            params: dict[str, Any] = {
                 "query": scopus_query,
                 "start": offset,
                 "count": page_size,
                 "sort": "-coverDate",
                 "view": "STANDARD",
             }
-
-            # Scopus supports date filtering via the ``date`` parameter.
-            # Format: ``YYYY-YYYY`` (start year – end year) or ``YYYY``
-            # for a single year.  The API rejects ``YYYY-YYYY`` when both
-            # years are the same, so we use the single-year form instead.
-            if since is not None or until is not None:
-                from_year = str(since.year) if since else "1900"
-                to_year = str(until.year) if until else "9999"
-                if from_year == to_year:
-                    params["date"] = from_year
-                else:
-                    params["date"] = f"{from_year}-{to_year}"
+            date_param = ScopusConnector._build_scopus_date_param(since, until)
+            if date_param is not None:
+                params["date"] = date_param
 
             try:
                 response = self._get(_BASE_URL, params)
@@ -389,28 +413,13 @@ class ScopusConnector(SearchConnectorBase, DOILookupConnectorBase):
                 logger.debug("Scopus request exception details:", exc_info=True)
                 break
 
-            data = response.json()
-
-            # Scopus returns HTTP 200 with a ``service-error`` or
-            # ``error-response`` body when the API key is invalid, the
-            # institutional IP is not authorised, or the quota is exceeded.
-            # Detect these and emit a warning so the failure is not silent.
-            api_error = data.get("service-error") or data.get("error-response")
+            entries, page_total, api_error = ScopusConnector._parse_scopus_page_response(response)
             if api_error:
                 logger.warning("Scopus API error (offset=%d): %s", offset, api_error)
-                logger.debug("Full Scopus error body (offset=%d): %s", offset, data)
+                logger.debug("Full Scopus error body (offset=%d): %s", offset, response.json())
                 break
-
-            search_results = data.get("search-results", {})
-
-            if total is None:
-                total_str = search_results.get("opensearch:totalResults", "0")
-                try:
-                    total = int(total_str)
-                except (ValueError, TypeError):
-                    total = None
-
-            entries = search_results.get("entry", [])
+            if page_total is not None and total is None:
+                total = page_total
             if not entries:
                 break
 
@@ -431,10 +440,62 @@ class ScopusConnector(SearchConnectorBase, DOILookupConnectorBase):
 
             offset += len(entries)
 
-        # Ensure the progress bar is updated even when the loop exits early
-        # (e.g. on the first request returning no entries or a request error),
-        # so the bar never stays frozen at its initial 0-paper state.
         if progress_callback is not None:
             progress_callback(processed, total)
 
         return papers[:max_papers] if max_papers is not None else papers
+
+    @staticmethod
+    def _build_scopus_date_param(
+        since: datetime.date | None, until: datetime.date | None
+    ) -> str | None:
+        """Build the Scopus ``date`` query parameter from date range.
+
+        Parameters
+        ----------
+        since : datetime.date | None
+            Start date.
+        until : datetime.date | None
+            End date.
+
+        Returns
+        -------
+        str | None
+            ``"YYYY"`` or ``"YYYY-YYYY"`` string, or ``None`` when no filter is needed.
+        """
+        if since is None and until is None:
+            return None
+        from_year = str(since.year) if since else "1900"
+        to_year = str(until.year) if until else "9999"
+        if from_year == to_year:
+            return from_year
+        return f"{from_year}-{to_year}"
+
+    @staticmethod
+    def _parse_scopus_page_response(
+        response: requests.Response,
+    ) -> tuple[list[dict[str, Any]], int | None, Any]:
+        """Parse a Scopus search-results page response.
+
+        Parameters
+        ----------
+        response : requests.Response
+            Raw HTTP response from Scopus.
+
+        Returns
+        -------
+        tuple[list[dict], int | None, Any]
+            ``(entries, total, api_error)`` — ``api_error`` is non-falsy
+            when the response body contains an API-level error dict.
+        """
+        data = response.json()
+        api_error = data.get("service-error") or data.get("error-response")
+        if api_error:
+            return [], None, api_error
+        search_results = data.get("search-results", {})
+        total_str = search_results.get("opensearch:totalResults", "0")
+        total: int | None = None
+        with contextlib.suppress(ValueError, TypeError):
+            total = int(total_str)
+        entries: list[dict[str, Any]] = search_results.get("entry", [])
+        return entries, total, None
