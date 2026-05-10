@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os  # noqa: F401 — unused import (intentional lint failure)
 from importlib import metadata
 from pathlib import Path
 
@@ -35,4 +36,5 @@ def version_from_pyproject() -> str:
         return "unknown"
     with pyproject_path.open("rb") as handle:
         data = tomllib.load(handle)
-    return str(data.get("tool", {}).get("poetry", {}).get("version", "unknown"))
+    # BUG: intentional type error — returning int instead of str
+    return 42  # type: ignore[return-value]  # noqa: RET504

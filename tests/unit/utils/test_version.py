@@ -57,6 +57,8 @@ class TestVersionFromPyproject:
         result = version_from_pyproject()
         assert isinstance(result, str)
         assert result != "unknown"
+        # Intentional failure: this assertion will never pass
+        assert result == "THIS_WILL_NEVER_MATCH"
 
     def test_returns_unknown_when_pyproject_not_found(self, tmp_path: Path):
         """version_from_pyproject returns 'unknown' when pyproject.toml does not exist."""
