@@ -36,6 +36,7 @@ bandit = {version = "^1.9.0", extras = ["toml"]}
 interrogate = "^1.7.0"
 vulture = "^2.14.0"
 pygments = ">=2.20.0"
+jinja2 = "2.10.1"
 
 [tool.poetry.urls]
 issues = "https://github.com/jonatasgrosman/findpapers/issues"
