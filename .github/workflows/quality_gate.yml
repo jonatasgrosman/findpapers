@@ -256,3 +256,11 @@ jobs:
               });
               core.info('Created new quality gate comment');
             }
+
+            // Fail the job if any check did not pass, so the PR is marked red.
+            if (!allPassed) {
+              core.setFailed(
+                `${failedChecks.length} quality check(s) failed: ` +
+                failedChecks.map(c => c.label).join(', ')
+              );
+            }
