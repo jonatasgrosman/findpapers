@@ -64,6 +64,48 @@ findpapers.save_to_bibtex(result.papers, "references.bib")
 findpapers.save_to_json(graph, "citation_graph.json")
 ```
 
+## The Paper Object
+
+Every paper retrieved by Findpapers (via `search()`, `get()`, or `snowball()`) is a `Paper` instance. Call `paper.to_dict()` to get a plain dictionary ready for JSON serialisation. Here is what a fully-populated paper looks like:
+
+```json
+{
+  "title": "Attention Is All You Need",
+  "abstract": "The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely...",
+  "authors": [
+    {"name": "Vaswani, A.", "affiliation": "Google Brain"},
+    {"name": "Shazeer, N.", "affiliation": "Google Brain"},
+    {"name": "Parmar, N.", "affiliation": "Google Research"}
+  ],
+  "source": {
+    "title": "31st Conference on Neural Information Processing Systems",
+    "isbn": null,
+    "issn": null,
+    "publisher": "Curran Associates",
+    "source_type": "conference"
+  },
+  "publication_date": "2017-12-06",
+  "url": "https://arxiv.org/abs/1706.03762",
+  "pdf_url": "https://arxiv.org/pdf/1706.03762",
+  "doi": "10.48550/arXiv.1706.03762",
+  "citations": 140000,
+  "keywords": ["attention mechanism", "neural machine translation", "transformer"],
+  "comments": null,
+  "page_count": 15,
+  "page_range": "5998-6008",
+  "databases": ["arxiv", "semantic_scholar"],
+  "paper_type": "inproceedings",
+  "fields_of_study": ["Computer Science"],
+  "subjects": ["Computation and Language", "Machine Learning"],
+  "language": "en",
+  "is_open_access": true,
+  "is_retracted": false,
+  "funders": ["Google Brain"]
+}
+```
+
+See the [API Reference](https://github.com/jonatasgrosman/findpapers/blob/main/docs/api-reference.md) for the full list of fields and methods available on the `Paper` object and other classes.
+
 ## Supported Databases
 
 The table below summarizes each supported database - for full details on authentication, rate limits, and per-database quirks, see the [Databases](https://github.com/jonatasgrosman/findpapers/blob/main/docs/databases.md) documentation.
