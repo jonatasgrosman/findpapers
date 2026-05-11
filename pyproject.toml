@@ -18,6 +18,7 @@ requests = "^2.32.0"
 curl-cffi = ">=0.15.0"
 tqdm = "^4.67.0"
 defusedxml = "^0.7.0"
+urllib3 = ">=2.7.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^9.0.3"
