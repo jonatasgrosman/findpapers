@@ -31,7 +31,7 @@ and help you to craft the change so that it is successfully accepted into the pr
 
 ## <a name="submit"></a> Submission Guidelines
 
-In our development process we follow the [GitHub flow][github-flow], that is very powerful and easy to understand. 
+In our development process we follow the [GitHub flow](https://docs.github.com/en/get-started/quickstart/github-flow), that is very powerful and easy to understand. 
 That process enforces continuous delivery by **making anything in the main branch deployable**.
 So everybody needs to keep the main branch as safe as possible and ready to be deployed at any time.
 
@@ -134,7 +134,7 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 * The names of variables, functions, classes, files and modules should be descriptive.
 * Keep functions and methods focused on a single task; avoid large monolithic functions.
 * Line length should not exceed 100 characters.
-* If you changed any code, run `make format`, `make lint` and `make test` before committing.
+* If you changed any code, run `make check` before committing.
 * Aim to keep test coverage as close to 100% as possible.
 * Public methods must include parameters, returns, and possible exceptions.
 * We follow the [PEP8 Style Guide](https://peps.python.org/pep-0008/) for general coding.
@@ -190,7 +190,7 @@ We use a concise set of commit types. Use one of the following in the commit hea
 * **test**: Tests and related changes
 * **chore**: Maintenance, build, CI, or refactor tasks
 
-## Scope
+### Scope
 
 Scope is optional and should be a short lowercase identifier (no spaces). The scope could be
 the name of the module, package being changed or a broader category that the change falls under.
@@ -219,9 +219,11 @@ Let's see what needs to be done in your machine before [submit a Pull Request](#
 Before you can build and test, you must install and configure the
 following products on your development machine:
 
-* [Python](https://www.python.org)
+* [Python](https://www.python.org) (3.11+)
 
 * [Git](http://git-scm.com)
+
+* [Poetry](https://python-poetry.org/) (dependency management)
 
 ## Getting the Sources
 
@@ -250,22 +252,44 @@ git remote add upstream https://github.com/jonatasgrosman/findpapers.git
 make setup
 ```
 
-## Running Tests, Format and Linting
+## Running Quality Checks
 
-Run tests:
+Run all quality checks at once (recommended before submitting a PR):
 
 ```shell
+make check
+```
+
+Or run individual checks:
+
+```shell
+# Run unit tests with coverage
 make test
-```
 
-Run format:
+# Run live integration tests against real external APIs
+make test-integration
 
-```shell
+# Check code formatting (ruff)
 make format
-```
 
-Run lint:
-
-```shell
+# Check lint issues (ruff)
 make lint
+
+# Run static type checks (mypy)
+make types
+
+# Check cyclomatic complexity (xenon)
+make complexity
+
+# Run static security analysis (bandit)
+make security
+
+# Check dependencies for known vulnerabilities (pip-audit)
+make deps-audit
+
+# Check docstring coverage (interrogate)
+make docstrings
+
+# Detect unused code (vulture)
+make dead-code
 ```
