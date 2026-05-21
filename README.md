@@ -7,7 +7,7 @@
   <a href="https://pypi.org/project/findpapers"><img src="https://img.shields.io/pypi/v/findpapers" alt="PyPI"></a>
 </p>
 
-> **WARNING:** A new release is currently being prepared. The `main` branch may change frequently until then. If something stops working, update the tool and check the latest version of the [documentation](https://github.com/jonatasgrosman/findpapers/tree/main/docs). If you find a bug, please [open an issue](https://github.com/jonatasgrosman/findpapers/issues).
+> **WARNING:** A new release is currently being prepared. The `main` branch may change frequently until then. If something stops working, update the tool with `pip install --upgrade git+https://github.com/jonatasgrosman/findpapers.git` and check the latest version of the [documentation](https://github.com/jonatasgrosman/findpapers/tree/main/docs). If you find a bug, please [open an issue](https://github.com/jonatasgrosman/findpapers/issues).
 
 Findpapers is a Python library that gives researchers unified access to **hundreds of millions of academic papers** from different databases - all through a single query. Instead of searching the databases one by one, each with its own interface and query language, Findpapers lets you write one boolean expression and run it everywhere at once, automatically merging and deduplicating the results. It also fetches additional metadata (abstracts, keywords, citations) during search and snowballing, and can download PDFs with automatic URL resolution for major publishers. Whether you're doing a literature review, building a citation graph, or just looking for related work, Findpapers makes it easy to find the papers you need - no matter where they're published.
 
