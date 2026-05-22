@@ -1449,3 +1449,136 @@ class TestPaperTitleNormalization:
             publication_date=None,
         )
         assert paper.title == "Deep Learning: A Survey"
+
+
+# ---------------------------------------------------------------------------
+# Paper.references
+# ---------------------------------------------------------------------------
+
+
+class TestPaperReferences:
+    """Tests for the references attribute on Paper."""
+
+    def test_references_defaults_to_empty_list(self) -> None:
+        """Paper without explicit references has an empty list."""
+        paper = Paper(title="T", abstract="", authors=[], source=None, publication_date=None)
+        assert paper.references == []
+
+    def test_references_set_at_construction(self) -> None:
+        """references can be populated at construction time."""
+        paper = Paper(
+            title="T",
+            abstract="",
+            authors=[],
+            source=None,
+            publication_date=None,
+            references=["10.1000/a", "10.1000/b"],
+        )
+        assert paper.references == ["10.1000/a", "10.1000/b"]
+
+    def test_references_none_at_construction_defaults_empty(self) -> None:
+        """Passing None for references defaults to an empty list."""
+        paper = Paper(
+            title="T",
+            abstract="",
+            authors=[],
+            source=None,
+            publication_date=None,
+            references=None,
+        )
+        assert paper.references == []
+
+    def test_references_serialized_in_to_dict(self) -> None:
+        """to_dict includes references as a sorted list."""
+        paper = Paper(
+            title="T",
+            abstract="",
+            authors=[],
+            source=None,
+            publication_date=None,
+            references=["10.1000/z", "10.1000/a"],
+        )
+        assert paper.to_dict()["references"] == ["10.1000/a", "10.1000/z"]
+
+    def test_references_empty_serialized_as_empty_list(self) -> None:
+        """to_dict serializes an empty references list as an empty list."""
+        paper = Paper(title="T", abstract="", authors=[], source=None, publication_date=None)
+        assert paper.to_dict()["references"] == []
+
+    def test_references_deserialized_from_dict_list(self) -> None:
+        """from_dict restores references from a list."""
+        paper = Paper.from_dict({"title": "T", "references": ["10.1000/a", "10.1000/b"]})
+        assert paper.references == ["10.1000/a", "10.1000/b"]
+
+    def test_references_missing_from_dict_defaults_empty(self) -> None:
+        """from_dict defaults references to empty list when key is absent."""
+        paper = Paper.from_dict({"title": "T"})
+        assert paper.references == []
+
+    def test_references_none_in_dict_defaults_empty(self) -> None:
+        """from_dict treats None references as an empty list."""
+        paper = Paper.from_dict({"title": "T", "references": None})
+        assert paper.references == []
+
+    def test_references_round_trip(self) -> None:
+        """to_dict → from_dict preserves references."""
+        paper = Paper(
+            title="T",
+            abstract="",
+            authors=[],
+            source=None,
+            publication_date=None,
+            references=["10.1000/a", "10.1000/b"],
+        )
+        restored = Paper.from_dict(paper.to_dict())
+        assert restored.references == ["10.1000/a", "10.1000/b"]
+
+    def test_references_merge_unions_preserving_order(self) -> None:
+        """merge() unions references from both papers without duplicates."""
+        base = Paper(
+            title="T",
+            abstract="",
+            authors=[],
+            source=None,
+            publication_date=None,
+            references=["10.1000/a", "10.1000/b"],
+        )
+        incoming = Paper(
+            title="T",
+            abstract="",
+            authors=[],
+            source=None,
+            publication_date=None,
+            references=["10.1000/b", "10.1000/c"],
+        )
+        base.merge(incoming)
+        # "b" already present — should not be duplicated; "c" appended.
+        assert base.references == ["10.1000/a", "10.1000/b", "10.1000/c"]
+
+    def test_references_merge_empty_base_with_populated_incoming(self) -> None:
+        """merge() fills references when base has none."""
+        base = Paper(title="T", abstract="", authors=[], source=None, publication_date=None)
+        incoming = Paper(
+            title="T",
+            abstract="",
+            authors=[],
+            source=None,
+            publication_date=None,
+            references=["10.1000/x"],
+        )
+        base.merge(incoming)
+        assert base.references == ["10.1000/x"]
+
+    def test_references_merge_keeps_existing_when_incoming_empty(self) -> None:
+        """merge() keeps existing references when incoming has none."""
+        base = Paper(
+            title="T",
+            abstract="",
+            authors=[],
+            source=None,
+            publication_date=None,
+            references=["10.1000/a"],
+        )
+        incoming = Paper(title="T", abstract="", authors=[], source=None, publication_date=None)
+        base.merge(incoming)
+        assert base.references == ["10.1000/a"]

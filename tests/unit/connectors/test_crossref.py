@@ -372,6 +372,40 @@ class TestBuildPaperFromCrossref:
         assert paper is not None
         assert paper.databases == {"crossref"}
 
+    def test_references_extracted_from_reference_field(self) -> None:
+        """Reference DOIs from the CrossRef reference list are extracted."""
+        work = {
+            **_MINIMAL_WORK,
+            "reference": [
+                {"key": "r1", "DOI": "10.1000/ref1"},
+                {"key": "r2", "DOI": "  10.1000/ref2  "},  # whitespace stripped
+                {"key": "r3"},  # no DOI — skipped
+                {"key": "r4", "DOI": ""},  # empty DOI — skipped
+            ],
+        }
+        paper = CrossRefConnector._build_paper(work)
+        assert paper is not None
+        assert paper.references == ["10.1000/ref1", "10.1000/ref2"]
+
+    def test_references_empty_when_no_reference_field(self) -> None:
+        """Paper built without a reference field has an empty references list."""
+        paper = CrossRefConnector._build_paper(_MINIMAL_WORK)
+        assert paper is not None
+        assert paper.references == []
+
+    def test_references_empty_when_reference_list_has_no_dois(self) -> None:
+        """Paper with references that all lack DOIs has an empty references list."""
+        work = {
+            **_MINIMAL_WORK,
+            "reference": [
+                {"key": "r1", "unstructured": "Some citation without DOI"},
+                {"key": "r2"},
+            ],
+        }
+        paper = CrossRefConnector._build_paper(work)
+        assert paper is not None
+        assert paper.references == []
+
 
 # ---------------------------------------------------------------------------
 # fetch_crossref_work

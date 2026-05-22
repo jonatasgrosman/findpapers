@@ -128,6 +128,7 @@ class Paper:
         is_open_access: bool | None = None,
         is_retracted: bool | None = None,
         funders: set[str] | None = None,
+        references: list[str] | None = None,
     ) -> None:
         """Create a Paper instance.
 
@@ -180,6 +181,11 @@ class Paper:
             Names of funding agencies or organisations that supported this
             work (e.g. ``{"National Science Foundation", "NIH"}``).  When no
             funding information is available, defaults to an empty set.
+        references : list[str] | None
+            DOIs of papers cited by this paper (backward references).  Only
+            DOIs that are explicitly present in the source data are included;
+            references without a DOI are silently omitted.  Defaults to an
+            empty list.
 
         Raises
         ------
@@ -212,6 +218,7 @@ class Paper:
         self.is_open_access = is_open_access
         self.is_retracted = is_retracted
         self.funders = funders if funders is not None else set()
+        self.references: list[str] = list(references) if references is not None else []
 
     def __eq__(self, other: object) -> bool:
         """Check equality by DOI (case-insensitive) or title.
@@ -453,6 +460,14 @@ class Paper:
         self.is_retracted = merge_value(self.is_retracted, paper.is_retracted)
         self.funders |= paper.funders
 
+        # Union reference DOIs preserving insertion order and deduplicating.
+        if paper.references:
+            seen: set[str] = set(self.references)
+            for doi in paper.references:
+                if doi not in seen:
+                    self.references.append(doi)
+                    seen.add(doi)
+
         # Always accumulate databases for traceability.
         self.databases |= paper.databases
         if self.source is None:
@@ -628,6 +643,9 @@ class Paper:
         page_count = paper_dict.get("page_count")
         page_range = paper_dict.get("page_range")
 
+        raw_refs = paper_dict.get("references") or []
+        references = [str(r) for r in raw_refs if isinstance(r, str) and r.strip()]
+
         keywords = cls._from_dict_str_set(paper_dict, "keywords")
         databases = cls._from_dict_str_set(paper_dict, "databases")
         fields_of_study = cls._from_dict_str_set(paper_dict, "fields_of_study")
@@ -660,6 +678,7 @@ class Paper:
             is_open_access=is_open_access,
             is_retracted=is_retracted,
             funders=funders,
+            references=references,
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -694,4 +713,5 @@ class Paper:
             "is_open_access": self.is_open_access,
             "is_retracted": self.is_retracted,
             "funders": sorted(self.funders),
+            "references": sorted(self.references),
         }

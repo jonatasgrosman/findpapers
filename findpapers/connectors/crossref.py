@@ -524,6 +524,34 @@ class CrossRefConnector(CitationConnectorBase, DOILookupConnectorBase):
         )
 
     @staticmethod
+    def _parse_references(work: dict[str, Any]) -> list[str]:
+        """Extract the list of cited DOIs from a CrossRef work record.
+
+        Only reference entries that carry a ``DOI`` field are included;
+        entries with only an unstructured key or free-text are silently
+        skipped.
+
+        Parameters
+        ----------
+        work : dict[str, Any]
+            CrossRef work record.
+
+        Returns
+        -------
+        list[str]
+            Stripped DOI strings for all resolvable references.  May be empty.
+        """
+        raw_refs = work.get("reference") or []
+        result: list[str] = []
+        for entry in raw_refs:
+            if not isinstance(entry, dict):
+                continue
+            doi = (entry.get("DOI") or "").strip()
+            if doi:
+                result.append(doi)
+        return result
+
+    @staticmethod
     def _build_paper(work: dict[str, Any]) -> Paper | None:
         """Build a :class:`~findpapers.core.paper.Paper` from a CrossRef work record.
 
@@ -590,6 +618,8 @@ class CrossRefConnector(CitationConnectorBase, DOILookupConnectorBase):
 
         source = CrossRefConnector._parse_crossref_source(work)
 
+        references = CrossRefConnector._parse_references(work)
+
         return Paper(
             title=title,
             abstract=abstract,
@@ -604,4 +634,5 @@ class CrossRefConnector(CitationConnectorBase, DOILookupConnectorBase):
             page_range=pages,
             page_count=page_count,
             databases={CrossRefConnector._DATABASE_NAME},
+            references=references,
         )

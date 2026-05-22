@@ -66,7 +66,7 @@ papers = findpapers.load_from_bibtex("references.bib")
 
 ### Limitations
 
-- Some metadata is lost during BibTeX save (e.g., `citation count`, `databases`, `pdf_url`, `fields_of_study`, `subjects`, `language`, `is_open_access`, `is_retracted`, `funders`). Use JSON for lossless round-trips.
+- Some metadata is lost during BibTeX save (e.g., `citation count`, `references`, `databases`, `pdf_url`, `fields_of_study`, `subjects`, `language`, `is_open_access`, `is_retracted`, `funders`). Use JSON for lossless round-trips.
 
 ---
 

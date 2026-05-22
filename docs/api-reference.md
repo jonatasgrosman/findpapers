@@ -208,6 +208,7 @@ Paper(
     is_open_access: bool | None = None,
     is_retracted: bool | None = None,
     funders: set[str] | None = None,
+    references: list[str] | None = None,
 )
 ```
 
@@ -236,6 +237,7 @@ Paper(
 | `is_open_access` | `bool \| None` | `True` when the paper is freely available online, `False` when behind a paywall, `None` when unknown. |
 | `is_retracted` | `bool \| None` | `True` when the paper was retracted, `False` when known not to be retracted, `None` when unknown. |
 | `funders` | `set[str]` | Funding organisations. |
+| `references` | `list[str]` | DOIs of papers cited by this paper (backward references). Populated during enrichment by CrossRef. Empty list when unknown. |
 
 #### Methods
 
