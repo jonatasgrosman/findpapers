@@ -34,7 +34,7 @@ def _fake_paper(
     doi: str | None = "10.1234/test",
     url: str | None = None,
     keywords: set[str] | None = None,
-    databases: set[str] | None = None,
+    found_in: set[str] | None = None,
 ) -> Paper:
     """Return a minimal Paper for use in tests."""
     return Paper(
@@ -46,7 +46,7 @@ def _fake_paper(
         doi=doi,
         url=url,
         keywords=keywords,
-        databases=databases or {"crossref"},
+        found_in=found_in or {"crossref"},
     )
 
 
@@ -518,7 +518,7 @@ class TestGetRunnerDoiPath:
             publication_date=None,
             doi="10.1234/test",
             keywords={"ML", "AI"},
-            databases={"semantic_scholar"},
+            found_in={"semantic_scholar"},
         )
         with (
             patch(
@@ -550,7 +550,7 @@ class TestGetRunnerDoiPath:
             publication_date=None,
             doi="10.1234/test",
             url="https://www.some-publisher.com/articles/very-long-url/10.1234/test",
-            databases={"openalex"},
+            found_in={"openalex"},
         )
         with (
             patch(
@@ -571,7 +571,7 @@ class TestGetRunnerDoiPath:
 
     def test_fallback_when_crossref_returns_none(self):
         """When CrossRef finds nothing, another connector can still provide a result."""
-        fallback_paper = _fake_paper(databases={"openalex"})
+        fallback_paper = _fake_paper(found_in={"openalex"})
         with patch(
             "findpapers.connectors.crossref.CrossRefConnector.fetch_work",
             return_value=None,
@@ -646,9 +646,9 @@ class TestGetRunnerUrlPath:
     def test_url_scraping_enriched_by_doi_connectors(self):
         """When scraping finds a DOI, DOI connectors enrich the scraped paper."""
         scraped_paper = _fake_paper(
-            doi="10.1234/test", title="Scraped Title", databases={"web_scraping"}
+            doi="10.1234/test", title="Scraped Title", found_in={"web_scraping"}
         )
-        crossref_paper = _fake_paper(keywords={"NLP"}, databases={"crossref"})
+        crossref_paper = _fake_paper(keywords={"NLP"}, found_in={"crossref"})
 
         mock_scraper = MagicMock(return_value=scraped_paper)
         with (
@@ -675,7 +675,7 @@ class TestGetRunnerUrlPath:
 
     def test_url_lookup_connector_delegates_without_html_scraping(self):
         """When a URL-lookup connector matches, HTML scraping is bypassed."""
-        api_paper = _fake_paper(doi=None, databases={"arxiv"})
+        api_paper = _fake_paper(doi=None, found_in={"arxiv"})
         with patch(
             "findpapers.connectors.web_scraping.WebScrapingConnector.fetch_paper_from_url",
             return_value=api_paper,
@@ -700,7 +700,7 @@ class TestGetRunnerUrlPath:
     def test_scraping_url_has_priority_over_crossref_url(self):
         """Scraped URL (final URL after HTTP redirects) wins over the CrossRef URL."""
         scraped_paper = _fake_paper(doi="10.1234/test", url="https://example.com/paper")
-        crossref_paper = _fake_paper(url="https://doi.org/10.1234/test", databases={"crossref"})
+        crossref_paper = _fake_paper(url="https://doi.org/10.1234/test", found_in={"crossref"})
 
         with (
             patch(
@@ -745,7 +745,7 @@ class TestGetRunnerDatabasesFilter:
 
     def test_crossref_disabled_but_other_connector_finds_paper(self):
         """Without crossref, another Stage-2 connector can still return a result."""
-        fake_paper = _fake_paper(databases={"arxiv"})
+        fake_paper = _fake_paper(found_in={"arxiv"})
         runner = GetRunner(identifier="10.1234/test", databases=["arxiv"])
         assert runner._crossref is None
         runner._arxiv.fetch_paper_by_doi = lambda doi: fake_paper  # type: ignore[union-attr, method-assign]
@@ -764,7 +764,7 @@ class TestGetRunnerDatabasesFilter:
 
     def test_web_scraping_only_returns_scraped_paper(self):
         """When only web_scraping is enabled, Stage 2 is never reached."""
-        scraped_paper = _fake_paper(doi=None, databases={"web_scraping"})
+        scraped_paper = _fake_paper(doi=None, found_in={"web_scraping"})
         with patch(
             "findpapers.connectors.web_scraping.WebScrapingConnector.fetch_paper_from_url",
             return_value=scraped_paper,
@@ -795,7 +795,7 @@ class TestGetRunnerDatabasesFilter:
     def test_bare_doi_with_web_scraping_calls_scraper_with_doi_url(self):
         """When identifier is a bare DOI and web_scraping is enabled, the scraper
         is called with the https://doi.org/{doi} redirect URL."""
-        scraped_paper = _fake_paper(doi="10.1234/test", databases={"web_scraping"})
+        scraped_paper = _fake_paper(doi="10.1234/test", found_in={"web_scraping"})
         with (
             patch(
                 "findpapers.connectors.web_scraping.WebScrapingConnector.fetch_paper_from_url",
@@ -839,7 +839,7 @@ class TestGetRunnerDatabasesFilter:
     def test_doi_org_url_with_web_scraping_calls_scraper(self):
         """When identifier is a doi.org URL and web_scraping is enabled, the
         scraper is called with the normalised https://doi.org/{doi} URL."""
-        scraped_paper = _fake_paper(doi="10.1234/test", databases={"web_scraping"})
+        scraped_paper = _fake_paper(doi="10.1234/test", found_in={"web_scraping"})
         with (
             patch(
                 "findpapers.connectors.web_scraping.WebScrapingConnector.fetch_paper_from_url",

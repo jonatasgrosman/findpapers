@@ -151,7 +151,7 @@ class TestPubmedConnectorParsePaper:
         articles = tree.findall(".//PubmedArticle")
         paper = PubmedConnector()._parse_paper(articles[0])
         assert paper is not None
-        assert Database.PUBMED in paper.databases
+        assert Database.PUBMED in paper.found_in
 
     def test_missing_title_returns_none(self):
         """Article element without title returns None."""
@@ -661,7 +661,7 @@ class TestPubmedConnectorSearch:
             papers = searcher.search(simple_query)
 
         assert len(papers) > 0
-        assert all(Database.PUBMED in p.databases for p in papers)
+        assert all(Database.PUBMED in p.found_in for p in papers)
 
     def test_max_papers_respected(
         self,

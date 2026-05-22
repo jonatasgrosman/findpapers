@@ -388,7 +388,7 @@ class IEEEConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConnec
                 keywords=keywords if keywords else None,
                 subjects=subjects,
                 page_range=pages,
-                databases={self.name},
+                found_in={self.name},
                 paper_type=paper_type,
                 is_open_access=is_open_access,
             )

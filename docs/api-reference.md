@@ -200,7 +200,7 @@ Paper(
     comments: str | None = None,
     page_count: int | None = None,
     page_range: str | None = None,
-    databases: set[str] | None = None,
+    found_in: set[str] | None = None,
     paper_type: PaperType | None = None,
     fields_of_study: set[str] | None = None,
     subjects: set[str] | None = None,
@@ -229,7 +229,7 @@ Paper(
 | `comments` | `str \| None` | Additional comments. |
 | `page_count` | `int \| None` | Total number of pages. |
 | `page_range` | `str \| None` | Page range (e.g., `"223-230"`). |
-| `databases` | `set[str]` | Databases where this paper was found. Values are `Database` enum strings (e.g. `"arxiv"`, `"pubmed"`). Populated by `search()`, `get()`, and `snowball()`. |
+| `found_in` | `set[str]` | Databases where this paper was found. Values are `Database` enum strings (e.g. `"arxiv"`, `"pubmed"`). Populated by `search()`, `get()`, and `snowball()`. |
 | `paper_type` | `PaperType \| None` | BibTeX-aligned classification. |
 | `fields_of_study` | `set[str]` | Broad knowledge areas. |
 | `subjects` | `set[str]` | Disciplinary classifications. |
@@ -277,7 +277,7 @@ from findpapers import PaperType
 
 ### Database
 
-Enum of supported academic database identifiers. Values are the canonical string identifiers used in `Paper.databases`, `SearchResult.databases`, and the `databases` parameter of `search()` and `get()`.
+Enum of supported academic database identifiers. Values are the canonical string identifiers used in `Paper.found_in`, `SearchResult.databases`, and the `databases` parameter of `search()` and `get()`.
 
 ```python
 from findpapers import Database

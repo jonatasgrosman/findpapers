@@ -601,7 +601,7 @@ class WosConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConnect
                 keywords=keywords if keywords else None,
                 page_range=page_range,
                 page_count=page_count,
-                databases={self.name},
+                found_in={self.name},
                 paper_type=paper_type,
             )
         except ValueError:

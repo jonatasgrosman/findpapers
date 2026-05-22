@@ -93,7 +93,7 @@ Every paper retrieved by Findpapers (via `search()`, `get()`, or `snowball()`) i
   "comments": null,
   "page_count": 15,
   "page_range": "5998-6008",
-  "databases": ["arxiv", "semantic_scholar"],
+  "found_in": ["arxiv", "semantic_scholar"],
   "paper_type": "inproceedings",
   "fields_of_study": ["Computer Science"],
   "subjects": ["Computation and Language", "Machine Learning"],

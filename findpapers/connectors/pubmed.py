@@ -354,7 +354,7 @@ class PubmedConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConn
                 doi=doi,
                 keywords=keywords if keywords else None,
                 page_range=pages,
-                databases={self.name},
+                found_in={self.name},
                 paper_type=paper_type,
                 subjects=subjects if subjects else None,
                 language=language,

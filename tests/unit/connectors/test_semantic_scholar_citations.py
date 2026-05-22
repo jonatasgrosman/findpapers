@@ -337,7 +337,7 @@ class TestSemanticScholarRealDataParsing:
         # Verify they are actual Paper objects with meaningful attributes.
         for ref in refs:
             assert ref.title
-            assert "semantic_scholar" in ref.databases
+            assert "semantic_scholar" in ref.found_in
 
     @patch.object(SemanticScholarConnector, "_get")
     def test_fetch_cited_by_with_real_data(
@@ -360,7 +360,7 @@ class TestSemanticScholarRealDataParsing:
         assert len(cited_by) == 3
         for p in cited_by:
             assert p.title
-            assert "semantic_scholar" in p.databases
+            assert "semantic_scholar" in p.found_in
 
     @patch.object(SemanticScholarConnector, "_get")
     def test_get_expected_counts_with_real_data(

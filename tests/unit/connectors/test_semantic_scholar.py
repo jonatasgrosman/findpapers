@@ -78,7 +78,7 @@ class TestSemanticScholarConnectorParsePaper:
         item = semantic_scholar_sample_json["data"][0]
         paper = SemanticScholarConnector()._parse_paper(item)
         assert paper is not None
-        assert Database.SEMANTIC_SCHOLAR in paper.databases
+        assert Database.SEMANTIC_SCHOLAR in paper.found_in
 
     def test_missing_title_returns_none(self):
         """Item with blank title returns None."""
@@ -358,7 +358,7 @@ class TestSemanticScholarConnectorSearch:
             papers = searcher.search(simple_query)
 
         assert len(papers) > 0
-        assert all(Database.SEMANTIC_SCHOLAR in p.databases for p in papers)
+        assert all(Database.SEMANTIC_SCHOLAR in p.found_in for p in papers)
 
     def test_max_papers_respected(
         self,

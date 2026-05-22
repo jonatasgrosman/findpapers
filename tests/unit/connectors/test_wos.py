@@ -144,7 +144,7 @@ class TestWosParseDocument:
         assert paper.doi == "10.1145/3529755"
         assert paper.citations == 77
         assert "NLP" in paper.keywords
-        assert Database.WOS.value in paper.databases
+        assert Database.WOS.value in paper.found_in
 
     def test_parse_sets_source(self, wos_sample_json: dict) -> None:
         """Source title and ISSN are extracted from the first hit."""

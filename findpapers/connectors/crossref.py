@@ -83,7 +83,7 @@ class CrossRefConnector(CitationConnectorBase, DOILookupConnectorBase):
     """
 
     _DATABASE_NAME: str = "crossref"
-    """Database identifier used in :attr:`~findpapers.core.paper.Paper.databases`."""
+    """Database identifier used in :attr:`~findpapers.core.paper.Paper.found_in`."""
 
     supports_forward: bool = False
     """CrossRef does not expose a forward-citation (cited-by) endpoint."""
@@ -633,6 +633,6 @@ class CrossRefConnector(CitationConnectorBase, DOILookupConnectorBase):
             keywords=keywords or None,
             page_range=pages,
             page_count=page_count,
-            databases={CrossRefConnector._DATABASE_NAME},
+            found_in={CrossRefConnector._DATABASE_NAME},
             references=references,
         )

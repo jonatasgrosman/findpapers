@@ -64,7 +64,7 @@ class TestIEEEConnectorParsePaper:
         item = ieee_sample_json["articles"][0]
         paper = IEEEConnector(api_key="dummy")._parse_paper(item)
         assert paper is not None
-        assert Database.IEEE in paper.databases
+        assert Database.IEEE in paper.found_in
 
     def test_missing_title_returns_none(self):
         """Item with empty title returns None."""
@@ -296,7 +296,7 @@ class TestIEEEConnectorSearch:
             papers = searcher.search(simple_query)
 
         assert len(papers) > 0
-        assert all(Database.IEEE in p.databases for p in papers)
+        assert all(Database.IEEE in p.found_in for p in papers)
 
     def test_max_papers_respected(self, simple_query, ieee_sample_json, mock_response):
         """search() returns no more than max_papers papers."""

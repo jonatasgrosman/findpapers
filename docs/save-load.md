@@ -66,7 +66,7 @@ papers = findpapers.load_from_bibtex("references.bib")
 
 ### Limitations
 
-- Some metadata is lost during BibTeX save (e.g., `citation count`, `references`, `databases`, `pdf_url`, `fields_of_study`, `subjects`, `language`, `is_open_access`, `is_retracted`, `funders`). Use JSON for lossless round-trips.
+- Some metadata is lost during BibTeX save (e.g., `citation count`, `references`, `found_in`, `pdf_url`, `fields_of_study`, `subjects`, `language`, `is_open_access`, `is_retracted`, `funders`). Use JSON for lossless round-trips.
 
 ---
 
@@ -103,7 +103,7 @@ papers = findpapers.load_from_csv("papers.csv")
 | `keywords` | Keywords, separated by `"; "` |
 | `paper_type` | BibTeX publication type |
 | `page_range` | Page range |
-| `databases` | Database names, separated by `"; "` |
+| `found_in` | Database names, separated by `"; "` |
 | `fields_of_study` | Fields of study, separated by `"; "` |
 | `subjects` | Subjects, separated by `"; "` |
 | `language` | ISO 639-1 two-letter language code (e.g. `"en"`) |
@@ -114,7 +114,7 @@ papers = findpapers.load_from_csv("papers.csv")
 
 ### Format Details
 
-- Multi-valued fields (authors, keywords, databases, fields_of_study, subjects, funders) are joined with `"; "` as separator
+- Multi-valued fields (authors, keywords, found_in, fields_of_study, subjects, funders) are joined with `"; "` as separator
 - CSV formula injection is prevented by prefixing cells starting with `=`, `+`, `-`, or `@` with a single quote (`'`)
 - The single-quote prefix is automatically removed when importing
 

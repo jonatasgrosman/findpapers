@@ -370,7 +370,7 @@ class TestBuildPaperFromCrossref:
         """Built paper always has databases={'crossref'}."""
         paper = CrossRefConnector._build_paper(_FULL_WORK)
         assert paper is not None
-        assert paper.databases == {"crossref"}
+        assert paper.found_in == {"crossref"}
 
     def test_references_extracted_from_reference_field(self) -> None:
         """Reference DOIs from the CrossRef reference list are extracted."""

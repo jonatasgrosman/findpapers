@@ -399,7 +399,7 @@ class ArxivConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConne
                 pdf_url=pdf_url,
                 doi=doi,
                 comments=comment,
-                databases={self.name},
+                found_in={self.name},
                 paper_type=paper_type,
                 fields_of_study=fields_of_study if fields_of_study else None,
                 subjects=subjects if subjects else None,

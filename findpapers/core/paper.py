@@ -68,7 +68,7 @@ class Database(StrEnum):
 
     ``"web_scraping"`` is intentionally absent: web scraping is a retrieval
     mechanism, not an academic database, and must never be added to a
-    :attr:`Paper.databases` set.
+    :attr:`Paper.found_in` set.
     """
 
     ARXIV = "arxiv"
@@ -120,7 +120,7 @@ class Paper:
         comments: str | None = None,
         page_count: int | None = None,
         page_range: str | None = None,
-        databases: set[str] | None = None,
+        found_in: set[str] | None = None,
         paper_type: PaperType | None = None,
         fields_of_study: set[str] | None = None,
         subjects: set[str] | None = None,
@@ -160,7 +160,7 @@ class Paper:
             Page count.
         page_range : str | None
             Page range (e.g. ``"223-230"``).
-        databases : set[str] | None
+        found_in : set[str] | None
             Databases where found.
         paper_type : PaperType | None
             BibTeX-aligned paper type (informational, not used for filtering).
@@ -210,7 +210,7 @@ class Paper:
             page_count if page_count is not None else self._infer_page_count(page_range)
         )
         self.page_range = page_range
-        self.databases = databases if databases is not None else set()
+        self.found_in = found_in if found_in is not None else set()
         self.paper_type = paper_type
         self.fields_of_study = fields_of_study if fields_of_study is not None else set()
         self.subjects = subjects if subjects is not None else set()
@@ -413,7 +413,7 @@ class Paper:
         None
         """
         if database_name:
-            self.databases.add(database_name)
+            self.found_in.add(database_name)
 
     def merge(self, paper: Paper) -> None:
         """Merge another paper into this one.
@@ -469,7 +469,7 @@ class Paper:
                     seen.add(doi)
 
         # Always accumulate databases for traceability.
-        self.databases |= paper.databases
+        self.found_in |= paper.found_in
         if self.source is None:
             self.source = paper.source
         elif paper.source is not None:
@@ -647,7 +647,7 @@ class Paper:
         references = [str(r) for r in raw_refs if isinstance(r, str) and r.strip()]
 
         keywords = cls._from_dict_str_set(paper_dict, "keywords")
-        databases = cls._from_dict_str_set(paper_dict, "databases")
+        found_in = cls._from_dict_str_set(paper_dict, "found_in")
         fields_of_study = cls._from_dict_str_set(paper_dict, "fields_of_study")
         subjects = cls._from_dict_str_set(paper_dict, "subjects")
         funders = cls._from_dict_str_set(paper_dict, "funders")
@@ -670,7 +670,7 @@ class Paper:
             comments=comments,
             page_count=page_count,
             page_range=page_range,
-            databases=databases,
+            found_in=found_in,
             paper_type=paper_type,
             fields_of_study=fields_of_study,
             subjects=subjects,
@@ -705,7 +705,7 @@ class Paper:
             "comments": self.comments,
             "page_count": self.page_count,
             "page_range": self.page_range,
-            "databases": sorted(self.databases),
+            "found_in": sorted(self.found_in),
             "paper_type": self.paper_type.value if self.paper_type else None,
             "fields_of_study": sorted(self.fields_of_study),
             "subjects": sorted(self.subjects),

@@ -858,7 +858,7 @@ class OpenAlexConnector(
                 citations=citations,
                 keywords=keywords if keywords else None,
                 page_range=pages,
-                databases={self.name},
+                found_in={self.name},
                 paper_type=paper_type,
                 fields_of_study=fields_of_study if fields_of_study else None,
                 subjects=subjects if subjects else None,

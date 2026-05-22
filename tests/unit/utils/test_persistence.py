@@ -89,7 +89,7 @@ def full_paper(journal_publication: Source) -> Paper:
         comments="Highly cited review.",
         page_count=42,
         page_range="1-42",
-        databases={"arxiv", "semantic_scholar"},
+        found_in={"arxiv", "semantic_scholar"},
         funders={"NIH", "NSF"},
     )
 
@@ -105,7 +105,7 @@ def conference_paper(conference_publication: Source) -> Paper:
         publication_date=datetime.date(2017, 12, 1),
         url="https://arxiv.org/abs/1706.03762",
         doi="10.48550/arXiv.1706.03762",
-        databases={"arxiv"},
+        found_in={"arxiv"},
     )
 
 
@@ -1380,7 +1380,7 @@ class TestLoadFromCsv:
             path = str(Path(tmpdir) / "out.csv")
             save_to_csv([full_paper], path)
             loaded = load_from_csv(path)
-            assert loaded[0].databases == full_paper.databases
+            assert loaded[0].found_in == full_paper.found_in
 
     def test_multiple_papers(self, sample_search: SearchResult) -> None:
         """Multiple papers survive the round-trip."""

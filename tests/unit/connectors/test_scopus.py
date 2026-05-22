@@ -64,7 +64,7 @@ class TestScopusConnectorParsePaper:
         entry = scopus_sample_json["search-results"]["entry"][0]
         paper = ScopusConnector(api_key="dummy")._parse_paper(entry)
         assert paper is not None
-        assert Database.SCOPUS in paper.databases
+        assert Database.SCOPUS in paper.found_in
 
     def test_missing_title_returns_none(self):
         """Entry with empty title returns None."""
@@ -311,7 +311,7 @@ class TestScopusConnectorSearch:
 
         assert mocked_get.call_count == 2
         assert len(papers) > 0
-        assert all(Database.SCOPUS in p.databases for p in papers)
+        assert all(Database.SCOPUS in p.found_in for p in papers)
 
     def test_max_papers_respected(self, simple_query, scopus_sample_json, mock_response):
         """search() returns no more than max_papers papers."""

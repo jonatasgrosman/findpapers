@@ -673,7 +673,7 @@ _CSV_COLUMNS: list[str] = [
     "keywords",
     "paper_type",
     "page_range",
-    "databases",
+    "found_in",
     "fields_of_study",
     "subjects",
     "language",
@@ -688,7 +688,7 @@ def save_to_csv(papers: list[Paper], path: str) -> None:
     """Write a list of papers to a CSV file.
 
     Each row represents one paper.  Multi-valued fields (authors,
-    keywords, databases, etc.) are joined with ``"; "``.
+    keywords, found_in, etc.) are joined with ``"; "``.
 
     Parameters
     ----------
@@ -812,7 +812,7 @@ def _paper_to_csv_meta_fields(paper: Paper) -> dict[str, str]:
         "keywords": s("; ".join(sorted(paper.keywords)) if paper.keywords else ""),
         "paper_type": paper.paper_type.value if paper.paper_type else "",
         "page_range": paper.page_range or "",
-        "databases": "; ".join(sorted(paper.databases)) if paper.databases else "",
+        "found_in": "; ".join(sorted(paper.found_in)) if paper.found_in else "",
         "fields_of_study": (
             s("; ".join(sorted(paper.fields_of_study))) if paper.fields_of_study else ""
         ),
@@ -882,7 +882,7 @@ def _csv_row_to_paper(row: dict[str, str]) -> Paper | None:
     keywords = _csv_str_set(u(row.get("keywords", "")))
     paper_type = _csv_parse_paper_type(row.get("paper_type", ""))
     page_range = row.get("page_range", "").strip() or None
-    databases = _csv_str_set(row.get("databases", ""))
+    found_in = _csv_str_set(row.get("found_in", ""))
     fields_of_study = _csv_str_set(u(row.get("fields_of_study", "")))
     subjects = _csv_str_set(u(row.get("subjects", "")))
     funders = _csv_str_set(u(row.get("funders", "")))
@@ -904,7 +904,7 @@ def _csv_row_to_paper(row: dict[str, str]) -> Paper | None:
         keywords=keywords,
         comments=comments,
         page_range=page_range,
-        databases=databases,
+        found_in=found_in,
         paper_type=paper_type,
         fields_of_study=fields_of_study,
         subjects=subjects,

@@ -172,7 +172,7 @@ class TestEnrichmentDatabasesDefault:
             source=Source(title="Fake Journal"),
             publication_date=datetime.date(2023, 1, 1),
             doi="10.1234/test",
-            databases=set(),
+            found_in=set(),
         )
 
         called = []
@@ -205,7 +205,7 @@ class TestEnrichmentDatabasesDefault:
             source=Source(title="Fake Journal"),
             publication_date=datetime.date(2023, 1, 1),
             doi="10.1234/test",
-            databases={"arxiv"},
+            found_in={"arxiv"},
         )
 
         captured_databases: list[list[str]] = []
@@ -239,7 +239,7 @@ class TestEnrichmentDatabasesDefault:
             source=Source(title="Fake Journal"),
             publication_date=datetime.date(2023, 1, 1),
             doi="10.1234/test",
-            databases=set(),
+            found_in=set(),
         )
 
         captured_databases: list[list[str]] = []
@@ -258,7 +258,7 @@ class TestEnrichmentDatabasesDefault:
         assert captured_databases[0] == ["openalex"]
 
     def test_enrich_papers_does_not_add_databases_to_paper(self):
-        """Enrichment must not add new databases to paper.databases."""
+        """Enrichment must not add new databases to paper.found_in."""
         import datetime
 
         from findpapers.core.author import Author
@@ -273,7 +273,7 @@ class TestEnrichmentDatabasesDefault:
             source=Source(title="Fake Journal"),
             publication_date=datetime.date(2023, 1, 1),
             doi="10.1234/test",
-            databases={"arxiv"},
+            found_in={"arxiv"},
         )
 
         def _fake_get_runner(**kwargs):
@@ -284,7 +284,7 @@ class TestEnrichmentDatabasesDefault:
                 source=Source(title="Fake Journal"),
                 publication_date=datetime.date(2023, 1, 1),
                 doi="10.1234/test",
-                databases={"crossref"},
+                found_in={"crossref"},
             )
             mock = MagicMock()
             mock.run.return_value = enriched
@@ -297,7 +297,7 @@ class TestEnrichmentDatabasesDefault:
         # The paper should have the enriched abstract but keep only its
         # original database set (enrichment databases must not be added).
         assert paper.abstract == "An enriched abstract."
-        assert paper.databases == {"arxiv"}
+        assert paper.found_in == {"arxiv"}
 
     def test_enrich_papers_replaces_url_with_enriched_url(self):
         """Enrichment replaces the paper URL with the final URL from GetRunner."""
@@ -316,7 +316,7 @@ class TestEnrichmentDatabasesDefault:
             publication_date=datetime.date(2023, 1, 1),
             doi="10.1234/test",
             url="https://doi.org/10.1234/test",
-            databases={"arxiv"},
+            found_in={"arxiv"},
         )
 
         def _fake_get_runner(**kwargs):
@@ -328,7 +328,7 @@ class TestEnrichmentDatabasesDefault:
                 publication_date=datetime.date(2023, 1, 1),
                 doi="10.1234/test",
                 url="https://publisher.com/articles/test",
-                databases={"crossref"},
+                found_in={"crossref"},
             )
             mock = MagicMock()
             mock.run.return_value = enriched
@@ -340,7 +340,7 @@ class TestEnrichmentDatabasesDefault:
 
         # The enriched URL must replace the original URL (even when shorter).
         assert paper.url == "https://publisher.com/articles/test"
-        assert paper.databases == {"arxiv"}
+        assert paper.found_in == {"arxiv"}
 
     def test_enrich_papers_keeps_original_url_when_enriched_url_is_none(self):
         """When the enrichment result has no URL, the original URL is preserved."""
@@ -359,7 +359,7 @@ class TestEnrichmentDatabasesDefault:
             publication_date=datetime.date(2023, 1, 1),
             doi="10.1234/test",
             url="https://doi.org/10.1234/test",
-            databases={"arxiv"},
+            found_in={"arxiv"},
         )
 
         def _fake_get_runner(**kwargs):
@@ -371,7 +371,7 @@ class TestEnrichmentDatabasesDefault:
                 publication_date=datetime.date(2023, 1, 1),
                 doi="10.1234/test",
                 url=None,
-                databases={"crossref"},
+                found_in={"crossref"},
             )
             mock = MagicMock()
             mock.run.return_value = enriched

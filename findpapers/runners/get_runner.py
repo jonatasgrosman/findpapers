@@ -414,7 +414,7 @@ class GetRunner:
         runtime = perf_counter() - start
 
         if self._result is not None:
-            dbs = ", ".join(sorted(self._result.databases or []))
+            dbs = ", ".join(sorted(self._result.found_in or []))
             logger.debug("Lookup found — databases: %s (%.2f s)", dbs, runtime)
         else:
             logger.debug("Lookup not found (%.2f s)", runtime)

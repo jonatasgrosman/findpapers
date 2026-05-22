@@ -174,7 +174,7 @@ class DiscoveryRunner:
                 continue
 
             # Exclude databases that already returned this paper.
-            existing_dbs: set[str] = paper.databases or set()
+            existing_dbs: set[str] = paper.found_in or set()
             effective_dbs = list(all_dbs - existing_dbs)
             if not effective_dbs:
                 continue
@@ -226,7 +226,7 @@ class DiscoveryRunner:
                 # Preserve the paper's original databases: enrichment provides
                 # additional metadata but should not register new database
                 # sources for the paper.
-                original_databases = set(paper.databases)
+                original_databases = set(paper.found_in)
                 # Save the enriched URL before merging so we can restore it
                 # afterwards.  merge() uses merge_value() which keeps the longer
                 # string, but enrichment should always replace the URL with the
@@ -234,7 +234,7 @@ class DiscoveryRunner:
                 # resolved inside GetRunner.run()).
                 enriched_url = result.url
                 paper.merge(result)
-                paper.databases = original_databases
+                paper.found_in = original_databases
                 # Replace the paper URL with the enriched one when available.
                 if enriched_url is not None:
                     paper.url = enriched_url

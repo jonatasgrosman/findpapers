@@ -85,7 +85,7 @@ class TestOpenAlexConnectorParsePaper:
         result = openalex_sample_json["results"][0]
         paper = OpenAlexConnector()._parse_paper(result)
         assert paper is not None
-        assert Database.OPENALEX in paper.databases
+        assert Database.OPENALEX in paper.found_in
 
     def test_missing_title_returns_none(self):
         """Result with blank title returns None."""
@@ -448,7 +448,7 @@ class TestOpenAlexConnectorSearch:
             papers = searcher.search(simple_query)
 
         assert len(papers) > 0
-        assert all(Database.OPENALEX in p.databases for p in papers)
+        assert all(Database.OPENALEX in p.found_in for p in papers)
 
     def test_max_papers_respected(self, simple_query, openalex_sample_json, mock_response):
         """search() returns no more than max_papers papers."""

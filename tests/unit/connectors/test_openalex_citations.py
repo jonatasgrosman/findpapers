@@ -359,7 +359,7 @@ class TestOpenAlexRealDataParsing:
         assert len(refs) == 13
         for ref in refs:
             assert ref.title
-            assert "openalex" in ref.databases
+            assert "openalex" in ref.found_in
 
     @patch.object(OpenAlexConnector, "_get")
     def test_fetch_works_by_ids_with_real_data(
@@ -410,4 +410,4 @@ class TestOpenAlexRealDataParsing:
         assert len(cited_by) == 2
         for p in cited_by:
             assert p.title
-            assert "openalex" in p.databases
+            assert "openalex" in p.found_in

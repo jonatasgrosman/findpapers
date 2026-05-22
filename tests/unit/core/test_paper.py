@@ -102,7 +102,7 @@ def test_paper_add_and_merge():
         url="https://example.com",
     )
     paper.add_database("arxiv")
-    assert "arxiv" in paper.databases
+    assert "arxiv" in paper.found_in
     assert paper.url == "https://example.com"
 
     incoming = Paper(
@@ -1225,9 +1225,9 @@ class TestPaperFromDictEdgeCases:
 
     def test_scalar_databases_wrapped(self) -> None:
         """A single scalar database (not a list) is wrapped into a set."""
-        d = {"title": "T", "databases": "scopus"}
+        d = {"title": "T", "found_in": "scopus"}
         paper = Paper.from_dict(d)
-        assert paper.databases == {"scopus"}
+        assert paper.found_in == {"scopus"}
 
     def test_fields_of_study_deserialized(self) -> None:
         """from_dict restores fields_of_study from a list."""
