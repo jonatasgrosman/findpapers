@@ -70,12 +70,17 @@ def _noop_fetch_doi(*_args, **_kwargs) -> None:
 
 
 def _make_runner(identifier: str = "10.1234/test") -> GetRunner:
-    """Create a GetRunner with all non-CrossRef DOI connectors stubbed out."""
+    """Create a GetRunner with all non-CrossRef DOI connectors stubbed out.
+
+    All network-bound methods (``fetch_paper_by_doi``, ``fetch_cited_by``,
+    ``close``) are replaced with no-ops so that no HTTP requests are made.
+    """
     runner = GetRunner(identifier=identifier)
     for attr in ("_openalex", "_semantic_scholar", "_pubmed", "_arxiv"):
         conn = getattr(runner, attr)
         if conn is not None:
             conn.fetch_paper_by_doi = _noop_fetch_doi
+            conn.fetch_cited_by = lambda *_a, **_kw: []
             conn.close = lambda: None
     return runner
 

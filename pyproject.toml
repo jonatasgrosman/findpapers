@@ -25,6 +25,7 @@ idna = ">=3.15"
 pytest = "^9.0.3"
 pytest-cov = "^7.0.0"
 pytest-randomly = "^4.0.0"
+pytest-socket = "^0.7.0"
 coverage = {version = "^7.13.0", extras = ["toml"]}
 types-requests = "^2.32.0"
 lxml-stubs = "^0.5.0"
@@ -45,7 +46,7 @@ issues = "https://github.com/jonatasgrosman/findpapers/issues"
 [tool.pytest.ini_options]
 junit_family = "xunit2"
 minversion = "6.0"
-addopts = "-ra -q -m 'not integration'"
+addopts = "-ra -q -m 'not integration' --disable-socket"
 testpaths = [
     "tests"
 ]
