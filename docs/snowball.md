@@ -63,6 +63,8 @@ Returns a `CitationGraph` object containing:
 
 Each `CitationEdge` has a `source` (the citing paper) and a `target` (the cited paper).
 
+During snowballing, `cited_by` is also populated on individual `Paper` nodes: when a paper is found to cite another paper, the citing paper's DOI is added to the cited paper's `cited_by` list. This means after snowballing you can inspect which papers in the graph cite any given node directly via `paper.cited_by`, without traversing the graph edges.
+
 ## Direction
 
 The `direction` parameter controls which citation relationships are followed:

@@ -101,7 +101,8 @@ Every paper retrieved by Findpapers (via `search()`, `get()`, or `snowball()`) i
   "is_open_access": true,
   "is_retracted": false,
   "funders": ["Google Brain"],
-  "references": ["10.1162/neco.1997.9.8.1735", "10.3115/v1/d14-1179"]
+  "references": ["10.1162/neco.1997.9.8.1735", "10.3115/v1/d14-1179"],
+  "cited_by": ["10.18653/v1/2020.acl-main.703", "10.48550/arXiv.1810.04805"]
 }
 ```
 

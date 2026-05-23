@@ -60,6 +60,8 @@ paper = engine.get("https://arxiv.org/abs/1706.03762", databases=["web_scraping"
 
 Returns a `Paper` object, or `None` when the paper cannot be found or the page yields no metadata.
 
+When a DOI is resolved, `get()` also populates `paper.cited_by` with the DOIs of papers that cite this paper, using OpenAlex and Semantic Scholar. The `paper.cited_by` field will be an empty list when no citers are found or when the paper has no DOI.
+
 ## Exceptions
 
 | Exception | When |
