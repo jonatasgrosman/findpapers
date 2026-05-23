@@ -860,3 +860,189 @@ class TestGetRunnerDatabasesFilter:
         call_url = mock_scrape.call_args[0][0]
         assert call_url == "https://doi.org/10.1234/test"
         assert result is scraped_paper
+
+
+# ---------------------------------------------------------------------------
+# cited_by population in GetRunner
+# ---------------------------------------------------------------------------
+
+
+class TestGetRunnerCitedBy:
+    """Tests that GetRunner._run_cited_by_stage populates cited_by."""
+
+    def test_cited_by_populated_via_openalex(self) -> None:
+        """cited_by is filled with DOIs from OpenAlex fetch_cited_by."""
+        base = _fake_paper(doi="10.1234/test")
+        citing_a = _fake_paper(title="Citer A", doi="10.1000/a")
+        citing_b = _fake_paper(title="Citer B", doi="10.1000/b")
+
+        with (
+            patch(
+                "findpapers.connectors.crossref.CrossRefConnector.fetch_work",
+                return_value=_fake_crossref_work(),
+            ),
+            patch(
+                "findpapers.connectors.crossref.CrossRefConnector.build_paper",
+                return_value=base,
+            ),
+            patch(
+                "findpapers.connectors.openalex.OpenAlexConnector.fetch_paper_by_doi",
+                return_value=None,
+            ),
+            patch(
+                "findpapers.connectors.openalex.OpenAlexConnector.fetch_cited_by",
+                return_value=[citing_a, citing_b],
+            ),
+            patch(
+                "findpapers.connectors.semantic_scholar.SemanticScholarConnector.fetch_paper_by_doi",
+                return_value=None,
+            ),
+            patch(
+                "findpapers.connectors.semantic_scholar.SemanticScholarConnector.fetch_cited_by",
+                return_value=[],
+            ),
+        ):
+            runner = GetRunner(
+                identifier="10.1234/test",
+                databases=["crossref", "openalex", "semantic_scholar"],
+            )
+            result = runner.run()
+
+        assert result is not None
+        assert "10.1000/a" in result.cited_by
+        assert "10.1000/b" in result.cited_by
+
+    def test_cited_by_not_duplicated_across_connectors(self) -> None:
+        """DOIs returned by multiple connectors are not duplicated in cited_by."""
+        base = _fake_paper(doi="10.1234/test")
+        citing = _fake_paper(title="Citer", doi="10.1000/citer")
+
+        with (
+            patch(
+                "findpapers.connectors.crossref.CrossRefConnector.fetch_work",
+                return_value=_fake_crossref_work(),
+            ),
+            patch(
+                "findpapers.connectors.crossref.CrossRefConnector.build_paper",
+                return_value=base,
+            ),
+            patch(
+                "findpapers.connectors.openalex.OpenAlexConnector.fetch_paper_by_doi",
+                return_value=None,
+            ),
+            patch(
+                "findpapers.connectors.openalex.OpenAlexConnector.fetch_cited_by",
+                return_value=[citing],
+            ),
+            patch(
+                "findpapers.connectors.semantic_scholar.SemanticScholarConnector.fetch_paper_by_doi",
+                return_value=None,
+            ),
+            patch(
+                "findpapers.connectors.semantic_scholar.SemanticScholarConnector.fetch_cited_by",
+                return_value=[citing],
+            ),
+        ):
+            runner = GetRunner(
+                identifier="10.1234/test",
+                databases=["crossref", "openalex", "semantic_scholar"],
+            )
+            result = runner.run()
+
+        assert result is not None
+        assert result.cited_by.count("10.1000/citer") == 1
+
+    def test_cited_by_skips_papers_without_doi(self) -> None:
+        """fetch_cited_by papers without a DOI are not added to cited_by."""
+        base = _fake_paper(doi="10.1234/test")
+        citing_no_doi = _fake_paper(title="NoDoi", doi=None)
+
+        with (
+            patch(
+                "findpapers.connectors.crossref.CrossRefConnector.fetch_work",
+                return_value=_fake_crossref_work(),
+            ),
+            patch(
+                "findpapers.connectors.crossref.CrossRefConnector.build_paper",
+                return_value=base,
+            ),
+            patch(
+                "findpapers.connectors.openalex.OpenAlexConnector.fetch_paper_by_doi",
+                return_value=None,
+            ),
+            patch(
+                "findpapers.connectors.openalex.OpenAlexConnector.fetch_cited_by",
+                return_value=[citing_no_doi],
+            ),
+            patch(
+                "findpapers.connectors.semantic_scholar.SemanticScholarConnector.fetch_paper_by_doi",
+                return_value=None,
+            ),
+            patch(
+                "findpapers.connectors.semantic_scholar.SemanticScholarConnector.fetch_cited_by",
+                return_value=[],
+            ),
+        ):
+            runner = GetRunner(
+                identifier="10.1234/test",
+                databases=["crossref", "openalex", "semantic_scholar"],
+            )
+            result = runner.run()
+
+        assert result is not None
+        assert result.cited_by == []
+
+    def test_cited_by_not_called_when_no_doi_found(self) -> None:
+        """When no DOI is resolved, fetch_cited_by is never called."""
+        with (
+            patch(
+                "findpapers.connectors.openalex.OpenAlexConnector.fetch_cited_by",
+            ) as mock_cb,
+        ):
+            runner = GetRunner(
+                identifier="https://example.com/paper",
+                databases=["web_scraping", "openalex"],
+            )
+            result = runner.run()
+
+        mock_cb.assert_not_called()
+        assert result is None
+
+    def test_cited_by_connector_error_is_silently_ignored(self) -> None:
+        """An exception from fetch_cited_by does not abort the lookup."""
+        base = _fake_paper(doi="10.1234/test")
+
+        with (
+            patch(
+                "findpapers.connectors.crossref.CrossRefConnector.fetch_work",
+                return_value=_fake_crossref_work(),
+            ),
+            patch(
+                "findpapers.connectors.crossref.CrossRefConnector.build_paper",
+                return_value=base,
+            ),
+            patch(
+                "findpapers.connectors.openalex.OpenAlexConnector.fetch_paper_by_doi",
+                return_value=None,
+            ),
+            patch(
+                "findpapers.connectors.openalex.OpenAlexConnector.fetch_cited_by",
+                side_effect=RuntimeError("API error"),
+            ),
+            patch(
+                "findpapers.connectors.semantic_scholar.SemanticScholarConnector.fetch_paper_by_doi",
+                return_value=None,
+            ),
+            patch(
+                "findpapers.connectors.semantic_scholar.SemanticScholarConnector.fetch_cited_by",
+                return_value=[],
+            ),
+        ):
+            runner = GetRunner(
+                identifier="10.1234/test",
+                databases=["crossref", "openalex", "semantic_scholar"],
+            )
+            result = runner.run()
+
+        assert result is not None
+        assert result.cited_by == []

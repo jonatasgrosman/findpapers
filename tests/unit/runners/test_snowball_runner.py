@@ -1026,3 +1026,94 @@ class TestSnowballRunnerFilters:
         titles = {n.title for n in graph.nodes}
         assert "Dated" in titles
         assert "NoDate" in titles
+
+
+# ---------------------------------------------------------------------------
+# cited_by population
+# ---------------------------------------------------------------------------
+
+
+class TestSnowballCitedByPopulation:
+    """Tests that cited_by is populated on papers during snowballing."""
+
+    def test_backward_snowball_populates_cited_by_on_reference(self, make_paper) -> None:
+        """Backward snowballing sets cited_by on reference papers with the seed DOI."""
+        seed = make_paper("Seed", doi="10.1000/seed")
+        ref = make_paper("Ref", doi="10.1000/ref")
+
+        connector = FakeCitationConnector(references={"10.1000/seed": [ref]})
+        runner = SnowballRunner(seed_papers=[seed], max_depth=1, direction="backward")
+        runner._connectors = [connector]
+
+        graph = runner.run()
+
+        canonical_ref = next(n for n in graph.nodes if n.doi == "10.1000/ref")
+        assert "10.1000/seed" in canonical_ref.cited_by
+
+    def test_forward_snowball_populates_cited_by_on_source(self, make_paper) -> None:
+        """Forward snowballing adds citing paper DOIs to the source's cited_by."""
+        seed = make_paper("Seed", doi="10.1000/seed")
+        citing = make_paper("Citing", doi="10.1000/citing")
+
+        connector = FakeCitationConnector(cited_by={"10.1000/seed": [citing]})
+        runner = SnowballRunner(seed_papers=[seed], max_depth=1, direction="forward")
+        runner._connectors = [connector]
+
+        graph = runner.run()
+
+        canonical_seed = next(n for n in graph.nodes if n.doi == "10.1000/seed")
+        assert "10.1000/citing" in canonical_seed.cited_by
+
+    def test_both_directions_populate_cited_by_correctly(self, make_paper) -> None:
+        """Snowballing in both directions populates cited_by in both cases."""
+        seed = make_paper("Seed", doi="10.1000/seed")
+        ref = make_paper("Ref", doi="10.1000/ref")
+        citing = make_paper("Citing", doi="10.1000/citing")
+
+        connector = FakeCitationConnector(
+            references={"10.1000/seed": [ref]},
+            cited_by={"10.1000/seed": [citing]},
+        )
+        runner = SnowballRunner(seed_papers=[seed], max_depth=1, direction="both")
+        runner._connectors = [connector]
+
+        graph = runner.run()
+
+        canonical_seed = next(n for n in graph.nodes if n.doi == "10.1000/seed")
+        canonical_ref = next(n for n in graph.nodes if n.doi == "10.1000/ref")
+
+        # Citing paper should appear in seed.cited_by
+        assert "10.1000/citing" in canonical_seed.cited_by
+        # Seed should appear in ref.cited_by
+        assert "10.1000/seed" in canonical_ref.cited_by
+
+    def test_cited_by_not_duplicated_across_connectors(self, make_paper) -> None:
+        """When two connectors return the same reference, cited_by is not duplicated."""
+        seed = make_paper("Seed", doi="10.1000/seed")
+        ref = make_paper("Ref", doi="10.1000/ref")
+        ref_dup = make_paper("Ref dup", doi="10.1000/ref")
+
+        connector1 = FakeCitationConnector(references={"10.1000/seed": [ref]})
+        connector2 = FakeCitationConnector(references={"10.1000/seed": [ref_dup]})
+        runner = SnowballRunner(seed_papers=[seed], max_depth=1, direction="backward")
+        runner._connectors = [connector1, connector2]
+
+        graph = runner.run()
+
+        canonical_ref = next(n for n in graph.nodes if n.doi == "10.1000/ref")
+        # Seed DOI must appear exactly once in cited_by
+        assert canonical_ref.cited_by.count("10.1000/seed") == 1
+
+    def test_cited_by_skips_papers_without_doi(self, make_paper) -> None:
+        """Forward snowball: citing paper without DOI is not added to cited_by."""
+        seed = make_paper("Seed", doi="10.1000/seed")
+        citing_no_doi = make_paper("NoDoi")  # no DOI
+
+        connector = FakeCitationConnector(cited_by={"10.1000/seed": [citing_no_doi]})
+        runner = SnowballRunner(seed_papers=[seed], max_depth=1, direction="forward")
+        runner._connectors = [connector]
+
+        graph = runner.run()
+
+        canonical_seed = next(n for n in graph.nodes if n.doi == "10.1000/seed")
+        assert canonical_seed.cited_by == []

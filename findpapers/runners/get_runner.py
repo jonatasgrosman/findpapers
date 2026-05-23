@@ -7,6 +7,7 @@ import re
 from time import perf_counter
 
 from findpapers.connectors import DOI_LOOKUP_REGISTRY, URL_LOOKUP_REGISTRY
+from findpapers.connectors.citation_base import CitationConnectorBase
 from findpapers.connectors.connector_base import ConnectorBase
 from findpapers.connectors.doi_lookup_base import DOILookupConnectorBase
 from findpapers.connectors.url_lookup_base import URLLookupConnectorBase
@@ -404,6 +405,9 @@ class GetRunner:
 
             base_paper = self._run_stage2(doi, base_paper)
 
+            if base_paper is not None:
+                self._run_cited_by_stage(base_paper)
+
         finally:
             for doi_connector in self._doi_connectors:
                 doi_connector.close()
@@ -648,6 +652,58 @@ class GetRunner:
             if substring in identifier_lower and database in skip_set:
                 return True
         return False
+
+    def _run_cited_by_stage(self, paper: Paper) -> None:
+        """Populate *paper*.cited_by from available citation connectors.
+
+        Queries connectors that support forward citation lookup (currently
+        OpenAlex and Semantic Scholar) and records the DOIs of papers that
+        cite *paper* in :attr:`~findpapers.core.paper.Paper.cited_by`.
+
+        Only connectors that were enabled and instantiated are queried.
+        Errors from individual connectors are silently logged so that a
+        failure in one source does not abort the overall lookup.
+
+        Parameters
+        ----------
+        paper : Paper
+            The paper whose citing papers should be retrieved.  When *paper*
+            has no DOI the method returns immediately without any API calls.
+
+        Returns
+        -------
+        None
+        """
+        if not paper.doi:
+            return
+
+        # OpenAlex and Semantic Scholar both implement CitationConnectorBase
+        # and are already instantiated as DOI-lookup connectors.
+        citation_connectors: list[CitationConnectorBase] = [
+            c
+            for c in [self._openalex, self._semantic_scholar]
+            if c is not None and isinstance(c, CitationConnectorBase)
+        ]
+
+        if not citation_connectors:
+            return
+
+        seen: set[str] = set(paper.cited_by)
+        for connector in citation_connectors:
+            try:
+                logger.debug("Fetching cited-by from %s for DOI %s.", connector.name, paper.doi)
+                citing_papers = connector.fetch_cited_by(paper)
+                for cp in citing_papers:
+                    if cp.doi and cp.doi not in seen:
+                        paper.cited_by.append(cp.doi)
+                        seen.add(cp.doi)
+            except Exception:
+                logger.debug(
+                    "fetch_cited_by failed for %s (DOI %s).",
+                    connector.name,
+                    paper.doi,
+                    exc_info=True,
+                )
 
     @staticmethod
     def _is_landing_page_url(identifier: str) -> bool:

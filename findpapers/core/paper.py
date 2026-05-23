@@ -129,6 +129,7 @@ class Paper:
         is_retracted: bool | None = None,
         funders: set[str] | None = None,
         references: list[str] | None = None,
+        cited_by: list[str] | None = None,
     ) -> None:
         """Create a Paper instance.
 
@@ -186,6 +187,10 @@ class Paper:
             DOIs that are explicitly present in the source data are included;
             references without a DOI are silently omitted.  Defaults to an
             empty list.
+        cited_by : list[str] | None
+            DOIs of papers that cite this paper (forward references).  Only
+            DOIs that are explicitly present in the source data are included.
+            Defaults to an empty list.
 
         Raises
         ------
@@ -219,6 +224,7 @@ class Paper:
         self.is_retracted = is_retracted
         self.funders = funders if funders is not None else set()
         self.references: list[str] = list(references) if references is not None else []
+        self.cited_by: list[str] = list(cited_by) if cited_by is not None else []
 
     def __eq__(self, other: object) -> bool:
         """Check equality by DOI (case-insensitive) or title.
@@ -468,6 +474,14 @@ class Paper:
                     self.references.append(doi)
                     seen.add(doi)
 
+        # Union cited_by DOIs preserving insertion order and deduplicating.
+        if paper.cited_by:
+            seen_cb: set[str] = set(self.cited_by)
+            for doi in paper.cited_by:
+                if doi not in seen_cb:
+                    self.cited_by.append(doi)
+                    seen_cb.add(doi)
+
         # Always accumulate databases for traceability.
         self.found_in |= paper.found_in
         if self.source is None:
@@ -646,6 +660,9 @@ class Paper:
         raw_refs = paper_dict.get("references") or []
         references = [str(r) for r in raw_refs if isinstance(r, str) and r.strip()]
 
+        raw_cb = paper_dict.get("cited_by") or []
+        cited_by = [str(r) for r in raw_cb if isinstance(r, str) and r.strip()]
+
         keywords = cls._from_dict_str_set(paper_dict, "keywords")
         found_in = cls._from_dict_str_set(paper_dict, "found_in")
         fields_of_study = cls._from_dict_str_set(paper_dict, "fields_of_study")
@@ -679,6 +696,7 @@ class Paper:
             is_retracted=is_retracted,
             funders=funders,
             references=references,
+            cited_by=cited_by,
         )
 
     def to_dict(self) -> dict[str, Any]:
@@ -714,4 +732,5 @@ class Paper:
             "is_retracted": self.is_retracted,
             "funders": sorted(self.funders),
             "references": sorted(self.references),
+            "cited_by": sorted(self.cited_by),
         }

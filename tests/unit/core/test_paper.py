@@ -1582,3 +1582,136 @@ class TestPaperReferences:
         incoming = Paper(title="T", abstract="", authors=[], source=None, publication_date=None)
         base.merge(incoming)
         assert base.references == ["10.1000/a"]
+
+
+# ---------------------------------------------------------------------------
+# Paper.cited_by
+# ---------------------------------------------------------------------------
+
+
+class TestPaperCitedBy:
+    """Tests for the cited_by attribute on Paper."""
+
+    def test_cited_by_defaults_to_empty_list(self) -> None:
+        """Paper without explicit cited_by has an empty list."""
+        paper = Paper(title="T", abstract="", authors=[], source=None, publication_date=None)
+        assert paper.cited_by == []
+
+    def test_cited_by_set_at_construction(self) -> None:
+        """cited_by can be populated at construction time."""
+        paper = Paper(
+            title="T",
+            abstract="",
+            authors=[],
+            source=None,
+            publication_date=None,
+            cited_by=["10.1000/a", "10.1000/b"],
+        )
+        assert paper.cited_by == ["10.1000/a", "10.1000/b"]
+
+    def test_cited_by_none_at_construction_defaults_empty(self) -> None:
+        """Passing None for cited_by defaults to an empty list."""
+        paper = Paper(
+            title="T",
+            abstract="",
+            authors=[],
+            source=None,
+            publication_date=None,
+            cited_by=None,
+        )
+        assert paper.cited_by == []
+
+    def test_cited_by_serialized_in_to_dict(self) -> None:
+        """to_dict includes cited_by as a sorted list."""
+        paper = Paper(
+            title="T",
+            abstract="",
+            authors=[],
+            source=None,
+            publication_date=None,
+            cited_by=["10.1000/z", "10.1000/a"],
+        )
+        assert paper.to_dict()["cited_by"] == ["10.1000/a", "10.1000/z"]
+
+    def test_cited_by_empty_serialized_as_empty_list(self) -> None:
+        """to_dict serializes an empty cited_by list as an empty list."""
+        paper = Paper(title="T", abstract="", authors=[], source=None, publication_date=None)
+        assert paper.to_dict()["cited_by"] == []
+
+    def test_cited_by_deserialized_from_dict_list(self) -> None:
+        """from_dict restores cited_by from a list."""
+        paper = Paper.from_dict({"title": "T", "cited_by": ["10.1000/a", "10.1000/b"]})
+        assert paper.cited_by == ["10.1000/a", "10.1000/b"]
+
+    def test_cited_by_missing_from_dict_defaults_empty(self) -> None:
+        """from_dict defaults cited_by to empty list when key is absent."""
+        paper = Paper.from_dict({"title": "T"})
+        assert paper.cited_by == []
+
+    def test_cited_by_none_in_dict_defaults_empty(self) -> None:
+        """from_dict treats None cited_by as an empty list."""
+        paper = Paper.from_dict({"title": "T", "cited_by": None})
+        assert paper.cited_by == []
+
+    def test_cited_by_round_trip(self) -> None:
+        """to_dict → from_dict preserves cited_by."""
+        paper = Paper(
+            title="T",
+            abstract="",
+            authors=[],
+            source=None,
+            publication_date=None,
+            cited_by=["10.1000/a", "10.1000/b"],
+        )
+        restored = Paper.from_dict(paper.to_dict())
+        assert restored.cited_by == ["10.1000/a", "10.1000/b"]
+
+    def test_cited_by_merge_unions_preserving_order(self) -> None:
+        """merge() unions cited_by from both papers without duplicates."""
+        base = Paper(
+            title="T",
+            abstract="",
+            authors=[],
+            source=None,
+            publication_date=None,
+            cited_by=["10.1000/a", "10.1000/b"],
+        )
+        incoming = Paper(
+            title="T",
+            abstract="",
+            authors=[],
+            source=None,
+            publication_date=None,
+            cited_by=["10.1000/b", "10.1000/c"],
+        )
+        base.merge(incoming)
+        # "b" already present — must not be duplicated; "c" appended.
+        assert base.cited_by == ["10.1000/a", "10.1000/b", "10.1000/c"]
+
+    def test_cited_by_merge_empty_base_with_populated_incoming(self) -> None:
+        """merge() fills cited_by when base has none."""
+        base = Paper(title="T", abstract="", authors=[], source=None, publication_date=None)
+        incoming = Paper(
+            title="T",
+            abstract="",
+            authors=[],
+            source=None,
+            publication_date=None,
+            cited_by=["10.1000/x"],
+        )
+        base.merge(incoming)
+        assert base.cited_by == ["10.1000/x"]
+
+    def test_cited_by_merge_keeps_existing_when_incoming_empty(self) -> None:
+        """merge() keeps existing cited_by when incoming has none."""
+        base = Paper(
+            title="T",
+            abstract="",
+            authors=[],
+            source=None,
+            publication_date=None,
+            cited_by=["10.1000/a"],
+        )
+        incoming = Paper(title="T", abstract="", authors=[], source=None, publication_date=None)
+        base.merge(incoming)
+        assert base.cited_by == ["10.1000/a"]

@@ -557,8 +557,14 @@ class SnowballRunner(DiscoveryRunner):
             for source, is_ref in edge_map[key]:
                 if is_ref:
                     graph.add_edge(source, canonical)
+                    # source cites canonical → record source as a citer of canonical
+                    if source.doi and source.doi not in canonical.cited_by:
+                        canonical.cited_by.append(source.doi)
                 else:
                     graph.add_edge(canonical, source)
+                    # canonical cites source → record canonical as a citer of source
+                    if canonical.doi and canonical.doi not in source.cited_by:
+                        source.cited_by.append(canonical.doi)
             next_frontier.append(canonical)
         return next_frontier
 
@@ -678,8 +684,14 @@ class SnowballRunner(DiscoveryRunner):
             canonical = graph.add_node(candidate, discovered_from=source)
             if is_ref:
                 graph.add_edge(source, canonical)
+                # source cites canonical → record source as a citer of canonical
+                if source.doi and source.doi not in canonical.cited_by:
+                    canonical.cited_by.append(source.doi)
             else:
                 graph.add_edge(canonical, source)
+                # canonical cites source → record canonical as a citer of source
+                if canonical.doi and canonical.doi not in source.cited_by:
+                    source.cited_by.append(canonical.doi)
             if is_new:
                 new_papers.append(canonical)
 
