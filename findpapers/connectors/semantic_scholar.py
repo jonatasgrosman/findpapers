@@ -11,7 +11,6 @@ from typing import Any
 
 import requests
 
-from findpapers.connectors.citation_base import CitationConnectorBase
 from findpapers.connectors.doi_lookup_base import DOILookupConnectorBase
 from findpapers.connectors.search_base import SearchConnectorBase
 from findpapers.connectors.url_lookup_base import URLLookupConnectorBase
@@ -90,7 +89,6 @@ _SS_PAPER_TYPE_MAP: dict[str, PaperType] = {
 
 class SemanticScholarConnector(
     SearchConnectorBase,
-    CitationConnectorBase,
     DOILookupConnectorBase,
     URLLookupConnectorBase,
 ):
@@ -275,7 +273,7 @@ class SemanticScholarConnector(
         return self._parse_paper(data)
 
     # ------------------------------------------------------------------
-    # Citation methods (CitationConnectorBase)
+    # Forward citation lookup
     # ------------------------------------------------------------------
 
     def _fetch_citation_page(
@@ -336,33 +334,6 @@ class SemanticScholarConnector(
 
         return papers, next_offset
 
-    def _fetch_paper_counts(self, doi: str) -> tuple[int | None, int | None]:
-        """Fetch citation and reference counts for a paper (lightweight).
-
-        Makes a single request with minimal fields to obtain
-        ``citationCount`` and ``referenceCount``.
-
-        Parameters
-        ----------
-        doi : str
-            DOI of the paper.
-
-        Returns
-        -------
-        tuple[int | None, int | None]
-            ``(citation_count, reference_count)``.  Either may be ``None``
-            on failure.
-        """
-        url = f"{_PAPER_URL}/DOI:{doi}"
-        params = {"fields": "citationCount,referenceCount"}
-        try:
-            response = self._get(url, params)
-            data = response.json()
-            return data.get("citationCount"), data.get("referenceCount")
-        except Exception:
-            logger.debug("Semantic Scholar: could not fetch counts for DOI %s.", doi)
-            return None, None
-
     def _fetch_all_citation_pages(
         self,
         doi: str,
@@ -408,62 +379,6 @@ class SemanticScholarConnector(
         )
 
         return all_papers
-
-    def get_expected_counts(self, paper: Paper) -> tuple[int | None, int | None]:
-        """Return expected citation and reference counts for *paper*.
-
-        Uses the locally known ``paper.citations`` when available,
-        otherwise makes a lightweight API call to fetch both counts.
-
-        Parameters
-        ----------
-        paper : Paper
-            The paper whose counts are requested.
-
-        Returns
-        -------
-        tuple[int | None, int | None]
-            ``(citation_count, reference_count)``.
-        """
-        if not paper.doi:
-            return None, None
-        local_citations = paper.citations
-        cit_count, ref_count = self._fetch_paper_counts(paper.doi)
-        # Prefer local citation count if we already have it.
-        if local_citations is not None:
-            cit_count = local_citations
-        return cit_count, ref_count
-
-    def fetch_references(
-        self,
-        paper: Paper,
-        progress_callback: Callable[[int], None] | None = None,
-    ) -> list[Paper]:
-        """Return papers cited *by* the given paper (backward snowballing).
-
-        Uses the Semantic Scholar ``/paper/{id}/references`` endpoint.
-
-        Parameters
-        ----------
-        paper : Paper
-            The paper whose references should be fetched.  Must have a DOI.
-        progress_callback : Callable[[int], None] | None
-            Optional callback for per-page progress reporting.
-
-        Returns
-        -------
-        list[Paper]
-            Papers referenced by *paper*, or empty list on failure.
-        """
-        if not paper.doi:
-            return []
-
-        logger.debug("Semantic Scholar: fetching references for DOI %s.", paper.doi)
-        return self._fetch_all_citation_pages(
-            paper.doi,
-            "references",
-            progress_callback=progress_callback,
-        )
 
     def fetch_cited_by(
         self,

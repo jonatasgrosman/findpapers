@@ -127,10 +127,10 @@ engine = findpapers.Engine()
 seed = engine.get("10.1038/nature12373")
 
 if seed:
-    graph = engine.snowball(seed, max_depth=1, direction="both")
-    print(f"{len(graph.nodes)} papers in the citation network")
+    result = engine.snowball(seed, max_depth=1, direction="both")
+    print(f"{len(result.papers) + len(result.seed_papers)} papers in the citation network")
 
-    findpapers.save_to_json(graph, "citation_graph.json")
+    findpapers.save_to_json(result, "snowball_result.json")
 ```
 
 ## Fetching Multiple Papers

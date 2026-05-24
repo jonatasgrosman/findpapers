@@ -10,7 +10,6 @@ from pathlib import Path
 import pytest
 
 from findpapers.core.author import Author
-from findpapers.core.citation_graph import CitationGraph
 from findpapers.core.paper import Paper, PaperType
 from findpapers.core.search_result import SearchResult
 from findpapers.core.source import Source, SourceType
@@ -118,17 +117,6 @@ def sample_search(full_paper: Paper, minimal_paper: Paper) -> SearchResult:
     return search
 
 
-@pytest.fixture
-def sample_graph(full_paper: Paper, minimal_paper: Paper) -> CitationGraph:
-    """Return a CitationGraph with two papers and one edge."""
-    full_paper.doi = "10.1000/full"
-    minimal_paper.doi = "10.1000/minimal"
-    graph = CitationGraph(seed_papers=[full_paper], max_depth=1, direction="backward")
-    graph.add_node(minimal_paper, discovered_from=full_paper)
-    graph.add_edge(full_paper, minimal_paper)
-    return graph
-
-
 # ---------------------------------------------------------------------------
 # _extract_papers
 # ---------------------------------------------------------------------------
@@ -145,11 +133,6 @@ class TestExtractPapers:
     def test_from_search_result(self, sample_search: SearchResult) -> None:
         """Extracts papers from a SearchResult."""
         papers = _extract_papers(sample_search)
-        assert len(papers) == 2
-
-    def test_from_citation_graph(self, sample_graph: CitationGraph) -> None:
-        """Extracts papers from a CitationGraph."""
-        papers = _extract_papers(sample_graph)
         assert len(papers) == 2
 
     def test_raises_for_unsupported_type(self) -> None:
@@ -171,12 +154,6 @@ class TestSerializeToDict:
         result = _serialize_to_dict(sample_search)
         assert result["type"] == "search_result"
         assert "papers" in result
-
-    def test_citation_graph_has_type(self, sample_graph: CitationGraph) -> None:
-        """CitationGraph serialization includes type discriminator."""
-        result = _serialize_to_dict(sample_graph)
-        assert result["type"] == "citation_graph"
-        assert "nodes" in result
 
     def test_paper_list_has_type(self, full_paper: Paper) -> None:
         """Paper list serialization includes type discriminator."""
@@ -922,13 +899,6 @@ class TestSaveToJson:
             save_to_json(sample_search, path)
             assert Path(path).exists()
 
-    def test_creates_file_from_graph(self, sample_graph: CitationGraph) -> None:
-        """File is created from a CitationGraph."""
-        with tempfile.TemporaryDirectory() as tmpdir:
-            path = str(Path(tmpdir) / "out.json")
-            save_to_json(sample_graph, path)
-            assert Path(path).exists()
-
     def test_creates_file_from_paper_list(self, full_paper: Paper) -> None:
         """File is created from a list of papers."""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -1176,17 +1146,6 @@ class TestLoadFromJson:
         assert len(loaded.papers) == 2
         assert loaded.query == "[deep learning]"
 
-    def test_round_trip_citation_graph(self, sample_graph: CitationGraph) -> None:
-        """CitationGraph survives save -> load round-trip."""
-        with tempfile.TemporaryDirectory() as tmpdir:
-            path = str(Path(tmpdir) / "graph.json")
-            save_to_json(sample_graph, path)
-            loaded = load_from_json(path)
-
-        assert isinstance(loaded, CitationGraph)
-        assert loaded.node_count == 2
-        assert loaded.edge_count == 1
-
     def test_round_trip_paper_list(self, full_paper: Paper, minimal_paper: Paper) -> None:
         """Paper list survives save -> load round-trip."""
         papers = [full_paper, minimal_paper]
@@ -1212,18 +1171,6 @@ class TestLoadFromJson:
 
         assert isinstance(loaded, SearchResult)
         assert len(loaded.papers) == 2
-
-    def test_legacy_citation_graph_auto_detection(self, sample_graph: CitationGraph) -> None:
-        """Files without 'type' but with 'nodes'/'edges' are loaded as CitationGraph."""
-        with tempfile.TemporaryDirectory() as tmpdir:
-            path = str(Path(tmpdir) / "legacy.json")
-            payload = sample_graph.to_dict()
-            with open(path, "w", encoding="utf-8") as fh:
-                json.dump(payload, fh)
-
-            loaded = load_from_json(path)
-
-        assert isinstance(loaded, CitationGraph)
 
     def test_unrecognised_format_raises(self) -> None:
         """Files with unrecognised structure cause PersistenceError."""

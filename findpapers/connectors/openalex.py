@@ -11,7 +11,6 @@ from typing import Any
 
 import requests
 
-from findpapers.connectors.citation_base import CitationConnectorBase
 from findpapers.connectors.doi_lookup_base import DOILookupConnectorBase
 from findpapers.connectors.search_base import SearchConnectorBase
 from findpapers.connectors.url_lookup_base import URLLookupConnectorBase
@@ -80,9 +79,7 @@ _OPENALEX_PAPER_TYPE_MAP: dict[str, PaperType] = {
 }
 
 
-class OpenAlexConnector(
-    SearchConnectorBase, CitationConnectorBase, DOILookupConnectorBase, URLLookupConnectorBase
-):
+class OpenAlexConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConnectorBase):
     """Connector for the OpenAlex open catalog of academic works.
 
     https://docs.openalex.org/how-to-use-the-api
@@ -277,43 +274,9 @@ class OpenAlexConnector(
         return self._parse_paper(data)
 
     # ------------------------------------------------------------------
-    # Citation methods (CitationConnectorBase)
     # ------------------------------------------------------------------
-
-    def get_expected_counts(self, paper: Paper) -> tuple[int | None, int | None]:
-        """Return expected citation and reference counts for *paper*.
-
-        Uses ``paper.citations`` for the citation count (already populated
-        during search) and fetches the ``referenced_works`` list from
-        OpenAlex to obtain the reference count.
-
-        Parameters
-        ----------
-        paper : Paper
-            The paper whose counts are requested.
-
-        Returns
-        -------
-        tuple[int | None, int | None]
-            ``(citation_count, reference_count)``.  Either may be ``None``
-            when the information is unavailable.
-        """
-        if not paper.doi:
-            return None, None
-
-        cit_count: int | None = paper.citations
-
-        ref_count: int | None = None
-        url = f"{_BASE_URL}/doi:{paper.doi}"
-        try:
-            response = self._get(url, params={"select": "referenced_works"})
-            data = response.json()
-            referenced = data.get("referenced_works") or []
-            ref_count = len(referenced)
-        except (requests.RequestException, ValueError):
-            pass
-
-        return cit_count, ref_count
+    # Forward citation lookup
+    # ------------------------------------------------------------------
 
     def _resolve_openalex_id(self, paper: Paper) -> str | None:
         """Resolve a paper's OpenAlex ID via the DOI.
@@ -458,52 +421,6 @@ class OpenAlexConnector(
             next_cursor = None
 
         return papers, next_cursor
-
-    def fetch_references(
-        self,
-        paper: Paper,
-        progress_callback: Callable[[int], None] | None = None,
-    ) -> list[Paper]:
-        """Return papers cited *by* the given paper (backward snowballing).
-
-        Queries OpenAlex for the full work record (which includes the
-        ``referenced_works`` field) and then batch-fetches the referenced
-        works to build full :class:`Paper` objects.
-
-        Parameters
-        ----------
-        paper : Paper
-            The paper whose references should be fetched.  Must have a DOI.
-        progress_callback : Callable[[int], None] | None
-            Optional callback for per-page progress reporting.
-
-        Returns
-        -------
-        list[Paper]
-            Papers referenced by *paper*, or an empty list on failure.
-        """
-        if not paper.doi:
-            return []
-
-        # Fetch the full work record to get referenced_works.
-        url = f"{_BASE_URL}/doi:{paper.doi}"
-        try:
-            response = self._get(url, params={"select": "id,referenced_works"})
-            data = response.json()
-        except (requests.RequestException, ValueError):
-            logger.debug("Failed to fetch OpenAlex work for DOI %s.", paper.doi)
-            return []
-
-        referenced_ids = data.get("referenced_works") or []
-        if not referenced_ids:
-            return []
-
-        logger.debug(
-            "OpenAlex: fetching %d references for DOI %s.",
-            len(referenced_ids),
-            paper.doi,
-        )
-        return self._fetch_works_by_ids(referenced_ids, progress_callback=progress_callback)
 
     def fetch_cited_by(
         self,

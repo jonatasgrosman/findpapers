@@ -55,13 +55,13 @@ engine.download(result.papers, "./pdfs")
 # Look up a single paper by DOI or landing-page URL
 paper = engine.get("10.1038/nature11804")
 
-# Build a citation graph from seed papers
-graph = engine.snowball(paper, max_depth=1, direction="forward")
+# Build a snowball result from seed papers
+result = engine.snowball(paper, max_depth=1, direction="forward")
 
 # Save results
 findpapers.save_to_json(result, "results.json")
 findpapers.save_to_bibtex(result.papers, "references.bib")
-findpapers.save_to_json(graph, "citation_graph.json")
+findpapers.save_to_json(result, "snowball_result.json")
 ```
 
 ## The Paper Object

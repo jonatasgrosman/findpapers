@@ -3,1117 +3,1333 @@
 from __future__ import annotations
 
 import datetime
-from collections.abc import Callable
-from unittest.mock import patch
+from typing import cast
+from unittest.mock import MagicMock, patch
 
 import pytest
 
-from findpapers.connectors.citation_base import CitationConnectorBase
-from findpapers.core.citation_graph import CitationGraph
 from findpapers.core.paper import Paper
+from findpapers.core.snowball_result import SnowballResult
 from findpapers.exceptions import InvalidParameterError
-from findpapers.runners.snowball_runner import SnowballRunner
+from findpapers.runners.get_runner import GET_DATABASES
+from findpapers.runners.snowball_runner import (
+    SNOWBALL_ENRICHMENT_DATABASES,
+    SNOWBALL_WEBSCRAPING_DATABASES,
+    SnowballRunner,
+)
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
 
 
-@pytest.fixture(autouse=True)
-def _no_enrichment():
-    """Patch out enrichment so unit tests do not make real HTTP requests."""
-    with patch(
-        "findpapers.runners.discovery_runner.DiscoveryRunner._enrich_papers",
-        return_value=None,
-    ):
-        yield
+def _mock_get_runner_class(
+    paper_map: dict[str, Paper | None],
+    call_log: list[dict] | None = None,
+):
+    """Return a drop-in replacement for GetRunner backed by *paper_map*.
 
+    When instantiated with ``identifier=doi``, the returned object's
+    ``.run()`` method looks up the normalised DOI in *paper_map* and
+    returns the corresponding :class:`~findpapers.core.paper.Paper` or
+    ``None``.
 
-class FakeCitationConnector(CitationConnectorBase):
-    """A fake connector that returns pre-configured references and citations."""
+    Parameters
+    ----------
+    paper_map : dict[str, Paper | None]
+        Mapping from *normalised* DOI (lowercase, stripped) to the paper
+        that should be returned when that DOI is fetched.
+    call_log : list[dict] | None
+        When provided, each GetRunner instantiation appends a dict with
+        ``{"identifier": str, "databases": ...}`` for later inspection.
 
-    def __init__(
-        self,
-        references: dict[str, list[Paper]] | None = None,
-        cited_by: dict[str, list[Paper]] | None = None,
-    ) -> None:
-        """Create a FakeCitationConnector.
+    Returns
+    -------
+    type
+        A class with the same public interface as
+        :class:`~findpapers.runners.get_runner.GetRunner`.
+    """
 
-        Parameters
-        ----------
-        references : dict[str, list[Paper]] | None
-            Mapping from DOI to list of referenced papers.
-        cited_by : dict[str, list[Paper]] | None
-            Mapping from DOI to list of citing papers.
-        """
-        super().__init__()
-        self._references = references or {}
-        self._cited_by = cited_by or {}
+    class _MockGetRunner:
+        def __init__(self, identifier: str, **kwargs: object) -> None:
+            """Store the requested identifier.
 
-    @property
-    def name(self) -> str:
-        """Return connector name.
+            Parameters
+            ----------
+            identifier : str
+                DOI to be resolved.
+            **kwargs : object
+                Ignored credential / config kwargs (except ``databases``,
+                which is recorded in *call_log* when provided).
+            """
+            self._identifier = identifier.strip().lower()
+            if call_log is not None:
+                call_log.append(
+                    {"identifier": self._identifier, "databases": kwargs.get("databases")}
+                )
 
-        Returns
-        -------
-        str
-            Connector identifier.
-        """
-        return "fake"
+        def run(self, verbose: bool = False) -> Paper | None:
+            """Return the paper registered for the stored DOI.
 
-    @property
-    def min_request_interval(self) -> float:
-        """Return minimum request interval.
+            Parameters
+            ----------
+            verbose : bool
+                Ignored.
 
-        Returns
-        -------
-        float
-            Zero for tests.
-        """
-        return 0.0
+            Returns
+            -------
+            Paper | None
+                Pre-configured result from *paper_map*.
+            """
+            return paper_map.get(self._identifier)
 
-    def fetch_references(
-        self,
-        paper: Paper,
-        progress_callback: Callable[[int], None] | None = None,
-    ) -> list[Paper]:
-        """Return pre-configured references for the given paper.
-
-        Parameters
-        ----------
-        paper : Paper
-            Paper to look up.
-        progress_callback : Callable[[int], None] | None
-            Ignored in fake connector.
-
-        Returns
-        -------
-        list[Paper]
-            List of referenced papers.
-        """
-        return list(self._references.get(paper.doi or "", []))
-
-    def fetch_cited_by(
-        self,
-        paper: Paper,
-        progress_callback: Callable[[int], None] | None = None,
-    ) -> list[Paper]:
-        """Return pre-configured citing papers.
-
-        Parameters
-        ----------
-        paper : Paper
-            Paper to look up.
-        progress_callback : Callable[[int], None] | None
-            Ignored in fake connector.
-
-        Returns
-        -------
-        list[Paper]
-            List of citing papers.
-        """
-        return list(self._cited_by.get(paper.doi or "", []))
+    return _MockGetRunner
 
 
 # ---------------------------------------------------------------------------
-# Tests
+# Fixtures
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def seed(make_paper) -> Paper:
+    """A single seed paper with a DOI."""
+    return cast(Paper, make_paper("Seed", doi="10.1000/seed"))
+
+
+# ---------------------------------------------------------------------------
+# TestSnowballRunnerInit
 # ---------------------------------------------------------------------------
 
 
 class TestSnowballRunnerInit:
-    """Tests for SnowballRunner initialisation."""
+    """Tests for SnowballRunner.__init__ validation."""
 
-    def test_single_paper_seed(self, make_paper) -> None:
-        """Accepts a single Paper as seed_papers."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        runner = SnowballRunner(seed_papers=seed, max_depth=1)
-
+    def test_single_paper_seed_is_accepted(self, seed: Paper) -> None:
+        """A single Paper (not wrapped in a list) is accepted as seed_papers."""
+        runner = SnowballRunner(seed_papers=seed)
         assert len(runner._seed_papers) == 1
 
-    def test_skips_papers_without_doi(self, make_paper) -> None:
-        """Papers without DOI are silently skipped."""
-        seed_with_doi = make_paper("With DOI", doi="10.1000/ok")
-        seed_without_doi = make_paper("No DOI")
-        runner = SnowballRunner(seed_papers=[seed_with_doi, seed_without_doi])
+    def test_papers_without_doi_are_skipped(self, make_paper) -> None:
+        """Papers without a DOI are silently skipped; counter is incremented."""
+        with_doi = make_paper("With DOI", doi="10.1000/ok")
+        without_doi = make_paper("No DOI")
+        runner = SnowballRunner(seed_papers=[with_doi, without_doi])
 
         assert len(runner._seed_papers) == 1
         assert runner._skipped_seeds == 1
 
-    def test_default_parameters(self, make_paper) -> None:
-        """Default max_depth is 1, direction is 'both', num_workers is 1."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        runner = SnowballRunner(seed_papers=[seed])
+    def test_default_parameters(self, seed: Paper) -> None:
+        """Defaults: max_depth=1, direction='both', num_workers=1."""
+        runner = SnowballRunner(seed_papers=seed)
 
         assert runner._max_depth == 1
         assert runner._direction == "both"
         assert runner._num_workers == 1
+        assert runner._max_per_level is None
+        assert runner._max_expansion_per_level is None
+        # BFS discovery defaults to crossref only.
+        assert runner._databases == ["crossref"]
+        # Enrichment defaults to all API connectors (no web scraping).
+        assert runner._enrichment_databases == list(SNOWBALL_ENRICHMENT_DATABASES)
+        # Final web-scraping pass is enabled by default.
+        assert runner._final_webscraping is True
 
-    def test_max_depth_zero_raises(self, make_paper) -> None:
-        """max_depth of zero raises InvalidParameterError."""
-        seed = make_paper("Seed", doi="10.1000/seed")
+    def test_max_depth_zero_raises(self, seed: Paper) -> None:
+        """max_depth=0 raises InvalidParameterError."""
         with pytest.raises(InvalidParameterError, match="max_depth must be >= 1"):
-            SnowballRunner(seed_papers=[seed], max_depth=0)
+            SnowballRunner(seed_papers=seed, max_depth=0)
 
-    def test_max_depth_negative_raises(self, make_paper) -> None:
+    def test_max_depth_negative_raises(self, seed: Paper) -> None:
         """Negative max_depth raises InvalidParameterError."""
-        seed = make_paper("Seed", doi="10.1000/seed")
         with pytest.raises(InvalidParameterError, match="max_depth must be >= 1"):
-            SnowballRunner(seed_papers=[seed], max_depth=-1)
+            SnowballRunner(seed_papers=seed, max_depth=-3)
 
-    def test_top_n_per_level_zero_raises(self, make_paper) -> None:
-        """top_n_per_level of zero raises InvalidParameterError."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        with pytest.raises(InvalidParameterError, match="top_n_per_level must be >= 1"):
-            SnowballRunner(seed_papers=[seed], top_n_per_level=0)
+    def test_top_n_zero_raises(self, seed: Paper) -> None:
+        """max_per_level=0 raises InvalidParameterError."""
+        with pytest.raises(InvalidParameterError, match="max_per_level must be >= 1"):
+            SnowballRunner(seed_papers=seed, max_per_level=0)
 
-    def test_top_n_per_level_negative_raises(self, make_paper) -> None:
-        """Negative top_n_per_level raises InvalidParameterError."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        with pytest.raises(InvalidParameterError, match="top_n_per_level must be >= 1"):
-            SnowballRunner(seed_papers=[seed], top_n_per_level=-5)
+    def test_top_n_negative_raises(self, seed: Paper) -> None:
+        """Negative max_per_level raises InvalidParameterError."""
+        with pytest.raises(InvalidParameterError, match="max_per_level must be >= 1"):
+            SnowballRunner(seed_papers=seed, max_per_level=-5)
 
-    def test_top_n_per_level_none_is_valid(self, make_paper) -> None:
-        """top_n_per_level=None (default) does not raise."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        runner = SnowballRunner(seed_papers=[seed])
-        assert runner._top_n_per_level is None
+    def test_top_n_positive_stored(self, seed: Paper) -> None:
+        """A positive max_per_level value is stored on the runner."""
+        runner = SnowballRunner(seed_papers=seed, max_per_level=10)
+        assert runner._max_per_level == 10
 
-    def test_top_n_per_level_positive_is_stored(self, make_paper) -> None:
-        """A positive top_n_per_level value is stored on the runner."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        runner = SnowballRunner(seed_papers=[seed], top_n_per_level=10)
-        assert runner._top_n_per_level == 10
+    def test_max_expansion_zero_raises(self, seed: Paper) -> None:
+        """max_expansion_per_level=0 raises InvalidParameterError."""
+        with pytest.raises(InvalidParameterError, match="max_expansion_per_level must be >= 1"):
+            SnowballRunner(seed_papers=seed, max_expansion_per_level=0)
 
-    def test_databases_none_uses_all_connectors(self, make_paper) -> None:
-        """databases=None (default) builds all citation connectors."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        runner = SnowballRunner(seed_papers=[seed])
-        assert len(runner._connectors) == 3
+    def test_max_expansion_negative_raises(self, seed: Paper) -> None:
+        """Negative max_expansion_per_level raises InvalidParameterError."""
+        with pytest.raises(InvalidParameterError, match="max_expansion_per_level must be >= 1"):
+            SnowballRunner(seed_papers=seed, max_expansion_per_level=-3)
 
-    def test_databases_single_value_filters_connectors(self, make_paper) -> None:
-        """Passing a single database restricts the connectors to that one."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        runner = SnowballRunner(seed_papers=[seed], databases=["openalex"])
-        assert len(runner._connectors) == 1
-        assert runner._connectors[0].name == "openalex"
+    def test_max_expansion_positive_stored(self, seed: Paper) -> None:
+        """A positive max_expansion_per_level value is stored on the runner."""
+        runner = SnowballRunner(seed_papers=seed, max_expansion_per_level=5)
+        assert runner._max_expansion_per_level == 5
 
-    def test_databases_multiple_values_filters_connectors(self, make_paper) -> None:
-        """Passing multiple databases restricts connectors to those databases."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        runner = SnowballRunner(seed_papers=[seed], databases=["crossref", "semantic_scholar"])
-        connector_names = {c.name for c in runner._connectors}
-        assert connector_names == {"crossref", "semantic_scholar"}
-
-    def test_databases_empty_list_raises(self, make_paper) -> None:
+    def test_databases_empty_list_raises(self, seed: Paper) -> None:
         """An empty databases list raises InvalidParameterError."""
-        seed = make_paper("Seed", doi="10.1000/seed")
         with pytest.raises(InvalidParameterError, match="databases must not be an empty list"):
-            SnowballRunner(seed_papers=[seed], databases=[])
+            SnowballRunner(seed_papers=seed, databases=[])
 
-    def test_databases_unknown_value_raises(self, make_paper) -> None:
-        """An unknown database identifier raises InvalidParameterError."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        with pytest.raises(InvalidParameterError, match="Unknown citation database"):
-            SnowballRunner(seed_papers=[seed], databases=["no_such_db"])
+    def test_databases_unknown_value_raises(self, seed: Paper) -> None:
+        """An unknown database name raises InvalidParameterError."""
+        with pytest.raises(InvalidParameterError, match="Unknown database"):
+            SnowballRunner(seed_papers=seed, databases=["no_such_db"])
+
+    def test_databases_known_values_accepted(self, seed: Paper) -> None:
+        """All values from GET_DATABASES are accepted without raising."""
+        for db in GET_DATABASES:
+            runner = SnowballRunner(seed_papers=seed, databases=[db])
+            assert runner._databases == [db]
+
+    def test_databases_multiple_known_values_stored(self, seed: Paper) -> None:
+        """Multiple valid database names are stored normalised."""
+        runner = SnowballRunner(seed_papers=seed, databases=["crossref", "openalex"])
+        assert runner._databases is not None
+        assert set(runner._databases) == {"crossref", "openalex"}
+
+    def test_databases_none_stored_as_none(self, seed: Paper) -> None:
+        """databases=None is stored as None (use all sources)."""
+        runner = SnowballRunner(seed_papers=seed, databases=None)
+        assert runner._databases is None
+
+    def test_databases_normalised_to_lowercase(self, seed: Paper) -> None:
+        """Database names are normalised to lowercase."""
+        runner = SnowballRunner(seed_papers=seed, databases=["CrossRef"])
+        assert runner._databases == ["crossref"]
+
+    def test_num_workers_clamped_to_one(self, seed: Paper) -> None:
+        """num_workers=0 is clamped to 1."""
+        runner = SnowballRunner(seed_papers=seed, num_workers=0)
+        assert runner._num_workers == 1
+
+
+# ---------------------------------------------------------------------------
+# TestSnowballRunnerRun
+# ---------------------------------------------------------------------------
 
 
 class TestSnowballRunnerRun:
-    """Tests for the snowball execution logic."""
+    """Tests for SnowballRunner.run() behaviour."""
 
-    def test_depth_one_returns_immediate_neighbours(self, make_paper) -> None:
-        """With max_depth=1 only immediate neighbours are fetched."""
+    def test_returns_snowball_result(self, make_paper) -> None:
+        """run() always returns a SnowballResult instance."""
         seed = make_paper("Seed", doi="10.1000/seed")
-        ref = make_paper("Ref", doi="10.1000/ref")
-        connector = FakeCitationConnector(
-            references={"10.1000/seed": [ref]},
-        )
-        runner = SnowballRunner(seed_papers=[seed], max_depth=1, direction="backward")
-        runner._connectors = [connector]
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
 
-        graph = runner.run()
+        paper_map = {"10.1000/seed": enriched_seed}
+        mock_cls = _mock_get_runner_class(paper_map)
 
-        assert graph.node_count == 2
-        assert graph.edge_count == 1
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(seed_papers=seed, max_depth=1)
+            result = runner.run(show_progress=False)
 
-    def test_backward_snowball_depth_1(self, make_paper) -> None:
-        """Backward snowballing collects references of the seed."""
+        assert isinstance(result, SnowballResult)
+
+    def test_result_contains_seed_paper(self, make_paper) -> None:
+        """Seed paper is always present in result.seed_papers."""
         seed = make_paper("Seed", doi="10.1000/seed")
-        ref1 = make_paper("Ref 1", doi="10.1000/r1")
-        ref2 = make_paper("Ref 2", doi="10.1000/r2")
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
 
-        connector = FakeCitationConnector(
-            references={"10.1000/seed": [ref1, ref2]},
-        )
-        runner = SnowballRunner(
-            seed_papers=[seed],
-            max_depth=1,
-            direction="backward",
-        )
-        runner._connectors = [connector]
+        paper_map = {"10.1000/seed": enriched_seed}
+        mock_cls = _mock_get_runner_class(paper_map)
 
-        graph = runner.run()
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(seed_papers=seed, max_depth=1)
+            result = runner.run(show_progress=False)
 
-        assert graph.node_count == 3  # seed + 2 refs
-        assert graph.edge_count == 2  # seed -> ref1, seed -> ref2
-        refs = graph.get_references(seed)
-        assert len(refs) == 2
+        seed_dois = {p.doi for p in result.seed_papers if p.doi}
+        assert "10.1000/seed" in seed_dois
 
-    def test_forward_snowball_depth_1(self, make_paper) -> None:
-        """Forward snowballing collects papers that cite the seed."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        citing1 = make_paper("Citing 1", doi="10.1000/c1")
-        citing2 = make_paper("Citing 2", doi="10.1000/c2")
+    def test_backward_direction_follows_references(self, make_paper) -> None:
+        """Backward snowballing follows paper.references to discover new DOIs."""
+        # Enriched seed has a reference pointing to ref_paper.
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.references = ["10.1000/ref"]
 
-        connector = FakeCitationConnector(
-            cited_by={"10.1000/seed": [citing1, citing2]},
-        )
-        runner = SnowballRunner(
-            seed_papers=[seed],
-            max_depth=1,
-            direction="forward",
-        )
-        runner._connectors = [connector]
+        ref_paper = make_paper("Ref", doi="10.1000/ref")
 
-        graph = runner.run()
+        paper_map = {"10.1000/seed": enriched_seed, "10.1000/ref": ref_paper}
+        mock_cls = _mock_get_runner_class(paper_map)
 
-        assert graph.node_count == 3  # seed + 2 citing
-        assert graph.edge_count == 2
-        cited_by = graph.get_cited_by(seed)
-        assert len(cited_by) == 2
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=1,
+                direction="backward",
+            )
+            result = runner.run(show_progress=False)
 
-    def test_both_directions_depth_1(self, make_paper) -> None:
-        """Snowballing in both directions collects refs and citing papers."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        ref = make_paper("Ref", doi="10.1000/ref")
-        citing = make_paper("Citing", doi="10.1000/citing")
+        dois = {p.doi for p in result.papers if p.doi}
+        assert "10.1000/ref" in dois
 
-        connector = FakeCitationConnector(
-            references={"10.1000/seed": [ref]},
-            cited_by={"10.1000/seed": [citing]},
-        )
-        runner = SnowballRunner(
-            seed_papers=[seed],
-            max_depth=1,
-            direction="both",
-        )
-        runner._connectors = [connector]
+    def test_forward_direction_follows_cited_by(self, make_paper) -> None:
+        """Forward snowballing follows paper.cited_by to discover new DOIs."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.cited_by = ["10.1000/citing"]
 
-        graph = runner.run()
+        citing_paper = make_paper("Citing", doi="10.1000/citing")
 
-        assert graph.node_count == 3
-        assert graph.edge_count == 2
+        paper_map = {"10.1000/seed": enriched_seed, "10.1000/citing": citing_paper}
+        mock_cls = _mock_get_runner_class(paper_map)
+
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=1,
+                direction="forward",
+            )
+            result = runner.run(show_progress=False)
+
+        dois = {p.doi for p in result.papers if p.doi}
+        assert "10.1000/citing" in dois
+
+    def test_both_directions_follows_references_and_cited_by(self, make_paper) -> None:
+        """Both directions: references AND cited_by are followed."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.references = ["10.1000/ref"]
+        enriched_seed.cited_by = ["10.1000/citing"]
+
+        ref_paper = make_paper("Ref", doi="10.1000/ref")
+        citing_paper = make_paper("Citing", doi="10.1000/citing")
+
+        paper_map = {
+            "10.1000/seed": enriched_seed,
+            "10.1000/ref": ref_paper,
+            "10.1000/citing": citing_paper,
+        }
+        mock_cls = _mock_get_runner_class(paper_map)
+
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=1,
+                direction="both",
+            )
+            result = runner.run(show_progress=False)
+
+        dois = {p.doi for p in result.papers if p.doi}
+        assert "10.1000/ref" in dois
+        assert "10.1000/citing" in dois
+
+    def test_backward_only_does_not_follow_cited_by(self, make_paper) -> None:
+        """Backward direction does NOT follow paper.cited_by."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.references = ["10.1000/ref"]
+        enriched_seed.cited_by = ["10.1000/citing"]
+
+        ref_paper = make_paper("Ref", doi="10.1000/ref")
+        citing_paper = make_paper("Citing", doi="10.1000/citing")
+
+        paper_map = {
+            "10.1000/seed": enriched_seed,
+            "10.1000/ref": ref_paper,
+            "10.1000/citing": citing_paper,
+        }
+        mock_cls = _mock_get_runner_class(paper_map)
+
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=1,
+                direction="backward",
+            )
+            result = runner.run(show_progress=False)
+
+        dois = {p.doi for p in result.papers if p.doi}
+        assert "10.1000/ref" in dois
+        assert "10.1000/citing" not in dois
+
+    def test_forward_only_does_not_follow_references(self, make_paper) -> None:
+        """Forward direction does NOT follow paper.references."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.references = ["10.1000/ref"]
+        enriched_seed.cited_by = ["10.1000/citing"]
+
+        ref_paper = make_paper("Ref", doi="10.1000/ref")
+        citing_paper = make_paper("Citing", doi="10.1000/citing")
+
+        paper_map = {
+            "10.1000/seed": enriched_seed,
+            "10.1000/ref": ref_paper,
+            "10.1000/citing": citing_paper,
+        }
+        mock_cls = _mock_get_runner_class(paper_map)
+
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=1,
+                direction="forward",
+            )
+            result = runner.run(show_progress=False)
+
+        dois = {p.doi for p in result.papers if p.doi}
+        assert "10.1000/citing" in dois
+        assert "10.1000/ref" not in dois
 
     def test_depth_2_expands_second_level(self, make_paper) -> None:
-        """At max_depth=2, papers found at level 1 are also expanded."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        level1 = make_paper("Level 1", doi="10.1000/l1")
-        level2 = make_paper("Level 2", doi="10.1000/l2")
+        """At max_depth=2, papers discovered at level 1 are also expanded."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.references = ["10.1000/l1"]
 
-        connector = FakeCitationConnector(
-            references={
-                "10.1000/seed": [level1],
-                "10.1000/l1": [level2],
-            },
-        )
-        runner = SnowballRunner(
-            seed_papers=[seed],
-            max_depth=2,
-            direction="backward",
-        )
-        runner._connectors = [connector]
+        level1 = make_paper("Level1", doi="10.1000/l1")
+        level1.references = ["10.1000/l2"]
 
-        graph = runner.run()
+        level2 = make_paper("Level2", doi="10.1000/l2")
 
-        assert graph.node_count == 3  # seed + l1 + l2
-        assert graph.edge_count == 2  # seed->l1, l1->l2
-        assert graph.get_node_depth(seed) == 0
-        assert graph.get_node_depth(level1) == 1
-        assert graph.get_node_depth(level2) == 2
+        paper_map = {
+            "10.1000/seed": enriched_seed,
+            "10.1000/l1": level1,
+            "10.1000/l2": level2,
+        }
+        mock_cls = _mock_get_runner_class(paper_map)
 
-    def test_deduplication_across_connectors(self, make_paper) -> None:
-        """Same paper found by different connectors is not duplicated."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        ref = make_paper("Ref", doi="10.1000/ref")
-        ref_dup = make_paper("Ref (duplicate)", doi="10.1000/ref")
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=2,
+                direction="backward",
+            )
+            result = runner.run(show_progress=False)
 
-        connector1 = FakeCitationConnector(references={"10.1000/seed": [ref]})
-        connector2 = FakeCitationConnector(references={"10.1000/seed": [ref_dup]})
+        dois = {p.doi for p in result.papers if p.doi}
+        assert "10.1000/l1" in dois
+        assert "10.1000/l2" in dois
 
-        runner = SnowballRunner(
-            seed_papers=[seed],
-            max_depth=1,
-            direction="backward",
-        )
-        runner._connectors = [connector1, connector2]
+    def test_doi_deduplication(self, make_paper) -> None:
+        """The same DOI discovered via multiple paths appears only once."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        # Both references AND cited_by contain the same DOI.
+        enriched_seed.references = ["10.1000/shared"]
+        enriched_seed.cited_by = ["10.1000/shared"]
 
-        graph = runner.run()
+        shared_paper = make_paper("Shared", doi="10.1000/shared")
 
-        assert graph.node_count == 2  # seed + ref (deduplicated)
-        assert graph.edge_count == 1  # one edge seed -> ref
+        paper_map = {"10.1000/seed": enriched_seed, "10.1000/shared": shared_paper}
+        mock_cls = _mock_get_runner_class(paper_map)
 
-    def test_cycle_detection(self, make_paper) -> None:
-        """Papers already in the graph are not expanded again."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        ref = make_paper("Ref", doi="10.1000/ref")
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=1,
+                direction="both",
+            )
+            result = runner.run(show_progress=False)
 
-        # ref cites seed back — creates a cycle.
-        connector = FakeCitationConnector(
-            references={
-                "10.1000/seed": [ref],
-                "10.1000/ref": [seed],
-            },
-        )
-        runner = SnowballRunner(
-            seed_papers=[seed],
-            max_depth=2,
-            direction="backward",
-        )
-        runner._connectors = [connector]
+        dois = [p.doi for p in result.papers if p.doi]
+        assert dois.count("10.1000/shared") == 1
 
-        graph = runner.run()
+    def test_already_visited_doi_is_not_fetched_twice(self, make_paper) -> None:
+        """DOIs already in the visited set are not re-fetched at deeper levels via BFS discovery."""
+        # Seed references l1; l1 references seed (cycle).
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.references = ["10.1000/l1"]
 
-        # Only 2 papers; the seed is not re-added.
-        assert graph.node_count == 2
-        # seed -> ref AND ref -> seed (but ref -> seed is only added
-        # at depth 2 when ref is expanded).
-        assert graph.edge_count == 2
+        l1_paper = make_paper("L1", doi="10.1000/l1")
+        l1_paper.references = ["10.1000/seed"]  # cycle back to seed
 
-    def test_connector_error_does_not_crash(self, make_paper) -> None:
-        """If a connector raises, the runner logs and continues."""
-        seed = make_paper("Seed", doi="10.1000/seed")
+        call_counts: dict[str, int] = {}
 
-        class ErrorConnector(CitationConnectorBase):
-            """Connector that always raises."""
+        class _CountingGetRunner:
+            def __init__(self, identifier: str, **kwargs: object) -> None:
+                self._doi = identifier.strip().lower()
 
-            @property
-            def name(self) -> str:
-                """Return name.
+            def run(self, verbose: bool = False) -> Paper | None:
+                call_counts[self._doi] = call_counts.get(self._doi, 0) + 1
+                return {"10.1000/seed": enriched_seed, "10.1000/l1": l1_paper}.get(self._doi)
 
-                Returns
-                -------
-                str
-                    Connector name.
-                """
-                return "error"
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=_CountingGetRunner):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=2,
+                direction="backward",
+                # Disable final webscraping so we can count BFS-only calls.
+                final_webscraping=False,
+            )
+            result = runner.run(show_progress=False)
 
-            @property
-            def min_request_interval(self) -> float:
-                """Return interval.
+        # seed should be fetched exactly once at level 0 (BFS never revisits it).
+        assert call_counts.get("10.1000/seed", 0) == 1
+        seed_dois = {p.doi for p in result.seed_papers if p.doi}
+        assert "10.1000/seed" in seed_dois
+        dois = {p.doi for p in result.papers if p.doi}
+        assert "10.1000/l1" in dois
 
-                Returns
-                -------
-                float
-                    Zero.
-                """
-                return 0.0
+    def test_no_references_yields_only_seed(self, make_paper) -> None:
+        """When a seed has no references/cited_by, result.papers is empty and seed is in seed_papers."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        # No references or cited_by populated.
 
-            def fetch_references(
-                self,
-                paper: Paper,
-                progress_callback: Callable[[int], None] | None = None,
-            ) -> list[Paper]:
-                """Always raise.
+        paper_map = {"10.1000/seed": enriched_seed}
+        mock_cls = _mock_get_runner_class(paper_map)
 
-                Parameters
-                ----------
-                paper : Paper
-                    Ignored.
-                progress_callback : Callable[[int], None] | None
-                    Ignored.
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=3,
+            )
+            result = runner.run(show_progress=False)
 
-                Raises
-                ------
-                RuntimeError
-                    Always.
-                """
-                raise RuntimeError("boom")
+        assert result.papers == []
+        assert len(result.seed_papers) == 1
 
-            def fetch_cited_by(
-                self,
-                paper: Paper,
-                progress_callback: Callable[[int], None] | None = None,
-            ) -> list[Paper]:
-                """Always raise.
+    def test_get_runner_returning_none_is_skipped(self, make_paper) -> None:
+        """When GetRunner.run() returns None, that DOI is silently skipped."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.references = ["10.1000/missing"]
 
-                Parameters
-                ----------
-                paper : Paper
-                    Ignored.
-                progress_callback : Callable[[int], None] | None
-                    Ignored.
+        paper_map = {"10.1000/seed": enriched_seed, "10.1000/missing": None}
+        mock_cls = _mock_get_runner_class(paper_map)
 
-                Raises
-                ------
-                RuntimeError
-                    Always.
-                """
-                raise RuntimeError("boom")
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=1,
+                direction="backward",
+            )
+            result = runner.run(show_progress=False)
 
-        runner = SnowballRunner(
-            seed_papers=[seed],
-            max_depth=1,
-            direction="both",
-        )
-        runner._connectors = [ErrorConnector()]
+        dois = {p.doi for p in result.papers if p.doi}
+        assert "10.1000/missing" not in dois
 
-        # Should not raise.
-        graph = runner.run()
-
-        assert graph.node_count == 1  # only the seed
-        assert graph.edge_count == 0
-
-    def test_multiple_seeds(self, make_paper) -> None:
-        """Multiple seed papers are all expanded at depth 1."""
+    def test_multiple_seeds_all_expanded(self, make_paper) -> None:
+        """All provided seed papers are fetched and expanded."""
         seed1 = make_paper("Seed 1", doi="10.1000/s1")
         seed2 = make_paper("Seed 2", doi="10.1000/s2")
-        ref1 = make_paper("Ref 1", doi="10.1000/r1")
-        ref2 = make_paper("Ref 2", doi="10.1000/r2")
 
-        connector = FakeCitationConnector(
-            references={
-                "10.1000/s1": [ref1],
-                "10.1000/s2": [ref2],
-            },
-        )
-        runner = SnowballRunner(
-            seed_papers=[seed1, seed2],
-            max_depth=1,
-            direction="backward",
-        )
-        runner._connectors = [connector]
+        enriched_s1 = make_paper("Seed 1", doi="10.1000/s1")
+        enriched_s1.references = ["10.1000/r1"]
+        enriched_s2 = make_paper("Seed 2", doi="10.1000/s2")
+        enriched_s2.references = ["10.1000/r2"]
 
-        graph = runner.run()
+        r1 = make_paper("Ref 1", doi="10.1000/r1")
+        r2 = make_paper("Ref 2", doi="10.1000/r2")
 
-        assert graph.node_count == 4
-        assert graph.edge_count == 2
+        paper_map = {
+            "10.1000/s1": enriched_s1,
+            "10.1000/s2": enriched_s2,
+            "10.1000/r1": r1,
+            "10.1000/r2": r2,
+        }
+        mock_cls = _mock_get_runner_class(paper_map)
 
-    def test_parallel_connectors(self, make_paper) -> None:
-        """With num_workers > 1, connectors are queried in parallel."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        ref1 = make_paper("Ref C1", doi="10.1000/rc1")
-        ref2 = make_paper("Ref C2", doi="10.1000/rc2")
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=[seed1, seed2],
+                max_depth=1,
+                direction="backward",
+            )
+            result = runner.run(show_progress=False)
 
-        connector1 = FakeCitationConnector(references={"10.1000/seed": [ref1]})
-        connector2 = FakeCitationConnector(references={"10.1000/seed": [ref2]})
+        paper_dois = {p.doi for p in result.papers if p.doi}
+        seed_dois = {p.doi for p in result.seed_papers if p.doi}
+        assert {"10.1000/r1", "10.1000/r2"}.issubset(paper_dois)
+        assert {"10.1000/s1", "10.1000/s2"}.issubset(seed_dois)
 
-        runner = SnowballRunner(
-            seed_papers=[seed],
-            max_depth=1,
-            direction="backward",
-            num_workers=3,
-        )
-        runner._connectors = [connector1, connector2]
+    def test_seeds_without_doi_are_skipped_and_counted(self, make_paper) -> None:
+        """Seed papers without DOI are excluded and the skip count is correct."""
+        seed_no_doi = make_paper("No DOI")
+        runner = SnowballRunner(seed_papers=[seed_no_doi], max_depth=1)
 
-        graph = runner.run()
+        with patch("findpapers.runners.snowball_runner.GetRunner") as mock_cls:
+            mock_cls.return_value = MagicMock()
+            result = runner.run(show_progress=False)
 
-        # Both connectors should have been queried.
-        assert graph.node_count == 3  # seed + rc1 + rc2
-        assert graph.edge_count == 2
+        assert result.skipped_seeds_without_doi == 1
+        # GetRunner should not have been called for the seedless paper.
+        mock_cls.assert_not_called()
 
-    def test_top_n_per_level_limits_next_frontier(self, make_paper) -> None:
-        """top_n_per_level keeps only the N most-cited papers in the graph per level."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        # Three papers at level 1 with distinct citation counts.
+
+# ---------------------------------------------------------------------------
+# TestSnowballRunnerMaxPerLevel
+# ---------------------------------------------------------------------------
+
+
+class TestSnowballRunnerMaxPerLevel:
+    """Tests for the max_per_level parameter (per-level result cap)."""
+
+    def test_max_per_level_filters_result_not_frontier(self, make_paper) -> None:
+        """max_per_level limits result papers per level; all papers still expand."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.references = ["10.1000/high", "10.1000/mid", "10.1000/low"]
+
         high = make_paper("High", doi="10.1000/high", citations=100)
         mid = make_paper("Mid", doi="10.1000/mid", citations=50)
         low = make_paper("Low", doi="10.1000/low", citations=5)
 
-        connector = FakeCitationConnector(
-            references={"10.1000/seed": [high, mid, low]},
-        )
-        runner = SnowballRunner(
-            seed_papers=[seed],
-            max_depth=2,
-            direction="backward",
-            top_n_per_level=2,
-        )
-        runner._connectors = [connector]
+        # level2 is reachable only via low
+        level2_via_low = make_paper("L2-via-low", doi="10.1000/l2low")
+        low.references = ["10.1000/l2low"]
 
-        graph = runner.run()
+        paper_map = {
+            "10.1000/seed": enriched_seed,
+            "10.1000/high": high,
+            "10.1000/mid": mid,
+            "10.1000/low": low,
+            "10.1000/l2low": level2_via_low,
+        }
+        mock_cls = _mock_get_runner_class(paper_map)
 
-        # Only the top 2 (high, mid) are added to the graph; "low" is discarded.
-        assert graph.contains(high)
-        assert graph.contains(mid)
-        assert not graph.contains(low)
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=2,
+                direction="backward",
+                max_per_level=2,
+            )
+            result = runner.run(show_progress=False)
 
-    def test_top_n_per_level_selects_by_citation_count(self, make_paper) -> None:
-        """Papers are ranked by citations descending; lower-cited ones are not added to the graph."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        high = make_paper("High", doi="10.1000/high", citations=200)
-        low = make_paper("Low", doi="10.1000/low", citations=1)
-        # Level 2 papers reachable only via "low" — should NOT appear.
-        deep = make_paper("Deep", doi="10.1000/deep", citations=999)
+        dois = {p.doi for p in result.papers if p.doi}
+        # high and mid are top-2 by citations — they are in the result.
+        assert "10.1000/high" in dois
+        assert "10.1000/mid" in dois
+        # low is filtered out of the result (rank 3, cap is 2).
+        assert "10.1000/low" not in dois
+        # low is still in the frontier, so l2low IS fetched and in the result.
+        assert "10.1000/l2low" in dois
 
-        connector = FakeCitationConnector(
-            references={
-                "10.1000/seed": [high, low],
-                "10.1000/low": [deep],
-            },
-        )
-        runner = SnowballRunner(
-            seed_papers=[seed],
-            max_depth=2,
-            direction="backward",
-            top_n_per_level=1,
-        )
-        runner._connectors = [connector]
+    def test_max_per_level_1_keeps_only_highest_cited(self, make_paper) -> None:
+        """max_per_level=1 keeps only the single most-cited paper in the result."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.references = ["10.1000/winner", "10.1000/loser"]
 
-        graph = runner.run()
+        winner = make_paper("Winner", doi="10.1000/winner", citations=999)
+        loser = make_paper("Loser", doi="10.1000/loser", citations=1)
 
-        # Only "high" (top 1) is added; "low" is discarded and "deep" is never discovered.
-        assert graph.contains(high)
-        assert not graph.contains(low)
-        assert not graph.contains(deep)
+        level2_via_loser = make_paper("L2-Loser", doi="10.1000/l2loser")
+        loser.references = ["10.1000/l2loser"]
 
-    def test_top_n_per_level_none_expands_all(self, make_paper) -> None:
-        """Without top_n_per_level all discovered papers are expanded."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        p1 = make_paper("P1", doi="10.1000/p1", citations=10)
-        p2 = make_paper("P2", doi="10.1000/p2", citations=1)
-        deep = make_paper("Deep", doi="10.1000/deep")
+        paper_map = {
+            "10.1000/seed": enriched_seed,
+            "10.1000/winner": winner,
+            "10.1000/loser": loser,
+            "10.1000/l2loser": level2_via_loser,
+        }
+        mock_cls = _mock_get_runner_class(paper_map)
 
-        connector = FakeCitationConnector(
-            references={
-                "10.1000/seed": [p1, p2],
-                "10.1000/p2": [deep],
-            },
-        )
-        runner = SnowballRunner(
-            seed_papers=[seed],
-            max_depth=2,
-            direction="backward",
-            # top_n_per_level not set (default None)
-        )
-        runner._connectors = [connector]
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=2,
+                direction="backward",
+                max_per_level=1,
+            )
+            result = runner.run(show_progress=False)
 
-        graph = runner.run()
+        dois = {p.doi for p in result.papers if p.doi}
+        assert "10.1000/winner" in dois
+        # loser filtered from result (rank 2, cap is 1).
+        assert "10.1000/loser" not in dois
+        # loser is still in frontier; l2loser IS fetched and in result.
+        assert "10.1000/l2loser" in dois
 
-        # p2 is expanded so deep should be discovered.
-        assert graph.contains(deep)
+    def test_none_citations_ranked_below_known(self, make_paper) -> None:
+        """Papers with citations=None rank below papers with known citation counts."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.references = ["10.1000/known", "10.1000/unknown"]
 
-    def test_top_n_per_level_none_citations_treated_as_zero(self, make_paper) -> None:
-        """Papers with citations=None are ranked below papers with known counts."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        cited = make_paper("Cited", doi="10.1000/cited", citations=10)
-        unknown = make_paper("Unknown", doi="10.1000/unknown", citations=None)
+        known_cited = make_paper("Known", doi="10.1000/known", citations=10)
+        unknown_cited = make_paper("Unknown", doi="10.1000/unknown", citations=None)
+
         deep_via_unknown = make_paper("DeepUnknown", doi="10.1000/deepunknown")
+        unknown_cited.references = ["10.1000/deepunknown"]
 
-        connector = FakeCitationConnector(
-            references={
-                "10.1000/seed": [cited, unknown],
-                "10.1000/unknown": [deep_via_unknown],
-            },
-        )
-        runner = SnowballRunner(
-            seed_papers=[seed],
-            max_depth=2,
-            direction="backward",
-            top_n_per_level=1,
-        )
-        runner._connectors = [connector]
+        paper_map = {
+            "10.1000/seed": enriched_seed,
+            "10.1000/known": known_cited,
+            "10.1000/unknown": unknown_cited,
+            "10.1000/deepunknown": deep_via_unknown,
+        }
+        mock_cls = _mock_get_runner_class(paper_map)
 
-        graph = runner.run()
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=2,
+                direction="backward",
+                max_per_level=1,
+            )
+            result = runner.run(show_progress=False)
 
-        # Only "cited" (top 1 by citation count) is added; "unknown" is discarded
-        # and "deep_via_unknown" is never discovered.
-        assert graph.contains(cited)
-        assert not graph.contains(unknown)
-        assert not graph.contains(deep_via_unknown)
+        dois = {p.doi for p in result.papers if p.doi}
+        # known (citations=10) ranks above unknown (citations=None treated as 0).
+        assert "10.1000/known" in dois
+        # unknown filtered from result (rank 2, cap is 1).
+        assert "10.1000/unknown" not in dois
+        # unknown is still in frontier; deepunknown IS fetched and in result.
+        assert "10.1000/deepunknown" in dois
 
+    def test_max_per_level_none_keeps_all_papers(self, make_paper) -> None:
+        """Without max_per_level, all discovered papers are in the result."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.references = ["10.1000/p1", "10.1000/p2"]
 
-class TestSnowballRunnerMetrics:
-    """Tests for metrics after execution."""
+        p1 = make_paper("P1", doi="10.1000/p1", citations=1)
+        p2 = make_paper("P2", doi="10.1000/p2", citations=0)
+        deep_via_p2 = make_paper("Deep", doi="10.1000/deep")
+        p2.references = ["10.1000/deep"]
 
-    def test_metrics_after_run(self, make_paper) -> None:
-        """Graph contains expected data after run()."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        runner = SnowballRunner(seed_papers=[seed], max_depth=1)
-        runner._connectors = [FakeCitationConnector()]
+        paper_map = {
+            "10.1000/seed": enriched_seed,
+            "10.1000/p1": p1,
+            "10.1000/p2": p2,
+            "10.1000/deep": deep_via_p2,
+        }
+        mock_cls = _mock_get_runner_class(paper_map)
 
-        graph = runner.run()
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=2,
+                direction="backward",
+            )
+            result = runner.run(show_progress=False)
 
-        assert graph.node_count == 1
-        assert graph.edge_count == 0
-
-    def test_show_progress_false_disables_progress_bar(self, make_paper) -> None:
-        """show_progress=False suppresses the tqdm progress bar."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        ref = make_paper("Ref", doi="10.2000/ref")
-        connector = FakeCitationConnector(references={"10.1000/seed": [ref]})
-        runner = SnowballRunner(seed_papers=[seed], max_depth=1)
-        runner._connectors = [connector]
-
-        with patch("findpapers.runners.snowball_runner.make_progress_bar") as mock_pbar:
-            mock_ctx = type(
-                "MockCtx",
-                (),
-                {
-                    "__enter__": lambda self: self,
-                    "__exit__": lambda self, *args: False,
-                    "update": lambda self, n=1: None,
-                    "reset": lambda self, total=None: None,
-                    "set_description": lambda self, desc="": None,
-                    "refresh": lambda self: None,
-                    "n": 0,
-                    "total": None,
-                },
-            )()
-            mock_pbar.return_value = mock_ctx
-            runner.run(show_progress=False)
-            assert mock_pbar.called
-            for call in mock_pbar.call_args_list:
-                assert call.kwargs.get("disable") is True
+        dois = {p.doi for p in result.papers if p.doi}
+        assert "10.1000/p1" in dois
+        assert "10.1000/p2" in dois
+        assert "10.1000/deep" in dois
 
 
-class TestCollectCandidates:
-    """Tests for the _collect_candidates helper method."""
-
-    def test_returns_reference_tuples_with_is_ref_true(self, make_paper) -> None:
-        """Backward citations are returned with is_reference=True."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        ref = make_paper("Ref", doi="10.1000/ref")
-        connector = FakeCitationConnector(references={"10.1000/seed": [ref]})
-        runner = SnowballRunner(seed_papers=[seed], max_depth=1, direction="backward")
-        runner._connectors = [connector]
-
-        candidates = runner._collect_candidates(seed)
-
-        assert len(candidates) == 1
-        candidate, source, is_ref = candidates[0]
-        assert candidate.doi == "10.1000/ref"
-        assert source is seed
-        assert is_ref is True
-
-    def test_returns_citing_tuples_with_is_ref_false(self, make_paper) -> None:
-        """Forward citations are returned with is_reference=False."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        citing = make_paper("Citing", doi="10.1000/citing")
-        connector = FakeCitationConnector(cited_by={"10.1000/seed": [citing]})
-        runner = SnowballRunner(seed_papers=[seed], max_depth=1, direction="forward")
-        runner._connectors = [connector]
-
-        candidates = runner._collect_candidates(seed)
-
-        assert len(candidates) == 1
-        candidate, source, is_ref = candidates[0]
-        assert candidate.doi == "10.1000/citing"
-        assert source is seed
-        assert is_ref is False
-
-    def test_does_not_modify_graph(self, make_paper) -> None:
-        """_collect_candidates must not add any paper to the graph."""
-        from findpapers.core.citation_graph import CitationGraph
-
-        seed = make_paper("Seed", doi="10.1000/seed")
-        ref = make_paper("Ref", doi="10.1000/ref")
-        connector = FakeCitationConnector(references={"10.1000/seed": [ref]})
-        runner = SnowballRunner(seed_papers=[seed], max_depth=1, direction="backward")
-        runner._connectors = [connector]
-
-        graph = CitationGraph(seed_papers=[seed], max_depth=1, direction="backward")
-        node_count_before = graph.node_count
-
-        runner._collect_candidates(seed)
-
-        assert graph.node_count == node_count_before
+# ---------------------------------------------------------------------------
+# TestSnowballRunnerMaxExpansion
+# ---------------------------------------------------------------------------
 
 
-class TestSnowballRunnerVerbose:
-    """Tests for verbose logging branches."""
+class TestSnowballRunnerMaxExpansion:
+    """Tests for the max_expansion_per_level parameter (per-level frontier cap)."""
 
-    def test_verbose_logs_configuration_and_results(self, make_paper) -> None:
-        """verbose=True logs configuration, per-level info, and results."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        ref = make_paper("Ref", doi="10.1000/ref")
-        connector = FakeCitationConnector(references={"10.1000/seed": [ref]})
-        runner = SnowballRunner(seed_papers=[seed], max_depth=1, direction="backward")
-        runner._connectors = [connector]
+    def test_max_expansion_limits_frontier_not_result(self, make_paper) -> None:
+        """max_expansion_per_level limits the frontier; all fetched papers stay in result."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.references = ["10.1000/high", "10.1000/mid", "10.1000/low"]
 
-        graph = runner.run(verbose=True, show_progress=False)
+        high = make_paper("High", doi="10.1000/high", citations=100)
+        mid = make_paper("Mid", doi="10.1000/mid", citations=50)
+        low = make_paper("Low", doi="10.1000/low", citations=5)
 
-        assert graph.node_count == 2
+        level2_via_low = make_paper("L2-via-low", doi="10.1000/l2low")
+        low.references = ["10.1000/l2low"]
 
-    def test_verbose_multi_level(self, make_paper) -> None:
-        """verbose=True logs at each depth level."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        l1 = make_paper("L1", doi="10.1000/l1")
-        l2 = make_paper("L2", doi="10.1000/l2")
-        connector = FakeCitationConnector(
-            references={"10.1000/seed": [l1], "10.1000/l1": [l2]},
-        )
-        runner = SnowballRunner(seed_papers=[seed], max_depth=2, direction="backward")
-        runner._connectors = [connector]
+        paper_map = {
+            "10.1000/seed": enriched_seed,
+            "10.1000/high": high,
+            "10.1000/mid": mid,
+            "10.1000/low": low,
+            "10.1000/l2low": level2_via_low,
+        }
+        mock_cls = _mock_get_runner_class(paper_map)
 
-        graph = runner.run(verbose=True, show_progress=False)
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=2,
+                direction="backward",
+                max_expansion_per_level=2,
+            )
+            result = runner.run(show_progress=False)
 
-        assert graph.node_count == 3
+        dois = {p.doi for p in result.papers if p.doi}
+        # All 3 level-1 papers are in the result (no max_per_level).
+        assert "10.1000/high" in dois
+        assert "10.1000/mid" in dois
+        assert "10.1000/low" in dois
+        # low is NOT in the frontier (frontier = top-2 = high, mid).
+        # Therefore l2low is never fetched.
+        assert "10.1000/l2low" not in dois
 
-    def test_verbose_true_restores_root_logger_level(self, make_paper) -> None:
-        """run(verbose=True) restores the root logger level on exit."""
-        import logging
+    def test_max_expansion_1_only_most_cited_expanded(self, make_paper) -> None:
+        """max_expansion_per_level=1 drives the next level from only the top paper."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.references = ["10.1000/winner", "10.1000/loser"]
 
-        seed = make_paper("Seed", doi="10.1000/seed")
-        connector = FakeCitationConnector(references={})
-        runner = SnowballRunner(seed_papers=[seed], max_depth=1, direction="backward")
-        runner._connectors = [connector]
+        winner = make_paper("Winner", doi="10.1000/winner", citations=999)
+        loser = make_paper("Loser", doi="10.1000/loser", citations=1)
 
-        root_logger = logging.getLogger()
-        original_level = root_logger.level
-        root_logger.setLevel(logging.WARNING)
-        try:
-            runner.run(verbose=True, show_progress=False)
-            assert root_logger.level == logging.WARNING
-        finally:
-            root_logger.setLevel(original_level)
+        level2_via_loser = make_paper("L2-Loser", doi="10.1000/l2loser")
+        loser.references = ["10.1000/l2loser"]
 
+        paper_map = {
+            "10.1000/seed": enriched_seed,
+            "10.1000/winner": winner,
+            "10.1000/loser": loser,
+            "10.1000/l2loser": level2_via_loser,
+        }
+        mock_cls = _mock_get_runner_class(paper_map)
 
-class TestSnowballRunnerParallelErrors:
-    """Tests for error handling in parallel connector execution."""
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=2,
+                direction="backward",
+                max_expansion_per_level=1,
+            )
+            result = runner.run(show_progress=False)
 
-    def test_parallel_connector_exception_is_caught(self, make_paper) -> None:
-        """Exception in a parallel connector is caught; other results survive."""
+        dois = {p.doi for p in result.papers if p.doi}
+        assert "10.1000/winner" in dois
+        assert "10.1000/loser" in dois  # in result but not in frontier
+        assert "10.1000/l2loser" not in dois  # loser not expanded
 
-        class BoomConnector(CitationConnectorBase):
-            """Connector whose future raises."""
+    def test_max_expansion_none_citations_ranked_below_known(self, make_paper) -> None:
+        """Papers with citations=None are treated as 0 when ranking the frontier."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.references = ["10.1000/known", "10.1000/unknown"]
 
-            @property
-            def name(self) -> str:
-                """Return name.
+        known_cited = make_paper("Known", doi="10.1000/known", citations=10)
+        unknown_cited = make_paper("Unknown", doi="10.1000/unknown", citations=None)
 
-                Returns
-                -------
-                str
-                    Connector name.
-                """
-                return "boom"
+        deep_via_unknown = make_paper("DeepUnknown", doi="10.1000/deepunknown")
+        unknown_cited.references = ["10.1000/deepunknown"]
 
-            @property
-            def min_request_interval(self) -> float:
-                """Return interval.
+        paper_map = {
+            "10.1000/seed": enriched_seed,
+            "10.1000/known": known_cited,
+            "10.1000/unknown": unknown_cited,
+            "10.1000/deepunknown": deep_via_unknown,
+        }
+        mock_cls = _mock_get_runner_class(paper_map)
 
-                Returns
-                -------
-                float
-                    Zero.
-                """
-                return 0.0
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=2,
+                direction="backward",
+                max_expansion_per_level=1,
+            )
+            result = runner.run(show_progress=False)
 
-            def fetch_references(
-                self,
-                paper: Paper,
-                progress_callback: Callable[[int], None] | None = None,
-            ) -> list[Paper]:
-                """Always raise.
+        dois = {p.doi for p in result.papers if p.doi}
+        # Both level-1 papers are in the result.
+        assert "10.1000/known" in dois
+        assert "10.1000/unknown" in dois
+        # unknown not in frontier (citations=None < known=10); deepunknown not fetched.
+        assert "10.1000/deepunknown" not in dois
 
-                Parameters
-                ----------
-                paper : Paper
-                    Ignored.
-                progress_callback : Callable[[int], None] | None
-                    Ignored.
+    def test_max_expansion_none_expands_all(self, make_paper) -> None:
+        """Without max_expansion_per_level, all papers drive the next level."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.references = ["10.1000/p1", "10.1000/p2"]
 
-                Raises
-                ------
-                RuntimeError
-                    Always.
-                """
-                raise RuntimeError("boom")
+        p1 = make_paper("P1", doi="10.1000/p1", citations=1)
+        p2 = make_paper("P2", doi="10.1000/p2", citations=0)
+        deep_via_p2 = make_paper("Deep", doi="10.1000/deep")
+        p2.references = ["10.1000/deep"]
 
-            def fetch_cited_by(
-                self,
-                paper: Paper,
-                progress_callback: Callable[[int], None] | None = None,
-            ) -> list[Paper]:
-                """Always raise.
+        paper_map = {
+            "10.1000/seed": enriched_seed,
+            "10.1000/p1": p1,
+            "10.1000/p2": p2,
+            "10.1000/deep": deep_via_p2,
+        }
+        mock_cls = _mock_get_runner_class(paper_map)
 
-                Parameters
-                ----------
-                paper : Paper
-                    Ignored.
-                progress_callback : Callable[[int], None] | None
-                    Ignored.
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=2,
+                direction="backward",
+            )
+            result = runner.run(show_progress=False)
 
-                Raises
-                ------
-                RuntimeError
-                    Always.
-                """
-                raise RuntimeError("boom")
-
-        seed = make_paper("Seed", doi="10.1000/seed")
-        ref = make_paper("Ref", doi="10.1000/ref")
-        good = FakeCitationConnector(references={"10.1000/seed": [ref]})
-        bad = BoomConnector()
-
-        runner = SnowballRunner(
-            seed_papers=[seed],
-            max_depth=1,
-            direction="backward",
-            num_workers=4,
-        )
-        runner._connectors = [good, bad]
-
-        graph = runner.run(show_progress=False)
-
-        # The good connector's result should still be present.
-        assert graph.node_count == 2  # seed + ref
-        assert graph.edge_count == 1
-
-    def test_parallel_future_exception_is_caught(self, make_paper) -> None:
-        """When _query_single_connector itself raises, the future exception is caught."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        ref = make_paper("Ref", doi="10.1000/ref")
-        good = FakeCitationConnector(references={"10.1000/seed": [ref]})
-        bad = FakeCitationConnector()
-
-        runner = SnowballRunner(
-            seed_papers=[seed],
-            max_depth=1,
-            direction="backward",
-            num_workers=4,
-        )
-        runner._connectors = [good, bad]
-
-        original = runner._query_single_connector
-
-        def patched(
-            connector: CitationConnectorBase,
-            paper: Paper,
-            *,
-            show_progress: bool = True,
-        ) -> tuple[str, list[Paper] | None, list[Paper] | None]:
-            """Raise for the 'bad' connector, delegate otherwise."""
-            if connector is bad:
-                raise RuntimeError("unexpected crash")
-            return original(connector, paper, show_progress=show_progress)
-
-        with patch.object(runner, "_query_single_connector", side_effect=patched):
-            graph = runner.run(show_progress=False)
-
-        # The good connector result survives; the bad one is logged & skipped.
-        assert graph.node_count == 2  # seed + ref
-        assert graph.edge_count == 1
+        dois = {p.doi for p in result.papers if p.doi}
+        assert "10.1000/deep" in dois
 
 
-class TestSnowballRunnerEmptyFrontier:
-    """Tests for early termination when frontier is empty."""
-
-    def test_empty_frontier_breaks_early(self, make_paper) -> None:
-        """When no new papers are discovered, deeper levels are skipped."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        # Connector returns no references at any level.
-        connector = FakeCitationConnector(references={})
-        runner = SnowballRunner(
-            seed_papers=[seed],
-            max_depth=3,
-            direction="backward",
-        )
-        runner._connectors = [connector]
-
-        graph = runner.run(show_progress=False)
-
-        assert graph.node_count == 1  # only the seed
-        assert graph.edge_count == 0
+# ---------------------------------------------------------------------------
+# TestSnowballRunnerFilters
+# ---------------------------------------------------------------------------
 
 
 class TestSnowballRunnerFilters:
-    """Tests for the since and until date filters in SnowballRunner."""
+    """Tests for since/until publication-date filters."""
 
-    def _run_with_refs(
+    def _run(
         self,
         make_paper,
         seed_doi: str,
-        refs: list[Paper],
+        enriched_seed: Paper,
+        paper_map: dict[str, Paper | None],
         **runner_kwargs,
-    ) -> CitationGraph:
-        """Helper: run SnowballRunner with a single seed and given references."""
-        seed = make_paper("Seed", doi=seed_doi)
-        connector = FakeCitationConnector(references={seed_doi: refs})
-        runner = SnowballRunner(
-            seed_papers=[seed], max_depth=1, direction="backward", **runner_kwargs
-        )
-        runner._connectors = [connector]
-        return runner.run(show_progress=False)
+    ) -> SnowballResult:
+        """Helper: run SnowballRunner with given seed and paper_map."""
+        mock_cls = _mock_get_runner_class(paper_map)
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi=seed_doi),
+                max_depth=1,
+                direction="backward",
+                **runner_kwargs,
+            )
+            return runner.run(show_progress=False)
 
-    # ------------------------------------------------------------------
-    # since / until date filters
-    # ------------------------------------------------------------------
+    def test_since_excludes_old_papers(self, make_paper) -> None:
+        """Papers published before 'since' are excluded from the result."""
+        enriched_seed = make_paper("Seed", doi="10.1/seed")
+        enriched_seed.references = ["10.1/old", "10.1/new"]
 
-    def test_since_filter_excludes_older_papers(self, make_paper) -> None:
-        """Papers published before `since` are not added to the graph."""
         old = make_paper("Old", doi="10.1/old", publication_date=datetime.date(2020, 1, 1))
         new = make_paper("New", doi="10.1/new", publication_date=datetime.date(2023, 6, 1))
-        graph = self._run_with_refs(
-            make_paper,
-            "10.1/seed",
-            [old, new],
-            since=datetime.date(2022, 1, 1),
-        )
-        titles = {n.title for n in graph.nodes}
-        assert "New" in titles
-        assert "Old" not in titles
 
-    def test_until_filter_excludes_newer_papers(self, make_paper) -> None:
-        """Papers published after `until` are not added to the graph."""
+        paper_map = {"10.1/seed": enriched_seed, "10.1/old": old, "10.1/new": new}
+
+        result = self._run(
+            make_paper, "10.1/seed", enriched_seed, paper_map, since=datetime.date(2022, 1, 1)
+        )
+        dois = {p.doi for p in result.papers if p.doi}
+        assert "10.1/new" in dois
+        assert "10.1/old" not in dois
+
+    def test_until_excludes_new_papers(self, make_paper) -> None:
+        """Papers published after 'until' are excluded from the result."""
+        enriched_seed = make_paper("Seed", doi="10.1/seed")
+        enriched_seed.references = ["10.1/old", "10.1/new"]
+
         old = make_paper("Old", doi="10.1/old", publication_date=datetime.date(2019, 3, 1))
         new = make_paper("New", doi="10.1/new", publication_date=datetime.date(2024, 1, 1))
-        graph = self._run_with_refs(
-            make_paper,
-            "10.1/seed",
-            [old, new],
-            until=datetime.date(2020, 12, 31),
-        )
-        titles = {n.title for n in graph.nodes}
-        assert "Old" in titles
-        assert "New" not in titles
 
-    def test_since_filter_excludes_papers_with_no_date(self, make_paper) -> None:
-        """Papers without a publication date are excluded when since is set."""
-        no_date = Paper(
-            title="NoDate",
-            abstract="",
-            authors=[],
-            source=None,
-            publication_date=None,
-            doi="10.1/nd",
-        )
-        graph = self._run_with_refs(
-            make_paper,
-            "10.1/seed",
-            [no_date],
-            since=datetime.date(2020, 1, 1),
-        )
-        titles = {n.title for n in graph.nodes}
-        assert "NoDate" not in titles
+        paper_map = {"10.1/seed": enriched_seed, "10.1/old": old, "10.1/new": new}
 
-    def test_until_filter_excludes_papers_with_no_date(self, make_paper) -> None:
-        """Papers without a publication date are excluded when until is set."""
-        no_date = Paper(
-            title="NoDate",
-            abstract="",
-            authors=[],
-            source=None,
-            publication_date=None,
-            doi="10.1/nd",
+        result = self._run(
+            make_paper, "10.1/seed", enriched_seed, paper_map, until=datetime.date(2020, 12, 31)
         )
-        graph = self._run_with_refs(
-            make_paper,
-            "10.1/seed",
-            [no_date],
-            until=datetime.date(2025, 1, 1),
-        )
-        titles = {n.title for n in graph.nodes}
-        assert "NoDate" not in titles
+        dois = {p.doi for p in result.papers if p.doi}
+        assert "10.1/old" in dois
+        assert "10.1/new" not in dois
 
     def test_since_and_until_combined(self, make_paper) -> None:
-        """Only papers within the [since, until] range are accepted."""
-        in_range = make_paper("InRange", doi="10.1/ir", publication_date=datetime.date(2021, 6, 1))
-        too_old = make_paper("TooOld", doi="10.1/to", publication_date=datetime.date(2019, 1, 1))
-        too_new = make_paper("TooNew", doi="10.1/tn", publication_date=datetime.date(2024, 1, 1))
-        graph = self._run_with_refs(
+        """Only papers within [since, until] are included."""
+        enriched_seed = make_paper("Seed", doi="10.1/seed")
+        enriched_seed.references = ["10.1/ir", "10.1/to", "10.1/tn"]
+
+        in_range = make_paper("IR", doi="10.1/ir", publication_date=datetime.date(2021, 6, 1))
+        too_old = make_paper("TO", doi="10.1/to", publication_date=datetime.date(2019, 1, 1))
+        too_new = make_paper("TN", doi="10.1/tn", publication_date=datetime.date(2024, 1, 1))
+
+        paper_map = {
+            "10.1/seed": enriched_seed,
+            "10.1/ir": in_range,
+            "10.1/to": too_old,
+            "10.1/tn": too_new,
+        }
+        result = self._run(
             make_paper,
             "10.1/seed",
-            [in_range, too_old, too_new],
+            enriched_seed,
+            paper_map,
             since=datetime.date(2020, 1, 1),
             until=datetime.date(2023, 12, 31),
         )
-        titles = {n.title for n in graph.nodes}
-        assert "InRange" in titles
-        assert "TooOld" not in titles
-        assert "TooNew" not in titles
+        dois = {p.doi for p in result.papers if p.doi}
+        assert "10.1/ir" in dois
+        assert "10.1/to" not in dois
+        assert "10.1/tn" not in dois
 
-    def test_no_filters_adds_all_papers(self, make_paper) -> None:
-        """Without any filters, papers with or without dates are all added."""
-        dated = make_paper("Dated", doi="10.1/d", publication_date=datetime.date(2021, 1, 1))
-        no_date = make_paper("NoDate", doi="10.1/nd", publication_date=None)
-        graph = self._run_with_refs(make_paper, "10.1/seed", [dated, no_date])
-        titles = {n.title for n in graph.nodes}
-        assert "Dated" in titles
-        assert "NoDate" in titles
+    def test_no_filters_accepts_all(self, make_paper) -> None:
+        """Without date filters, all discovered papers are included."""
+        enriched_seed = make_paper("Seed", doi="10.1/seed")
+        enriched_seed.references = ["10.1/dated", "10.1/nodate"]
+
+        dated = make_paper("Dated", doi="10.1/dated", publication_date=datetime.date(2021, 1, 1))
+        no_date = make_paper("NoDate", doi="10.1/nodate", publication_date=None)
+
+        paper_map = {"10.1/seed": enriched_seed, "10.1/dated": dated, "10.1/nodate": no_date}
+
+        result = self._run(make_paper, "10.1/seed", enriched_seed, paper_map)
+        dois = {p.doi for p in result.papers if p.doi}
+        assert "10.1/dated" in dois
+        assert "10.1/nodate" in dois
 
 
 # ---------------------------------------------------------------------------
-# cited_by population
+# TestSnowballResultMetadata
 # ---------------------------------------------------------------------------
 
 
-class TestSnowballCitedByPopulation:
-    """Tests that cited_by is populated on papers during snowballing."""
+class TestSnowballResultMetadata:
+    """Tests verifying SnowballResult metadata fields after run()."""
 
-    def test_backward_snowball_populates_cited_by_on_reference(self, make_paper) -> None:
-        """Backward snowballing sets cited_by on reference papers with the seed DOI."""
+    def test_result_seed_papers(self, make_paper) -> None:
+        """result.seed_papers matches the seeds passed to SnowballRunner."""
         seed = make_paper("Seed", doi="10.1000/seed")
-        ref = make_paper("Ref", doi="10.1000/ref")
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
 
-        connector = FakeCitationConnector(references={"10.1000/seed": [ref]})
-        runner = SnowballRunner(seed_papers=[seed], max_depth=1, direction="backward")
-        runner._connectors = [connector]
+        paper_map = {"10.1000/seed": enriched_seed}
+        mock_cls = _mock_get_runner_class(paper_map)
 
-        graph = runner.run()
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(seed_papers=seed, max_depth=1)
+            result = runner.run(show_progress=False)
 
-        canonical_ref = next(n for n in graph.nodes if n.doi == "10.1000/ref")
-        assert "10.1000/seed" in canonical_ref.cited_by
+        assert len(result.seed_papers) == 1
 
-    def test_forward_snowball_populates_cited_by_on_source(self, make_paper) -> None:
-        """Forward snowballing adds citing paper DOIs to the source's cited_by."""
+    def test_result_max_depth(self, make_paper) -> None:
+        """result.max_depth matches the configured max_depth."""
         seed = make_paper("Seed", doi="10.1000/seed")
-        citing = make_paper("Citing", doi="10.1000/citing")
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
 
-        connector = FakeCitationConnector(cited_by={"10.1000/seed": [citing]})
-        runner = SnowballRunner(seed_papers=[seed], max_depth=1, direction="forward")
-        runner._connectors = [connector]
+        paper_map = {"10.1000/seed": enriched_seed}
+        mock_cls = _mock_get_runner_class(paper_map)
 
-        graph = runner.run()
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(seed_papers=seed, max_depth=3)
+            result = runner.run(show_progress=False)
 
-        canonical_seed = next(n for n in graph.nodes if n.doi == "10.1000/seed")
-        assert "10.1000/citing" in canonical_seed.cited_by
+        assert result.max_depth == 3
 
-    def test_both_directions_populate_cited_by_correctly(self, make_paper) -> None:
-        """Snowballing in both directions populates cited_by in both cases."""
+    def test_result_direction(self, make_paper) -> None:
+        """result.direction matches the configured direction."""
         seed = make_paper("Seed", doi="10.1000/seed")
-        ref = make_paper("Ref", doi="10.1000/ref")
-        citing = make_paper("Citing", doi="10.1000/citing")
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
 
-        connector = FakeCitationConnector(
-            references={"10.1000/seed": [ref]},
-            cited_by={"10.1000/seed": [citing]},
+        paper_map = {"10.1000/seed": enriched_seed}
+        mock_cls = _mock_get_runner_class(paper_map)
+
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(seed_papers=seed, max_depth=1, direction="forward")
+            result = runner.run(show_progress=False)
+
+        assert result.direction == "forward"
+
+    def test_result_skipped_seeds(self, make_paper) -> None:
+        """result.skipped_seeds_without_doi reflects seeds skipped due to missing DOI."""
+        seed_with = make_paper("With DOI", doi="10.1000/ok")
+        seed_without = make_paper("No DOI")
+        enriched = make_paper("With DOI", doi="10.1000/ok")
+
+        paper_map = {"10.1000/ok": enriched}
+        mock_cls = _mock_get_runner_class(paper_map)
+
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(seed_papers=[seed_with, seed_without], max_depth=1)
+            result = runner.run(show_progress=False)
+
+        assert result.skipped_seeds_without_doi == 1
+
+    def test_result_runtime_seconds_positive(self, make_paper) -> None:
+        """result.runtime_seconds is a non-negative float."""
+        seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+
+        paper_map = {"10.1000/seed": enriched_seed}
+        mock_cls = _mock_get_runner_class(paper_map)
+
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(seed_papers=seed, max_depth=1)
+            result = runner.run(show_progress=False)
+
+        assert result.runtime_seconds is not None
+        assert result.runtime_seconds >= 0.0
+
+    def test_result_processed_at_is_utc(self, make_paper) -> None:
+        """result.processed_at is a timezone-aware UTC datetime."""
+        seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+
+        paper_map = {"10.1000/seed": enriched_seed}
+        mock_cls = _mock_get_runner_class(paper_map)
+
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(seed_papers=seed, max_depth=1)
+            result = runner.run(show_progress=False)
+
+        assert result.processed_at.tzinfo is not None
+
+
+# ---------------------------------------------------------------------------
+# TestSnowballRunnerVerboseAndProgress
+# ---------------------------------------------------------------------------
+
+
+class TestSnowballRunnerVerboseAndProgress:
+    """Tests for verbose and show_progress flags."""
+
+    def test_verbose_run_returns_result(self, make_paper) -> None:
+        """verbose=True does not raise and still returns a SnowballResult."""
+        seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+
+        paper_map = {"10.1000/seed": enriched_seed}
+        mock_cls = _mock_get_runner_class(paper_map)
+
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(seed_papers=seed, max_depth=1)
+            result = runner.run(verbose=True, show_progress=False)
+
+        assert isinstance(result, SnowballResult)
+
+    def test_verbose_restores_root_logger_level(self, make_paper) -> None:
+        """run(verbose=True) restores the root logger to its original level."""
+        import logging
+
+        seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+
+        paper_map = {"10.1000/seed": enriched_seed}
+        mock_cls = _mock_get_runner_class(paper_map)
+
+        root = logging.getLogger()
+        saved = root.level
+        root.setLevel(logging.WARNING)
+        try:
+            with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+                runner = SnowballRunner(seed_papers=seed, max_depth=1)
+                runner.run(verbose=True, show_progress=False)
+
+            assert root.level == logging.WARNING
+        finally:
+            root.setLevel(saved)
+
+
+# ---------------------------------------------------------------------------
+# TestFetchDoisError
+# ---------------------------------------------------------------------------
+
+
+class TestFetchDoisError:
+    """Tests for error handling in _fetch_dois."""
+
+    def test_get_runner_exception_is_logged_and_skipped(self, make_paper) -> None:
+        """When GetRunner.run() raises, the DOI is skipped and no crash occurs."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.references = ["10.1000/bad"]
+
+        class _ErrorGetRunner:
+            def __init__(self, identifier: str, **kwargs: object) -> None:
+                self._doi = identifier.strip().lower()
+
+            def run(self, verbose: bool = False) -> Paper | None:
+                if self._doi == "10.1000/bad":
+                    raise RuntimeError("network failure")
+                return {"10.1000/seed": enriched_seed}.get(self._doi)
+
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=_ErrorGetRunner):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=1,
+                direction="backward",
+            )
+            # Must not raise.
+            result = runner.run(show_progress=False)
+
+        dois = {p.doi for p in result.papers if p.doi}
+        assert "10.1000/bad" not in dois
+
+
+# ---------------------------------------------------------------------------
+# TestSnowballRunnerEnrichmentStrategy
+# ---------------------------------------------------------------------------
+
+
+class TestSnowballRunnerEnrichmentStrategy:
+    """Tests for the three-tier fetch strategy (discovery / enrichment / scraping)."""
+
+    # ------------------------------------------------------------------
+    # enrichment_databases parameter validation
+    # ------------------------------------------------------------------
+
+    def test_enrichment_databases_empty_list_raises(self, seed: Paper) -> None:
+        """An empty enrichment_databases list raises InvalidParameterError."""
+        with pytest.raises(InvalidParameterError, match="enrichment_databases"):
+            SnowballRunner(seed_papers=seed, enrichment_databases=[])
+
+    def test_enrichment_databases_unknown_value_raises(self, seed: Paper) -> None:
+        """An unknown value in enrichment_databases raises InvalidParameterError."""
+        with pytest.raises(InvalidParameterError, match="Unknown database"):
+            SnowballRunner(seed_papers=seed, enrichment_databases=["no_such_db"])
+
+    def test_enrichment_databases_none_uses_default(self, seed: Paper) -> None:
+        """enrichment_databases=None stores the module-level default."""
+        runner = SnowballRunner(seed_papers=seed, enrichment_databases=None)
+        assert runner._enrichment_databases == list(SNOWBALL_ENRICHMENT_DATABASES)
+
+    def test_enrichment_databases_custom_stored(self, seed: Paper) -> None:
+        """An explicit enrichment_databases list is stored on the runner."""
+        runner = SnowballRunner(seed_papers=seed, enrichment_databases=["crossref", "openalex"])
+        assert set(runner._enrichment_databases) == {"crossref", "openalex"}
+
+    def test_final_webscraping_default_true(self, seed: Paper) -> None:
+        """final_webscraping defaults to True."""
+        runner = SnowballRunner(seed_papers=seed)
+        assert runner._final_webscraping is True
+
+    def test_final_webscraping_can_be_disabled(self, seed: Paper) -> None:
+        """final_webscraping=False is stored correctly."""
+        runner = SnowballRunner(seed_papers=seed, final_webscraping=False)
+        assert runner._final_webscraping is False
+
+    # ------------------------------------------------------------------
+    # Seeds are fetched with enrichment_databases
+    # ------------------------------------------------------------------
+
+    def test_seeds_fetched_with_enrichment_databases(self, make_paper) -> None:
+        """Seeds are resolved using enrichment_databases, not discovery databases."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+
+        call_log: list[dict] = []
+        paper_map = {"10.1000/seed": enriched_seed}
+        mock_cls = _mock_get_runner_class(paper_map, call_log=call_log)
+
+        custom_enrichment = ["crossref", "openalex"]
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=1,
+                enrichment_databases=custom_enrichment,
+                final_webscraping=False,
+            )
+            runner.run(show_progress=False)
+
+        # The seed fetch call must use enrichment_databases.
+        seed_calls = [c for c in call_log if c["identifier"] == "10.1000/seed"]
+        assert any(c["databases"] == custom_enrichment for c in seed_calls), (
+            f"Expected at least one call with databases={custom_enrichment!r}. Calls: {seed_calls}"
         )
-        runner = SnowballRunner(seed_papers=[seed], max_depth=1, direction="both")
-        runner._connectors = [connector]
 
-        graph = runner.run()
+    # ------------------------------------------------------------------
+    # Frontier enrichment happens before last level
+    # ------------------------------------------------------------------
 
-        canonical_seed = next(n for n in graph.nodes if n.doi == "10.1000/seed")
-        canonical_ref = next(n for n in graph.nodes if n.doi == "10.1000/ref")
+    def test_frontier_enriched_before_next_level(self, make_paper) -> None:
+        """Papers at level < max_depth are re-fetched with enrichment_databases."""
+        enriched_seed: Paper = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.references = ["10.1000/p1"]
 
-        # Citing paper should appear in seed.cited_by
-        assert "10.1000/citing" in canonical_seed.cited_by
-        # Seed should appear in ref.cited_by
-        assert "10.1000/seed" in canonical_ref.cited_by
+        p1_discovery: Paper = make_paper("P1 (discovery)", doi="10.1000/p1")
+        # enrichment version has references that would be expanded
+        p1_enriched: Paper = make_paper("P1 (enriched)", doi="10.1000/p1")
+        p1_enriched.references = ["10.1000/p2"]
 
-    def test_cited_by_not_duplicated_across_connectors(self, make_paper) -> None:
-        """When two connectors return the same reference, cited_by is not duplicated."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        ref = make_paper("Ref", doi="10.1000/ref")
-        ref_dup = make_paper("Ref dup", doi="10.1000/ref")
+        p2: Paper = make_paper("P2", doi="10.1000/p2")
 
-        connector1 = FakeCitationConnector(references={"10.1000/seed": [ref]})
-        connector2 = FakeCitationConnector(references={"10.1000/seed": [ref_dup]})
-        runner = SnowballRunner(seed_papers=[seed], max_depth=1, direction="backward")
-        runner._connectors = [connector1, connector2]
+        call_log: list[dict] = []
+        custom_enrichment = ["openalex"]
 
-        graph = runner.run()
+        def _run(identifier: str, **kwargs: object) -> Paper | None:
+            databases = kwargs.get("databases")
+            doi = identifier.strip().lower()
+            call_log.append({"identifier": doi, "databases": databases})
 
-        canonical_ref = next(n for n in graph.nodes if n.doi == "10.1000/ref")
-        # Seed DOI must appear exactly once in cited_by
-        assert canonical_ref.cited_by.count("10.1000/seed") == 1
+            if doi == "10.1000/seed":
+                return enriched_seed
+            if doi == "10.1000/p1":
+                # Return enriched version when called with enrichment databases.
+                if databases == custom_enrichment:
+                    return p1_enriched
+                return p1_discovery
+            if doi == "10.1000/p2":
+                return p2
+            return None
 
-    def test_cited_by_skips_papers_without_doi(self, make_paper) -> None:
-        """Forward snowball: citing paper without DOI is not added to cited_by."""
-        seed = make_paper("Seed", doi="10.1000/seed")
-        citing_no_doi = make_paper("NoDoi")  # no DOI
+        class _SmartMock:
+            def __init__(self, identifier: str, **kwargs: object) -> None:
+                self._identifier = identifier
+                self._kwargs = kwargs
 
-        connector = FakeCitationConnector(cited_by={"10.1000/seed": [citing_no_doi]})
-        runner = SnowballRunner(seed_papers=[seed], max_depth=1, direction="forward")
-        runner._connectors = [connector]
+            def run(self, verbose: bool = False) -> Paper | None:
+                return _run(self._identifier, **self._kwargs)
 
-        graph = runner.run()
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=_SmartMock):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=2,
+                direction="backward",
+                enrichment_databases=custom_enrichment,
+                final_webscraping=False,
+            )
+            result = runner.run(show_progress=False)
 
-        canonical_seed = next(n for n in graph.nodes if n.doi == "10.1000/seed")
-        assert canonical_seed.cited_by == []
+        # p2 is only reachable if p1 was enriched (p1_enriched has p2 in references).
+        dois = {p.doi for p in result.papers if p.doi}
+        assert "10.1000/p2" in dois, (
+            "p2 should be discovered because p1 was enriched with enrichment_databases"
+        )
+
+    def test_frontier_not_enriched_at_last_level(self, make_paper) -> None:
+        """At the last BFS level, no frontier enrichment round is performed."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.references = ["10.1000/p1"]
+
+        p1 = make_paper("P1", doi="10.1000/p1")
+
+        call_log: list[dict] = []
+        custom_enrichment = ["openalex"]
+        paper_map = {"10.1000/seed": enriched_seed, "10.1000/p1": p1}
+        mock_cls = _mock_get_runner_class(paper_map, call_log=call_log)
+
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=1,
+                direction="backward",
+                enrichment_databases=custom_enrichment,
+                final_webscraping=False,
+            )
+            runner.run(show_progress=False)
+
+        # p1 is at the last (and only) BFS level — no enrichment call expected.
+        p1_enrichment_calls = [
+            c
+            for c in call_log
+            if c["identifier"] == "10.1000/p1" and c["databases"] == custom_enrichment
+        ]
+        assert p1_enrichment_calls == [], "No enrichment call expected for last-level papers"
+
+    # ------------------------------------------------------------------
+    # Final web-scraping pass
+    # ------------------------------------------------------------------
+
+    def test_final_webscraping_calls_web_scraping_databases(self, make_paper) -> None:
+        """When final_webscraping=True, all surviving papers are re-fetched via web scraping."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.references = ["10.1000/p1"]
+
+        p1 = make_paper("P1", doi="10.1000/p1")
+
+        call_log: list[dict] = []
+        paper_map = {"10.1000/seed": enriched_seed, "10.1000/p1": p1}
+        mock_cls = _mock_get_runner_class(paper_map, call_log=call_log)
+
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=1,
+                direction="backward",
+                final_webscraping=True,
+            )
+            runner.run(show_progress=False)
+
+        scraping_calls = [c for c in call_log if c["databases"] == SNOWBALL_WEBSCRAPING_DATABASES]
+        scraped_dois = {c["identifier"] for c in scraping_calls}
+        # Both seed and discovered paper should receive a scraping pass.
+        assert "10.1000/seed" in scraped_dois
+        assert "10.1000/p1" in scraped_dois
+
+    def test_final_webscraping_disabled_skips_scraping_pass(self, make_paper) -> None:
+        """When final_webscraping=False, no web-scraping calls are made."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+
+        call_log: list[dict] = []
+        paper_map = {"10.1000/seed": enriched_seed}
+        mock_cls = _mock_get_runner_class(paper_map, call_log=call_log)
+
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=1,
+                final_webscraping=False,
+            )
+            runner.run(show_progress=False)
+
+        scraping_calls = [c for c in call_log if c["databases"] == SNOWBALL_WEBSCRAPING_DATABASES]
+        assert scraping_calls == [], "No web-scraping calls expected when final_webscraping=False"

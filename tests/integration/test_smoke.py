@@ -43,7 +43,7 @@ pytestmark = pytest.mark.integration
 # ---------------------------------------------------------------------------
 
 # A well-known DOI that is unlikely to disappear from CrossRef.
-_KNOWN_DOI = "10.1038/nature12373"
+_KNOWN_DOI = "10.1038/nature11804"
 
 # A simple query that should return results on every free database.
 _SEARCH_QUERY = "[machine learning]"
@@ -175,7 +175,7 @@ class TestEnrichment:
 
 
 class TestSnowball:
-    """Verify that ``Engine.snowball`` builds a citation graph."""
+    """Verify that ``Engine.snowball`` returns a SnowballResult."""
 
     def test_snowball_from_doi(self) -> None:
         """Snowball from a single seed paper found by DOI."""
@@ -184,11 +184,11 @@ class TestSnowball:
 
         assert seed is not None, "Seed paper not found; cannot test snowball"
 
-        graph = engine.snowball(seed, max_depth=1, show_progress=False)
+        result = engine.snowball(seed, max_depth=1, show_progress=False, max_per_level=5)
 
-        assert graph is not None, "Snowball returned None"
-        # The seed itself should always be in the graph.
-        assert graph.node_count >= 1, "Citation graph has no papers"
+        assert result is not None, "Snowball returned None"
+        # The seed itself should always be in seed_papers.
+        assert len(result.seed_papers) >= 1, "Snowball result has no seed papers"
 
 
 class TestSave:

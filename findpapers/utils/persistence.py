@@ -9,15 +9,15 @@ from pathlib import Path
 from typing import Any, TypeAlias
 
 from findpapers.core.author import Author
-from findpapers.core.citation_graph import CitationGraph
 from findpapers.core.paper import Paper, PaperType
 from findpapers.core.search_result import SearchResult
+from findpapers.core.snowball_result import SnowballResult
 from findpapers.core.source import Source
 from findpapers.exceptions import PersistenceError
 from findpapers.utils.version import package_version
 
 #: Union of all persistable types.
-Persistable: TypeAlias = "SearchResult | CitationGraph | list[Paper]"
+Persistable: TypeAlias = "SearchResult | SnowballResult | list[Paper]"
 
 
 def _extract_papers(data: Persistable) -> list[Paper]:
@@ -25,7 +25,7 @@ def _extract_papers(data: Persistable) -> list[Paper]:
 
     Parameters
     ----------
-    data : SearchResult | CitationGraph | list[Paper]
+    data : SearchResult | SnowballResult | list[Paper]
         Source of papers.
 
     Returns
@@ -42,10 +42,10 @@ def _extract_papers(data: Persistable) -> list[Paper]:
         return data
     if isinstance(data, SearchResult):
         return data.papers
-    if isinstance(data, CitationGraph):
-        return data.nodes
+    if isinstance(data, SnowballResult):
+        return data.papers
     raise PersistenceError(
-        f"Expected SearchResult, CitationGraph, or list[Paper], got {type(data).__name__}"
+        f"Expected SearchResult, SnowballResult, or list[Paper], got {type(data).__name__}"
     )
 
 
@@ -57,7 +57,7 @@ def _serialize_to_dict(data: Persistable) -> dict:
 
     Parameters
     ----------
-    data : SearchResult | CitationGraph | list[Paper]
+    data : SearchResult | SnowballResult | list[Paper]
         Data to serialize.
 
     Returns
@@ -74,9 +74,9 @@ def _serialize_to_dict(data: Persistable) -> dict:
         payload = data.to_dict()
         payload["type"] = "search_result"
         return payload
-    if isinstance(data, CitationGraph):
+    if isinstance(data, SnowballResult):
         payload = data.to_dict()
-        payload["type"] = "citation_graph"
+        payload["type"] = "snowball_result"
         return payload
     if isinstance(data, list):
         return {
@@ -88,7 +88,7 @@ def _serialize_to_dict(data: Persistable) -> dict:
             "papers": [p.to_dict() for p in data],
         }
     raise PersistenceError(
-        f"Expected SearchResult, CitationGraph, or list[Paper], got {type(data).__name__}"
+        f"Expected SearchResult, SnowballResult, or list[Paper], got {type(data).__name__}"
     )
 
 
@@ -96,12 +96,12 @@ def save_to_json(data: Persistable, path: str) -> None:
     """Write data to a JSON file.
 
     Accepts a :class:`~findpapers.core.search_result.SearchResult`,
-    a :class:`~findpapers.core.citation_graph.CitationGraph`, or a
+    a :class:`~findpapers.core.snowball_result.SnowballResult`, or a
     plain ``list[Paper]``.
 
     Parameters
     ----------
-    data : SearchResult | CitationGraph | list[Paper]
+    data : SearchResult | SnowballResult | list[Paper]
         Data to save.
     path : str
         Output file path.
@@ -138,20 +138,19 @@ def save_to_bibtex(papers: list[Paper], path: str) -> None:
 
 def load_from_json(
     path: str,
-) -> SearchResult | CitationGraph | list[Paper]:
+) -> SearchResult | SnowballResult | list[Paper]:
     """Load data previously saved with :func:`save_to_json`.
 
     The ``"type"`` key in the JSON payload is used to reconstruct the
     correct Python object:
 
     * ``"search_result"`` → :class:`~findpapers.core.search_result.SearchResult`
-    * ``"citation_graph"`` → :class:`~findpapers.core.citation_graph.CitationGraph`
+    * ``"snowball_result"`` → :class:`~findpapers.core.snowball_result.SnowballResult`
     * ``"paper_list"`` → ``list[Paper]``
 
     Files saved **before** the ``"type"`` key was introduced are
-    auto-detected as either a ``SearchResult`` (when the payload
-    contains a ``"papers"`` key) or a ``CitationGraph`` (when it
-    contains ``"nodes"`` and ``"edges"`` keys).
+    auto-detected as a ``SearchResult`` (when the payload contains a
+    ``"papers"`` key).
 
     Parameters
     ----------
@@ -160,7 +159,7 @@ def load_from_json(
 
     Returns
     -------
-    SearchResult | CitationGraph | list[Paper]
+    SearchResult | SnowballResult | list[Paper]
         The reconstructed object.
 
     Raises
@@ -176,20 +175,17 @@ def load_from_json(
     # Explicit type discriminator.
     if kind == "search_result":
         return SearchResult.from_dict(payload)
-    if kind == "citation_graph":
-        return CitationGraph.from_dict(payload)
+    if kind == "snowball_result":
+        return SnowballResult.from_dict(payload)
     if kind == "paper_list":
         return [Paper.from_dict(p) for p in payload.get("papers", [])]
 
     # Legacy auto-detection (files saved before "type" was added).
-    if "nodes" in payload and "edges" in payload:
-        return CitationGraph.from_dict(payload)
     if "papers" in payload:
         return SearchResult.from_dict(payload)
 
     raise PersistenceError(
-        "Unrecognised JSON format: expected a 'type' key or a recognisable "
-        "SearchResult / CitationGraph structure."
+        "Unrecognised JSON format: expected a 'type' key or a recognisable SearchResult structure."
     )
 
 

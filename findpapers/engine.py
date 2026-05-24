@@ -23,13 +23,14 @@ import logging
 import os
 from typing import Literal
 
-from findpapers.core.citation_graph import CitationGraph
 from findpapers.core.paper import Paper
 from findpapers.core.search_result import SearchResult
+from findpapers.core.snowball_result import SnowballResult
 from findpapers.runners.discovery_runner import DEFAULT_ENRICHMENT_DATABASES
 from findpapers.runners.download_runner import DownloadRunner
 from findpapers.runners.get_runner import GetRunner
 from findpapers.runners.search_runner import SearchRunner
+from findpapers.runners.snowball_runner import _UNSET as _SNOWBALL_UNSET
 from findpapers.runners.snowball_runner import SnowballRunner
 
 
@@ -481,25 +482,33 @@ class Engine:
         *,
         max_depth: int = 1,
         direction: Literal["both", "backward", "forward"] = "both",
-        top_n_per_level: int | None = None,
-        databases: list[str] | None = None,
+        max_per_level: int | None = None,
+        max_expansion_per_level: int | None = None,
+        databases: list[str] | None = _SNOWBALL_UNSET,  # type: ignore[assignment]
+        enrichment_databases: list[str] | None = _SNOWBALL_UNSET,  # type: ignore[assignment]
+        final_webscraping: bool = True,
         since: dt.date | None = None,
         until: dt.date | None = None,
         num_workers: int = 1,
         verbose: bool = False,
         show_progress: bool = True,
-        enrichment_databases: list[str] | None = DEFAULT_ENRICHMENT_DATABASES,
-    ) -> CitationGraph:
-        """Build a citation graph around seed papers via snowballing.
+    ) -> SnowballResult:
+        """Discover papers around seed papers via iterative citation snowballing.
 
         Starting from one or more seed papers, iteratively fetches their
-        references (backward) and/or citing papers (forward) using the
-        selected citation-capable connectors (OpenAlex, Semantic Scholar,
-        CrossRef) or a user-configured subset.  The result is a directed
-        available citation-capable connectors (OpenAlex, Semantic Scholar,
-        CrossRef).  The result is a directed
-        :class:`~findpapers.core.citation_graph.CitationGraph` where each
-        edge means "source cites target".
+        references (backward) and/or citing papers (forward) using a
+        three-tier fetch strategy that concentrates API calls on papers
+        that matter most:
+
+        1. **BFS discovery** — candidate papers are fetched with *databases*
+           (default: CrossRef only) for speed.
+        2. **Frontier enrichment** — papers that will drive the next BFS
+           level are re-fetched with *enrichment_databases* (all API
+           connectors by default) to populate ``references`` and
+           ``cited_by`` for the next expansion round.
+        3. **Final web-scraping pass** — all papers that survived filtering
+           are re-enriched via HTML scraping (when *final_webscraping* is
+           ``True``) to fill any remaining metadata gaps.
 
         Papers without a DOI are silently skipped since they cannot be
         resolved by the upstream APIs.
@@ -511,64 +520,77 @@ class Engine:
             Typically obtained from ``engine.search(...).papers`` or
             ``engine.get(...)``.
         max_depth : int
-            Maximum number of snowball iterations.  ``1`` (default)
-            retrieves only the immediate neighbours.  ``2`` also expands
-            papers found at level 1, and so on.
+            Maximum number of BFS levels.  ``1`` (default) retrieves
+            only the immediate neighbours.  ``2`` also expands papers
+            found at level 1, and so on.
         direction : Literal["both", "backward", "forward"]
-            ``"backward"`` fetches references (papers cited *by* the seed),
-            ``"forward"`` fetches citing papers, ``"both"`` does both.
-        top_n_per_level : int | None
+            ``"backward"`` follows
+            :attr:`~findpapers.core.paper.Paper.references` (papers
+            cited *by* the current frontier), ``"forward"`` follows
+            :attr:`~findpapers.core.paper.Paper.cited_by` (papers that
+            *cite* the current frontier), ``"both"`` expands both.
+        max_per_level : int | None
             When set, only the *top N* most-cited papers discovered at each
-            snowball level are kept as candidates for expansion in the next
-            level.  Seed papers are always expanded regardless of this limit.
-            Useful for controlling cost in deep snowballs.  ``None`` (default)
-            means no limit.
+            level are kept in the final result.  Seed papers are never
+            filtered.  Useful for keeping the result manageable when doing
+            deep snowballs.  ``None`` (default) means all discovered papers
+            are included.
+        max_expansion_per_level : int | None
+            When set, only the *top N* most-cited papers from each level are
+            used as seeds for the next BFS round.  Papers already added to the
+            result are unaffected.  Useful for controlling cost in deep
+            snowballs.  ``None`` (default) means the full frontier is expanded.
+        databases : list[str] | None
+            Databases used for the fast BFS discovery of candidate papers.
+            Defaults to ``["crossref"]`` for speed.  Pass ``None`` to use all
+            available sources.  Accepted values: ``"arxiv"``, ``"crossref"``,
+            ``"ieee"``, ``"openalex"``, ``"pubmed"``, ``"scopus"``,
+            ``"semantic_scholar"``, ``"web_scraping"``.
+        enrichment_databases : list[str] | None
+            Databases used when re-fetching seed and frontier papers to
+            populate ``paper.references`` and ``paper.cited_by``.  Defaults
+            to all API connectors (web scraping excluded).  Pass ``None`` to
+            use the same default.
+        final_webscraping : bool
+            When ``True`` (default), all papers that survive BFS filtering
+            are re-enriched via HTML scraping at the end of the run to fill
+            any remaining metadata gaps.  Set to ``False`` to skip this pass.
         since : datetime.date | None
-            Only include discovered papers published on or after this date.
-            Seed papers are never filtered.  ``None`` (default) means no
-            lower-bound filter.
+            Only include discovered papers published on or after this
+            date.  Seed papers are never filtered.  ``None`` (default)
+            disables the lower-bound filter.
         until : datetime.date | None
-            Only include discovered papers published on or before this date.
-            Seed papers are never filtered.  ``None`` (default) means no
-            upper-bound filter.
+            Only include discovered papers published on or before this
+            date.  Seed papers are never filtered.  ``None`` (default)
+            disables the upper-bound filter.
         num_workers : int
-            Maximum number of connectors to query in parallel for each
-            paper.  Defaults to ``1`` (sequential).  The effective
-            parallelism is capped at the number of available connectors.
+            Number of parallel
+            :class:`~findpapers.runners.get_runner.GetRunner` calls per
+            level.  Defaults to ``1`` (sequential).
         verbose : bool
             When ``True``, emit detailed log messages at DEBUG level.
         show_progress : bool
             When ``True`` (default), display tqdm progress bars while
-            papers are being expanded.  Set to ``False`` to suppress
+            papers are being fetched.  Set to ``False`` to suppress
             progress output.
-        databases : list[str] | None
-            Citation database identifiers to use for snowballing.  ``None``
-            (default) uses all available citation databases.  Pass an
-            explicit list to restrict which connectors are queried.
-            Accepted values: ``"crossref"``, ``"openalex"``,
-            ``"semantic_scholar"``.
-        enrichment_databases : list[str] | None
-            Databases used to enrich graph nodes after snowballing.
-            Defaults to ``["crossref", "web_scraping"]``.  Pass an
-            explicit list to enable additional (or different) sources.
-            Accepted values: ``"arxiv"``, ``"crossref"``, ``"ieee"``,
-            ``"openalex"``, ``"pubmed"``, ``"scopus"``,
-            ``"semantic_scholar"``, ``"web_scraping"``.
-            Pass ``None`` or ``[]`` to disable enrichment entirely.
 
         Returns
         -------
-        CitationGraph
-            A directed citation graph with all discovered papers as nodes
-            and citation relationships as edges.  Save via
-            ``findpapers.save_to_json(graph, path)`` or serialize via
-            ``graph.to_dict()``.
+        SnowballResult
+            Container with all *discovered* papers (seeds excluded from
+            :attr:`~findpapers.core.snowball_result.SnowballResult.papers`;
+            enriched seeds are in
+            :attr:`~findpapers.core.snowball_result.SnowballResult.seed_papers`).
+            Citation relationships are encoded on each paper via
+            :attr:`~findpapers.core.paper.Paper.references` and
+            :attr:`~findpapers.core.paper.Paper.cited_by`.  Save via
+            ``findpapers.save_to_json(result, path)``.
 
         See Also
         --------
         findpapers.runners.snowball_runner.SnowballRunner :
-            Lower-level class for when you need access to per-run metrics
-            or want to separate configuration from execution.
+            Lower-level class for when you need fine-grained control
+            over runner configuration.
 
         Examples
         --------
@@ -577,20 +599,20 @@ class Engine:
         >>> from findpapers import Engine
         >>> engine = Engine()
         >>> seed = engine.get("10.1038/nature12373")
-        >>> graph = engine.snowball(seed, max_depth=1)
-        >>> print(f"{graph.node_count} nodes, {graph.edge_count} edges")
-        42 nodes, 65 edges
+        >>> result = engine.snowball(seed, max_depth=1)
+        >>> print(f"{len(result.papers)} papers found")
+        42 papers found
 
-        Save the graph to JSON:
+        Save the result to JSON:
 
         >>> import findpapers
-        >>> findpapers.save_to_json(graph, "citation_graph.json")
+        >>> findpapers.save_to_json(result, "snowball_result.json")
 
         Snowball from search results with only backward direction:
 
-        >>> result = engine.search("[deep learning]")
-        >>> graph = engine.snowball(
-        ...     result.papers[:5],
+        >>> sr = engine.search("[deep learning]")
+        >>> result = engine.snowball(
+        ...     sr.papers[:5],
         ...     max_depth=2,
         ...     direction="backward",
         ... )
@@ -599,8 +621,11 @@ class Engine:
             seed_papers=papers,
             max_depth=max_depth,
             direction=direction,
-            top_n_per_level=top_n_per_level,
+            max_per_level=max_per_level,
+            max_expansion_per_level=max_expansion_per_level,
             databases=databases,
+            enrichment_databases=enrichment_databases,
+            final_webscraping=final_webscraping,
             openalex_api_key=self._openalex_api_key,
             email=self._email,
             semantic_scholar_api_key=self._semantic_scholar_api_key,
@@ -611,7 +636,6 @@ class Engine:
             num_workers=num_workers,
             since=since,
             until=until,
-            enrichment_databases=enrichment_databases,
             proxy=self._proxy,
             ssl_verify=self._ssl_verify,
         )

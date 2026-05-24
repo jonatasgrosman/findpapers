@@ -4,7 +4,7 @@ Findpapers supports three persistence formats: **JSON**, **BibTeX**, and **CSV**
 
 ## JSON
 
-JSON is the recommended format for preserving all metadata. It supports saving and reloading `SearchResult`, `CitationGraph`, and plain `list[Paper]` objects.
+JSON is the recommended format for preserving all metadata. It supports saving and reloading `SearchResult`, `SnowballResult`, and plain `list[Paper]` objects.
 
 ### Save
 
@@ -14,8 +14,8 @@ import findpapers
 # Save a SearchResult (includes query, dates, database info, and all papers)
 findpapers.save_to_json(result, "search_result.json")
 
-# Save a CitationGraph (includes seed papers, edges, and all discovered papers)
-findpapers.save_to_json(graph, "citation_graph.json")
+# Save a SnowballResult (includes seed papers, traversal settings, and all discovered papers)
+findpapers.save_to_json(result, "snowball_result.json")
 
 # Save a plain list of papers
 findpapers.save_to_json(papers, "papers.json")
@@ -26,7 +26,7 @@ findpapers.save_to_json(papers, "papers.json")
 ```python
 # Automatically detects the type and returns the correct object
 data = findpapers.load_from_json("search_result.json")
-# Returns SearchResult, CitationGraph, or list[Paper] depending on file contents
+# Returns SearchResult, SnowballResult, or list[Paper] depending on file contents
 ```
 
 ### Format Details
@@ -34,7 +34,7 @@ data = findpapers.load_from_json("search_result.json")
 The JSON file includes a `"type"` discriminator field:
 
 - `"search_result"` - contains query metadata and a list of papers
-- `"citation_graph"` - contains seed papers, edges, depth, direction, and all papers
+- `"snowball_result"` - contains seed papers, traversal settings, and all discovered papers
 - `"paper_list"` - contains a plain list of papers
 
 Each paper is serialized with all its attributes, including nested `Author` and `Source` objects. The format is stable and can be used for long-term storage and exchange.
@@ -132,7 +132,7 @@ papers = findpapers.load_from_csv("papers.csv")
 |---------|------|--------|-----|
 | Lossless round-trip | ✅ | ❌ | ❌ |
 | Supports SearchResult | ✅ | ❌ | ❌ |
-| Supports CitationGraph | ✅ | ❌ | ❌ |
+| Supports SnowballResult | ✅ | ❌ | ❌ |
 | LaTeX-compatible | ❌ | ✅ | ❌ |
 | Spreadsheet-compatible | ❌ | ❌ | ✅ |
 | Author affiliations | ✅ | ❌ | ❌ |

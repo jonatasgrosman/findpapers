@@ -14,13 +14,11 @@ from __future__ import annotations
 import datetime
 import logging
 import re
-from collections.abc import Callable
 from typing import Any
 from urllib.parse import quote as _url_quote
 
 import requests
 
-from findpapers.connectors.citation_base import CitationConnectorBase
 from findpapers.connectors.doi_lookup_base import DOILookupConnectorBase
 from findpapers.core.author import Author
 from findpapers.core.paper import Paper
@@ -58,7 +56,7 @@ _CROSSREF_TYPE_MAP: dict[str, SourceType] = {
 _TAG_RE = re.compile(r"<[^>]+>")
 
 
-class CrossRefConnector(CitationConnectorBase, DOILookupConnectorBase):
+class CrossRefConnector(DOILookupConnectorBase):
     """Connector for the CrossRef REST API (DOI-based metadata lookup).
 
     Unlike search connectors this class does **not** support free-text
@@ -202,133 +200,6 @@ class CrossRefConnector(CitationConnectorBase, DOILookupConnectorBase):
             missing.
         """
         return self._build_paper(work)
-
-    # ------------------------------------------------------------------
-    # Citation interface (CitationConnectorBase)
-    # ------------------------------------------------------------------
-
-    def get_expected_counts(self, paper: Paper) -> tuple[int | None, int | None]:
-        """Return expected citation and reference counts for *paper*.
-
-        CrossRef does not expose forward citation counts, so
-        ``citation_count`` is always ``None``.  The reference count is
-        derived from the ``reference`` array in the work record.
-
-        Parameters
-        ----------
-        paper : Paper
-            The paper whose counts are requested.
-
-        Returns
-        -------
-        tuple[int | None, int | None]
-            ``(None, reference_count)``.
-        """
-        if not paper.doi:
-            return None, None
-
-        ref_count: int | None = None
-        try:
-            work = self.fetch_work(paper.doi)
-            if work:
-                raw_refs = work.get("reference") or []
-                ref_count = sum(
-                    1
-                    for entry in raw_refs
-                    if isinstance(entry, dict) and (entry.get("DOI") or "").strip()
-                )
-        except requests.RequestException:
-            pass
-
-        return None, ref_count
-
-    def fetch_references(
-        self,
-        paper: Paper,
-        progress_callback: Callable[[int], None] | None = None,
-    ) -> list[Paper]:
-        """Fetch papers referenced by *paper* via the CrossRef ``reference`` list.
-
-        Each CrossRef work record may contain a ``reference`` array whose
-        entries occasionally carry a ``DOI`` field.  This method extracts
-        those DOIs, fetches each one through :meth:`fetch_work`, and
-        converts the result to a :class:`~findpapers.core.paper.Paper`.
-
-        Parameters
-        ----------
-        paper : Paper
-            The paper whose references should be retrieved.
-        progress_callback : Callable[[int], None] | None
-            Optional callback for per-page progress reporting.
-
-        Returns
-        -------
-        list[Paper]
-            Papers corresponding to the DOIs found in the reference list.
-            References without a DOI or that fail to resolve are silently
-            skipped.
-        """
-        if not paper.doi:
-            return []
-
-        try:
-            work = self.fetch_work(paper.doi)
-        except requests.RequestException:
-            logger.debug("CrossRef: failed to fetch work for DOI %s", paper.doi)
-            return []
-
-        if not work:
-            return []
-
-        raw_refs = work.get("reference") or []
-        ref_dois: list[str] = []
-        for entry in raw_refs:
-            if isinstance(entry, dict):
-                doi_val = (entry.get("DOI") or "").strip()
-                if doi_val:
-                    ref_dois.append(doi_val)
-
-        papers: list[Paper] = []
-        for ref_doi in ref_dois:
-            try:
-                ref_work = self.fetch_work(ref_doi)
-            except requests.RequestException:
-                logger.debug("CrossRef: could not fetch reference DOI %s", ref_doi)
-            else:
-                if ref_work:
-                    ref_paper = self.build_paper(ref_work)
-                    if ref_paper:
-                        papers.append(ref_paper)
-            if progress_callback is not None:
-                progress_callback(1)
-
-        return papers
-
-    def fetch_cited_by(
-        self,
-        paper: Paper,
-        progress_callback: Callable[[int], None] | None = None,
-    ) -> list[Paper]:
-        """Return papers that cite *paper*.
-
-        The CrossRef REST API does not provide a direct endpoint for
-        forward citation lookups, so this method always returns an empty
-        list.  Forward snowballing is handled by other connectors
-        (OpenAlex, Semantic Scholar).
-
-        Parameters
-        ----------
-        paper : Paper
-            Ignored.
-        progress_callback : Callable[[int], None] | None
-            Unused.  Accepted for interface compatibility.
-
-        Returns
-        -------
-        list[Paper]
-            Always an empty list.
-        """
-        return []
 
     # ------------------------------------------------------------------
     # Static helpers — pure parsing, no instance state needed

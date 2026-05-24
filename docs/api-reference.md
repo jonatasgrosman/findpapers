@@ -136,7 +136,7 @@ engine.get(
 
 ### `snowball()`
 
-Build a citation graph via forward and/or backward snowballing.
+Build a snowball result via forward and/or backward citation traversal using a three-tier fetch strategy: fast BFS discovery with CrossRef, full enrichment of frontier papers with all API connectors, and a final HTML scraping pass on all surviving papers.
 
 ```python
 engine.snowball(
@@ -144,15 +144,17 @@ engine.snowball(
     *,
     max_depth: int = 1,
     direction: Literal["both", "backward", "forward"] = "both",
-    top_n_per_level: int | None = None,
-    databases: list[str] | None = None,
+    max_per_level: int | None = None,
+    max_expansion_per_level: int | None = None,
+    databases: list[str] | None = ["crossref"],
+    enrichment_databases: list[str] | None = None,
+    final_webscraping: bool = True,
     since: datetime.date | None = None,
     until: datetime.date | None = None,
     num_workers: int = 1,
     verbose: bool = False,
     show_progress: bool = True,
-    enrichment_databases: list[str] | None = ["crossref", "web_scraping"],
-) -> CitationGraph
+) -> SnowballResult
 ```
 
 | Parameter | Type | Description |
@@ -160,16 +162,18 @@ engine.snowball(
 | `papers` | `list[Paper] \| Paper` | Seed paper(s) to start snowballing from. |
 | `max_depth` | `int` | Maximum traversal depth. Defaults to `1`. |
 | `direction` | `Literal["both", "backward", "forward"]` | Snowball direction. Defaults to `"both"`. |
-| `top_n_per_level` | `int \| None` | Keep only the N most-cited papers per level; papers outside the top N are discarded entirely. Seed papers are always expanded. Defaults to `None` (no limit). |
-| `databases` | `list[str] \| None` | Citation databases to query during snowballing. `None` uses all available citation databases. Accepted values: `"crossref"`, `"openalex"`, `"semantic_scholar"`. |
+| `max_per_level` | `int \| None` | Keep only the N most-cited papers per level in the result; papers outside the top N are excluded from the result but still drive the next BFS level. Seed papers are never filtered. Defaults to `None` (no limit). |
+| `max_expansion_per_level` | `int \| None` | Limit how many papers per level become seeds for the next BFS round; only the top N most-cited papers are expanded. Papers already in the result are unaffected. Defaults to `None` (expand all). |
+| `databases` | `list[str] \| None` | Databases used for fast BFS discovery of candidate papers. Defaults to `["crossref"]`. Pass `None` to use all available databases. Accepted values: `"arxiv"`, `"crossref"`, `"ieee"`, `"openalex"`, `"pubmed"`, `"scopus"`, `"semantic_scholar"`, `"web_scraping"`, `"wos"`. |
+| `enrichment_databases` | `list[str] \| None` | Databases used when re-fetching seeds and frontier papers to populate `paper.references` and `paper.cited_by`. Defaults to all API connectors (web scraping excluded). `None` keeps the default. |
+| `final_webscraping` | `bool` | When `True` (default), all papers that survive BFS filtering are re-enriched via HTML scraping at the end of the run to fill any remaining metadata gaps. Set to `False` to skip this pass. |
 | `since` | `datetime.date \| None` | Only add discovered papers published on or after this date. Seed papers are never filtered. `None` disables the filter. |
 | `until` | `datetime.date \| None` | Only add discovered papers published on or before this date. Seed papers are never filtered. `None` disables the filter. |
 | `num_workers` | `int` | Number of parallel workers. Defaults to `1`. |
 | `verbose` | `bool` | Enable debug logging. Defaults to `False`. |
 | `show_progress` | `bool` | Display progress bars. Defaults to `True`. |
-| `enrichment_databases` | `list[str] \| None` | Databases for post-snowball enrichment. Defaults to `["crossref", "web_scraping"]`. Accepted values: `"arxiv"`, `"crossref"`, `"ieee"`, `"openalex"`, `"pubmed"`, `"scopus"`, `"semantic_scholar"`, `"web_scraping"`, `"wos"`. Pass `[]` or `None` to disable enrichment. |
 
-**Returns:** `CitationGraph` with all discovered papers and citation edges.
+**Returns:** `SnowballResult` containing discovered papers (seeds in `seed_papers`, BFS-discovered papers in `papers`).
 
 ---
 
@@ -444,51 +448,58 @@ SearchResult(
 
 ---
 
-### CitationGraph
+### SnowballResult
 
-Directed citation graph built via snowballing.
+Container for snowball traversal configuration and results.
 
 ```python
-from findpapers import CitationGraph
+from findpapers import SnowballResult
 ```
 
 #### Constructor
 
 ```python
-CitationGraph(
+SnowballResult(
     seed_papers: list[Paper],
     max_depth: int,
     direction: Literal["both", "backward", "forward"],
+    since: datetime.date | None = None,
+    until: datetime.date | None = None,
+    databases: list[str] | None = None,
+    max_per_level: int | None = None,
+    max_expansion_per_level: int | None = None,
+    papers: list[Paper] | None = None,
+    processed_at: datetime.datetime | None = None,
+    runtime_seconds: float | None = None,
+    skipped_seeds_without_doi: int = 0,
 )
 ```
 
-| Parameter | Type | Description |
-|---|---|---|
-| `seed_papers` | `list[Paper]` | Initial seed papers. |
-| `max_depth` | `int` | Maximum traversal depth. |
-| `direction` | `Literal["both", "backward", "forward"]` | Snowball direction(s). |
+#### Attributes
 
-#### Properties
-
-| Property | Type | Description |
+| Attribute | Type | Description |
 |---|---|---|
-| `nodes` | `list[Paper]` | All paper nodes in the graph. |
-| `edges` | `list[CitationEdge]` | All directed citation edges. Each edge has a `source` (citing paper) and `target` (cited paper). |
-| `node_count` | `int` | Number of unique nodes. |
-| `edge_count` | `int` | Number of citation edges. |
+| `seed_papers` | `list[Paper]` | Enriched seed papers (fetched during snowball; originals used as fallback when lookup fails). |
+| `papers` | `list[Paper]` | Papers *discovered* during BFS traversal (seeds excluded). |
+| `max_depth` | `int` | Maximum traversal depth used. |
+| `direction` | `str` | Direction used (`"both"`, `"backward"`, or `"forward"`). |
+| `since` | `datetime.date \| None` | Lower-bound date filter applied. |
+| `until` | `datetime.date \| None` | Upper-bound date filter applied. |
+| `databases` | `list[str] \| None` | Databases used for paper lookups. |
+| `max_per_level` | `int \| None` | Per-level result cap that was used (`None` = no limit). |
+| `max_expansion_per_level` | `int \| None` | Per-level frontier cap that was used (`None` = expand all). |
+| `processed_at` | `datetime.datetime` | UTC timestamp when the snowball was executed. |
+| `runtime_seconds` | `float \| None` | Wall-clock runtime in seconds. |
+| `skipped_seeds_without_doi` | `int` | Number of seed papers skipped because they had no DOI. |
 
 #### Methods
 
 | Method | Returns | Description |
 |---|---|---|
-| `contains(paper: Paper)` | `bool` | Check if a node exists in the graph. |
-| `add_node(paper: Paper, discovered_from: Paper)` | `Paper` | Add a node (or merge if it already exists). |
-| `add_edge(source: Paper, target: Paper)` | `None` | Record a citation edge (source cites target). |
-| `get_references(paper: Paper)` | `list[Paper]` | Get papers cited by the given paper. |
-| `get_cited_by(paper: Paper)` | `list[Paper]` | Get papers that cite the given paper. |
-| `get_node_depth(paper: Paper)` | `int \| None` | Get the traversal depth where a node was discovered. |
-| `to_dict()` | `dict[str, Any]` | Serialize to dictionary (includes metadata, nodes, and edges). |
-| `from_dict(data: dict)` | `CitationGraph` | *Class method.* Create a `CitationGraph` from a dictionary. |
+| `add_paper(paper: Paper)` | `None` | Add a discovered paper to the results. |
+| `remove_paper(paper: Paper)` | `None` | Remove a paper from the results. |
+| `to_dict()` | `dict[str, Any]` | Serialize to a dictionary (suitable for JSON). |
+| `from_dict(data: dict)` | `SnowballResult` | *Class method.* Create a `SnowballResult` from a dictionary. |
 
 ---
 
@@ -624,7 +635,11 @@ SnowballRunner(
     *,
     max_depth: int = 1,
     direction: Literal["both", "backward", "forward"] = "both",
-    top_n_per_level: int | None = None,
+    max_per_level: int | None = None,
+    max_expansion_per_level: int | None = None,
+    databases: list[str] | None = ["crossref"],
+    enrichment_databases: list[str] | None = None,
+    final_webscraping: bool = True,
     openalex_api_key: str | None = None,
     email: str | None = None,
     semantic_scholar_api_key: str | None = None,
@@ -635,8 +650,6 @@ SnowballRunner(
     scopus_api_key: str | None = None,
     pubmed_api_key: str | None = None,
     wos_api_key: str | None = None,
-    databases: list[str] | None = None,
-    enrichment_databases: list[str] | None = ["crossref", "web_scraping"],
     proxy: str | None = None,
     ssl_verify: bool = True,
 )
@@ -644,13 +657,13 @@ SnowballRunner(
 
 | Method | Returns | Description |
 |---|---|---|
-| `run(verbose=False, show_progress=True)` | `CitationGraph` | Execute snowballing and return the citation graph. |
+| `run(verbose=False, show_progress=True)` | `SnowballResult` | Execute snowballing and return the result. |
 
 ---
 
 ## Persistence Functions
 
-Functions for saving and loading papers, search results, and citation graphs.
+Functions for saving and loading papers, search results, and snowball results.
 
 ```python
 from findpapers import save_to_json, load_from_json
@@ -661,15 +674,15 @@ from findpapers import save_to_csv, load_from_csv
 ### `save_to_json()`
 
 ```python
-save_to_json(data: SearchResult | CitationGraph | list[Paper], path: str) -> None
+save_to_json(data: SearchResult | SnowballResult | list[Paper], path: str) -> None
 ```
 
-Write data to a JSON file. Accepts a `SearchResult`, `CitationGraph`, or a plain `list[Paper]`.
+Write data to a JSON file. Accepts a `SearchResult`, `SnowballResult`, or a plain `list[Paper]`.
 
 ### `load_from_json()`
 
 ```python
-load_from_json(path: str) -> SearchResult | CitationGraph | list[Paper]
+load_from_json(path: str) -> SearchResult | SnowballResult | list[Paper]
 ```
 
 Load data from a JSON file created by `save_to_json()`. The type is auto-detected from the file contents.

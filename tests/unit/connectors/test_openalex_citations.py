@@ -40,89 +40,6 @@ def _make_openalex_work(
 
 
 # ---------------------------------------------------------------------------
-# Tests: fetch_references
-# ---------------------------------------------------------------------------
-
-
-class TestOpenAlexFetchReferences:
-    """Tests for OpenAlexConnector.fetch_references."""
-
-    def test_returns_empty_for_paper_without_doi(self, make_paper) -> None:
-        """Papers without DOI cannot be resolved; return empty list."""
-        connector = OpenAlexConnector()
-        paper = make_paper(doi=None)
-
-        result = connector.fetch_references(paper)
-
-        assert result == []
-
-    @patch.object(OpenAlexConnector, "_get")
-    def test_fetches_referenced_works(self, mock_get: MagicMock, make_paper) -> None:
-        """Fetches the work record and then batch-fetches referenced works."""
-        connector = OpenAlexConnector()
-        paper = make_paper(doi="10.1000/seed")
-
-        ref_ids = [
-            "https://openalex.org/W100",
-            "https://openalex.org/W200",
-        ]
-
-        # First call: resolve DOI → referenced_works
-        doi_response = MagicMock()
-        doi_response.json.return_value = {
-            "id": "https://openalex.org/W999",
-            "referenced_works": ref_ids,
-        }
-
-        # Second call: batch-fetch the referenced works
-        batch_response = MagicMock()
-        batch_response.json.return_value = {
-            "results": [
-                _make_openalex_work("https://openalex.org/W100", "10.1000/r1", "Ref 1"),
-                _make_openalex_work("https://openalex.org/W200", "10.1000/r2", "Ref 2"),
-            ]
-        }
-
-        mock_get.side_effect = [doi_response, batch_response]
-
-        refs = connector.fetch_references(paper)
-
-        assert len(refs) == 2
-        assert refs[0].title == "Ref 1"
-        assert refs[1].title == "Ref 2"
-        assert mock_get.call_count == 2
-
-    @patch.object(OpenAlexConnector, "_get")
-    def test_returns_empty_when_no_referenced_works(self, mock_get: MagicMock, make_paper) -> None:
-        """Returns empty list when work has no referenced_works field."""
-        connector = OpenAlexConnector()
-        paper = make_paper(doi="10.1000/lonely")
-
-        doi_response = MagicMock()
-        doi_response.json.return_value = {
-            "id": "https://openalex.org/W999",
-            "referenced_works": [],
-        }
-        mock_get.return_value = doi_response
-
-        refs = connector.fetch_references(paper)
-
-        assert refs == []
-
-    @patch.object(OpenAlexConnector, "_get")
-    def test_handles_api_error_gracefully(self, mock_get: MagicMock, make_paper) -> None:
-        """Returns empty list when the API raises an exception."""
-        connector = OpenAlexConnector()
-        paper = make_paper(doi="10.1000/error")
-
-        mock_get.side_effect = requests.RequestException("API error")
-
-        refs = connector.fetch_references(paper)
-
-        assert refs == []
-
-
-# ---------------------------------------------------------------------------
 # Tests: fetch_cited_by
 # ---------------------------------------------------------------------------
 
@@ -330,36 +247,6 @@ class TestOpenAlexRealDataParsing:
         oa_id = connector._resolve_openalex_id(paper)
 
         assert oa_id == "https://openalex.org/W4312081276"
-
-    @patch.object(OpenAlexConnector, "_get")
-    def test_fetch_references_with_real_data(
-        self,
-        mock_get: MagicMock,
-        make_paper,
-        oa_citation_samples: dict,
-    ) -> None:
-        """Full fetch_references with real referenced_works + batch_works data."""
-        connector = OpenAlexConnector()
-        paper = make_paper(doi=_SPRINGER_DOI)
-        sample = oa_citation_samples[_SPRINGER_DOI]
-
-        # First call: resolve DOI → referenced_works
-        ref_response = MagicMock()
-        ref_response.json.return_value = sample["referenced_works"]
-
-        # Second call: batch-fetch works by IDs
-        batch_response = MagicMock()
-        batch_response.json.return_value = sample["works_by_ids"]
-
-        mock_get.side_effect = [ref_response, batch_response]
-
-        refs = connector.fetch_references(paper)
-
-        # 17 referenced_works IDs → 13 results from API (some IDs may not resolve).
-        assert len(refs) == 13
-        for ref in refs:
-            assert ref.title
-            assert "openalex" in ref.found_in
 
     @patch.object(OpenAlexConnector, "_get")
     def test_fetch_works_by_ids_with_real_data(

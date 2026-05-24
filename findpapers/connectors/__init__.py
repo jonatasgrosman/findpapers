@@ -24,19 +24,11 @@ To register a **new URL-lookup connector**:
     2. Add a corresponding member to
        :class:`~findpapers.core.paper.Database`.
     3. Add an entry to :data:`URL_LOOKUP_REGISTRY` below.
-
-To register a **new citation connector**:
-    1. Create the connector class inheriting from
-       :class:`~findpapers.connectors.citation_base.CitationConnectorBase`.
-    2. Add a corresponding member to
-       :class:`~findpapers.core.paper.Database`.
-    3. Add an entry to :data:`CITATION_REGISTRY` below.
 """
 
 from __future__ import annotations
 
 from findpapers.connectors.arxiv import ArxivConnector
-from findpapers.connectors.citation_base import CitationConnectorBase
 from findpapers.connectors.crossref import CrossRefConnector
 from findpapers.connectors.doi_lookup_base import DOILookupConnectorBase
 from findpapers.connectors.ieee import IEEEConnector
@@ -82,11 +74,4 @@ URL_LOOKUP_REGISTRY: dict[Database, type[URLLookupConnectorBase]] = {
     Database.PUBMED: PubmedConnector,
     Database.SEMANTIC_SCHOLAR: SemanticScholarConnector,
     Database.WOS: WosConnector,
-}
-
-# Mapping of Database identifiers to their citation connector classes.
-CITATION_REGISTRY: dict[Database, type[CitationConnectorBase]] = {
-    Database.OPENALEX: OpenAlexConnector,
-    Database.SEMANTIC_SCHOLAR: SemanticScholarConnector,
-    Database.CROSSREF: CrossRefConnector,
 }

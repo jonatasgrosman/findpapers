@@ -1,10 +1,10 @@
 """Findpapers - Academic paper search and management tool."""
 
 from findpapers.core.author import Author
-from findpapers.core.citation_graph import CitationGraph
 from findpapers.core.paper import Database, Paper, PaperType
 from findpapers.core.query import ConnectorType, FilterCode
 from findpapers.core.search_result import SearchResult
+from findpapers.core.snowball_result import SnowballResult
 from findpapers.core.source import Source, SourceType
 from findpapers.engine import Engine
 from findpapers.exceptions import (
@@ -32,7 +32,6 @@ from findpapers.utils.persistence import (
 
 __all__ = [
     "Author",
-    "CitationGraph",
     "ConnectorError",
     "ConnectorType",
     "Database",
@@ -50,6 +49,7 @@ __all__ = [
     "QueryValidationError",
     "SearchResult",
     "SearchRunner",
+    "SnowballResult",
     "SnowballRunner",
     "Source",
     "SourceType",

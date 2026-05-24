@@ -8,7 +8,6 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 import findpapers
-from findpapers.core.citation_graph import CitationGraph
 from findpapers.core.paper import Paper
 from findpapers.core.search_result import SearchResult
 from findpapers.engine import Engine
@@ -670,11 +669,6 @@ class TestEngineSnowball:
 class TestSnowballImport:
     """Verify snowball-related classes are accessible from findpapers namespace."""
 
-    def test_citation_graph_importable(self):
-        """findpapers.CitationGraph is accessible."""
-
-        assert findpapers.CitationGraph is CitationGraph
-
     def test_snowball_runner_importable(self):
         """findpapers.SnowballRunner is accessible."""
 
@@ -738,15 +732,6 @@ class TestSaveToJson:
         papers = [make_paper(doi="10.1/a"), make_paper(title="Paper B", doi="10.1/b")]
         path = str(tmp_path / "papers.json")
         findpapers.save_to_json(papers, path)
-        assert os.path.exists(path)
-
-    def test_save_citation_graph(self, make_paper, tmp_path):
-        """A CitationGraph is saved to a JSON file."""
-
-        seed = make_paper(doi="10.1/seed")
-        graph = CitationGraph(seed_papers=[seed], max_depth=1, direction="backward")
-        path = str(tmp_path / "graph.json")
-        findpapers.save_to_json(graph, path)
         assert os.path.exists(path)
 
 
@@ -813,18 +798,6 @@ class TestLoadFromJson:
         assert isinstance(loaded, list)
         assert len(loaded) == 1
         assert loaded[0].title == "Test Paper"
-
-    def test_round_trip_citation_graph(self, make_paper, tmp_path):
-        """CitationGraph survives save -> load round-trip."""
-
-        seed = make_paper(doi="10.1/seed")
-        graph = CitationGraph(seed_papers=[seed], max_depth=1, direction="backward")
-        path = str(tmp_path / "graph.json")
-        findpapers.save_to_json(graph, path)
-
-        loaded = findpapers.load_from_json(path)
-        assert isinstance(loaded, CitationGraph)
-        assert loaded.node_count == 1
 
 
 class TestSaveToCsv:

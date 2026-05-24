@@ -1,105 +1,145 @@
-"""SnowballRunner: build a citation graph via forward/backward snowballing.
+"""SnowballRunner: discover papers via iterative citation snowballing.
 
 Given one or more seed papers, this runner iteratively fetches their
-references (backward) and citing papers (forward) up to a configurable
-depth, producing a :class:`~findpapers.core.citation_graph.CitationGraph`.
+references (backward) and/or citing papers (forward) by calling
+:class:`~findpapers.runners.get_runner.GetRunner` for each DOI.  Each
+:class:`~findpapers.core.paper.Paper` returned by the runner is already
+enriched (metadata filled from multiple databases) and carries the
+:attr:`~findpapers.core.paper.Paper.references` and
+:attr:`~findpapers.core.paper.Paper.cited_by` lists that drive the BFS
+expansion.  The result is a :class:`~findpapers.core.snowball_result.SnowballResult`
+containing all discovered papers with citation relationships encoded on each
+paper object.
 """
 
 from __future__ import annotations
 
-import contextlib
 import datetime
 import logging
-from collections.abc import Callable
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from time import perf_counter
 from typing import Literal
 
-from tqdm import tqdm
-
-from findpapers.connectors import CITATION_REGISTRY
-from findpapers.connectors.citation_base import CitationConnectorBase
-from findpapers.core.citation_graph import CitationGraph
-from findpapers.core.paper import Database, Paper
+from findpapers.core.paper import Paper
+from findpapers.core.snowball_result import SnowballResult
 from findpapers.exceptions import InvalidParameterError
-from findpapers.runners.discovery_runner import DEFAULT_ENRICHMENT_DATABASES, DiscoveryRunner
+from findpapers.runners.discovery_runner import DiscoveryRunner
+from findpapers.runners.get_runner import GET_DATABASES, GetRunner
 from findpapers.utils.logging_config import configure_verbose_logging
-from findpapers.utils.progress import make_progress_bar
+from findpapers.utils.parallel import execute_tasks
 
 logger = logging.getLogger(__name__)
 
+# Sentinel used to distinguish "argument not passed" from explicit None.
+_UNSET: object = object()
+
+# Default databases for the fast BFS discovery fetch.  CrossRef is chosen
+# because it is unauthenticated, fast (10 req/s), and reliably provides
+# backward-reference lists (paper.references) that drive BFS expansion.
+SNOWBALL_DISCOVERY_DATABASES: list[str] = ["crossref"]
+
+# Databases used when re-enriching seeds and frontier papers so that
+# paper.references and paper.cited_by are populated from the best available
+# sources.  Web scraping is excluded here and applied in a dedicated final
+# pass instead, to avoid double-scraping frontier papers.
+SNOWBALL_ENRICHMENT_DATABASES: list[str] = sorted(GET_DATABASES - {"web_scraping"})
+
+# Databases used for the optional final enrichment pass that fills any
+# remaining metadata gaps on surviving papers via HTML scraping.
+SNOWBALL_WEBSCRAPING_DATABASES: list[str] = ["web_scraping"]
+
 
 class SnowballRunner(DiscoveryRunner):
-    """Build a citation graph around seed papers via iterative snowballing.
+    """Discover papers around seed papers via iterative citation snowballing.
 
-    The runner traverses the citation network in a BFS fashion: at each
-    depth level it collects references and/or citing papers for every paper
-    in the current frontier, adds the new papers as nodes to the graph, and
-    records directed edges (``source`` → ``target`` meaning *source cites
-    target*).
+    For each paper in the current frontier the runner calls
+    :class:`~findpapers.runners.get_runner.GetRunner` to obtain its full
+    metadata together with populated
+    :attr:`~findpapers.core.paper.Paper.references` (DOIs of papers it cites)
+    and :attr:`~findpapers.core.paper.Paper.cited_by` (DOIs of papers that
+    cite it).  New DOIs collected from these lists become the next frontier,
+    and the process repeats up to *max_depth* levels.
+
+    The runner uses a three-tier fetch strategy to minimise API calls
+    while keeping result quality high:
+
+    1. **BFS discovery** — candidate papers (found via references / cited_by)
+       are fetched with *databases* (default: CrossRef only).  CrossRef is
+       fast, unauthenticated, and reliably returns backward references.
+    2. **Frontier enrichment** — papers that will drive the next BFS level
+       are re-fetched with *enrichment_databases* (all API connectors by
+       default) so that both ``paper.references`` *and* ``paper.cited_by``
+       are fully populated before the next expansion round.
+    3. **Final web-scraping pass** (optional) — after all BFS levels are
+       complete, every surviving paper is re-enriched via HTML scraping to
+       fill any metadata gaps (e.g. abstract, PDF URL, keywords) without
+       burning extra API calls on papers that were later filtered out.
 
     Parameters
     ----------
     seed_papers : list[Paper] | Paper
         One or more papers to start the snowball from.  Papers without a
-        DOI are silently skipped (they cannot be resolved by the APIs).
+        DOI are silently skipped.
     max_depth : int
-        Maximum number of snowball iterations.  ``1`` (the default)
-        retrieves only the immediate neighbours of seed papers.
+        Maximum number of BFS levels.  ``1`` (default) fetches only the
+        immediate neighbours of seed papers.
     direction : Literal["both", "backward", "forward"]
-        ``"backward"`` fetches references (papers cited *by* the seed),
-        ``"forward"`` fetches citing papers (papers that *cite* the seed),
-        ``"both"`` fetches in both directions.
-    top_n_per_level : int | None
-        When set, only the *top N* most-cited papers discovered at each
-        snowball level are kept as candidates for expansion in the next
-        level.  Seed papers are always expanded regardless of this limit.
-        This is useful for controlling cost when running deep snowballs:
-        setting a small value (e.g. ``20``) avoids the combinatorial
-        explosion that occurs without a cut-off.  When ``None`` (default)
-        all discovered papers are expanded.
+        ``"backward"`` follows :attr:`~findpapers.core.paper.Paper.references`
+        (papers cited *by* the current frontier),
+        ``"forward"`` follows :attr:`~findpapers.core.paper.Paper.cited_by`
+        (papers that *cite* the current frontier),
+        ``"both"`` expands in both directions.
+    max_per_level : int | None
+        When set, only the *top-N* most-cited papers discovered at each
+        level are kept in the final result.  Seed papers are never filtered.
+        ``None`` (default) keeps all discovered papers.
+    max_expansion_per_level : int | None
+        When set, only the *top-N* most-cited papers from each level are
+        used as seeds for the next BFS round.  Papers already added to the
+        result are unaffected.  ``None`` (default) expands the full frontier.
+    databases : list[str] | None
+        Databases used for the fast BFS discovery of candidate papers.
+        Defaults to ``["crossref"]`` for speed — CrossRef is unauthenticated
+        and reliably returns backward references.  Pass ``None`` to use all
+        available sources.  Accepted values: ``"arxiv"``, ``"crossref"``,
+        ``"ieee"``, ``"openalex"``, ``"pubmed"``, ``"scopus"``,
+        ``"semantic_scholar"``, ``"web_scraping"``.
+    enrichment_databases : list[str] | None
+        Databases used when re-fetching seed and frontier papers to populate
+        ``paper.references`` and ``paper.cited_by`` for the next BFS round.
+        Defaults to all API connectors (web scraping excluded).  Pass
+        ``None`` to use the same default.  Pass a custom list to restrict
+        which connectors are used for this enrichment phase.
+    final_webscraping : bool
+        When ``True`` (default), all papers that survive BFS filtering are
+        re-enriched via HTML scraping at the end of the run to fill any
+        remaining metadata gaps.  Set to ``False`` to skip this pass.
+    num_workers : int
+        Number of parallel :class:`~findpapers.runners.get_runner.GetRunner`
+        calls to make per level.  Defaults to ``1`` (sequential).
+    since : datetime.date | None
+        Only include discovered papers published on or after this date.
+        Seed papers are never filtered.  ``None`` disables the filter.
+    until : datetime.date | None
+        Only include discovered papers published on or before this date.
+        Seed papers are never filtered.  ``None`` disables the filter.
     openalex_api_key : str | None
         OpenAlex API key.
     email : str | None
         Contact email for polite-pool access (OpenAlex, CrossRef).
     semantic_scholar_api_key : str | None
         Semantic Scholar API key.
-    num_workers : int
-        Maximum number of connectors to query in parallel for each paper.
-        Defaults to ``1`` (sequential).  The effective parallelism is
-        capped at the number of available connectors.
-    since : datetime.date | None
-        Only include discovered papers published on or after this date.
-        Seed papers are never filtered.  ``None`` (default) disables
-        the lower-bound date filter.
-    until : datetime.date | None
-        Only include discovered papers published on or before this date.
-        Seed papers are never filtered.  ``None`` (default) disables
-        the upper-bound date filter.
     ieee_api_key : str | None
-        IEEE Xplore API key used during the enrichment phase.
+        IEEE Xplore API key.
     scopus_api_key : str | None
-        Elsevier / Scopus API key used during the enrichment phase.
+        Elsevier / Scopus API key.
     pubmed_api_key : str | None
-        NCBI PubMed API key used during the enrichment phase.
+        NCBI PubMed API key.
     wos_api_key : str | None
-        Clarivate Web of Science API key used during the enrichment phase.
-    databases : list[str] | None
-        Citation database identifiers to use for snowballing.  ``None``
-        (default) uses all available citation databases (``openalex``,
-        ``semantic_scholar``, ``crossref``).  Pass an explicit list to
-        restrict which connectors are queried.  An empty list raises
-        :class:`~findpapers.exceptions.InvalidParameterError`.
-    enrichment_databases : list[str] | None
-        Databases used to enrich graph nodes after snowballing completes.
-        ``None`` (default) uses ``crossref`` and ``web_scraping``; pass
-        ``[]`` to disable enrichment entirely.
+        Clarivate Web of Science API key.
     proxy : str | None
-        Optional HTTP/HTTPS proxy URL forwarded to the enrichment
-        :class:`~findpapers.runners.get_runner.GetRunner`.
+        Optional HTTP/HTTPS proxy URL for all requests.
     ssl_verify : bool
-        Whether to verify SSL certificates during enrichment.
-        Defaults to ``True``.
+        Whether to verify SSL certificates.  Defaults to ``True``.
     """
 
     def __init__(
@@ -108,19 +148,21 @@ class SnowballRunner(DiscoveryRunner):
         *,
         max_depth: int = 1,
         direction: Literal["both", "backward", "forward"] = "both",
-        top_n_per_level: int | None = None,
-        openalex_api_key: str | None = None,
-        email: str | None = None,
-        semantic_scholar_api_key: str | None = None,
+        max_per_level: int | None = None,
+        max_expansion_per_level: int | None = None,
+        databases: list[str] | None = _UNSET,  # type: ignore[assignment]
+        enrichment_databases: list[str] | None = _UNSET,  # type: ignore[assignment]
+        final_webscraping: bool = True,
         num_workers: int = 1,
         since: datetime.date | None = None,
         until: datetime.date | None = None,
+        openalex_api_key: str | None = None,
+        email: str | None = None,
+        semantic_scholar_api_key: str | None = None,
         ieee_api_key: str | None = None,
         scopus_api_key: str | None = None,
         pubmed_api_key: str | None = None,
         wos_api_key: str | None = None,
-        databases: list[str] | None = None,
-        enrichment_databases: list[str] | None = DEFAULT_ENRICHMENT_DATABASES,
         proxy: str | None = None,
         ssl_verify: bool = True,
     ) -> None:
@@ -134,70 +176,116 @@ class SnowballRunner(DiscoveryRunner):
             Maximum BFS depth.  Must be >= 1.
         direction : Literal["both", "backward", "forward"]
             Snowball direction(s).
-        top_n_per_level : int | None
-            When set, keep only the top-N most-cited papers per level.
+        max_per_level : int | None
+            Per-level result cap.  When set, only the top-N most-cited papers
+            discovered at each BFS level are kept in the final result.  Seed
+            papers are never filtered.  ``None`` means all papers are kept.
+        max_expansion_per_level : int | None
+            Per-level frontier cap.  When set, only the top-N most-cited papers
+            from each level are used as seeds for the next BFS round.  Papers
+            already added to the result are unaffected.  ``None`` means the
+            full set of discovered papers drives the next level.
+        databases : list[str] | None
+            Databases used for the fast BFS discovery fetch.  When not
+            provided, defaults to ``["crossref"]`` for speed.  Pass ``None``
+            to use all available sources.
+        enrichment_databases : list[str] | None
+            Databases used when re-fetching seed and frontier papers to
+            populate ``paper.references`` and ``paper.cited_by``.  When not
+            provided, defaults to all API connectors (web scraping excluded).
+            Pass ``None`` to use the same default.
+        final_webscraping : bool
+            When ``True`` (default), all surviving papers are re-enriched via
+            HTML scraping at the end of the run.  Set to ``False`` to skip.
+        num_workers : int
+            Number of parallel GetRunner calls per level.
+        since : datetime.date | None
+            Lower-bound publication date filter for discovered papers.
+        until : datetime.date | None
+            Upper-bound publication date filter for discovered papers.
         openalex_api_key : str | None
             OpenAlex API key.
         email : str | None
             Contact email for polite-pool access.
         semantic_scholar_api_key : str | None
             Semantic Scholar API key.
-        num_workers : int
-            Maximum parallel workers per paper expansion.
-        since : datetime.date | None
-            Lower-bound publication date filter for discovered papers.
-        until : datetime.date | None
-            Upper-bound publication date filter for discovered papers.
         ieee_api_key : str | None
-            IEEE Xplore API key for enrichment.
+            IEEE Xplore API key.
         scopus_api_key : str | None
-            Scopus API key for enrichment.
+            Scopus API key.
         pubmed_api_key : str | None
-            PubMed API key for enrichment.
+            PubMed API key.
         wos_api_key : str | None
-            Clarivate Web of Science API key for enrichment.
-        databases : list[str] | None
-            Citation database identifiers to use for snowballing.  ``None``
-            uses all available citation databases.  Pass an explicit list to
-            restrict which connectors are queried.  Accepted values:
-            ``"crossref"``, ``"openalex"``, ``"semantic_scholar"``.
-        enrichment_databases : list[str] | None
-            Databases for post-snowball enrichment.  Defaults to
-            ``DEFAULT_ENRICHMENT_DATABASES`` (``["crossref", "web_scraping"]``).
-            Pass ``None`` or ``[]`` to disable enrichment.
+            Web of Science API key.
         proxy : str | None
-            Optional proxy URL for enrichment requests.
+            Optional proxy URL.
         ssl_verify : bool
-            Whether to verify SSL certificates during enrichment.
+            Whether to verify SSL certificates.
 
         Raises
         ------
         InvalidParameterError
-            If *max_depth* is less than 1, *top_n_per_level* is less than 1,
-            *databases* is an empty list or contains unknown identifiers,
-            or *enrichment_databases* contains unknown database names.
+            If *max_depth* is less than 1, *max_per_level* is less than 1,
+            *max_expansion_per_level* is less than 1,
+            *databases* is an empty list, or *databases* contains unknown
+            database identifiers.
         """
         if max_depth < 1:
             raise InvalidParameterError(f"max_depth must be >= 1, got {max_depth}")
-        if top_n_per_level is not None and top_n_per_level < 1:
+        if max_per_level is not None and max_per_level < 1:
+            raise InvalidParameterError(f"max_per_level must be >= 1 when set, got {max_per_level}")
+        if max_expansion_per_level is not None and max_expansion_per_level < 1:
             raise InvalidParameterError(
-                f"top_n_per_level must be >= 1 when set, got {top_n_per_level}"
+                f"max_expansion_per_level must be >= 1 when set, got {max_expansion_per_level}"
             )
 
-        valid_citation_databases = {db.value for db in CITATION_REGISTRY}
-        if databases is not None and len(databases) == 0:
-            raise InvalidParameterError(
-                "databases must not be an empty list. "
-                "Pass None to use all available citation databases."
-            )
-        if databases is not None:
-            unknown = [db for db in databases if db not in valid_citation_databases]
+        # Apply defaults for the sentinel-based parameters.
+        if databases is _UNSET:
+            databases = list(SNOWBALL_DISCOVERY_DATABASES)
+        if enrichment_databases is _UNSET or enrichment_databases is None:
+            enrichment_databases = list(SNOWBALL_ENRICHMENT_DATABASES)
+
+        def _validate_databases(value: list[str] | None, param_name: str) -> list[str] | None:
+            """Validate and normalise a databases list parameter.
+
+            Parameters
+            ----------
+            value : list[str] | None
+                Raw value to validate.
+            param_name : str
+                Parameter name used in error messages.
+
+            Returns
+            -------
+            list[str] | None
+                Normalised (lowercase, stripped) list, or ``None``.
+
+            Raises
+            ------
+            InvalidParameterError
+                If the list is empty or contains unknown database names.
+            """
+            if value is None:
+                return None
+            if len(value) == 0:
+                raise InvalidParameterError(
+                    f"{param_name} must not be an empty list. "
+                    "Pass None to use all available databases."
+                )
+            normalised = [db.strip().lower() for db in value]
+            unknown = [db for db in normalised if db not in GET_DATABASES]
             if unknown:
                 raise InvalidParameterError(
-                    f"Unknown citation database(s): {', '.join(unknown)}. "
-                    f"Accepted values: {', '.join(sorted(valid_citation_databases))}"
+                    f"Unknown database(s) in {param_name}: {', '.join(unknown)}. "
+                    f"Accepted values: {', '.join(sorted(GET_DATABASES))}"
                 )
+            return normalised
 
+        databases = _validate_databases(databases, "databases")
+        enrichment_databases = _validate_databases(enrichment_databases, "enrichment_databases")
+
+        # DiscoveryRunner handles shared credentials and date filters.
+        # enrichment_databases=[] because GetRunner is invoked directly here.
         super().__init__(
             since=since,
             until=until,
@@ -210,7 +298,7 @@ class SnowballRunner(DiscoveryRunner):
             wos_api_key=wos_api_key,
             proxy=proxy,
             ssl_verify=ssl_verify,
-            enrichment_databases=enrichment_databases,
+            enrichment_databases=[],
         )
 
         if isinstance(seed_papers, Paper):
@@ -220,29 +308,109 @@ class SnowballRunner(DiscoveryRunner):
         self._skipped_seeds = len(seed_papers) - len(self._seed_papers)
         self._max_depth = max_depth
         self._direction = direction
-        self._top_n_per_level = top_n_per_level
+        self._max_per_level = max_per_level
+        self._max_expansion_per_level = max_expansion_per_level
+        self._databases = databases
+        self._enrichment_databases: list[str] = enrichment_databases  # type: ignore[assignment]
+        self._final_webscraping = final_webscraping
         self._num_workers = max(num_workers, 1)
-        self._graph: CitationGraph | None = None
-        self._metrics: dict[str, int | float] = {}
-
-        self._connectors = self._build_connectors(
-            databases=databases,
-            openalex_api_key=openalex_api_key,
-            email=email,
-            semantic_scholar_api_key=semantic_scholar_api_key,
-        )
-        # Populated by run() before any connector queries; empty dict means
-        # show_progress=False or run() has not been called yet (bars are None).
-        self._connector_bars: dict[str, tuple[tqdm | None, tqdm | None]] = {}
 
     # ------------------------------------------------------------------
     # Public interface
     # ------------------------------------------------------------------
 
-    def run(self, verbose: bool = False, show_progress: bool = True) -> CitationGraph:
-        """Execute the snowball and return the citation graph.
+    def _process_seed_papers(
+        self,
+        visited: set[str],
+        verbose: bool,
+        show_progress: bool,
+    ) -> list[Paper]:
+        """Fetch and enrich level-0 seed papers, returning them as the initial frontier.
 
-        Can be called multiple times; each call resets previous results.
+        Seeds are the first BFS frontier, so they are fetched with the full
+        *enrichment_databases* set (all API connectors) to ensure that both
+        ``paper.references`` and ``paper.cited_by`` are populated before the
+        first expansion round.
+
+        Parameters
+        ----------
+        visited : set[str]
+            Already-seen normalised DOIs.  Updated in place with seed DOIs.
+        verbose : bool
+            Enable verbose logging.
+        show_progress : bool
+            Show tqdm progress bars.
+
+        Returns
+        -------
+        list[Paper]
+            Enriched seed papers to be used as the initial BFS frontier.
+            Seeds for which GetRunner returned nothing are included as-is.
+        """
+        seed_dois = [p.doi for p in self._seed_papers if p.doi]
+        enriched: dict[str, Paper] = {}
+        if seed_dois:
+            # Use enrichment databases for seeds since they ARE the initial
+            # frontier — they need full metadata including cited_by.
+            fetched_seeds = self._fetch_dois(
+                seed_dois,
+                databases=self._enrichment_databases,
+                desc="Seeds",
+                verbose=verbose,
+                show_progress=show_progress,
+            )
+            for paper in fetched_seeds:
+                if paper.doi:
+                    enriched[paper.doi.strip().lower()] = paper
+
+        # Seeds for which GetRunner returned nothing are included as-is.
+        for seed in self._seed_papers:
+            norm = seed.doi.strip().lower()  # type: ignore[union-attr]
+            if norm not in enriched:
+                enriched[norm] = seed
+
+        return list(enriched.values())
+
+    def _collect_candidate_dois(self, frontier: list[Paper], visited: set[str]) -> list[str]:
+        """Collect new candidate DOIs from *frontier* based on the configured direction.
+
+        Mutates *visited* to mark each returned DOI as seen.
+
+        Parameters
+        ----------
+        frontier : list[Paper]
+            Papers in the current expansion frontier.
+        visited : set[str]
+            Normalised DOIs already scheduled or processed.
+
+        Returns
+        -------
+        list[str]
+            Deduplicated list of new DOIs to fetch in the next level.
+        """
+        candidate_dois: list[str] = []
+        seen_this_batch: set[str] = set()
+        for paper in frontier:
+            if self._direction in ("both", "backward"):
+                for doi in paper.references:
+                    norm = doi.strip().lower()
+                    if norm not in visited and norm not in seen_this_batch:
+                        candidate_dois.append(doi)
+                        seen_this_batch.add(norm)
+                        visited.add(norm)
+            if self._direction in ("both", "forward"):
+                for doi in paper.cited_by:
+                    norm = doi.strip().lower()
+                    if norm not in visited and norm not in seen_this_batch:
+                        candidate_dois.append(doi)
+                        seen_this_batch.add(norm)
+                        visited.add(norm)
+        return candidate_dois
+
+    def run(self, verbose: bool = False, show_progress: bool = True) -> SnowballResult:
+        """Execute the snowball and return the result.
+
+        Can be called multiple times; each call is independent.
 
         Parameters
         ----------
@@ -250,19 +418,21 @@ class SnowballRunner(DiscoveryRunner):
             Enable verbose logging.
         show_progress : bool
             When ``True`` (default), display tqdm progress bars for each
-            snowball level while papers are being expanded.  Set to
-            ``False`` to suppress progress output (e.g. in non-interactive
-            environments or to keep log output clean).
+            snowball level.  Set to ``False`` to suppress progress output.
 
         Returns
         -------
-        CitationGraph
-            The built citation graph.
+        SnowballResult
+            Container with all discovered papers (including seeds).
+            Citation relationships are encoded on each paper via
+            :attr:`~findpapers.core.paper.Paper.references` and
+            :attr:`~findpapers.core.paper.Paper.cited_by`.
         """
         _root_logger = logging.getLogger()
         _saved_log_level = _root_logger.level
         if verbose:
             configure_verbose_logging()
+
         logger.debug("=== SnowballRunner Configuration ===")
         logger.debug(
             "Seed papers: %d (skipped %d without DOI)",
@@ -273,621 +443,370 @@ class SnowballRunner(DiscoveryRunner):
         logger.debug("Direction: %s", self._direction)
         logger.debug(
             "Top N per level: %s",
-            str(self._top_n_per_level) if self._top_n_per_level else "unlimited",
+            str(self._max_per_level) if self._max_per_level else "unlimited",
         )
-        logger.debug("Connectors: %s", [c.name for c in self._connectors])
+        logger.debug("Discovery databases: %s", self._databases or "all")
+        logger.debug("Enrichment databases: %s", self._enrichment_databases or "all")
+        logger.debug("Final web scraping: %s", self._final_webscraping)
         logger.debug("Num workers: %d", self._num_workers)
         logger.debug("=====================================")
 
         start = perf_counter()
 
-        graph = CitationGraph(
-            seed_papers=self._seed_papers,
-            max_depth=self._max_depth,
-            direction=self._direction,
-        )
+        # visited: normalized DOIs already fetched or scheduled.
+        visited: set[str] = {p.doi.strip().lower() for p in self._seed_papers}  # type: ignore[union-attr]
 
-        frontier = list(self._seed_papers)
+        # all_papers: canonical paper objects keyed by normalized DOI (seeds included).
+        all_papers: dict[str, Paper] = {}
 
-        use_pool = self._num_workers > 1 and len(self._connectors) > 1
-        pool: ThreadPoolExecutor | None = (
-            ThreadPoolExecutor(max_workers=min(self._num_workers, len(self._connectors)))
-            if use_pool
-            else None
-        )
+        # --- Level 0: fetch/enrich seed papers using full enrichment databases ---
+        enriched_seeds = self._process_seed_papers(visited, verbose, show_progress)
 
-        self._connector_bars = {}
-        with contextlib.ExitStack() as _bar_stack:
-            self._setup_connector_bars(_bar_stack, show_progress)
+        # Add enriched seeds to all_papers so they participate in the final
+        # web-scraping pass and are available for any post-processing.
+        for seed in enriched_seeds:
+            if seed.doi:
+                all_papers[seed.doi.strip().lower()] = seed
 
-            try:
-                for level in range(1, self._max_depth + 1):
-                    if not frontier:
-                        break
+        frontier: list[Paper] = enriched_seeds
 
-                    logger.debug(
-                        "Level %d/%d: processing %d papers.",
-                        level,
-                        self._max_depth,
-                        len(frontier),
-                    )
+        # --- BFS levels 1 … max_depth ---
+        for level in range(1, self._max_depth + 1):
+            if not frontier:
+                logger.debug("Level %d: empty frontier — stopping.", level)
+                break
 
-                    next_frontier = self._process_level(frontier, graph, level, pool, show_progress)
-                    frontier = next_frontier
-
-                    logger.debug(
-                        "Level %d/%d complete: %d new papers discovered%s.",
-                        level,
-                        self._max_depth,
-                        len(next_frontier),
-                        f" (top {self._top_n_per_level} kept)" if self._top_n_per_level else "",
-                    )
-            finally:
-                if pool is not None:
-                    pool.shutdown(wait=True)
-                for connector in self._connectors:
-                    connector.close()
-
-        elapsed = perf_counter() - start
-        self._metrics = {
-            "seed_papers": len(self._seed_papers),
-            "skipped_seeds_without_doi": self._skipped_seeds,
-            "max_depth": self._max_depth,
-            "total_nodes": graph.node_count,
-            "total_edges": graph.edge_count,
-            "runtime_in_seconds": elapsed,
-        }
-        self._graph = graph
-
-        # Enrich graph nodes via per-paper get() lookups.
-        # enrichment_databases=None  → enrich with all available databases.
-        # enrichment_databases=[]    → skip enrichment entirely.
-        if not (
-            isinstance(self._enrichment_databases, list) and len(self._enrichment_databases) == 0
-        ):
-            super()._enrich_papers(
-                graph.nodes,
-                verbose,
+            frontier = self._process_bfs_level(
+                level=level,
+                frontier=frontier,
+                visited=visited,
+                all_papers=all_papers,
+                verbose=verbose,
                 show_progress=show_progress,
-                num_workers=self._num_workers,
             )
 
+        # --- Optional final web-scraping pass on all surviving papers ---
+        if self._final_webscraping and all_papers:
+            self._run_final_webscraping(all_papers, verbose=verbose, show_progress=show_progress)
+
+        elapsed = perf_counter() - start
+
         logger.debug("=== Snowball Results ===")
-        logger.debug("Total nodes: %d", graph.node_count)
-        logger.debug("Total edges: %d", graph.edge_count)
+        logger.debug("Total papers discovered: %d", len(all_papers))
         logger.debug("Runtime: %.2f s", elapsed)
         logger.debug("========================")
 
         _root_logger.setLevel(_saved_log_level)
-        return graph
+        seed_dois: set[str] = {seed.doi.strip().lower() for seed in enriched_seeds if seed.doi}
+        discovered_papers = [p for doi, p in all_papers.items() if doi not in seed_dois]
+
+        return SnowballResult(
+            seed_papers=enriched_seeds,
+            max_depth=self._max_depth,
+            direction=self._direction,
+            since=self._since,
+            until=self._until,
+            databases=self._databases,
+            max_per_level=self._max_per_level,
+            max_expansion_per_level=self._max_expansion_per_level,
+            papers=discovered_papers,
+            processed_at=datetime.datetime.now(datetime.UTC),
+            runtime_seconds=elapsed,
+            skipped_seeds_without_doi=self._skipped_seeds,
+        )
 
     # ------------------------------------------------------------------
     # Private helpers
     # ------------------------------------------------------------------
 
-    def _setup_connector_bars(self, bar_stack: contextlib.ExitStack, show_progress: bool) -> None:
-        """Create persistent tqdm progress bars for all connectors.
-
-        Bars are stored in ``self._connector_bars`` keyed by connector name.
-
-        Parameters
-        ----------
-        bar_stack : contextlib.ExitStack
-            Context manager stack that owns the bar lifetimes.
-        show_progress : bool
-            Whether progress bars should be visible.
-
-        Returns
-        -------
-        None
-        """
-        _bar_pos = 0
-        _connector_bar_positions: dict[str, tuple[int | None, int | None]] = {}
-        for _c in self._connectors:
-            _b_pos: int | None = None
-            _f_pos: int | None = None
-            if self._direction in ("both", "backward") and _c.supports_backward:
-                _b_pos = _bar_pos
-                _bar_pos += 1
-            if self._direction in ("both", "forward") and _c.supports_forward:
-                _f_pos = _bar_pos
-                _bar_pos += 1
-            _connector_bar_positions[_c.name] = (_b_pos, _f_pos)
-
-        for _c in self._connectors:
-            _b_pos, _f_pos = _connector_bar_positions[_c.name]
-            _b_bar: tqdm | None = (
-                bar_stack.enter_context(
-                    make_progress_bar(
-                        desc=f"{_c.name} backward",
-                        total=None,
-                        unit="paper",
-                        disable=not show_progress,
-                        leave=True,
-                        position=_b_pos,
-                    )
-                )
-                if _b_pos is not None
-                else None
-            )
-            _f_bar: tqdm | None = (
-                bar_stack.enter_context(
-                    make_progress_bar(
-                        desc=f"{_c.name} forward",
-                        total=None,
-                        unit="paper",
-                        disable=not show_progress,
-                        leave=True,
-                        position=_f_pos,
-                    )
-                )
-                if _f_pos is not None
-                else None
-            )
-            self._connector_bars[_c.name] = (_b_bar, _f_bar)
-
-    def _process_level(
+    def _process_bfs_level(
         self,
-        frontier: list[Paper],
-        graph: CitationGraph,
+        *,
         level: int,
-        pool: ThreadPoolExecutor | None,
+        frontier: list[Paper],
+        visited: set[str],
+        all_papers: dict[str, Paper],
+        verbose: bool,
         show_progress: bool,
     ) -> list[Paper]:
-        """Expand one BFS level and return the next frontier.
-
-        Parameters
-        ----------
-        frontier : list[Paper]
-            Papers to expand in this level.
-        graph : CitationGraph
-            The citation graph being built.
-        level : int
-            Current BFS depth (1-based).
-        pool : ThreadPoolExecutor | None
-            Thread pool for parallel connector calls, or ``None`` for serial.
-        show_progress : bool
-            Whether to update progress bar descriptions.
-
-        Returns
-        -------
-        list[Paper]
-            Newly discovered papers for the next frontier.
-        """
-        if self._top_n_per_level is None:
-            return self._process_level_unlimited(frontier, graph, level, pool, show_progress)
-        return self._process_level_limited(frontier, graph, level, pool, show_progress)
-
-    def _process_level_unlimited(
-        self,
-        frontier: list[Paper],
-        graph: CitationGraph,
-        level: int,
-        pool: ThreadPoolExecutor | None,
-        show_progress: bool,
-    ) -> list[Paper]:
-        """Process a BFS level without any per-level paper limit.
-
-        Parameters
-        ----------
-        frontier : list[Paper]
-            Papers to expand in this level.
-        graph : CitationGraph
-            The citation graph being built.
-        level : int
-            Current BFS depth (1-based).
-        pool : ThreadPoolExecutor | None
-            Thread pool for parallel connector calls.
-        show_progress : bool
-            Whether to update progress bar descriptions.
-
-        Returns
-        -------
-        list[Paper]
-            All newly discovered papers.
-        """
-        next_frontier: list[Paper] = []
-        for seed_i, paper in enumerate(frontier, 1):
-            self._set_connector_bar_descs(level, len(frontier), seed_i)
-            discovered = self._expand_paper(paper, graph, pool, show_progress=show_progress)
-            next_frontier.extend(discovered)
-        return next_frontier
-
-    def _process_level_limited(
-        self,
-        frontier: list[Paper],
-        graph: CitationGraph,
-        level: int,
-        pool: ThreadPoolExecutor | None,
-        show_progress: bool,
-    ) -> list[Paper]:
-        """Process a BFS level keeping only top-N papers per level.
-
-        Parameters
-        ----------
-        frontier : list[Paper]
-            Papers to expand in this level.
-        graph : CitationGraph
-            The citation graph being built.
-        level : int
-            Current BFS depth (1-based).
-        pool : ThreadPoolExecutor | None
-            Thread pool for parallel connector calls.
-        show_progress : bool
-            Whether to update progress bar descriptions.
-
-        Returns
-        -------
-        list[Paper]
-            Top-N newly discovered papers sorted by citation count.
-        """
-        all_raw: list[tuple[Paper, Paper, bool]] = []
-        for seed_i, paper in enumerate(frontier, 1):
-            self._set_connector_bar_descs(level, len(frontier), seed_i)
-            all_raw.extend(self._collect_candidates(paper, pool, show_progress=show_progress))
-
-        best: dict[str, Paper] = {}
-        edge_map: dict[str, list[tuple[Paper, bool]]] = {}
-        for candidate, source, is_ref in all_raw:
-            key = CitationGraph._paper_key(candidate)
-            if key is None or graph.contains(candidate):
-                continue
-            if not self._matches_filters(candidate):
-                continue
-            if key not in best:
-                best[key] = candidate
-                edge_map[key] = []
-            elif candidate.citations is not None and (
-                best[key].citations is None or candidate.citations > (best[key].citations or 0)
-            ):
-                best[key] = candidate
-            edge_map[key].append((source, is_ref))
-
-        top_keys = sorted(
-            best,
-            key=lambda k: best[k].citations or 0,
-            reverse=True,
-        )[: self._top_n_per_level]
-
-        next_frontier: list[Paper] = []
-        for key in top_keys:
-            paper_repr = best[key]
-            first_source = edge_map[key][0][0]
-            canonical = graph.add_node(paper_repr, discovered_from=first_source)
-            for source, is_ref in edge_map[key]:
-                if is_ref:
-                    graph.add_edge(source, canonical)
-                    # source cites canonical → record source as a citer of canonical
-                    if source.doi and source.doi not in canonical.cited_by:
-                        canonical.cited_by.append(source.doi)
-                else:
-                    graph.add_edge(canonical, source)
-                    # canonical cites source → record canonical as a citer of source
-                    if canonical.doi and canonical.doi not in source.cited_by:
-                        source.cited_by.append(canonical.doi)
-            next_frontier.append(canonical)
-        return next_frontier
-
-    def _set_connector_bar_descs(self, level: int, total_seeds: int, seed_i: int) -> None:
-        """Update all connector progress bar descriptions with current phase context.
-
-        Sets each bar's label to ``"Level L/N - seed S/T - direction: name"``
-        so the user always knows which level, which seed paper, and which
-        connector/direction is running.
+        """Run one BFS level: discover, filter, store, and optionally enrich.
 
         Parameters
         ----------
         level : int
             Current BFS level (1-based).
-        total_seeds : int
-            Total number of papers in the current frontier.
-        seed_i : int
-            1-based index of the paper currently being expanded.
-
-        Returns
-        -------
-        None
-        """
-        prefix = f"Level {level}/{self._max_depth} - seed {seed_i}/{total_seeds}"
-        for connector_name, (b_bar, f_bar) in self._connector_bars.items():
-            if b_bar is not None:
-                b_bar.set_description(f"{prefix} - backward - {connector_name}")
-            if f_bar is not None:
-                f_bar.set_description(f"{prefix} - forward - {connector_name}")
-
-    def _build_connectors(
-        self,
-        *,
-        databases: list[str] | None,
-        openalex_api_key: str | None,
-        email: str | None,
-        semantic_scholar_api_key: str | None,
-    ) -> list[CitationConnectorBase]:
-        """Build citation connectors, optionally restricted to *databases*.
-
-        Parameters
-        ----------
-        databases : list[str] | None
-            Citation database identifiers to include.  ``None`` includes all
-            connectors registered in :data:`~findpapers.connectors.CITATION_REGISTRY`.
-        openalex_api_key : str | None
-            OpenAlex API key.
-        email : str | None
-            Contact email.
-        semantic_scholar_api_key : str | None
-            Semantic Scholar API key.
-
-        Returns
-        -------
-        list[CitationConnectorBase]
-            Available citation connectors matching the *databases* filter.
-        """
-        # Per-connector constructor credentials.  Connectors with no entry
-        # are constructed with no arguments.  The classes are looked up in
-        # the central CITATION_REGISTRY so that this runner does not need
-        # to import every concrete connector.
-        _credentials: dict[Database, dict[str, str | None]] = {
-            Database.OPENALEX: {"api_key": openalex_api_key, "email": email},
-            Database.SEMANTIC_SCHOLAR: {"api_key": semantic_scholar_api_key},
-            Database.CROSSREF: {"email": email},
-        }
-
-        allowed = {db.strip().lower() for db in databases} if databases is not None else None
-        return [
-            cls(**_credentials.get(name, {}))
-            for name, cls in CITATION_REGISTRY.items()
-            if allowed is None or name.value in allowed
-        ]
-
-    def _expand_paper(
-        self,
-        paper: Paper,
-        graph: CitationGraph,
-        pool: ThreadPoolExecutor | None = None,
-        *,
-        show_progress: bool = True,
-    ) -> list[Paper]:
-        """Expand one paper by fetching its references and/or citing papers.
-
-        For each connector, fetches backward and/or forward citations,
-        adds new papers to the graph and records edges.  The depth of
-        discovered papers is automatically derived from the depth of
-        *paper* in the graph.
-
-        Parameters
-        ----------
-        paper : Paper
-            The paper to expand.
-        graph : CitationGraph
-            The graph under construction.
-        pool : ThreadPoolExecutor | None
-            Optional shared thread pool for parallel connector queries.
-            When ``None``, connectors are called sequentially.
+        frontier : list[Paper]
+            Papers whose citation lists drive this level's expansion.
+        visited : set[str]
+            Normalised DOIs already scheduled or processed; mutated in place.
+        all_papers : dict[str, Paper]
+            Canonical result store; updated in place with new papers.
+        verbose : bool
+            Forwarded to each :meth:`GetRunner.run` call.
         show_progress : bool
-            When ``True``, display per-connector progress bars for
-            long pagination operations.
+            Whether to display a tqdm progress bar.
 
         Returns
         -------
         list[Paper]
-            Newly discovered papers (not previously in the graph) that
-            should be expanded in the next level.
+            The frontier to use for the next BFS level.  Returns an empty list
+            when there are no more candidates to expand.
         """
-        new_papers: list[Paper] = []
+        candidate_dois = self._collect_candidate_dois(frontier, visited)
 
-        for candidate, source, is_ref in self._collect_candidates(
-            paper, pool, show_progress=show_progress
-        ):
-            if not self._matches_filters(candidate):
-                continue
-            is_new = not graph.contains(candidate)
-            canonical = graph.add_node(candidate, discovered_from=source)
-            if is_ref:
-                graph.add_edge(source, canonical)
-                # source cites canonical → record source as a citer of canonical
-                if source.doi and source.doi not in canonical.cited_by:
-                    canonical.cited_by.append(source.doi)
-            else:
-                graph.add_edge(canonical, source)
-                # canonical cites source → record canonical as a citer of source
-                if canonical.doi and canonical.doi not in source.cited_by:
-                    source.cited_by.append(canonical.doi)
-            if is_new:
-                new_papers.append(canonical)
+        logger.debug(
+            "Level %d/%d: %d candidate DOIs from %d frontier papers.",
+            level,
+            self._max_depth,
+            len(candidate_dois),
+            len(frontier),
+        )
 
-        return new_papers
+        if not candidate_dois:
+            return []
 
-    def _collect_candidates(
-        self,
-        paper: Paper,
-        pool: ThreadPoolExecutor | None = None,
-        *,
-        show_progress: bool = True,
-    ) -> list[tuple[Paper, Paper, bool]]:
-        """Query connectors for *paper* and return raw candidates without modifying the graph.
+        fetched = self._fetch_dois(
+            candidate_dois,
+            databases=self._databases,
+            desc=f"Level {level}/{self._max_depth}",
+            verbose=verbose,
+            show_progress=show_progress,
+        )
 
-        Parameters
-        ----------
-        paper : Paper
-            The paper to query.
-        pool : ThreadPoolExecutor | None
-            Optional shared thread pool for parallel connector queries.
-        show_progress : bool
-            Display per-connector progress bars.
+        valid_papers = [p for p in fetched if self._matches_filters(p)]
 
-        Returns
-        -------
-        list[tuple[Paper, Paper, bool]]
-            Each entry is ``(candidate, source, is_reference)``.  *is_reference*
-            is ``True`` for backward citations (source cites candidate) and
-            ``False`` for forward citations (candidate cites source).
-        """
-        candidates: list[tuple[Paper, Paper, bool]] = []
-
-        for _name, references, citing in self._query_connectors(
-            paper, pool, show_progress=show_progress
-        ):
-            if references is not None:
-                for ref_paper in references:
-                    candidates.append((ref_paper, paper, True))
-            if citing is not None:
-                for citing_paper in citing:
-                    candidates.append((citing_paper, paper, False))
-
-        return candidates
-
-    def _query_single_connector(
-        self,
-        connector: CitationConnectorBase,
-        paper: Paper,
-        *,
-        show_progress: bool = True,
-    ) -> tuple[str, list[Paper] | None, list[Paper] | None]:
-        """Query a single connector for references and/or citing papers.
-
-        Pre-created progress bars stored in ``self._connector_bars`` are reset
-        and reused for each paper so they remain visible at fixed terminal
-        positions in both serial and parallel modes.
-
-        Parameters
-        ----------
-        connector : CitationConnectorBase
-            The connector to query.
-        paper : Paper
-            The paper to look up.
-        show_progress : bool
-            Display per-connector progress bars for long pagination.
-
-        Returns
-        -------
-        tuple[str, list[Paper] | None, list[Paper] | None]
-            A ``(connector_name, references, citing)`` tuple.  Either list
-            may be ``None`` if the corresponding direction was not requested.
-        """
-        references: list[Paper] | None = None
-        citing: list[Paper] | None = None
-
-        backward_bar, forward_bar = self._connector_bars.get(connector.name, (None, None))
-
-        def _pbar_callback(pbar: tqdm | None) -> Callable[[int], None]:
-            """Return a callback that increments *pbar* when it is not ``None``."""
-
-            def _cb(n: int) -> None:
-                if pbar is not None:
-                    pbar.update(n)
-
-            return _cb
-
-        def _finalize_bar(pbar: tqdm | None) -> None:
-            """Reconcile bar total with actual count so it always shows 100%.
-
-            The expected count (from metadata) can differ from the actual
-            number of items returned by the API.  Setting ``total = n``
-            after fetching ensures the bar reaches 100% regardless.
-            """
-            if pbar is not None and pbar.total is not None and pbar.n != pbar.total:
-                pbar.total = pbar.n
-                pbar.refresh()
-
-        # Fetch expected counts for determinate progress bars.
-        cit_count: int | None = None
-        ref_count: int | None = None
-        if show_progress and (backward_bar is not None or forward_bar is not None):
-            with contextlib.suppress(Exception):
-                cit_count, ref_count = connector.get_expected_counts(paper)
-
-        if self._direction in ("both", "backward") and connector.supports_backward:
-            if backward_bar is not None:
-                backward_bar.reset(total=ref_count)
-            try:
-                references = connector.fetch_references(
-                    paper,
-                    progress_callback=_pbar_callback(backward_bar),
-                )
-            except Exception:
-                logger.warning(
-                    "Error fetching references from %s for '%s'.",
-                    connector.name,
-                    paper.title,
-                )
-                references = []
-            _finalize_bar(backward_bar)
-
-        if self._direction in ("both", "forward") and connector.supports_forward:
-            if forward_bar is not None:
-                forward_bar.reset(total=cit_count)
-            try:
-                citing = connector.fetch_cited_by(
-                    paper,
-                    progress_callback=_pbar_callback(forward_bar),
-                )
-            except Exception:
-                logger.warning(
-                    "Error fetching cited-by from %s for '%s'.",
-                    connector.name,
-                    paper.title,
-                )
-                citing = []
-            _finalize_bar(forward_bar)
-
-        return connector.name, references, citing
-
-    def _query_connectors(
-        self,
-        paper: Paper,
-        pool: ThreadPoolExecutor | None = None,
-        *,
-        show_progress: bool = True,
-    ) -> list[tuple[str, list[Paper] | None, list[Paper] | None]]:
-        """Query all connectors, optionally in parallel.
-
-        When *pool* is ``None`` the connectors are called sequentially.
-        Otherwise connectors are queried concurrently using the shared
-        thread pool.
-
-        Parameters
-        ----------
-        paper : Paper
-            The paper to look up.
-        pool : ThreadPoolExecutor | None
-            Optional shared thread pool.  When ``None``, connectors are
-            called sequentially.
-        show_progress : bool
-            Display per-connector progress bars.
-
-        Returns
-        -------
-        list[tuple[str, list[Paper] | None, list[Paper] | None]]
-            Results from each connector.
-        """
-        if pool is None:
-            return [
-                self._query_single_connector(
-                    connector,
-                    paper,
-                    show_progress=show_progress,
-                )
-                for connector in self._connectors
+        if self._max_per_level is not None:
+            result_papers = sorted(valid_papers, key=lambda p: p.citations or 0, reverse=True)[
+                : self._max_per_level
             ]
+        else:
+            result_papers = valid_papers
 
-        results: list[tuple[str, list[Paper] | None, list[Paper] | None]] = []
-        futures = {
-            pool.submit(
-                self._query_single_connector,
-                connector,
-                paper,
+        for p in result_papers:
+            if p.doi:
+                norm = p.doi.strip().lower()
+                if norm not in all_papers:
+                    all_papers[norm] = p
+
+        logger.debug(
+            "Level %d/%d complete: %d/%d papers passed date filters%s%s.",
+            level,
+            self._max_depth,
+            len(valid_papers),
+            len(fetched),
+            f" (top {self._max_per_level} kept in result)" if self._max_per_level else "",
+            f" (top {self._max_expansion_per_level} used for expansion)"
+            if self._max_expansion_per_level
+            else "",
+        )
+
+        if self._max_expansion_per_level is not None:
+            expansion_base = sorted(valid_papers, key=lambda p: p.citations or 0, reverse=True)[
+                : self._max_expansion_per_level
+            ]
+        else:
+            expansion_base = valid_papers
+
+        if level < self._max_depth and expansion_base:
+            return self._enrich_frontier(
+                expansion_base,
+                level=level,
+                all_papers=all_papers,
+                verbose=verbose,
                 show_progress=show_progress,
-            ): connector
-            for connector in self._connectors
-        }
-        for future in as_completed(futures):
-            try:
-                results.append(future.result())
-            except Exception:
-                connector = futures[future]
-                logger.warning(
-                    "Unexpected error querying %s for '%s'.",
-                    connector.name,
-                    paper.title,
-                )
+            )
+        return expansion_base
+
+    def _fetch_dois(
+        self,
+        dois: list[str],
+        databases: list[str] | None,
+        *,
+        desc: str,
+        verbose: bool,
+        show_progress: bool,
+    ) -> list[Paper]:
+        """Fetch papers for a list of DOIs using GetRunner.
+
+        Each DOI is resolved via a separate
+        :class:`~findpapers.runners.get_runner.GetRunner` call.  When
+        *num_workers* is greater than 1, calls are made in parallel.
+
+        Parameters
+        ----------
+        dois : list[str]
+            DOI strings to fetch.
+        databases : list[str] | None
+            Database filter passed to each :class:`GetRunner`.  ``None``
+            means all available sources.
+        desc : str
+            Human-readable label for the tqdm progress bar.
+        verbose : bool
+            Forwarded to each :meth:`GetRunner.run` call.
+        show_progress : bool
+            Whether to display a tqdm progress bar.
+
+        Returns
+        -------
+        list[Paper]
+            Successfully fetched papers (DOIs that returned ``None`` from
+            GetRunner are silently skipped).
+        """
+        ieee_api_key = self._ieee_api_key
+        scopus_api_key = self._scopus_api_key
+        pubmed_api_key = self._pubmed_api_key
+        openalex_api_key = self._openalex_api_key
+        email = self._email
+        semantic_scholar_api_key = self._semantic_scholar_api_key
+        wos_api_key = self._wos_api_key
+        proxy = self._proxy
+        ssl_verify = self._ssl_verify
+
+        def _fetch_task(doi: str) -> Paper | None:
+            """Fetch a single paper by DOI via GetRunner.
+
+            Parameters
+            ----------
+            doi : str
+                DOI to fetch.
+
+            Returns
+            -------
+            Paper | None
+                Fetched paper, or ``None`` if not found.
+            """
+            runner = GetRunner(
+                identifier=doi,
+                email=email,
+                databases=databases,
+                ieee_api_key=ieee_api_key,
+                scopus_api_key=scopus_api_key,
+                pubmed_api_key=pubmed_api_key,
+                openalex_api_key=openalex_api_key,
+                semantic_scholar_api_key=semantic_scholar_api_key,
+                wos_api_key=wos_api_key,
+                proxy=proxy,
+                ssl_verify=ssl_verify,
+            )
+            return runner.run(verbose=verbose)
+
+        results: list[Paper] = []
+        for doi, result, error in execute_tasks(
+            dois,
+            _fetch_task,
+            num_workers=self._num_workers,
+            timeout=None,
+            progress_total=len(dois),
+            progress_unit="paper",
+            progress_desc=desc,
+            use_progress=show_progress,
+        ):
+            if error is not None:
+                logger.warning("Failed to fetch DOI '%s': %s", doi, error)
+            elif result is not None:
+                results.append(result)
         return results
+
+    def _enrich_frontier(
+        self,
+        papers: list[Paper],
+        *,
+        level: int,
+        all_papers: dict[str, Paper],
+        verbose: bool,
+        show_progress: bool,
+    ) -> list[Paper]:
+        """Re-fetch frontier papers with full enrichment databases.
+
+        Papers that will drive the next BFS round are re-fetched using
+        *enrichment_databases* (all API connectors by default) so that both
+        ``paper.references`` and ``paper.cited_by`` are populated.  The
+        enriched versions replace their corresponding entries in *all_papers*.
+
+        Parameters
+        ----------
+        papers : list[Paper]
+            Frontier papers to re-enrich.
+        level : int
+            Current BFS level (used in the progress bar label).
+        all_papers : dict[str, Paper]
+            Canonical result store; updated in place with enriched versions.
+        verbose : bool
+            Forwarded to each :meth:`GetRunner.run` call.
+        show_progress : bool
+            Whether to display a tqdm progress bar.
+
+        Returns
+        -------
+        list[Paper]
+            Enriched frontier papers.  Papers for which enrichment returned
+            ``None`` fall back to their original (discovery-fetch) version.
+        """
+        dois = [p.doi for p in papers if p.doi]
+        if not dois:
+            return papers
+
+        enriched_list = self._fetch_dois(
+            dois,
+            databases=self._enrichment_databases,
+            desc=f"Level {level}/{self._max_depth} [enrichment]",
+            verbose=verbose,
+            show_progress=show_progress,
+        )
+        enriched_map: dict[str, Paper] = {}
+        for p in enriched_list:
+            if p.doi:
+                norm = p.doi.strip().lower()
+                enriched_map[norm] = p
+                # Update all_papers with the richer version.
+                if norm in all_papers:
+                    all_papers[norm] = p
+
+        # Return enriched papers; fall back to the original when not found.
+        result: list[Paper] = []
+        for p in papers:
+            norm = p.doi.strip().lower()  # type: ignore[union-attr]
+            result.append(enriched_map.get(norm, p))
+        return result
+
+    def _run_final_webscraping(
+        self,
+        all_papers: dict[str, Paper],
+        *,
+        verbose: bool,
+        show_progress: bool,
+    ) -> None:
+        """Re-enrich all surviving papers via HTML scraping.
+
+        Fetches each paper in *all_papers* using only the
+        ``"web_scraping"`` connector.  For DOI-based identifiers GetRunner
+        follows the ``https://doi.org/{doi}`` redirect and scrapes the
+        publisher page.  Any extra metadata retrieved (abstract, PDF URL,
+        keywords, etc.) is merged into the existing paper object in place.
+
+        Parameters
+        ----------
+        all_papers : dict[str, Paper]
+            Canonical result store; updated in place with scraped data.
+        verbose : bool
+            Forwarded to each :meth:`GetRunner.run` call.
+        show_progress : bool
+            Whether to display a tqdm progress bar.
+        """
+        dois = [p.doi for p in all_papers.values() if p.doi]
+        if not dois:
+            return
+
+        logger.debug("Final web-scraping pass: %d papers.", len(dois))
+        scraped = self._fetch_dois(
+            dois,
+            databases=SNOWBALL_WEBSCRAPING_DATABASES,
+            desc="Final web scraping",
+            verbose=verbose,
+            show_progress=show_progress,
+        )
+        for scraped_paper in scraped:
+            if scraped_paper.doi:
+                norm = scraped_paper.doi.strip().lower()
+                if norm in all_papers:
+                    all_papers[norm].merge(scraped_paper)

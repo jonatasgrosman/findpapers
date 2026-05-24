@@ -7,7 +7,6 @@ import re
 from time import perf_counter
 
 from findpapers.connectors import DOI_LOOKUP_REGISTRY, URL_LOOKUP_REGISTRY
-from findpapers.connectors.citation_base import CitationConnectorBase
 from findpapers.connectors.connector_base import ConnectorBase
 from findpapers.connectors.doi_lookup_base import DOILookupConnectorBase
 from findpapers.connectors.url_lookup_base import URLLookupConnectorBase
@@ -677,13 +676,8 @@ class GetRunner:
         if not paper.doi:
             return
 
-        # OpenAlex and Semantic Scholar both implement CitationConnectorBase
-        # and are already instantiated as DOI-lookup connectors.
-        citation_connectors: list[CitationConnectorBase] = [
-            c
-            for c in [self._openalex, self._semantic_scholar]
-            if c is not None and isinstance(c, CitationConnectorBase)
-        ]
+        # OpenAlex and Semantic Scholar support fetch_cited_by to populate paper.cited_by.
+        citation_connectors = [c for c in [self._openalex, self._semantic_scholar] if c is not None]
 
         if not citation_connectors:
             return
@@ -692,7 +686,7 @@ class GetRunner:
         for connector in citation_connectors:
             try:
                 logger.debug("Fetching cited-by from %s for DOI %s.", connector.name, paper.doi)
-                citing_papers = connector.fetch_cited_by(paper)
+                citing_papers = connector.fetch_cited_by(paper)  # type: ignore[attr-defined]
                 for cp in citing_papers:
                     if cp.doi and cp.doi not in seen:
                         paper.cited_by.append(cp.doi)
