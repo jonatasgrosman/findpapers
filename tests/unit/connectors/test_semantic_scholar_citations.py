@@ -142,6 +142,50 @@ class TestSemanticScholarFetchCitedBy:
         assert len(cited_by) == 1
         assert cited_by[0].title == "Good Paper"
 
+    @patch.object(SemanticScholarConnector, "_get")
+    def test_max_papers_stops_pagination_early(self, mock_get: MagicMock, make_paper) -> None:
+        """Pagination stops once max_papers is reached; no further pages are fetched."""
+        connector = SemanticScholarConnector()
+        paper = make_paper(doi="10.1000/popular", citations=2000)
+
+        # Page 1: full page (1000 items) with next offset
+        page1 = MagicMock()
+        page1.json.return_value = {
+            "data": [
+                {"citingPaper": _make_ss_paper_record(f"p{i}", f"10.1000/p{i}", f"Paper {i}")}
+                for i in range(1000)
+            ],
+            "next": 1000,
+        }
+
+        mock_get.side_effect = [page1]
+
+        # Request only 3 papers — only 1 page fetched, result is trimmed
+        cited_by = connector.fetch_cited_by(paper, max_papers=3)
+
+        assert len(cited_by) == 3
+        assert mock_get.call_count == 1
+
+    @patch.object(SemanticScholarConnector, "_get")
+    def test_max_papers_none_fetches_all(self, mock_get: MagicMock, make_paper) -> None:
+        """Default (None) max_papers fetches all pages."""
+        connector = SemanticScholarConnector()
+        paper = make_paper(doi="10.1000/normal")
+
+        page = MagicMock()
+        page.json.return_value = {
+            "data": [
+                {"citingPaper": _make_ss_paper_record("a", "10.1000/a", "Paper A")},
+                {"citingPaper": _make_ss_paper_record("b", "10.1000/b", "Paper B")},
+            ],
+            "next": None,
+        }
+        mock_get.return_value = page
+
+        cited_by = connector.fetch_cited_by(paper, max_papers=None)
+
+        assert len(cited_by) == 2
+
 
 # ---------------------------------------------------------------------------
 # Tests with real API response data

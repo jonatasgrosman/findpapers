@@ -11,10 +11,9 @@ import pytest
 from findpapers.core.paper import Paper
 from findpapers.core.snowball_result import SnowballResult
 from findpapers.exceptions import InvalidParameterError
-from findpapers.runners.get_runner import GET_DATABASES
 from findpapers.runners.snowball_runner import (
+    SNOWBALL_DATABASES,
     SNOWBALL_ENRICHMENT_DATABASES,
-    SNOWBALL_WEBSCRAPING_DATABASES,
     SnowballRunner,
 )
 
@@ -68,7 +67,7 @@ def _mock_get_runner_class(
                     {"identifier": self._identifier, "databases": kwargs.get("databases")}
                 )
 
-        def run(self, verbose: bool = False) -> Paper | None:
+        def run(self, verbose: bool = False, max_cited_by: int | None = None) -> Paper | None:
             """Return the paper registered for the stored DOI.
 
             Parameters
@@ -126,14 +125,12 @@ class TestSnowballRunnerInit:
         assert runner._max_depth == 1
         assert runner._direction == "both"
         assert runner._num_workers == 1
-        assert runner._max_per_level is None
+        assert runner._max_papers_per_level is None
         assert runner._max_expansion_per_level is None
-        # BFS discovery defaults to crossref only.
-        assert runner._databases == ["crossref"]
-        # Enrichment defaults to all API connectors (no web scraping).
+        # With direction='both' (default), databases defaults to all SNOWBALL_DATABASES.
+        assert runner._databases == list(SNOWBALL_DATABASES)
+        # Enrichment defaults to crossref + web_scraping.
         assert runner._enrichment_databases == list(SNOWBALL_ENRICHMENT_DATABASES)
-        # Final web-scraping pass is enabled by default.
-        assert runner._final_webscraping is True
 
     def test_max_depth_zero_raises(self, seed: Paper) -> None:
         """max_depth=0 raises InvalidParameterError."""
@@ -146,19 +143,19 @@ class TestSnowballRunnerInit:
             SnowballRunner(seed_papers=seed, max_depth=-3)
 
     def test_top_n_zero_raises(self, seed: Paper) -> None:
-        """max_per_level=0 raises InvalidParameterError."""
-        with pytest.raises(InvalidParameterError, match="max_per_level must be >= 1"):
-            SnowballRunner(seed_papers=seed, max_per_level=0)
+        """max_papers_per_level=0 raises InvalidParameterError."""
+        with pytest.raises(InvalidParameterError, match="max_papers_per_level must be >= 1"):
+            SnowballRunner(seed_papers=seed, max_papers_per_level=0)
 
     def test_top_n_negative_raises(self, seed: Paper) -> None:
-        """Negative max_per_level raises InvalidParameterError."""
-        with pytest.raises(InvalidParameterError, match="max_per_level must be >= 1"):
-            SnowballRunner(seed_papers=seed, max_per_level=-5)
+        """Negative max_papers_per_level raises InvalidParameterError."""
+        with pytest.raises(InvalidParameterError, match="max_papers_per_level must be >= 1"):
+            SnowballRunner(seed_papers=seed, max_papers_per_level=-5)
 
     def test_top_n_positive_stored(self, seed: Paper) -> None:
-        """A positive max_per_level value is stored on the runner."""
-        runner = SnowballRunner(seed_papers=seed, max_per_level=10)
-        assert runner._max_per_level == 10
+        """A positive max_papers_per_level value is stored on the runner."""
+        runner = SnowballRunner(seed_papers=seed, max_papers_per_level=10)
+        assert runner._max_papers_per_level == 10
 
     def test_max_expansion_zero_raises(self, seed: Paper) -> None:
         """max_expansion_per_level=0 raises InvalidParameterError."""
@@ -175,6 +172,31 @@ class TestSnowballRunnerInit:
         runner = SnowballRunner(seed_papers=seed, max_expansion_per_level=5)
         assert runner._max_expansion_per_level == 5
 
+    def test_max_cited_by_zero_raises(self, seed: Paper) -> None:
+        """max_cited_by=0 raises InvalidParameterError."""
+        with pytest.raises(InvalidParameterError, match="max_cited_by must be >= 1"):
+            SnowballRunner(seed_papers=seed, max_cited_by=0)
+
+    def test_max_cited_by_negative_raises(self, seed: Paper) -> None:
+        """Negative max_cited_by raises InvalidParameterError."""
+        with pytest.raises(InvalidParameterError, match="max_cited_by must be >= 1"):
+            SnowballRunner(seed_papers=seed, max_cited_by=-1)
+
+    def test_max_cited_by_positive_stored(self, seed: Paper) -> None:
+        """A positive max_cited_by value is stored on the runner."""
+        runner = SnowballRunner(seed_papers=seed, max_cited_by=500)
+        assert runner._max_cited_by == 500
+
+    def test_max_cited_by_none_stored(self, seed: Paper) -> None:
+        """max_cited_by=None disables the limit when passed explicitly."""
+        runner = SnowballRunner(seed_papers=seed, max_cited_by=None)
+        assert runner._max_cited_by is None
+
+    def test_max_cited_by_default_is_100(self, seed: Paper) -> None:
+        """max_cited_by defaults to 100 when not supplied."""
+        runner = SnowballRunner(seed_papers=seed)
+        assert runner._max_cited_by == 100
+
     def test_databases_empty_list_raises(self, seed: Paper) -> None:
         """An empty databases list raises InvalidParameterError."""
         with pytest.raises(InvalidParameterError, match="databases must not be an empty list"):
@@ -182,13 +204,13 @@ class TestSnowballRunnerInit:
 
     def test_databases_unknown_value_raises(self, seed: Paper) -> None:
         """An unknown database name raises InvalidParameterError."""
-        with pytest.raises(InvalidParameterError, match="Unknown database"):
+        with pytest.raises(InvalidParameterError, match="Unknown or unsupported database"):
             SnowballRunner(seed_papers=seed, databases=["no_such_db"])
 
     def test_databases_known_values_accepted(self, seed: Paper) -> None:
-        """All values from GET_DATABASES are accepted without raising."""
-        for db in GET_DATABASES:
-            runner = SnowballRunner(seed_papers=seed, databases=[db])
+        """All values from SNOWBALL_DATABASES are accepted without raising."""
+        for db in SNOWBALL_DATABASES:
+            runner = SnowballRunner(seed_papers=seed, databases=[db], direction="backward")
             assert runner._databases == [db]
 
     def test_databases_multiple_known_values_stored(self, seed: Paper) -> None:
@@ -197,20 +219,40 @@ class TestSnowballRunnerInit:
         assert runner._databases is not None
         assert set(runner._databases) == {"crossref", "openalex"}
 
-    def test_databases_none_stored_as_none(self, seed: Paper) -> None:
-        """databases=None is stored as None (use all sources)."""
+    def test_databases_none_expanded_to_all_snowball_databases(self, seed: Paper) -> None:
+        """databases=None expands to all SNOWBALL_DATABASES."""
         runner = SnowballRunner(seed_papers=seed, databases=None)
-        assert runner._databases is None
+        assert runner._databases == list(SNOWBALL_DATABASES)
 
     def test_databases_normalised_to_lowercase(self, seed: Paper) -> None:
         """Database names are normalised to lowercase."""
-        runner = SnowballRunner(seed_papers=seed, databases=["CrossRef"])
+        runner = SnowballRunner(seed_papers=seed, databases=["CrossRef"], direction="backward")
         assert runner._databases == ["crossref"]
 
     def test_num_workers_clamped_to_one(self, seed: Paper) -> None:
         """num_workers=0 is clamped to 1."""
         runner = SnowballRunner(seed_papers=seed, num_workers=0)
         assert runner._num_workers == 1
+
+    def test_forward_direction_incompatible_databases_raises(self, seed: Paper) -> None:
+        """forward direction with crossref-only raises InvalidParameterError."""
+        with pytest.raises(InvalidParameterError, match="forward"):
+            SnowballRunner(seed_papers=seed, direction="forward", databases=["crossref"])
+
+    def test_both_direction_incompatible_databases_raises(self, seed: Paper) -> None:
+        """both direction with crossref-only raises InvalidParameterError."""
+        with pytest.raises(InvalidParameterError, match="both"):
+            SnowballRunner(seed_papers=seed, direction="both", databases=["crossref"])
+
+    def test_backward_direction_crossref_only_valid(self, seed: Paper) -> None:
+        """backward direction with crossref-only is valid."""
+        runner = SnowballRunner(seed_papers=seed, direction="backward", databases=["crossref"])
+        assert runner._databases == ["crossref"]
+
+    def test_forward_direction_openalex_valid(self, seed: Paper) -> None:
+        """forward direction with openalex is valid."""
+        runner = SnowballRunner(seed_papers=seed, direction="forward", databases=["openalex"])
+        assert runner._databases == ["openalex"]
 
 
 # ---------------------------------------------------------------------------
@@ -444,7 +486,7 @@ class TestSnowballRunnerRun:
             def __init__(self, identifier: str, **kwargs: object) -> None:
                 self._doi = identifier.strip().lower()
 
-            def run(self, verbose: bool = False) -> Paper | None:
+            def run(self, verbose: bool = False, max_cited_by: int | None = None) -> Paper | None:
                 call_counts[self._doi] = call_counts.get(self._doi, 0) + 1
                 return {"10.1000/seed": enriched_seed, "10.1000/l1": l1_paper}.get(self._doi)
 
@@ -453,8 +495,6 @@ class TestSnowballRunnerRun:
                 seed_papers=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=2,
                 direction="backward",
-                # Disable final webscraping so we can count BFS-only calls.
-                final_webscraping=False,
             )
             result = runner.run(show_progress=False)
 
@@ -556,10 +596,10 @@ class TestSnowballRunnerRun:
 
 
 class TestSnowballRunnerMaxPerLevel:
-    """Tests for the max_per_level parameter (per-level result cap)."""
+    """Tests for the max_papers_per_level parameter (per-level result cap)."""
 
-    def test_max_per_level_filters_result_not_frontier(self, make_paper) -> None:
-        """max_per_level limits result papers per level; all papers still expand."""
+    def test_max_papers_per_level_filters_result_not_frontier(self, make_paper) -> None:
+        """max_papers_per_level limits result papers per level; all papers still expand."""
         enriched_seed = make_paper("Seed", doi="10.1000/seed")
         enriched_seed.references = ["10.1000/high", "10.1000/mid", "10.1000/low"]
 
@@ -585,7 +625,7 @@ class TestSnowballRunnerMaxPerLevel:
                 seed_papers=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=2,
                 direction="backward",
-                max_per_level=2,
+                max_papers_per_level=2,
             )
             result = runner.run(show_progress=False)
 
@@ -598,8 +638,8 @@ class TestSnowballRunnerMaxPerLevel:
         # low is still in the frontier, so l2low IS fetched and in the result.
         assert "10.1000/l2low" in dois
 
-    def test_max_per_level_1_keeps_only_highest_cited(self, make_paper) -> None:
-        """max_per_level=1 keeps only the single most-cited paper in the result."""
+    def test_max_papers_per_level_1_keeps_only_highest_cited(self, make_paper) -> None:
+        """max_papers_per_level=1 keeps only the single most-cited paper in the result."""
         enriched_seed = make_paper("Seed", doi="10.1000/seed")
         enriched_seed.references = ["10.1000/winner", "10.1000/loser"]
 
@@ -622,7 +662,7 @@ class TestSnowballRunnerMaxPerLevel:
                 seed_papers=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=2,
                 direction="backward",
-                max_per_level=1,
+                max_papers_per_level=1,
             )
             result = runner.run(show_progress=False)
 
@@ -657,7 +697,7 @@ class TestSnowballRunnerMaxPerLevel:
                 seed_papers=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=2,
                 direction="backward",
-                max_per_level=1,
+                max_papers_per_level=1,
             )
             result = runner.run(show_progress=False)
 
@@ -669,8 +709,8 @@ class TestSnowballRunnerMaxPerLevel:
         # unknown is still in frontier; deepunknown IS fetched and in result.
         assert "10.1000/deepunknown" in dois
 
-    def test_max_per_level_none_keeps_all_papers(self, make_paper) -> None:
-        """Without max_per_level, all discovered papers are in the result."""
+    def test_max_papers_per_level_none_keeps_all_papers(self, make_paper) -> None:
+        """Without max_papers_per_level, all discovered papers are in the result."""
         enriched_seed = make_paper("Seed", doi="10.1000/seed")
         enriched_seed.references = ["10.1000/p1", "10.1000/p2"]
 
@@ -740,7 +780,7 @@ class TestSnowballRunnerMaxExpansion:
             result = runner.run(show_progress=False)
 
         dois = {p.doi for p in result.papers if p.doi}
-        # All 3 level-1 papers are in the result (no max_per_level).
+        # All 3 level-1 papers are in the result (no max_papers_per_level).
         assert "10.1000/high" in dois
         assert "10.1000/mid" in dois
         assert "10.1000/low" in dois
@@ -1108,7 +1148,7 @@ class TestFetchDoisError:
             def __init__(self, identifier: str, **kwargs: object) -> None:
                 self._doi = identifier.strip().lower()
 
-            def run(self, verbose: bool = False) -> Paper | None:
+            def run(self, verbose: bool = False, max_cited_by: int | None = None) -> Paper | None:
                 if self._doi == "10.1000/bad":
                     raise RuntimeError("network failure")
                 return {"10.1000/seed": enriched_seed}.get(self._doi)
@@ -1158,139 +1198,121 @@ class TestSnowballRunnerEnrichmentStrategy:
         runner = SnowballRunner(seed_papers=seed, enrichment_databases=["crossref", "openalex"])
         assert set(runner._enrichment_databases) == {"crossref", "openalex"}
 
-    def test_final_webscraping_default_true(self, seed: Paper) -> None:
-        """final_webscraping defaults to True."""
-        runner = SnowballRunner(seed_papers=seed)
-        assert runner._final_webscraping is True
-
-    def test_final_webscraping_can_be_disabled(self, seed: Paper) -> None:
-        """final_webscraping=False is stored correctly."""
-        runner = SnowballRunner(seed_papers=seed, final_webscraping=False)
-        assert runner._final_webscraping is False
-
     # ------------------------------------------------------------------
-    # Seeds are fetched with enrichment_databases
+    # Seeds are fetched with union of databases + enrichment_databases
     # ------------------------------------------------------------------
 
-    def test_seeds_fetched_with_enrichment_databases(self, make_paper) -> None:
-        """Seeds are resolved using enrichment_databases, not discovery databases."""
+    def test_seeds_fetched_with_union_databases(self, make_paper) -> None:
+        """Seeds are fetched with union(databases, enrichment_databases)."""
         enriched_seed = make_paper("Seed", doi="10.1000/seed")
 
         call_log: list[dict] = []
         paper_map = {"10.1000/seed": enriched_seed}
         mock_cls = _mock_get_runner_class(paper_map, call_log=call_log)
 
-        custom_enrichment = ["crossref", "openalex"]
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
                 seed_papers=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=1,
-                enrichment_databases=custom_enrichment,
-                final_webscraping=False,
+                direction="backward",
+                databases=["crossref"],
+                enrichment_databases=["openalex"],
             )
             runner.run(show_progress=False)
 
-        # The seed fetch call must use enrichment_databases.
         seed_calls = [c for c in call_log if c["identifier"] == "10.1000/seed"]
-        assert any(c["databases"] == custom_enrichment for c in seed_calls), (
-            f"Expected at least one call with databases={custom_enrichment!r}. Calls: {seed_calls}"
+        # At least one call should have both databases.
+        union_dbs = sorted({"crossref", "openalex"})
+        assert any(sorted(c["databases"]) == union_dbs for c in seed_calls), (
+            f"Expected at least one seed call with databases={union_dbs!r}. Calls: {seed_calls}"
         )
 
     # ------------------------------------------------------------------
-    # Frontier enrichment happens before last level
+    # Frontier enrichment between BFS levels
     # ------------------------------------------------------------------
 
     def test_frontier_enriched_before_next_level(self, make_paper) -> None:
-        """Papers at level < max_depth are re-fetched with enrichment_databases."""
-        enriched_seed: Paper = make_paper("Seed", doi="10.1000/seed")
+        """Papers driving the next BFS level are re-fetched with union(databases, enrichment_databases)."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
         enriched_seed.references = ["10.1000/p1"]
 
-        p1_discovery: Paper = make_paper("P1 (discovery)", doi="10.1000/p1")
-        # enrichment version has references that would be expanded
-        p1_enriched: Paper = make_paper("P1 (enriched)", doi="10.1000/p1")
+        # p1 from discovery has no references; enriched p1 has references to p2.
+        p1_discovery = make_paper("P1", doi="10.1000/p1")
+        p1_enriched = make_paper("P1 enriched", doi="10.1000/p1")
         p1_enriched.references = ["10.1000/p2"]
 
-        p2: Paper = make_paper("P2", doi="10.1000/p2")
+        p2 = make_paper("P2", doi="10.1000/p2")
 
-        call_log: list[dict] = []
-        custom_enrichment = ["openalex"]
-
-        def _run(identifier: str, **kwargs: object) -> Paper | None:
-            databases = kwargs.get("databases")
-            doi = identifier.strip().lower()
-            call_log.append({"identifier": doi, "databases": databases})
-
-            if doi == "10.1000/seed":
-                return enriched_seed
-            if doi == "10.1000/p1":
-                # Return enriched version when called with enrichment databases.
-                if databases == custom_enrichment:
-                    return p1_enriched
-                return p1_discovery
-            if doi == "10.1000/p2":
-                return p2
-            return None
+        union_dbs = sorted({"crossref", "openalex"})
 
         class _SmartMock:
             def __init__(self, identifier: str, **kwargs: object) -> None:
-                self._identifier = identifier
-                self._kwargs = kwargs
+                self._doi = identifier.strip().lower()
+                raw_dbs = kwargs.get("databases")
+                self._dbs: list[str] | None = list(raw_dbs) if isinstance(raw_dbs, list) else None
 
-            def run(self, verbose: bool = False) -> Paper | None:
-                return _run(self._identifier, **self._kwargs)
+            def run(self, verbose: bool = False, max_cited_by: int | None = None) -> Paper | None:
+                if self._doi == "10.1000/seed":
+                    return enriched_seed  # type: ignore[no-any-return]
+                if self._doi == "10.1000/p1":
+                    # Return enriched version when called with the union.
+                    dbs: list[str] = self._dbs if self._dbs is not None else []
+                    return p1_enriched if sorted(dbs) == union_dbs else p1_discovery  # type: ignore[no-any-return]
+                if self._doi == "10.1000/p2":
+                    return p2  # type: ignore[no-any-return]
+                return None
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=_SmartMock):
             runner = SnowballRunner(
                 seed_papers=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=2,
                 direction="backward",
-                enrichment_databases=custom_enrichment,
-                final_webscraping=False,
+                databases=["crossref"],
+                enrichment_databases=["openalex"],
             )
             result = runner.run(show_progress=False)
 
-        # p2 is only reachable if p1 was enriched (p1_enriched has p2 in references).
+        # p2 is only reachable if p1 was enriched before level 2.
         dois = {p.doi for p in result.papers if p.doi}
-        assert "10.1000/p2" in dois, (
-            "p2 should be discovered because p1 was enriched with enrichment_databases"
-        )
+        assert "10.1000/p2" in dois, "p2 should be discovered via enriched p1"
 
     def test_frontier_not_enriched_at_last_level(self, make_paper) -> None:
-        """At the last BFS level, no frontier enrichment round is performed."""
+        """Papers at the last BFS level are NOT re-enriched (no next level to expand)."""
         enriched_seed = make_paper("Seed", doi="10.1000/seed")
         enriched_seed.references = ["10.1000/p1"]
 
         p1 = make_paper("P1", doi="10.1000/p1")
 
         call_log: list[dict] = []
-        custom_enrichment = ["openalex"]
         paper_map = {"10.1000/seed": enriched_seed, "10.1000/p1": p1}
         mock_cls = _mock_get_runner_class(paper_map, call_log=call_log)
+
+        union_dbs = sorted({"crossref", "openalex"})
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
                 seed_papers=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=1,
                 direction="backward",
-                enrichment_databases=custom_enrichment,
-                final_webscraping=False,
+                databases=["crossref"],
+                enrichment_databases=["openalex"],
             )
             runner.run(show_progress=False)
 
-        # p1 is at the last (and only) BFS level — no enrichment call expected.
-        p1_enrichment_calls = [
+        # p1 is at the last (and only) BFS level — no union-enrichment call expected.
+        p1_union_calls = [
             c
             for c in call_log
-            if c["identifier"] == "10.1000/p1" and c["databases"] == custom_enrichment
+            if c["identifier"] == "10.1000/p1" and sorted(c["databases"] or []) == union_dbs
         ]
-        assert p1_enrichment_calls == [], "No enrichment call expected for last-level papers"
+        assert p1_union_calls == [], "No frontier enrichment expected at the last BFS level"
 
     # ------------------------------------------------------------------
-    # Final web-scraping pass
+    # Final enrichment enriches non-seed papers only
     # ------------------------------------------------------------------
 
-    def test_final_webscraping_calls_web_scraping_databases(self, make_paper) -> None:
-        """When final_webscraping=True, all surviving papers are re-fetched via web scraping."""
+    def test_final_enrichment_enriches_non_seed_papers(self, make_paper) -> None:
+        """After BFS, non-seed papers are re-enriched with enrichment-only databases."""
         enriched_seed = make_paper("Seed", doi="10.1000/seed")
         enriched_seed.references = ["10.1000/p1"]
 
@@ -1300,36 +1322,84 @@ class TestSnowballRunnerEnrichmentStrategy:
         paper_map = {"10.1000/seed": enriched_seed, "10.1000/p1": p1}
         mock_cls = _mock_get_runner_class(paper_map, call_log=call_log)
 
+        enrichment_only = ["web_scraping"]
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
                 seed_papers=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=1,
                 direction="backward",
-                final_webscraping=True,
+                databases=["crossref"],
+                enrichment_databases=enrichment_only,
             )
             runner.run(show_progress=False)
 
-        scraping_calls = [c for c in call_log if c["databases"] == SNOWBALL_WEBSCRAPING_DATABASES]
-        scraped_dois = {c["identifier"] for c in scraping_calls}
-        # Both seed and discovered paper should receive a scraping pass.
-        assert "10.1000/seed" in scraped_dois
-        assert "10.1000/p1" in scraped_dois
+        # p1 (non-seed) should get a final-enrichment call with enrichment_only databases.
+        p1_final_calls = [
+            c
+            for c in call_log
+            if c["identifier"] == "10.1000/p1" and c["databases"] == enrichment_only
+        ]
+        assert len(p1_final_calls) >= 1, (
+            f"Expected final enrichment call for p1 with {enrichment_only!r}. Calls: {call_log}"
+        )
 
-    def test_final_webscraping_disabled_skips_scraping_pass(self, make_paper) -> None:
-        """When final_webscraping=False, no web-scraping calls are made."""
+    def test_final_enrichment_skips_seeds(self, make_paper) -> None:
+        """Seed DOIs are excluded from the final enrichment pass."""
         enriched_seed = make_paper("Seed", doi="10.1000/seed")
 
         call_log: list[dict] = []
         paper_map = {"10.1000/seed": enriched_seed}
         mock_cls = _mock_get_runner_class(paper_map, call_log=call_log)
 
+        enrichment_only = ["web_scraping"]
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
                 seed_papers=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=1,
-                final_webscraping=False,
+                direction="backward",
+                databases=["crossref"],
+                enrichment_databases=enrichment_only,
             )
             runner.run(show_progress=False)
 
-        scraping_calls = [c for c in call_log if c["databases"] == SNOWBALL_WEBSCRAPING_DATABASES]
-        assert scraping_calls == [], "No web-scraping calls expected when final_webscraping=False"
+        # The seed DOI should NOT appear in final-enrichment calls.
+        seed_final_calls = [
+            c
+            for c in call_log
+            if c["identifier"] == "10.1000/seed" and c["databases"] == enrichment_only
+        ]
+        assert seed_final_calls == [], (
+            f"Seed should be excluded from final enrichment. Calls: {call_log}"
+        )
+
+    def test_final_enrichment_uses_enrichment_minus_discovery_databases(self, make_paper) -> None:
+        """Final enrichment only uses databases not already used during BFS discovery."""
+        enriched_seed = make_paper("Seed", doi="10.1000/seed")
+        enriched_seed.references = ["10.1000/p1"]
+
+        p1 = make_paper("P1", doi="10.1000/p1")
+
+        call_log: list[dict] = []
+        paper_map = {"10.1000/seed": enriched_seed, "10.1000/p1": p1}
+        mock_cls = _mock_get_runner_class(paper_map, call_log=call_log)
+
+        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
+            runner = SnowballRunner(
+                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                max_depth=1,
+                direction="backward",
+                # crossref used in both discovery and enrichment; web_scraping is enrichment-only.
+                databases=["crossref"],
+                enrichment_databases=["crossref", "web_scraping"],
+            )
+            runner.run(show_progress=False)
+
+        # Final enrichment of p1 should use only web_scraping (crossref was already used).
+        p1_final_calls = [
+            c
+            for c in call_log
+            if c["identifier"] == "10.1000/p1" and c["databases"] == ["web_scraping"]
+        ]
+        assert len(p1_final_calls) >= 1, (
+            f"Expected final enrichment with web_scraping only. Calls: {call_log}"
+        )

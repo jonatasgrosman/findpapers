@@ -77,7 +77,7 @@ class TestSnowballResultInit:
         assert result.since is None
         assert result.until is None
         assert result.databases is None
-        assert result.max_per_level is None
+        assert result.max_papers_per_level is None
         assert result.max_expansion_per_level is None
         assert result.papers == []
         assert result.runtime_seconds is None
@@ -183,7 +183,7 @@ class TestToDict:
             since=datetime.date(2020, 1, 1),
             until=datetime.date(2023, 12, 31),
             databases=["crossref"],
-            max_per_level=5,
+            max_papers_per_level=5,
             max_expansion_per_level=10,
             skipped_seeds_without_doi=1,
             runtime_seconds=1.23,
@@ -195,7 +195,7 @@ class TestToDict:
         assert meta["since"] == "2020-01-01"
         assert meta["until"] == "2023-12-31"
         assert meta["databases"] == ["crossref"]
-        assert meta["max_per_level"] == 5
+        assert meta["max_papers_per_level"] == 5
         assert meta["max_expansion_per_level"] == 10
         assert meta["skipped_seeds_without_doi"] == 1
         assert meta["runtime_seconds"] == pytest.approx(1.23)  # type: ignore[attr-defined]
@@ -241,7 +241,7 @@ class TestFromDict:
             since=datetime.date(2021, 1, 1),
             until=datetime.date(2023, 12, 31),
             databases=["openalex"],
-            max_per_level=3,
+            max_papers_per_level=3,
             max_expansion_per_level=7,
             papers=[paper],
             runtime_seconds=0.5,
@@ -255,7 +255,7 @@ class TestFromDict:
         assert restored.since == original.since
         assert restored.until == original.until
         assert restored.databases == original.databases
-        assert restored.max_per_level == original.max_per_level
+        assert restored.max_papers_per_level == original.max_papers_per_level
         assert restored.max_expansion_per_level == original.max_expansion_per_level
         assert restored.skipped_seeds_without_doi == original.skipped_seeds_without_doi
         assert restored.runtime_seconds == pytest.approx(original.runtime_seconds)  # type: ignore[attr-defined]

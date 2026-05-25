@@ -102,6 +102,12 @@ class SearchRunner(DiscoveryRunner):
         additional sources (``"arxiv"``, ``"ieee"``, ``"openalex"``,
         ``"pubmed"``, ``"scopus"``, ``"semantic_scholar"``).
         Pass ``[]`` to disable enrichment entirely.
+    max_cited_by : int | None
+        Maximum number of citing-paper DOIs to collect per paper when
+        ``"openalex"`` or ``"semantic_scholar"`` are in *enrichment_databases*.
+        Defaults to ``100``.  ``None`` means no limit — use with caution as
+        highly-cited papers may have thousands of citations.  A warning is
+        emitted when this value is ``None`` or greater than ``100``.
     proxy : str | None
         Optional HTTP/HTTPS proxy URL forwarded to the enrichment
         :class:`~findpapers.runners.get_runner.GetRunner`.
@@ -143,6 +149,7 @@ class SearchRunner(DiscoveryRunner):
         since: dt.date | None = None,
         until: dt.date | None = None,
         enrichment_databases: list[str] | None = DEFAULT_ENRICHMENT_DATABASES,
+        max_cited_by: int | None = 100,
         proxy: str | None = None,
         ssl_verify: bool = True,
     ) -> None:
@@ -180,6 +187,10 @@ class SearchRunner(DiscoveryRunner):
             Databases for post-search enrichment.  Defaults to
             ``DEFAULT_ENRICHMENT_DATABASES`` (``["crossref", "web_scraping"]``).
             Pass ``None`` or ``[]`` to disable enrichment entirely.
+        max_cited_by : int | None
+            Maximum citing-paper DOIs collected per paper when ``"openalex"``
+            or ``"semantic_scholar"`` are in *enrichment_databases*.
+            Defaults to ``100``.  ``None`` means no limit.
         proxy : str | None
             Optional HTTP/HTTPS proxy URL for enrichment requests.
         ssl_verify : bool
@@ -190,9 +201,20 @@ class SearchRunner(DiscoveryRunner):
         InvalidParameterError
             If *enrichment_databases* contains unknown database names.
         """
+        _enrichment_dbs_set = set(enrichment_databases or [])
+        _has_citation_enrich = bool(_enrichment_dbs_set & {"openalex", "semantic_scholar"})
+        if _has_citation_enrich and (max_cited_by is None or max_cited_by > 100):
+            logger.warning(
+                "max_cited_by is %s. Fetching cited-by during enrichment may be very slow "
+                "or produce large lists for highly-cited papers. "
+                "Consider setting max_cited_by <= 100.",
+                max_cited_by if max_cited_by is not None else "None (unlimited)",
+            )
+
         self._results: list[Paper] = []
         self._metrics: dict[str, int | float] = {}
         self._search: SearchResult | None = None
+        self._max_cited_by = max_cited_by
 
         super().__init__(
             since=since,
@@ -319,6 +341,7 @@ class SearchRunner(DiscoveryRunner):
                 verbose,
                 show_progress=show_progress,
                 num_workers=self._num_workers,
+                max_cited_by=self._max_cited_by,
             )
 
         metrics["total_papers"] = len(self._results)

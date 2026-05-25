@@ -1,15 +1,9 @@
 """SnowballRunner: discover papers via iterative citation snowballing.
 
 Given one or more seed papers, this runner iteratively fetches their
-references (backward) and/or citing papers (forward) by calling
-:class:`~findpapers.runners.get_runner.GetRunner` for each DOI.  Each
-:class:`~findpapers.core.paper.Paper` returned by the runner is already
-enriched (metadata filled from multiple databases) and carries the
-:attr:`~findpapers.core.paper.Paper.references` and
-:attr:`~findpapers.core.paper.Paper.cited_by` lists that drive the BFS
-expansion.  The result is a :class:`~findpapers.core.snowball_result.SnowballResult`
-containing all discovered papers with citation relationships encoded on each
-paper object.
+references (backward) and/or citing papers (forward).  The result is a
+:class:`~findpapers.core.snowball_result.SnowballResult` containing all
+discovered papers with citation relationships encoded on each paper object.
 """
 
 from __future__ import annotations
@@ -32,47 +26,167 @@ logger = logging.getLogger(__name__)
 # Sentinel used to distinguish "argument not passed" from explicit None.
 _UNSET: object = object()
 
-# Default databases for the fast BFS discovery fetch.  CrossRef is chosen
+# Databases supported for snowball traversal.  Only these three can populate
+# paper.references (backward) and paper.cited_by (forward), which are required
+# for BFS expansion.
+SNOWBALL_DATABASES: list[str] = ["crossref", "openalex", "semantic_scholar"]
+
+# Default databases for backward-direction BFS discovery.  CrossRef is chosen
 # because it is unauthenticated, fast (10 req/s), and reliably provides
-# backward-reference lists (paper.references) that drive BFS expansion.
+# backward-reference lists (paper.references).
 SNOWBALL_DISCOVERY_DATABASES: list[str] = ["crossref"]
 
-# Databases used when re-enriching seeds and frontier papers so that
-# paper.references and paper.cited_by are populated from the best available
-# sources.  Web scraping is excluded here and applied in a dedicated final
-# pass instead, to avoid double-scraping frontier papers.
-SNOWBALL_ENRICHMENT_DATABASES: list[str] = sorted(GET_DATABASES - {"web_scraping"})
+# Default databases for the final enrichment pass on non-seed papers after
+# all BFS levels and filters are applied.  CrossRef provides structured
+# metadata; web_scraping fills remaining gaps (abstract, PDF URL, etc.).
+SNOWBALL_ENRICHMENT_DATABASES: list[str] = ["crossref", "web_scraping"]
 
-# Databases used for the optional final enrichment pass that fills any
-# remaining metadata gaps on surviving papers via HTML scraping.
-SNOWBALL_WEBSCRAPING_DATABASES: list[str] = ["web_scraping"]
+# Databases capable of returning forward citation data (paper.cited_by).
+_FORWARD_CAPABLE_DATABASES: frozenset[str] = frozenset({"openalex", "semantic_scholar"})
+
+
+def _validate_snowball_databases(value: list[str], param_name: str) -> list[str]:
+    """Validate and normalise a snowball discovery databases list.
+
+    Parameters
+    ----------
+    value : list[str]
+        Raw value to validate.
+    param_name : str
+        Parameter name used in error messages.
+
+    Returns
+    -------
+    list[str]
+        Normalised (lowercase, stripped) list.
+
+    Raises
+    ------
+    InvalidParameterError
+        If the list is empty or contains unsupported database names.
+    """
+    if len(value) == 0:
+        raise InvalidParameterError(
+            f"{param_name} must not be an empty list. Pass None to use the default databases."
+        )
+    normalised = [db.strip().lower() for db in value]
+    unknown = [db for db in normalised if db not in SNOWBALL_DATABASES]
+    if unknown:
+        raise InvalidParameterError(
+            f"Unknown or unsupported database(s) in {param_name}: "
+            f"{', '.join(unknown)}. "
+            f"Accepted values: {', '.join(sorted(SNOWBALL_DATABASES))}"
+        )
+    return normalised
+
+
+def _validate_snowball_enrichment_databases(value: list[str], param_name: str) -> list[str]:
+    """Validate and normalise a snowball enrichment databases list.
+
+    Parameters
+    ----------
+    value : list[str]
+        Raw value to validate.
+    param_name : str
+        Parameter name used in error messages.
+
+    Returns
+    -------
+    list[str]
+        Normalised (lowercase, stripped) list.
+
+    Raises
+    ------
+    InvalidParameterError
+        If the list is empty or contains unknown database names.
+    """
+    if len(value) == 0:
+        raise InvalidParameterError(
+            f"{param_name} must not be an empty list. "
+            "Pass None to use the default enrichment databases."
+        )
+    normalised = [db.strip().lower() for db in value]
+    unknown = [db for db in normalised if db not in GET_DATABASES]
+    if unknown:
+        raise InvalidParameterError(
+            f"Unknown database(s) in {param_name}: {', '.join(unknown)}. "
+            f"Accepted values: {', '.join(sorted(GET_DATABASES))}"
+        )
+    return normalised
+
+
+def _validate_snowball_scalar_params(
+    max_depth: int,
+    max_papers_per_level: int | None,
+    max_expansion_per_level: int | None,
+    max_cited_by: int | None,
+    direction: str,
+) -> None:
+    """Validate scalar SnowballRunner init parameters and emit warnings.
+
+    Parameters
+    ----------
+    max_depth : int
+        Must be >= 1.
+    max_papers_per_level : int | None
+        Must be >= 1 when set.
+    max_expansion_per_level : int | None
+        Must be >= 1 when set.
+    max_cited_by : int | None
+        Must be >= 1 when set.  Warning emitted when ``None`` or > 100
+        and direction includes forward expansion.
+    direction : str
+        Snowball direction (``"both"``, ``"backward"``, or ``"forward"``).
+
+    Raises
+    ------
+    InvalidParameterError
+        If any parameter is out of range.
+    """
+    if max_depth < 1:
+        raise InvalidParameterError(f"max_depth must be >= 1, got {max_depth}")
+    if max_papers_per_level is not None and max_papers_per_level < 1:
+        raise InvalidParameterError(
+            f"max_papers_per_level must be >= 1 when set, got {max_papers_per_level}"
+        )
+    if max_expansion_per_level is not None and max_expansion_per_level < 1:
+        raise InvalidParameterError(
+            f"max_expansion_per_level must be >= 1 when set, got {max_expansion_per_level}"
+        )
+    if max_cited_by is not None and max_cited_by < 1:
+        raise InvalidParameterError(f"max_cited_by must be >= 1 when set, got {max_cited_by}")
+    if direction in ("forward", "both") and (max_cited_by is None or max_cited_by > 100):
+        logger.warning(
+            "max_cited_by is %s. Fetching cited-by may be very slow or produce "
+            "large lists for highly-cited papers (forward/both direction). "
+            "Consider setting max_cited_by <= 100.",
+            max_cited_by if max_cited_by is not None else "None (unlimited)",
+        )
 
 
 class SnowballRunner(DiscoveryRunner):
     """Discover papers around seed papers via iterative citation snowballing.
 
-    For each paper in the current frontier the runner calls
-    :class:`~findpapers.runners.get_runner.GetRunner` to obtain its full
-    metadata together with populated
-    :attr:`~findpapers.core.paper.Paper.references` (DOIs of papers it cites)
-    and :attr:`~findpapers.core.paper.Paper.cited_by` (DOIs of papers that
-    cite it).  New DOIs collected from these lists become the next frontier,
-    and the process repeats up to *max_depth* levels.
+    Starting from one or more seed papers, the runner iteratively collects
+    new DOIs from each paper's :attr:`~findpapers.core.paper.Paper.references`
+    and/or :attr:`~findpapers.core.paper.Paper.cited_by` lists up to
+    *max_depth* BFS levels.
 
-    The runner uses a three-tier fetch strategy to minimise API calls
-    while keeping result quality high:
+    Seed papers and frontier papers (those driving the next BFS level) are
+    fetched with the combined set of *databases* and *enrichment_databases*
+    so they carry full metadata, including ``paper.cited_by``, before each
+    expansion round.  Papers discovered during BFS are fetched with
+    ``crossref`` only — this is fast and sufficient to populate
+    ``paper.references`` for the next round.  After all BFS levels complete
+    and date filters are applied, the surviving non-seed papers are
+    re-enriched with the databases in *enrichment_databases* that were not
+    already used (i.e., those not in *databases*).
 
-    1. **BFS discovery** — candidate papers (found via references / cited_by)
-       are fetched with *databases* (default: CrossRef only).  CrossRef is
-       fast, unauthenticated, and reliably returns backward references.
-    2. **Frontier enrichment** — papers that will drive the next BFS level
-       are re-fetched with *enrichment_databases* (all API connectors by
-       default) so that both ``paper.references`` *and* ``paper.cited_by``
-       are fully populated before the next expansion round.
-    3. **Final web-scraping pass** (optional) — after all BFS levels are
-       complete, every surviving paper is re-enriched via HTML scraping to
-       fill any metadata gaps (e.g. abstract, PDF URL, keywords) without
-       burning extra API calls on papers that were later filtered out.
+    Only ``"crossref"``, ``"openalex"``, and ``"semantic_scholar"`` are valid
+    for *databases* — these are the only sources that populate
+    ``paper.references`` and ``paper.cited_by`` for BFS expansion.
+    Forward direction (``"forward"`` or ``"both"``) requires at least one
+    of ``"openalex"`` or ``"semantic_scholar"`` in *databases*.
 
     Parameters
     ----------
@@ -88,7 +202,7 @@ class SnowballRunner(DiscoveryRunner):
         ``"forward"`` follows :attr:`~findpapers.core.paper.Paper.cited_by`
         (papers that *cite* the current frontier),
         ``"both"`` expands in both directions.
-    max_per_level : int | None
+    max_papers_per_level : int | None
         When set, only the *top-N* most-cited papers discovered at each
         level are kept in the final result.  Seed papers are never filtered.
         ``None`` (default) keeps all discovered papers.
@@ -97,22 +211,17 @@ class SnowballRunner(DiscoveryRunner):
         used as seeds for the next BFS round.  Papers already added to the
         result are unaffected.  ``None`` (default) expands the full frontier.
     databases : list[str] | None
-        Databases used for the fast BFS discovery of candidate papers.
-        Defaults to ``["crossref"]`` for speed — CrossRef is unauthenticated
-        and reliably returns backward references.  Pass ``None`` to use all
-        available sources.  Accepted values: ``"arxiv"``, ``"crossref"``,
-        ``"ieee"``, ``"openalex"``, ``"pubmed"``, ``"scopus"``,
-        ``"semantic_scholar"``, ``"web_scraping"``.
+        Databases used to enrich seeds and frontier papers.  Only
+        ``"crossref"``, ``"openalex"``, and ``"semantic_scholar"`` are
+        accepted.  BFS discovery always uses ``crossref`` regardless of
+        this value.  Defaults to ``["crossref"]`` for backward direction,
+        or all three databases for ``"forward"``/``"both"`` direction.
+        Pass ``None`` to use all three databases.
     enrichment_databases : list[str] | None
-        Databases used when re-fetching seed and frontier papers to populate
-        ``paper.references`` and ``paper.cited_by`` for the next BFS round.
-        Defaults to all API connectors (web scraping excluded).  Pass
-        ``None`` to use the same default.  Pass a custom list to restrict
-        which connectors are used for this enrichment phase.
-    final_webscraping : bool
-        When ``True`` (default), all papers that survive BFS filtering are
-        re-enriched via HTML scraping at the end of the run to fill any
-        remaining metadata gaps.  Set to ``False`` to skip this pass.
+        Databases used to enrich non-seed papers after all BFS levels and
+        filters are applied.  Databases already used in discovery are
+        skipped (they were already fetched).  Defaults to
+        ``["crossref", "web_scraping"]``.  Pass ``None`` to use the default.
     num_workers : int
         Number of parallel :class:`~findpapers.runners.get_runner.GetRunner`
         calls to make per level.  Defaults to ``1`` (sequential).
@@ -148,11 +257,11 @@ class SnowballRunner(DiscoveryRunner):
         *,
         max_depth: int = 1,
         direction: Literal["both", "backward", "forward"] = "both",
-        max_per_level: int | None = None,
+        max_papers_per_level: int | None = None,
         max_expansion_per_level: int | None = None,
+        max_cited_by: int | None = 100,
         databases: list[str] | None = _UNSET,  # type: ignore[assignment]
         enrichment_databases: list[str] | None = _UNSET,  # type: ignore[assignment]
-        final_webscraping: bool = True,
         num_workers: int = 1,
         since: datetime.date | None = None,
         until: datetime.date | None = None,
@@ -176,7 +285,7 @@ class SnowballRunner(DiscoveryRunner):
             Maximum BFS depth.  Must be >= 1.
         direction : Literal["both", "backward", "forward"]
             Snowball direction(s).
-        max_per_level : int | None
+        max_papers_per_level : int | None
             Per-level result cap.  When set, only the top-N most-cited papers
             discovered at each BFS level are kept in the final result.  Seed
             papers are never filtered.  ``None`` means all papers are kept.
@@ -185,18 +294,23 @@ class SnowballRunner(DiscoveryRunner):
             from each level are used as seeds for the next BFS round.  Papers
             already added to the result are unaffected.  ``None`` means the
             full set of discovered papers drives the next level.
+        max_cited_by : int | None
+            Maximum number of citing-paper DOIs collected per paper when
+            populating ``paper.cited_by`` during seed and frontier enrichment.
+            Defaults to ``100``.  ``None`` means no limit — use with caution as
+            highly-cited classic papers may have thousands of citations.
+            A warning is emitted when this value is ``None`` or greater than ``100``.
         databases : list[str] | None
-            Databases used for the fast BFS discovery fetch.  When not
-            provided, defaults to ``["crossref"]`` for speed.  Pass ``None``
-            to use all available sources.
+            Databases used to enrich seeds and frontier papers.  Only
+            ``"crossref"``, ``"openalex"``, and ``"semantic_scholar"`` are
+            accepted.  BFS discovery always uses ``crossref`` regardless of
+            this value.  When not provided, defaults to ``["crossref"]`` for
+            backward direction or all three databases for forward/both
+            direction.  Pass ``None`` to use all three databases.
         enrichment_databases : list[str] | None
-            Databases used when re-fetching seed and frontier papers to
-            populate ``paper.references`` and ``paper.cited_by``.  When not
-            provided, defaults to all API connectors (web scraping excluded).
-            Pass ``None`` to use the same default.
-        final_webscraping : bool
-            When ``True`` (default), all surviving papers are re-enriched via
-            HTML scraping at the end of the run.  Set to ``False`` to skip.
+            Databases used to enrich non-seed papers after BFS completes.
+            When not provided or ``None``, defaults to
+            ``["crossref", "web_scraping"]``.
         num_workers : int
             Number of parallel GetRunner calls per level.
         since : datetime.date | None
@@ -225,64 +339,47 @@ class SnowballRunner(DiscoveryRunner):
         Raises
         ------
         InvalidParameterError
-            If *max_depth* is less than 1, *max_per_level* is less than 1,
-            *max_expansion_per_level* is less than 1,
-            *databases* is an empty list, or *databases* contains unknown
-            database identifiers.
+            If *max_depth* is less than 1, *max_papers_per_level* is less than 1,
+            *max_expansion_per_level* is less than 1, *databases* is an
+            empty list, *databases* contains unsupported database identifiers,
+            or the declared *direction* cannot be satisfied by *databases*
+            (e.g. ``"forward"`` with only ``"crossref"``).
         """
-        if max_depth < 1:
-            raise InvalidParameterError(f"max_depth must be >= 1, got {max_depth}")
-        if max_per_level is not None and max_per_level < 1:
-            raise InvalidParameterError(f"max_per_level must be >= 1 when set, got {max_per_level}")
-        if max_expansion_per_level is not None and max_expansion_per_level < 1:
-            raise InvalidParameterError(
-                f"max_expansion_per_level must be >= 1 when set, got {max_expansion_per_level}"
-            )
+        _validate_snowball_scalar_params(
+            max_depth, max_papers_per_level, max_expansion_per_level, max_cited_by, direction
+        )
 
         # Apply defaults for the sentinel-based parameters.
         if databases is _UNSET:
-            databases = list(SNOWBALL_DISCOVERY_DATABASES)
+            # For forward or both directions, all snowball databases are needed;
+            # for backward-only, CrossRef alone is sufficient.
+            if direction == "backward":
+                databases = list(SNOWBALL_DISCOVERY_DATABASES)
+            else:
+                databases = list(SNOWBALL_DATABASES)
+        elif databases is None:
+            databases = list(SNOWBALL_DATABASES)
+
         if enrichment_databases is _UNSET or enrichment_databases is None:
             enrichment_databases = list(SNOWBALL_ENRICHMENT_DATABASES)
 
-        def _validate_databases(value: list[str] | None, param_name: str) -> list[str] | None:
-            """Validate and normalise a databases list parameter.
+        databases = _validate_snowball_databases(databases, "databases")
+        enrichment_databases = _validate_snowball_enrichment_databases(
+            enrichment_databases, "enrichment_databases"
+        )
 
-            Parameters
-            ----------
-            value : list[str] | None
-                Raw value to validate.
-            param_name : str
-                Parameter name used in error messages.
-
-            Returns
-            -------
-            list[str] | None
-                Normalised (lowercase, stripped) list, or ``None``.
-
-            Raises
-            ------
-            InvalidParameterError
-                If the list is empty or contains unknown database names.
-            """
-            if value is None:
-                return None
-            if len(value) == 0:
-                raise InvalidParameterError(
-                    f"{param_name} must not be an empty list. "
-                    "Pass None to use all available databases."
-                )
-            normalised = [db.strip().lower() for db in value]
-            unknown = [db for db in normalised if db not in GET_DATABASES]
-            if unknown:
-                raise InvalidParameterError(
-                    f"Unknown database(s) in {param_name}: {', '.join(unknown)}. "
-                    f"Accepted values: {', '.join(sorted(GET_DATABASES))}"
-                )
-            return normalised
-
-        databases = _validate_databases(databases, "databases")
-        enrichment_databases = _validate_databases(enrichment_databases, "enrichment_databases")
+        # Validate that the declared databases can satisfy the requested direction.
+        # CrossRef only supports backward references; forward requires OpenAlex or
+        # Semantic Scholar.
+        if direction in ("forward", "both") and not any(
+            db in _FORWARD_CAPABLE_DATABASES for db in databases
+        ):
+            raise InvalidParameterError(
+                f"Direction '{direction}' requires at least one forward-capable database "
+                f"({', '.join(sorted(_FORWARD_CAPABLE_DATABASES))}), "
+                f"but databases={databases!r}. "
+                "Add 'openalex' or 'semantic_scholar' to the databases list."
+            )
 
         # DiscoveryRunner handles shared credentials and date filters.
         # enrichment_databases=[] because GetRunner is invoked directly here.
@@ -308,11 +405,11 @@ class SnowballRunner(DiscoveryRunner):
         self._skipped_seeds = len(seed_papers) - len(self._seed_papers)
         self._max_depth = max_depth
         self._direction = direction
-        self._max_per_level = max_per_level
+        self._max_papers_per_level = max_papers_per_level
         self._max_expansion_per_level = max_expansion_per_level
+        self._max_cited_by = max_cited_by
         self._databases = databases
-        self._enrichment_databases: list[str] = enrichment_databases  # type: ignore[assignment]
-        self._final_webscraping = final_webscraping
+        self._enrichment_databases: list[str] = enrichment_databases
         self._num_workers = max(num_workers, 1)
 
     # ------------------------------------------------------------------
@@ -350,14 +447,17 @@ class SnowballRunner(DiscoveryRunner):
         seed_dois = [p.doi for p in self._seed_papers if p.doi]
         enriched: dict[str, Paper] = {}
         if seed_dois:
-            # Use enrichment databases for seeds since they ARE the initial
-            # frontier — they need full metadata including cited_by.
+            # Seeds are enriched with all available databases — both the
+            # discovery set and the enrichment set — to ensure full metadata
+            # (including references and cited_by) before the first BFS round.
+            seed_databases = sorted(set(self._databases + self._enrichment_databases))
             fetched_seeds = self._fetch_dois(
                 seed_dois,
-                databases=self._enrichment_databases,
+                databases=seed_databases,
                 desc="Seeds",
                 verbose=verbose,
-                show_progress=show_progress,
+                show_progress=False,
+                max_cited_by=self._max_cited_by,
             )
             for paper in fetched_seeds:
                 if paper.doi:
@@ -443,11 +543,10 @@ class SnowballRunner(DiscoveryRunner):
         logger.debug("Direction: %s", self._direction)
         logger.debug(
             "Top N per level: %s",
-            str(self._max_per_level) if self._max_per_level else "unlimited",
+            str(self._max_papers_per_level) if self._max_papers_per_level else "unlimited",
         )
         logger.debug("Discovery databases: %s", self._databases or "all")
         logger.debug("Enrichment databases: %s", self._enrichment_databases or "all")
-        logger.debug("Final web scraping: %s", self._final_webscraping)
         logger.debug("Num workers: %d", self._num_workers)
         logger.debug("=====================================")
 
@@ -485,9 +584,12 @@ class SnowballRunner(DiscoveryRunner):
                 show_progress=show_progress,
             )
 
-        # --- Optional final web-scraping pass on all surviving papers ---
-        if self._final_webscraping and all_papers:
-            self._run_final_webscraping(all_papers, verbose=verbose, show_progress=show_progress)
+        # --- Final enrichment of non-seed papers ---
+        seed_dois: set[str] = {seed.doi.strip().lower() for seed in enriched_seeds if seed.doi}
+        if all_papers:
+            self._run_final_enrichment(
+                all_papers, seed_dois, verbose=verbose, show_progress=show_progress
+            )
 
         elapsed = perf_counter() - start
 
@@ -497,7 +599,6 @@ class SnowballRunner(DiscoveryRunner):
         logger.debug("========================")
 
         _root_logger.setLevel(_saved_log_level)
-        seed_dois: set[str] = {seed.doi.strip().lower() for seed in enriched_seeds if seed.doi}
         discovered_papers = [p for doi, p in all_papers.items() if doi not in seed_dois]
 
         return SnowballResult(
@@ -507,7 +608,7 @@ class SnowballRunner(DiscoveryRunner):
             since=self._since,
             until=self._until,
             databases=self._databases,
-            max_per_level=self._max_per_level,
+            max_papers_per_level=self._max_papers_per_level,
             max_expansion_per_level=self._max_expansion_per_level,
             papers=discovered_papers,
             processed_at=datetime.datetime.now(datetime.UTC),
@@ -529,7 +630,7 @@ class SnowballRunner(DiscoveryRunner):
         verbose: bool,
         show_progress: bool,
     ) -> list[Paper]:
-        """Run one BFS level: discover, filter, store, and optionally enrich.
+        """Run one BFS level: discover, filter, store, and enrich the next frontier.
 
         Parameters
         ----------
@@ -565,9 +666,14 @@ class SnowballRunner(DiscoveryRunner):
         if not candidate_dois:
             return []
 
+        # BFS discovery always uses only CrossRef: it is fast, unauthenticated,
+        # and provides paper.references for expansion.  openalex and
+        # semantic_scholar are reserved for seed/frontier enrichment so that
+        # the richer (but slower) APIs are called only on papers that actually
+        # drive the next BFS level.
         fetched = self._fetch_dois(
             candidate_dois,
-            databases=self._databases,
+            databases=SNOWBALL_DISCOVERY_DATABASES,
             desc=f"Level {level}/{self._max_depth}",
             verbose=verbose,
             show_progress=show_progress,
@@ -575,9 +681,9 @@ class SnowballRunner(DiscoveryRunner):
 
         valid_papers = [p for p in fetched if self._matches_filters(p)]
 
-        if self._max_per_level is not None:
+        if self._max_papers_per_level is not None:
             result_papers = sorted(valid_papers, key=lambda p: p.citations or 0, reverse=True)[
-                : self._max_per_level
+                : self._max_papers_per_level
             ]
         else:
             result_papers = valid_papers
@@ -594,7 +700,9 @@ class SnowballRunner(DiscoveryRunner):
             self._max_depth,
             len(valid_papers),
             len(fetched),
-            f" (top {self._max_per_level} kept in result)" if self._max_per_level else "",
+            f" (top {self._max_papers_per_level} kept in result)"
+            if self._max_papers_per_level
+            else "",
             f" (top {self._max_expansion_per_level} used for expansion)"
             if self._max_expansion_per_level
             else "",
@@ -607,14 +715,18 @@ class SnowballRunner(DiscoveryRunner):
         else:
             expansion_base = valid_papers
 
+        # Re-enrich frontier papers before the next BFS round so that
+        # paper.references and paper.cited_by are fully populated.
+        # Skipped at the last level since there is no further expansion.
         if level < self._max_depth and expansion_base:
-            return self._enrich_frontier(
+            expansion_base = self._enrich_frontier(
                 expansion_base,
                 level=level,
                 all_papers=all_papers,
                 verbose=verbose,
                 show_progress=show_progress,
             )
+
         return expansion_base
 
     def _fetch_dois(
@@ -625,6 +737,7 @@ class SnowballRunner(DiscoveryRunner):
         desc: str,
         verbose: bool,
         show_progress: bool,
+        max_cited_by: int | None = None,
     ) -> list[Paper]:
         """Fetch papers for a list of DOIs using GetRunner.
 
@@ -645,6 +758,9 @@ class SnowballRunner(DiscoveryRunner):
             Forwarded to each :meth:`GetRunner.run` call.
         show_progress : bool
             Whether to display a tqdm progress bar.
+        max_cited_by : int | None
+            Forwarded to :meth:`GetRunner.run` to cap cited-by pagination.
+            ``None`` means no limit.
 
         Returns
         -------
@@ -688,7 +804,7 @@ class SnowballRunner(DiscoveryRunner):
                 proxy=proxy,
                 ssl_verify=ssl_verify,
             )
-            return runner.run(verbose=verbose)
+            return runner.run(verbose=verbose, max_cited_by=max_cited_by)
 
         results: list[Paper] = []
         for doi, result, error in execute_tasks(
@@ -716,12 +832,14 @@ class SnowballRunner(DiscoveryRunner):
         verbose: bool,
         show_progress: bool,
     ) -> list[Paper]:
-        """Re-fetch frontier papers with full enrichment databases.
+        """Re-enrich frontier papers with the full combined set of databases.
 
-        Papers that will drive the next BFS round are re-fetched using
-        *enrichment_databases* (all API connectors by default) so that both
-        ``paper.references`` and ``paper.cited_by`` are populated.  The
-        enriched versions replace their corresponding entries in *all_papers*.
+        Papers that will drive the next BFS round are re-fetched using the
+        union of *databases* and *enrichment_databases*, the same strategy
+        applied to level-0 seeds.  This ensures that ``paper.references`` and
+        ``paper.cited_by`` are fully populated before the next expansion.
+
+        The enriched versions replace their entries in *all_papers* in place.
 
         Parameters
         ----------
@@ -740,73 +858,86 @@ class SnowballRunner(DiscoveryRunner):
         -------
         list[Paper]
             Enriched frontier papers.  Papers for which enrichment returned
-            ``None`` fall back to their original (discovery-fetch) version.
+            nothing fall back to their original (discovery-fetch) version.
         """
         dois = [p.doi for p in papers if p.doi]
         if not dois:
             return papers
 
+        frontier_databases = sorted(set(self._databases + self._enrichment_databases))
         enriched_list = self._fetch_dois(
             dois,
-            databases=self._enrichment_databases,
+            databases=frontier_databases,
             desc=f"Level {level}/{self._max_depth} [enrichment]",
             verbose=verbose,
             show_progress=show_progress,
+            max_cited_by=self._max_cited_by,
         )
         enriched_map: dict[str, Paper] = {}
         for p in enriched_list:
             if p.doi:
                 norm = p.doi.strip().lower()
                 enriched_map[norm] = p
-                # Update all_papers with the richer version.
                 if norm in all_papers:
                     all_papers[norm] = p
 
-        # Return enriched papers; fall back to the original when not found.
-        result: list[Paper] = []
-        for p in papers:
-            norm = p.doi.strip().lower()  # type: ignore[union-attr]
-            result.append(enriched_map.get(norm, p))
-        return result
+        return [enriched_map.get(p.doi.strip().lower(), p) for p in papers]  # type: ignore[union-attr]
 
-    def _run_final_webscraping(
+    def _run_final_enrichment(
         self,
         all_papers: dict[str, Paper],
+        seed_dois: set[str],
         *,
         verbose: bool,
         show_progress: bool,
     ) -> None:
-        """Re-enrich all surviving papers via HTML scraping.
+        """Re-enrich non-seed papers with enrichment-only databases.
 
-        Fetches each paper in *all_papers* using only the
-        ``"web_scraping"`` connector.  For DOI-based identifiers GetRunner
-        follows the ``https://doi.org/{doi}`` redirect and scrapes the
-        publisher page.  Any extra metadata retrieved (abstract, PDF URL,
-        keywords, etc.) is merged into the existing paper object in place.
+        After all BFS levels and filters are applied, papers that were
+        discovered during BFS have only been fetched with the discovery
+        databases.  This method enriches them with the databases declared in
+        *enrichment_databases* that were **not** already used during
+        discovery, avoiding redundant API calls.
+
+        Seed papers are excluded because they were already enriched with the
+        full combined set at the start.
 
         Parameters
         ----------
         all_papers : dict[str, Paper]
-            Canonical result store; updated in place with scraped data.
+            Canonical result store; updated in place with enriched data.
+        seed_dois : set[str]
+            Normalised DOIs of seed papers to exclude from enrichment.
         verbose : bool
             Forwarded to each :meth:`GetRunner.run` call.
         show_progress : bool
             Whether to display a tqdm progress bar.
         """
-        dois = [p.doi for p in all_papers.values() if p.doi]
-        if not dois:
+        # Only use databases that haven't already been used in BFS discovery.
+        discovery_dbs = set(self._databases)
+        enrichment_only_dbs = [db for db in self._enrichment_databases if db not in discovery_dbs]
+        if not enrichment_only_dbs:
             return
 
-        logger.debug("Final web-scraping pass: %d papers.", len(dois))
-        scraped = self._fetch_dois(
-            dois,
-            databases=SNOWBALL_WEBSCRAPING_DATABASES,
-            desc="Final web scraping",
+        non_seed_dois = [p.doi for doi, p in all_papers.items() if doi not in seed_dois and p.doi]
+        if not non_seed_dois:
+            return
+
+        logger.debug(
+            "Final enrichment pass: %d non-seed papers, databases: %s",
+            len(non_seed_dois),
+            enrichment_only_dbs,
+        )
+        enriched = self._fetch_dois(
+            non_seed_dois,
+            databases=enrichment_only_dbs,
+            desc="Enrichment",
             verbose=verbose,
             show_progress=show_progress,
+            max_cited_by=self._max_cited_by,
         )
-        for scraped_paper in scraped:
-            if scraped_paper.doi:
-                norm = scraped_paper.doi.strip().lower()
+        for enriched_paper in enriched:
+            if enriched_paper.doi:
+                norm = enriched_paper.doi.strip().lower()
                 if norm in all_papers:
-                    all_papers[norm].merge(scraped_paper)
+                    all_papers[norm].merge(enriched_paper)

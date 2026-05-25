@@ -24,11 +24,11 @@ result = engine.snowball(
     papers,                         # list[Paper] | Paper - seed papers
     max_depth=1,                    # int - maximum traversal depth
     direction="both",               # "both" | "backward" | "forward"
-    max_per_level=None,             # int | None - keep only top N papers per level in the result
+    max_papers_per_level=None,             # int | None - keep only top N papers per level in the result
     max_expansion_per_level=None,   # int | None - expand only top N papers per level to the next BFS round
-    databases=["crossref"],         # list[str] | None - databases for BFS discovery
-    enrichment_databases=None,      # list[str] | None - databases for seed/frontier enrichment
-    final_webscraping=True,         # bool - re-enrich all survivors via HTML scraping
+    max_cited_by=100,               # int | None - max citing-paper DOIs to collect per paper
+    databases=None,                 # list[str] | None - databases for BFS discovery
+    enrichment_databases=None,      # list[str] | None - databases for post-BFS enrichment of non-seed papers
     since=None,                     # datetime.date | None - exclude papers before this date
     until=None,                     # datetime.date | None - exclude papers after this date
     num_workers=1,                  # int - number of parallel workers
@@ -42,11 +42,11 @@ result = engine.snowball(
 | `papers` | `list[Paper] \| Paper` | *(required)* | One or more seed papers from which the snowball starts |
 | `max_depth` | `int` | `1` | Maximum number of snowball iterations |
 | `direction` | `"both" \| "backward" \| "forward"` | `"both"` | Direction of citation traversal |
-| `max_per_level` | `int \| None` | `None` | Keep only the N most-cited papers per level in the result. Papers outside the top N are excluded from the result but still drive the next level. Seed papers are never filtered. `None` keeps all papers |
+| `max_papers_per_level` | `int \| None` | `None` | Keep only the N most-cited papers per level in the result. Papers outside the top N are excluded from the result but still drive the next level. Seed papers are never filtered. `None` keeps all papers |
 | `max_expansion_per_level` | `int \| None` | `None` | Limit how many papers per level become seeds for the next BFS round. Only the top N most-cited papers from each level are expanded. Papers already in the result are unaffected. `None` expands all |
-| `databases` | `list[str] \| None` | `["crossref"]` | Databases used for fast BFS discovery of candidate papers. `None` uses all available databases. Accepted values: `"arxiv"`, `"crossref"`, `"ieee"`, `"openalex"`, `"pubmed"`, `"scopus"`, `"semantic_scholar"`, `"web_scraping"`, `"wos"` |
-| `enrichment_databases` | `list[str] \| None` | all API connectors | Databases used when re-fetching seeds and frontier papers to populate `paper.references` and `paper.cited_by`. Web scraping excluded by default (handled separately by `final_webscraping`). `None` keeps the default |
-| `final_webscraping` | `bool` | `True` | When `True`, all papers that survive BFS filtering are re-enriched via HTML scraping at the end to fill any remaining metadata gaps |
+| `max_cited_by` | `int \| None` | `100` | Maximum number of citing-paper DOIs collected per paper in `paper.cited_by` during seed and frontier enrichment. OpenAlex is used first (results sorted by citation count so the most-impactful papers are kept when truncated); Semantic Scholar is the fallback. `None` means no limit — use with caution for forward/both directions as highly-cited papers may have thousands of citations. A warning is emitted when this value is `None` or greater than `100` |
+| `databases` | `list[str] \| None` | direction-based | Databases used for BFS discovery. Only `"crossref"`, `"openalex"`, and `"semantic_scholar"` are accepted. Defaults to `["crossref"]` for `"backward"` direction, or all three for `"forward"`/`"both"`. Pass `None` for the same direction-based default. Raises an error if direction requires forward citation data but none of the selected databases support it |
+| `enrichment_databases` | `list[str] \| None` | `["crossref", "web_scraping"]` | Databases used to enrich non-seed papers after all BFS levels complete. Databases already used during discovery are not applied again. Accepted values: any from `GET_DATABASES`. Pass `None` to use the default |
 | `since` | `datetime.date \| None` | `None` | Only include discovered papers published on or after this date. Seed papers are never filtered |
 | `until` | `datetime.date \| None` | `None` | Only include discovered papers published on or before this date. Seed papers are never filtered |
 | `num_workers` | `int` | `1` | Number of parallel workers used to fetch papers per level |
@@ -66,7 +66,7 @@ Returns a `SnowballResult` object containing:
 | `since` | `datetime.date \| None` | Lower-bound date filter applied |
 | `until` | `datetime.date \| None` | Upper-bound date filter applied |
 | `databases` | `list[str] \| None` | Databases used for paper lookups |
-| `max_per_level` | `int \| None` | Per-level result cap that was used |
+| `max_papers_per_level` | `int \| None` | Per-level result cap that was used |
 | `max_expansion_per_level` | `int \| None` | Per-level frontier cap that was used |
 | `processed_at` | `datetime.datetime` | UTC timestamp when the snowball was executed |
 | `runtime_seconds` | `float \| None` | Wall-clock runtime in seconds |
@@ -114,9 +114,9 @@ result = engine.snowball(papers, max_depth=2)
 
 > **Note:** Higher depths can result in very large result sets. Start with `max_depth=1` and increase gradually.
 
-## Controlling the Result Size with `max_per_level`
+## Controlling the Result Size with `max_papers_per_level`
 
-At each snowball level the number of discovered papers can grow quickly. The `max_per_level` parameter limits how many papers from each level are kept in the final result: only the **N most-cited** papers per level are added. Papers that do not make the cut are excluded from the result but **still drive the next BFS level** — their references and citing papers are still fetched.
+At each snowball level the number of discovered papers can grow quickly. The `max_papers_per_level` parameter limits how many papers from each level are kept in the final result: only the **N most-cited** papers per level are added. Papers that do not make the cut are excluded from the result but **still drive the next BFS level** — their references and citing papers are still fetched.
 
 Seed papers are never filtered regardless of this limit.
 
@@ -126,7 +126,7 @@ result = engine.snowball(
     seed_papers,
     max_depth=2,
     direction="backward",
-    max_per_level=10,
+    max_papers_per_level=10,
 )
 ```
 
@@ -155,7 +155,7 @@ Both parameters can be combined:
 result = engine.snowball(
     seed_papers,
     max_depth=2,
-    max_per_level=5,
+    max_papers_per_level=5,
     max_expansion_per_level=20,
 )
 ```
@@ -180,28 +180,22 @@ Papers with an unknown publication date are excluded when either `since` or `unt
 
 ## Fetch Strategy
 
-Snowballing uses a three-tier strategy that concentrates expensive API calls on papers that matter most:
+Snowballing uses a two-step strategy:
 
-### Tier 1 — BFS discovery (`databases`)
+### Step 1 — Seed enrichment
 
-Every candidate DOI that appears in a frontier paper's `references` or `cited_by` list is fetched using the `databases` parameter (default: `["crossref"]`). CrossRef is chosen as the default because it is fast (10 req/s), requires no authentication, and reliably returns backward references. This keeps the discovery phase cheap.
+Seed papers are fetched using the **union** of `databases` and `enrichment_databases`, ensuring they have full metadata (including `references` and `cited_by`) before the first BFS round. Only `"crossref"`, `"openalex"`, and `"semantic_scholar"` populate citation link fields.
 
-### Tier 2 — Frontier enrichment (`enrichment_databases`)
+### Step 2 — BFS discovery
 
-Papers that will drive the *next* BFS level need fully populated `references` and `cited_by` lists. These papers are re-fetched with `enrichment_databases` (default: all API connectors except web scraping). Sources like OpenAlex and Semantic Scholar provide both backward *and* forward citation data, enabling richer expansion.
-
-This enrichment step is skipped for papers at the *last* BFS level (they have no next level to expand into).
-
-### Tier 3 — Final web-scraping pass (`final_webscraping`)
-
-After all BFS rounds complete, every surviving paper is re-enriched via HTML scraping (following the `https://doi.org/{doi}` redirect to the publisher page) to fill any remaining metadata gaps such as abstracts, PDFs, or keywords. This step runs only on papers that passed all filters, so the expensive scraping cost is spent only on papers that are worth it.
+For each BFS level, every candidate DOI found in frontier `references`/`cited_by` lists is fetched with the configured `databases`. After all levels complete and filters are applied, surviving non-seed papers are re-enriched with the `enrichment_databases` that were **not** already used during discovery — avoiding redundant API calls while still filling metadata gaps (abstracts, PDFs, keywords, etc.). Seed papers are excluded from this final pass since they were already fully enriched at the start.
 
 ```python
-# Disable the final scraping pass if you only need citation graph data
-result = engine.snowball(seed, final_webscraping=False)
+# Use all three snowball databases for discovery
+result = engine.snowball(seed, databases=["crossref", "openalex", "semantic_scholar"])
 
-# Use all databases at every tier (original behaviour)
-result = engine.snowball(seed, databases=None, enrichment_databases=None)
+# Use backward-only with crossref (the default for direction='backward')
+result = engine.snowball(seed, direction="backward")
 ```
 
 ## Data Sources

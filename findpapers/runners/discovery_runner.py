@@ -141,6 +141,7 @@ class DiscoveryRunner:
         *,
         show_progress: bool = True,
         num_workers: int = 1,
+        max_cited_by: int | None = 100,
     ) -> None:
         """Enrich a list of papers in-place via per-paper get() lookups.
 
@@ -149,6 +150,10 @@ class DiscoveryRunner:
         DOI (preferred) or URL as the identifier and merges the result into
         the original object.  Databases that already provided the paper are
         excluded from each paper's lookup to avoid redundant requests.
+
+        When OpenAlex or Semantic Scholar are included in the enrichment
+        databases, ``paper.cited_by`` is populated for each paper using
+        *max_cited_by* as the upper bound.
 
         Parameters
         ----------
@@ -160,6 +165,10 @@ class DiscoveryRunner:
             Display a tqdm progress bar while papers are being enriched.
         num_workers : int
             Number of parallel workers for enrichment tasks.
+        max_cited_by : int | None
+            Maximum number of citing-paper DOIs to collect per paper.
+            Defaults to ``100``.  ``None`` means no limit — use with caution
+            for highly-cited papers.
 
         Returns
         -------
@@ -193,6 +202,7 @@ class DiscoveryRunner:
         wos_api_key = self._wos_api_key
         proxy = self._proxy
         ssl_verify = self._ssl_verify
+        _max_cited_by = max_cited_by
 
         def _enrich_task(item: tuple[Paper, str, list[str]]) -> None:
             """Enrich a single paper via GetRunner.
@@ -221,7 +231,7 @@ class DiscoveryRunner:
                 proxy=proxy,
                 ssl_verify=ssl_verify,
             )
-            result = runner.run(verbose=verbose)
+            result = runner.run(verbose=verbose, max_cited_by=_max_cited_by)
             if result is not None:
                 # Preserve the paper's original databases: enrichment provides
                 # additional metadata but should not register new database

@@ -184,7 +184,7 @@ class TestSnowball:
 
         assert seed is not None, "Seed paper not found; cannot test snowball"
 
-        result = engine.snowball(seed, max_depth=1, show_progress=False, max_per_level=5)
+        result = engine.snowball(seed, max_depth=1, show_progress=False, max_papers_per_level=5)
 
         assert result is not None, "Snowball returned None"
         # The seed itself should always be in seed_papers.

@@ -27,6 +27,7 @@ if paper:
 paper = engine.get(
     identifier,                     # str - DOI, DOI URL, or landing-page URL
     databases=None,                 # list[str] | None - sources to use (default: all)
+    max_cited_by=100,               # int | None - max citing-paper DOIs to collect
     timeout=10.0,                   # float | None - request timeout in seconds
     verbose=False,                  # bool - enable detailed logging
 )
@@ -36,6 +37,7 @@ paper = engine.get(
 |-----------|------|---------|-------------|
 | `identifier` | `str` | *(required)* | DOI, DOI URL, or paper landing-page URL |
 | `databases` | `list[str] \| None` | `None` | Sources to consult. Accepted values: `"arxiv"`, `"crossref"`, `"ieee"`, `"openalex"`, `"pubmed"`, `"scopus"`, `"semantic_scholar"`, `"web_scraping"`, `"wos".` Pass `None` to use all sources |
+| `max_cited_by` | `int \| None` | `100` | Maximum number of citing-paper DOIs to collect in `paper.cited_by`. OpenAlex is the primary source (sorted by citation count so the most-impactful papers are retained when truncated); Semantic Scholar is the fallback. `None` means no limit — use with caution as highly-cited papers may have thousands of citations. A warning is emitted when this value is `None` or greater than `100` |
 | `timeout` | `float \| None` | `10.0` | HTTP request timeout in seconds. `None` disables the timeout |
 | `verbose` | `bool` | `False` | Enable detailed DEBUG-level log messages |
 

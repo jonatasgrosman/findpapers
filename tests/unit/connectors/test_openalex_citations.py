@@ -144,6 +144,106 @@ class TestOpenAlexFetchCitedBy:
 
         assert cited_by == []
 
+    @patch.object(OpenAlexConnector, "_get")
+    def test_max_papers_stops_pagination_early(self, mock_get: MagicMock, make_paper) -> None:
+        """Pagination stops once max_papers is reached; no further API calls are made."""
+        connector = OpenAlexConnector()
+        paper = make_paper(doi="10.1000/popular")
+
+        # Resolve ID
+        id_response = MagicMock()
+        id_response.json.return_value = {"id": "https://openalex.org/W777"}
+
+        # Page 1: full page of 200 results with a next_cursor (more pages exist)
+        page1 = MagicMock()
+        page1.json.return_value = {
+            "results": [
+                _make_openalex_work(f"https://openalex.org/W{i}", f"10.1000/p{i}", f"Paper {i}")
+                for i in range(200)
+            ],
+            "meta": {"next_cursor": "cursor_2"},
+        }
+
+        mock_get.side_effect = [id_response, page1]
+
+        # Request only 5 papers — pagination must stop after page 1
+        cited_by = connector.fetch_cited_by(paper, max_papers=5)
+
+        assert len(cited_by) == 5
+        # Only id resolve + 1 page fetched; cursor_2 page never requested
+        assert mock_get.call_count == 2
+
+    @patch.object(OpenAlexConnector, "_get")
+    def test_max_papers_requests_sort_by_citations(self, mock_get: MagicMock, make_paper) -> None:
+        """When max_papers is set, sort=cited_by_count:desc is added to the request."""
+        connector = OpenAlexConnector()
+        paper = make_paper(doi="10.1000/popular")
+
+        id_response = MagicMock()
+        id_response.json.return_value = {"id": "https://openalex.org/W777"}
+
+        page1 = MagicMock()
+        page1.json.return_value = {
+            "results": [
+                _make_openalex_work("https://openalex.org/W1", "10.1000/c1", "Citing 1"),
+            ],
+            "meta": {"next_cursor": None},
+        }
+        mock_get.side_effect = [id_response, page1]
+
+        connector.fetch_cited_by(paper, max_papers=10)
+
+        # The second call (cites page) must include sort=cited_by_count:desc
+        page_call_kwargs = mock_get.call_args_list[1][0][1]  # second positional arg = params dict
+        assert page_call_kwargs.get("sort") == "cited_by_count:desc"
+
+    @patch.object(OpenAlexConnector, "_get")
+    def test_no_sort_when_max_papers_is_none(self, mock_get: MagicMock, make_paper) -> None:
+        """When max_papers is None, sort param is NOT added to the request."""
+        connector = OpenAlexConnector()
+        paper = make_paper(doi="10.1000/cited")
+
+        id_response = MagicMock()
+        id_response.json.return_value = {"id": "https://openalex.org/W888"}
+
+        cite_response = MagicMock()
+        cite_response.json.return_value = {
+            "results": [
+                _make_openalex_work("https://openalex.org/W300", "10.1000/c1", "Citing 1"),
+            ],
+            "meta": {"next_cursor": None},
+        }
+        mock_get.side_effect = [id_response, cite_response]
+
+        connector.fetch_cited_by(paper, max_papers=None)
+
+        page_call_kwargs = mock_get.call_args_list[1][0][1]
+        assert "sort" not in page_call_kwargs
+
+    @patch.object(OpenAlexConnector, "_get")
+    def test_max_papers_none_fetches_all(self, mock_get: MagicMock, make_paper) -> None:
+        """Default (None) max_papers fetches all pages without truncation."""
+        connector = OpenAlexConnector()
+        paper = make_paper(doi="10.1000/cited")
+
+        id_response = MagicMock()
+        id_response.json.return_value = {"id": "https://openalex.org/W888"}
+
+        cite_response = MagicMock()
+        cite_response.json.return_value = {
+            "results": [
+                _make_openalex_work("https://openalex.org/W300", "10.1000/c1", "Citing 1"),
+                _make_openalex_work("https://openalex.org/W301", "10.1000/c2", "Citing 2"),
+            ],
+            "meta": {"next_cursor": None},
+        }
+
+        mock_get.side_effect = [id_response, cite_response]
+
+        cited_by = connector.fetch_cited_by(paper, max_papers=None)
+
+        assert len(cited_by) == 2
+
 
 # ---------------------------------------------------------------------------
 # Tests: _resolve_openalex_id

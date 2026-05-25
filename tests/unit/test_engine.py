@@ -222,6 +222,7 @@ class TestEngineSearch:
             since=None,
             until=None,
             enrichment_databases=["crossref", "web_scraping"],
+            max_cited_by=100,
             proxy=None,
             ssl_verify=True,
         )
@@ -406,7 +407,7 @@ class TestEngineGet:
         _, call_kwargs = mock_cls.call_args
         assert call_kwargs["identifier"] == "10.1234/test"
         assert call_kwargs["timeout"] == 30.0
-        mock_runner.run.assert_called_once_with(verbose=True)
+        mock_runner.run.assert_called_once_with(verbose=True, max_cited_by=100)
         assert result is fake_paper
 
     def test_fetch_returns_none_when_not_found(self):
@@ -433,7 +434,7 @@ class TestEngineGet:
 
         _, kwargs = mock_cls.call_args
         assert kwargs["timeout"] == 10.0
-        mock_runner.run.assert_called_once_with(verbose=False)
+        mock_runner.run.assert_called_once_with(verbose=False, max_cited_by=100)
 
     def test_get_forwards_doi_org_url(self):
         """get() passes doi.org URLs to GetRunner as the identifier."""

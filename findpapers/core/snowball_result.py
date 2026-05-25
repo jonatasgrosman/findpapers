@@ -38,7 +38,7 @@ class SnowballResult:
         Database identifiers passed to
         :class:`~findpapers.runners.get_runner.GetRunner` for each lookup.
         ``None`` means all available databases were used.
-    max_per_level : int | None
+    max_papers_per_level : int | None
         Per-level result cap.  Only the *top N* most-cited papers discovered
         at each level are kept in the final result.  Seed papers are never
         filtered.  ``None`` means no cap was applied.
@@ -67,7 +67,7 @@ class SnowballResult:
         since: datetime.date | None = None,
         until: datetime.date | None = None,
         databases: list[str] | None = None,
-        max_per_level: int | None = None,
+        max_papers_per_level: int | None = None,
         max_expansion_per_level: int | None = None,
         papers: list[Paper] | None = None,
         processed_at: datetime.datetime | None = None,
@@ -90,7 +90,7 @@ class SnowballResult:
             Upper-bound publication date filter.
         databases : list[str] | None
             Database identifiers used for each lookup.
-        max_per_level : int | None
+        max_papers_per_level : int | None
             Per-level result cap (top-N most-cited papers kept per level).
         max_expansion_per_level : int | None
             Per-level frontier cap (top-N most-cited papers used as next-level seeds).
@@ -109,7 +109,7 @@ class SnowballResult:
         self.since = since
         self.until = until
         self.databases = databases
-        self.max_per_level = max_per_level
+        self.max_papers_per_level = max_papers_per_level
         self.max_expansion_per_level = max_expansion_per_level
         self.papers: list[Paper] = list(papers) if papers is not None else []
         self.runtime_seconds = runtime_seconds
@@ -167,7 +167,7 @@ class SnowballResult:
                 "since": self.since.isoformat() if self.since else None,
                 "until": self.until.isoformat() if self.until else None,
                 "databases": self.databases,
-                "max_per_level": self.max_per_level,
+                "max_papers_per_level": self.max_papers_per_level,
                 "max_expansion_per_level": self.max_expansion_per_level,
                 "skipped_seeds_without_doi": self.skipped_seeds_without_doi,
                 "timestamp": self.processed_at.astimezone(datetime.UTC).isoformat(),
@@ -239,7 +239,7 @@ class SnowballResult:
             since=since,
             until=until,
             databases=metadata.get("databases"),
-            max_per_level=metadata.get("max_per_level"),
+            max_papers_per_level=metadata.get("max_papers_per_level"),
             max_expansion_per_level=metadata.get("max_expansion_per_level"),
             papers=[Paper.from_dict(p) for p in raw_papers],
             processed_at=processed_at,

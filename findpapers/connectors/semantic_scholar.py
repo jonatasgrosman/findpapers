@@ -340,6 +340,7 @@ class SemanticScholarConnector(
         endpoint: str,
         *,
         progress_callback: Callable[[int], None] | None = None,
+        max_papers: int | None = None,
     ) -> list[Paper]:
         """Paginate through all references or citations for a paper.
 
@@ -352,11 +353,15 @@ class SemanticScholarConnector(
         progress_callback : Callable[[int], None] | None
             Optional callback invoked after each page with the number
             of new papers fetched in that page.
+        max_papers : int | None
+            Maximum number of papers to return.  ``None`` (default) means no
+            limit.  Pagination stops early once this many papers are collected,
+            preventing runaway fetches for highly-cited works.
 
         Returns
         -------
         list[Paper]
-            All papers from the paginated endpoint.
+            All papers from the paginated endpoint (up to *max_papers*).
         """
         all_papers: list[Paper] = []
         offset = 0
@@ -369,6 +374,9 @@ class SemanticScholarConnector(
             if progress_callback is not None:
                 progress_callback(len(page_papers))
             offset = next_offset
+            if max_papers is not None and len(all_papers) >= max_papers:
+                all_papers = all_papers[:max_papers]
+                break
 
         logger.info(
             "Semantic Scholar: DOI %s %s — %d pages, %d papers total.",
@@ -384,10 +392,13 @@ class SemanticScholarConnector(
         self,
         paper: Paper,
         progress_callback: Callable[[int], None] | None = None,
+        max_papers: int | None = None,
     ) -> list[Paper]:
         """Return papers that cite the given paper (forward snowballing).
 
         Uses the Semantic Scholar ``/paper/{id}/citations`` endpoint.
+        Pagination stops once *max_papers* results have been collected,
+        preventing runaway fetches for highly-cited works.
 
         Parameters
         ----------
@@ -395,6 +406,9 @@ class SemanticScholarConnector(
             The paper whose citing papers should be fetched.  Must have a DOI.
         progress_callback : Callable[[int], None] | None
             Optional callback for per-page progress reporting.
+        max_papers : int | None
+            Maximum number of citing papers to return.  ``None`` (default)
+            means no limit.
 
         Returns
         -------
@@ -409,6 +423,7 @@ class SemanticScholarConnector(
             paper.doi,
             "citations",
             progress_callback=progress_callback,
+            max_papers=max_papers,
         )
 
     @staticmethod

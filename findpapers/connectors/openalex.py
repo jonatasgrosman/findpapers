@@ -371,6 +371,7 @@ class OpenAlexConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupCo
         self,
         openalex_id: str,
         cursor: str,
+        sort_by_citations: bool = False,
     ) -> tuple[list[Paper], str | None]:
         """Fetch one page of papers that cite the given work.
 
@@ -380,6 +381,11 @@ class OpenAlexConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupCo
             OpenAlex ID of the cited work.
         cursor : str
             Pagination cursor (``"*"`` for the first page).
+        sort_by_citations : bool
+            When ``True``, request results sorted by citation count descending
+            (``sort=cited_by_count:desc``).  Use this when only the top-N
+            most-cited citing papers are needed so that truncation after
+            *max_papers* pages yields the highest-quality candidates.
 
         Returns
         -------
@@ -397,6 +403,8 @@ class OpenAlexConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupCo
                 "is_retracted,funders"
             ),
         }
+        if sort_by_citations:
+            params["sort"] = "cited_by_count:desc"
         try:
             response = self._get(_BASE_URL, params)
         except requests.RequestException:
@@ -426,11 +434,16 @@ class OpenAlexConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupCo
         self,
         paper: Paper,
         progress_callback: Callable[[int], None] | None = None,
+        max_papers: int | None = None,
     ) -> list[Paper]:
         """Return papers that cite the given paper (forward snowballing).
 
         Uses the OpenAlex ``cites`` filter to paginate through all papers
-        that cite the given work.
+        that cite the given work.  Pagination stops once *max_papers* results
+        have been collected, preventing runaway fetches for highly-cited works.
+        When *max_papers* is set, results are requested sorted by citation
+        count descending (``sort=cited_by_count:desc``) so that truncation
+        yields the most-cited citing papers rather than an arbitrary subset.
 
         Parameters
         ----------
@@ -438,6 +451,10 @@ class OpenAlexConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupCo
             The paper whose citing papers should be fetched.  Must have a DOI.
         progress_callback : Callable[[int], None] | None
             Optional callback for per-page progress reporting.
+        max_papers : int | None
+            Maximum number of citing papers to return.  ``None`` (default)
+            means no limit.  When set, results are sorted by citation count
+            so the returned subset contains the most-cited citing papers.
 
         Returns
         -------
@@ -453,14 +470,23 @@ class OpenAlexConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupCo
 
         logger.debug("OpenAlex: fetching cited-by for %s.", openalex_id)
 
+        # When a limit is requested, sort by citation count so that truncation
+        # after max_papers yields the highest-impact citing papers.
+        sort_by_citations = max_papers is not None
+
         all_papers: list[Paper] = []
         cursor: str | None = "*"
 
         while cursor is not None:
-            page_papers, cursor = self._fetch_cited_by_page(openalex_id, cursor)
+            page_papers, cursor = self._fetch_cited_by_page(
+                openalex_id, cursor, sort_by_citations=sort_by_citations
+            )
             all_papers.extend(page_papers)
             if progress_callback is not None and page_papers:
                 progress_callback(len(page_papers))
+            if max_papers is not None and len(all_papers) >= max_papers:
+                all_papers = all_papers[:max_papers]
+                break
 
         return all_papers
 

@@ -34,6 +34,7 @@ result = engine.search(
     verbose=False,                  # bool - enable detailed logging
     show_progress=True,             # bool - show progress bars
     enrichment_databases=None,      # list[str] | None - databases for post-search enrichment
+    max_cited_by=100,               # int | None - max citing-paper DOIs to collect per paper
 )
 ```
 
@@ -48,6 +49,7 @@ result = engine.search(
 | `verbose` | `bool` | `False` | Enable detailed DEBUG-level log messages |
 | `show_progress` | `bool` | `True` | Display tqdm progress bars while papers are being fetched |
 | `enrichment_databases` | `list[str] \| None` | `["crossref", "web_scraping"]` | Databases used to enrich papers after search and filtering. Defaults to `"crossref"` and `"web_scraping"`. Accepted values: `"arxiv"`, `"crossref"`, `"ieee"`, `"openalex"`, `"pubmed"`, `"scopus"`, `"semantic_scholar"`, `"web_scraping"`, `"wos"`. Pass `[]` or `None` to disable enrichment. |
+| `max_cited_by` | `int \| None` | `100` | Maximum number of citing-paper DOIs collected per paper in `paper.cited_by` when `"openalex"` or `"semantic_scholar"` are in `enrichment_databases`. OpenAlex is used first (results sorted by citation count so the most-impactful papers are kept when truncated); Semantic Scholar is the fallback. `None` means no limit. A warning is emitted when this value is `None` or greater than `100` |
 
 ## Return Value
 

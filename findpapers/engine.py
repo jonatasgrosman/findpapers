@@ -158,6 +158,7 @@ class Engine:
         verbose: bool = False,
         show_progress: bool = True,
         enrichment_databases: list[str] | None = DEFAULT_ENRICHMENT_DATABASES,
+        max_cited_by: int | None = 100,
     ) -> SearchResult:
         """Search for academic papers across multiple databases.
 
@@ -234,6 +235,13 @@ class Engine:
             ``"pubmed"``, ``"scopus"``, ``"semantic_scholar"``,
             ``"web_scraping"``.
             Pass ``None`` or ``[]`` to disable enrichment entirely.
+        max_cited_by : int | None
+            Maximum number of citing-paper DOIs collected per paper when
+            ``"openalex"`` or ``"semantic_scholar"`` are in
+            *enrichment_databases*.  Defaults to ``100``.  ``None`` means no
+            limit — use with caution as highly-cited papers may have thousands
+            of citations.  A warning is emitted when this value is ``None`` or
+            greater than ``100``.
 
         Returns
         -------
@@ -297,6 +305,7 @@ class Engine:
             since=since,
             until=until,
             enrichment_databases=enrichment_databases,
+            max_cited_by=max_cited_by,
             proxy=self._proxy,
             ssl_verify=self._ssl_verify,
         )
@@ -382,6 +391,7 @@ class Engine:
         identifier: str,
         *,
         databases: list[str] | None = None,
+        max_cited_by: int | None = 100,
         timeout: float | None = 10.0,
         verbose: bool = False,
     ) -> Paper | None:
@@ -402,6 +412,12 @@ class Engine:
           that database's API.  For all other URLs the page is downloaded
           and metadata is extracted from the HTML.
 
+        When OpenAlex or Semantic Scholar are among the queried databases,
+        ``paper.cited_by`` is populated with the DOIs of papers that cite
+        this paper.  OpenAlex is used as the primary source (results are
+        sorted by citation count so the most-impactful papers are kept when
+        the list is truncated).  Semantic Scholar is the fallback.
+
         Parameters
         ----------
         identifier : str
@@ -412,6 +428,11 @@ class Engine:
             the specified ones.  Accepted values: ``"arxiv"``,
             ``"crossref"``, ``"ieee"``, ``"openalex"``, ``"pubmed"``,
             ``"scopus"``, ``"semantic_scholar"``, ``"web_scraping"``.
+        max_cited_by : int | None
+            Maximum number of citing-paper DOIs to collect when populating
+            ``paper.cited_by``.  Defaults to ``100``.  ``None`` means no
+            limit — use with caution as highly-cited papers may have
+            thousands of citations.
         timeout : float | None
             HTTP request timeout in seconds.  ``None`` disables the
             timeout.  Defaults to ``10.0``.
@@ -474,7 +495,7 @@ class Engine:
             proxy=self._proxy,
             ssl_verify=self._ssl_verify,
         )
-        return runner.run(verbose=verbose)
+        return runner.run(verbose=verbose, max_cited_by=max_cited_by)
 
     def snowball(
         self,
@@ -482,11 +503,11 @@ class Engine:
         *,
         max_depth: int = 1,
         direction: Literal["both", "backward", "forward"] = "both",
-        max_per_level: int | None = None,
+        max_papers_per_level: int | None = None,
         max_expansion_per_level: int | None = None,
+        max_cited_by: int | None = 100,
         databases: list[str] | None = _SNOWBALL_UNSET,  # type: ignore[assignment]
         enrichment_databases: list[str] | None = _SNOWBALL_UNSET,  # type: ignore[assignment]
-        final_webscraping: bool = True,
         since: dt.date | None = None,
         until: dt.date | None = None,
         num_workers: int = 1,
@@ -496,19 +517,12 @@ class Engine:
         """Discover papers around seed papers via iterative citation snowballing.
 
         Starting from one or more seed papers, iteratively fetches their
-        references (backward) and/or citing papers (forward) using a
-        three-tier fetch strategy that concentrates API calls on papers
-        that matter most:
-
-        1. **BFS discovery** — candidate papers are fetched with *databases*
-           (default: CrossRef only) for speed.
-        2. **Frontier enrichment** — papers that will drive the next BFS
-           level are re-fetched with *enrichment_databases* (all API
-           connectors by default) to populate ``references`` and
-           ``cited_by`` for the next expansion round.
-        3. **Final web-scraping pass** — all papers that survived filtering
-           are re-enriched via HTML scraping (when *final_webscraping* is
-           ``True``) to fill any remaining metadata gaps.
+        references (backward) and/or citing papers (forward).  Seed papers
+        are enriched with the full combined set of *databases* and
+        *enrichment_databases*.  Papers discovered during BFS are fetched with
+        *databases* only; after all BFS levels and filters are applied, the
+        surviving non-seed papers are re-enriched with the *enrichment_databases*
+        not already used during discovery.
 
         Papers without a DOI are silently skipped since they cannot be
         resolved by the upstream APIs.
@@ -529,32 +543,33 @@ class Engine:
             cited *by* the current frontier), ``"forward"`` follows
             :attr:`~findpapers.core.paper.Paper.cited_by` (papers that
             *cite* the current frontier), ``"both"`` expands both.
-        max_per_level : int | None
+        max_papers_per_level : int | None
             When set, only the *top N* most-cited papers discovered at each
             level are kept in the final result.  Seed papers are never
-            filtered.  Useful for keeping the result manageable when doing
-            deep snowballs.  ``None`` (default) means all discovered papers
+            filtered.  ``None`` (default) means all discovered papers
             are included.
         max_expansion_per_level : int | None
             When set, only the *top N* most-cited papers from each level are
             used as seeds for the next BFS round.  Papers already added to the
-            result are unaffected.  Useful for controlling cost in deep
-            snowballs.  ``None`` (default) means the full frontier is expanded.
+            result are unaffected.  ``None`` (default) means the full frontier
+            is expanded.
+        max_cited_by : int | None
+            Maximum number of citing-paper DOIs to collect per paper during
+            seed and frontier enrichment.  Defaults to ``100``.  ``None``
+            means no limit — use with caution as highly-cited papers may have
+            thousands of citations.  A warning is emitted when this value is
+            ``None`` or greater than ``100``.
         databases : list[str] | None
-            Databases used for the fast BFS discovery of candidate papers.
-            Defaults to ``["crossref"]`` for speed.  Pass ``None`` to use all
-            available sources.  Accepted values: ``"arxiv"``, ``"crossref"``,
-            ``"ieee"``, ``"openalex"``, ``"pubmed"``, ``"scopus"``,
-            ``"semantic_scholar"``, ``"web_scraping"``.
+            Databases used for BFS discovery.  Only ``"crossref"``,
+            ``"openalex"``, and ``"semantic_scholar"`` are accepted.
+            Defaults to ``["crossref"]`` for backward direction, or all
+            three databases for ``"forward"``/``"both"``.  Pass ``None`` to
+            use all three databases.  Forward and both directions require at
+            least one of ``"openalex"`` or ``"semantic_scholar"``.
         enrichment_databases : list[str] | None
-            Databases used when re-fetching seed and frontier papers to
-            populate ``paper.references`` and ``paper.cited_by``.  Defaults
-            to all API connectors (web scraping excluded).  Pass ``None`` to
+            Databases used to enrich non-seed papers after BFS completes.
+            Defaults to ``["crossref", "web_scraping"]``.  Pass ``None`` to
             use the same default.
-        final_webscraping : bool
-            When ``True`` (default), all papers that survive BFS filtering
-            are re-enriched via HTML scraping at the end of the run to fill
-            any remaining metadata gaps.  Set to ``False`` to skip this pass.
         since : datetime.date | None
             Only include discovered papers published on or after this
             date.  Seed papers are never filtered.  ``None`` (default)
@@ -621,11 +636,11 @@ class Engine:
             seed_papers=papers,
             max_depth=max_depth,
             direction=direction,
-            max_per_level=max_per_level,
+            max_papers_per_level=max_papers_per_level,
             max_expansion_per_level=max_expansion_per_level,
+            max_cited_by=max_cited_by,
             databases=databases,
             enrichment_databases=enrichment_databases,
-            final_webscraping=final_webscraping,
             openalex_api_key=self._openalex_api_key,
             email=self._email,
             semantic_scholar_api_key=self._semantic_scholar_api_key,

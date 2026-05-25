@@ -357,7 +357,7 @@ class GetRunner:
     # Public interface
     # ------------------------------------------------------------------
 
-    def run(self, verbose: bool = False) -> Paper | None:
+    def run(self, verbose: bool = False, max_cited_by: int | None = 100) -> Paper | None:
         """Execute the full lookup pipeline for the configured identifier.
 
         The pipeline runs two complementary stages:
@@ -370,11 +370,22 @@ class GetRunner:
 
         For bare DOI inputs or ``doi.org`` URLs, Stage 1 is skipped.
 
+        When OpenAlex or Semantic Scholar are enabled, ``paper.cited_by`` is
+        populated with the DOIs of papers that cite the fetched paper.
+        OpenAlex is used as the primary source (results sorted by citation
+        count so the most-impactful citing papers are kept when *max_cited_by*
+        truncates the list); Semantic Scholar is the fallback.
+
         Parameters
         ----------
         verbose : bool
             When ``True``, emit detailed log messages at DEBUG level.
             Defaults to ``False``.
+        max_cited_by : int | None
+            Maximum number of citing-paper DOIs to collect when populating
+            ``paper.cited_by``.  Defaults to ``100``.  ``None`` means no
+            limit — use with caution as highly-cited papers may have
+            thousands of citations.
 
         Returns
         -------
@@ -383,6 +394,14 @@ class GetRunner:
             available metadata from all queried sources, or ``None`` when no
             source found a match.
         """
+        _has_citation_connectors = self._openalex is not None or self._semantic_scholar is not None
+        if _has_citation_connectors and (max_cited_by is None or max_cited_by > 100):
+            logger.warning(
+                "max_cited_by is %s. Fetching cited-by may be very slow or produce "
+                "large lists for highly-cited papers. Consider setting max_cited_by <= 100.",
+                max_cited_by if max_cited_by is not None else "None (unlimited)",
+            )
+
         _root_logger = logging.getLogger()
         _saved_log_level = _root_logger.level
         if verbose:
@@ -405,7 +424,7 @@ class GetRunner:
             base_paper = self._run_stage2(doi, base_paper)
 
             if base_paper is not None:
-                self._run_cited_by_stage(base_paper)
+                self._run_cited_by_stage(base_paper, max_cited_by=max_cited_by)
 
         finally:
             for doi_connector in self._doi_connectors:
@@ -652,12 +671,13 @@ class GetRunner:
                 return True
         return False
 
-    def _run_cited_by_stage(self, paper: Paper) -> None:
+    def _run_cited_by_stage(self, paper: Paper, max_cited_by: int | None = None) -> None:
         """Populate *paper*.cited_by from available citation connectors.
 
-        Queries connectors that support forward citation lookup (currently
-        OpenAlex and Semantic Scholar) and records the DOIs of papers that
-        cite *paper* in :attr:`~findpapers.core.paper.Paper.cited_by`.
+        OpenAlex is tried first because it supports sorting by citation count
+        descending, ensuring that when *max_cited_by* truncates the list the
+        most-cited citing papers are kept.  Semantic Scholar is used as a
+        fallback only when OpenAlex is not enabled or returns no results.
 
         Only connectors that were enabled and instantiated are queried.
         Errors from individual connectors are silently logged so that a
@@ -668,6 +688,10 @@ class GetRunner:
         paper : Paper
             The paper whose citing papers should be retrieved.  When *paper*
             has no DOI the method returns immediately without any API calls.
+        max_cited_by : int | None
+            Maximum number of citing-paper DOIs to collect.  ``None`` means
+            no limit.  Use this to prevent runaway pagination for highly-cited
+            works.
 
         Returns
         -------
@@ -676,25 +700,49 @@ class GetRunner:
         if not paper.doi:
             return
 
-        # OpenAlex and Semantic Scholar support fetch_cited_by to populate paper.cited_by.
-        citation_connectors = [c for c in [self._openalex, self._semantic_scholar] if c is not None]
-
-        if not citation_connectors:
+        if self._openalex is None and self._semantic_scholar is None:
             return
 
         seen: set[str] = set(paper.cited_by)
-        for connector in citation_connectors:
+
+        # --- Primary: OpenAlex (supports sort=cited_by_count:desc) ---
+        if self._openalex is not None:
             try:
-                logger.debug("Fetching cited-by from %s for DOI %s.", connector.name, paper.doi)
-                citing_papers = connector.fetch_cited_by(paper)  # type: ignore[attr-defined]
+                logger.debug(
+                    "Fetching cited-by from OpenAlex for DOI %s (max=%s).",
+                    paper.doi,
+                    max_cited_by,
+                )
+                remaining = None if max_cited_by is None else max(0, max_cited_by - len(seen))
+                citing_papers = self._openalex.fetch_cited_by(paper, max_papers=remaining)  # type: ignore[attr-defined]
                 for cp in citing_papers:
                     if cp.doi and cp.doi not in seen:
                         paper.cited_by.append(cp.doi)
                         seen.add(cp.doi)
             except Exception:
                 logger.debug(
-                    "fetch_cited_by failed for %s (DOI %s).",
-                    connector.name,
+                    "fetch_cited_by failed for OpenAlex (DOI %s).", paper.doi, exc_info=True
+                )
+
+        # --- Fallback: Semantic Scholar (only when OpenAlex is unavailable or returned nothing) ---
+        if self._semantic_scholar is not None and (self._openalex is None or len(seen) == 0):
+            try:
+                logger.debug(
+                    "Fetching cited-by from Semantic Scholar for DOI %s (max=%s).",
+                    paper.doi,
+                    max_cited_by,
+                )
+                remaining = None if max_cited_by is None else max(0, max_cited_by - len(seen))
+                citing_papers = self._semantic_scholar.fetch_cited_by(  # type: ignore[attr-defined]
+                    paper, max_papers=remaining
+                )
+                for cp in citing_papers:
+                    if cp.doi and cp.doi not in seen:
+                        paper.cited_by.append(cp.doi)
+                        seen.add(cp.doi)
+            except Exception:
+                logger.debug(
+                    "fetch_cited_by failed for Semantic Scholar (DOI %s).",
                     paper.doi,
                     exc_info=True,
                 )
