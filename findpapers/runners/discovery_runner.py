@@ -55,7 +55,7 @@ class DiscoveryRunner:
     enrichment_databases : list[str] | None
         Databases for post-discovery enrichment.  Defaults to
         ``DEFAULT_ENRICHMENT_DATABASES`` (``["crossref", "web_scraping"]``).
-        Pass ``None`` or ``[]`` to disable enrichment entirely.
+        Pass ``[]`` to disable enrichment entirely.  ``None`` uses the default.
 
     Raises
     ------
@@ -95,9 +95,11 @@ class DiscoveryRunner:
         self._ssl_verify = ssl_verify
 
         # Validate and normalise the enrichment database list.
-        # None and [] both mean "no enrichment".
-        if enrichment_databases is None or len(enrichment_databases) == 0:
-            self._enrichment_databases: list[str] = []
+        # None means "use defaults"; [] means "no enrichment".
+        if enrichment_databases is None:
+            self._enrichment_databases: list[str] = list(DEFAULT_ENRICHMENT_DATABASES)
+        elif len(enrichment_databases) == 0:
+            self._enrichment_databases = []
         else:
             normalised = [db.strip().lower() for db in enrichment_databases]
             unknown = [db for db in normalised if db not in GET_DATABASES]

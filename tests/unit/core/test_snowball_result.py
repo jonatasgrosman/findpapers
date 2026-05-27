@@ -308,3 +308,67 @@ class TestFromDict:
         result = SnowballResult.from_dict(data)
         assert len(result.seed_papers) == 1
         assert result.seed_papers[0].doi == "10.0/s"
+
+
+# ---------------------------------------------------------------------------
+# TestEnrichmentMetadata
+# ---------------------------------------------------------------------------
+
+
+class TestEnrichmentMetadata:
+    """Tests for enrichment_databases and max_cited_by fields."""
+
+    def test_defaults_are_none(self) -> None:
+        """enrichment_databases and max_cited_by default to None."""
+        result = _make_result()
+        assert result.enrichment_databases is None
+        assert result.max_cited_by is None
+
+    def test_stores_provided_values(self) -> None:
+        """Provided values are stored."""
+        result = _make_result(
+            enrichment_databases=["crossref", "web_scraping"],
+            max_cited_by=50,
+        )
+        assert result.enrichment_databases == ["crossref", "web_scraping"]
+        assert result.max_cited_by == 50
+
+    def test_to_dict_includes_enrichment_metadata(self) -> None:
+        """to_dict serializes enrichment_databases and max_cited_by into metadata."""
+        result = _make_result(
+            enrichment_databases=["crossref"],
+            max_cited_by=100,
+        )
+        meta = result.to_dict()["metadata"]
+        assert meta["enrichment_databases"] == ["crossref"]
+        assert meta["max_cited_by"] == 100
+
+    def test_to_dict_none_values_serialized(self) -> None:
+        """None enrichment_databases and max_cited_by appear as null in metadata."""
+        result = _make_result()
+        meta = result.to_dict()["metadata"]
+        assert meta["enrichment_databases"] is None
+        assert meta["max_cited_by"] is None
+
+    def test_round_trip_with_enrichment_metadata(self) -> None:
+        """enrichment_databases and max_cited_by survive a to_dict/from_dict round-trip."""
+        result = _make_result(
+            enrichment_databases=["crossref", "web_scraping"],
+            max_cited_by=75,
+        )
+        restored = SnowballResult.from_dict(result.to_dict())
+        assert restored.enrichment_databases == ["crossref", "web_scraping"]
+        assert restored.max_cited_by == 75
+
+    def test_round_trip_with_none_values(self) -> None:
+        """None values survive a to_dict/from_dict round-trip."""
+        result = _make_result()
+        restored = SnowballResult.from_dict(result.to_dict())
+        assert restored.enrichment_databases is None
+        assert restored.max_cited_by is None
+
+    def test_from_dict_missing_keys_give_none(self) -> None:
+        """Older saves without these keys yield None (backward compatibility)."""
+        result = SnowballResult.from_dict({"metadata": {}, "papers": []})
+        assert result.enrichment_databases is None
+        assert result.max_cited_by is None

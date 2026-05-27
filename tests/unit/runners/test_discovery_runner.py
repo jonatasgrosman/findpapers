@@ -131,10 +131,10 @@ class TestEnrichmentDatabasesDefault:
         """DEFAULT_ENRICHMENT_DATABASES contains only crossref and web_scraping."""
         assert set(DEFAULT_ENRICHMENT_DATABASES) == {"crossref", "web_scraping"}
 
-    def test_none_stores_empty_list(self):
-        """enrichment_databases=None is stored as [] (disables enrichment)."""
+    def test_none_uses_defaults(self):
+        """enrichment_databases=None uses DEFAULT_ENRICHMENT_DATABASES."""
         runner = DiscoveryRunner(enrichment_databases=None)
-        assert runner._enrichment_databases == []
+        assert runner._enrichment_databases == list(DEFAULT_ENRICHMENT_DATABASES)
 
     def test_default_stores_default_databases(self):
         """Default (no arg) stores DEFAULT_ENRICHMENT_DATABASES normalised."""

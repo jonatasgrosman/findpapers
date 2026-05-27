@@ -186,7 +186,7 @@ class SearchRunner(DiscoveryRunner):
         enrichment_databases : list[str] | None
             Databases for post-search enrichment.  Defaults to
             ``DEFAULT_ENRICHMENT_DATABASES`` (``["crossref", "web_scraping"]``).
-            Pass ``None`` or ``[]`` to disable enrichment entirely.
+            ``None`` uses the default.  Pass ``[]`` to disable enrichment entirely.
         max_cited_by : int | None
             Maximum citing-paper DOIs collected per paper when ``"openalex"``
             or ``"semantic_scholar"`` are in *enrichment_databases*.
@@ -366,6 +366,8 @@ class SearchRunner(DiscoveryRunner):
             since=self._since,
             until=self._until,
             failed_databases=failed_databases or None,
+            enrichment_databases=list(self._enrichment_databases),
+            max_cited_by=self._max_cited_by,
         )
         _root_logger.setLevel(_saved_log_level)
         return self._search

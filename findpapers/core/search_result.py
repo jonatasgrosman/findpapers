@@ -25,6 +25,8 @@ class SearchResult:
         runtime_seconds: float | None = None,
         runtime_seconds_per_database: dict[str, float] | None = None,
         failed_databases: list[str] | None = None,
+        enrichment_databases: list[str] | None = None,
+        max_cited_by: int | None = None,
     ) -> None:
         """Create a SearchResult instance.
 
@@ -52,6 +54,11 @@ class SearchResult:
             Database identifiers that failed during search (network error,
             connector error, etc.).  ``None`` means the information was not
             recorded (e.g. loaded from an older save).
+        enrichment_databases : list[str] | None
+            Databases used for post-search paper enrichment.
+        max_cited_by : int | None
+            Maximum number of citing-paper DOIs collected per paper during
+            enrichment.
         """
         self.query = query
         self.since = since
@@ -70,6 +77,8 @@ class SearchResult:
             runtime_seconds_per_database or {}
         )
         self.failed_databases: list[str] = list(failed_databases or [])
+        self.enrichment_databases = enrichment_databases
+        self.max_cited_by = max_cited_by
 
     def add_paper(self, paper: Paper) -> None:
         """Add a paper to the results.
@@ -106,6 +115,8 @@ class SearchResult:
             "until": self.until.isoformat() if self.until else None,
             "databases": self.databases,
             "max_papers_per_database": self.max_papers_per_database,
+            "enrichment_databases": self.enrichment_databases,
+            "max_cited_by": self.max_cited_by,
             "timestamp": self.processed_at.astimezone(datetime.UTC).isoformat(),
             "version": package_version(),
             "runtime_seconds": self.runtime_seconds,
@@ -166,4 +177,6 @@ class SearchResult:
             runtime_seconds=metadata.get("runtime_seconds"),
             runtime_seconds_per_database=metadata.get("runtime_seconds_per_database"),
             failed_databases=metadata.get("failed_databases"),
+            enrichment_databases=metadata.get("enrichment_databases"),
+            max_cited_by=metadata.get("max_cited_by"),
         )

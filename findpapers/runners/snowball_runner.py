@@ -93,18 +93,16 @@ def _validate_snowball_enrichment_databases(value: list[str], param_name: str) -
     Returns
     -------
     list[str]
-        Normalised (lowercase, stripped) list.
+        Normalised (lowercase, stripped) list, or an empty list when
+        *value* is empty (signals "disable enrichment").
 
     Raises
     ------
     InvalidParameterError
-        If the list is empty or contains unknown database names.
+        If the list contains unknown database names.
     """
     if len(value) == 0:
-        raise InvalidParameterError(
-            f"{param_name} must not be an empty list. "
-            "Pass None to use the default enrichment databases."
-        )
+        return []
     normalised = [db.strip().lower() for db in value]
     unknown = [db for db in normalised if db not in GET_DATABASES]
     if unknown:
@@ -221,7 +219,8 @@ class SnowballRunner(DiscoveryRunner):
         Databases used to enrich non-seed papers after all BFS levels and
         filters are applied.  Databases already used in discovery are
         skipped (they were already fetched).  Defaults to
-        ``["crossref", "web_scraping"]``.  Pass ``None`` to use the default.
+        ``["crossref", "web_scraping"]``.  ``None`` uses the default.
+        Pass ``[]`` to disable enrichment entirely.
     num_workers : int
         Number of parallel :class:`~findpapers.runners.get_runner.GetRunner`
         calls to make per level.  Defaults to ``1`` (sequential).
@@ -614,6 +613,8 @@ class SnowballRunner(DiscoveryRunner):
             processed_at=datetime.datetime.now(datetime.UTC),
             runtime_seconds=elapsed,
             skipped_seeds_without_doi=self._skipped_seeds,
+            enrichment_databases=list(self._enrichment_databases),
+            max_cited_by=self._max_cited_by,
         )
 
     # ------------------------------------------------------------------

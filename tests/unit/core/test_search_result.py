@@ -244,3 +244,70 @@ class TestFailedDatabases:
         """Older saves without the key produce an empty list."""
         sr = SearchResult.from_dict({"metadata": {}, "papers": []})
         assert sr.failed_databases == []
+
+
+# ---------------------------------------------------------------------------
+# enrichment_databases and max_cited_by tracking
+# ---------------------------------------------------------------------------
+
+
+class TestEnrichmentMetadata:
+    """Tests for enrichment_databases and max_cited_by fields."""
+
+    def test_defaults_are_none(self) -> None:
+        """enrichment_databases and max_cited_by default to None."""
+        sr = SearchResult(query="[q]")
+        assert sr.enrichment_databases is None
+        assert sr.max_cited_by is None
+
+    def test_stores_provided_values(self) -> None:
+        """Provided values are stored."""
+        sr = SearchResult(
+            query="[q]",
+            enrichment_databases=["crossref", "web_scraping"],
+            max_cited_by=50,
+        )
+        assert sr.enrichment_databases == ["crossref", "web_scraping"]
+        assert sr.max_cited_by == 50
+
+    def test_to_dict_includes_enrichment_metadata(self) -> None:
+        """to_dict serializes enrichment_databases and max_cited_by."""
+        sr = SearchResult(
+            query="[q]",
+            enrichment_databases=["crossref"],
+            max_cited_by=100,
+        )
+        meta = sr.to_dict()["metadata"]
+        assert meta["enrichment_databases"] == ["crossref"]
+        assert meta["max_cited_by"] == 100
+
+    def test_to_dict_none_values_serialized(self) -> None:
+        """None enrichment_databases and max_cited_by appear as null in metadata."""
+        sr = SearchResult(query="[q]")
+        meta = sr.to_dict()["metadata"]
+        assert meta["enrichment_databases"] is None
+        assert meta["max_cited_by"] is None
+
+    def test_round_trip_with_enrichment_metadata(self) -> None:
+        """enrichment_databases and max_cited_by survive a to_dict/from_dict round-trip."""
+        sr = SearchResult(
+            query="[q]",
+            enrichment_databases=["crossref", "web_scraping"],
+            max_cited_by=75,
+        )
+        restored = SearchResult.from_dict(sr.to_dict())
+        assert restored.enrichment_databases == ["crossref", "web_scraping"]
+        assert restored.max_cited_by == 75
+
+    def test_round_trip_with_none_values(self) -> None:
+        """None values survive a to_dict/from_dict round-trip."""
+        sr = SearchResult(query="[q]")
+        restored = SearchResult.from_dict(sr.to_dict())
+        assert restored.enrichment_databases is None
+        assert restored.max_cited_by is None
+
+    def test_from_dict_missing_keys_give_none(self) -> None:
+        """Older saves without these keys yield None (backward compatibility)."""
+        sr = SearchResult.from_dict({"metadata": {}, "papers": []})
+        assert sr.enrichment_databases is None
+        assert sr.max_cited_by is None

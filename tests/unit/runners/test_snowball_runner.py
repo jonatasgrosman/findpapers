@@ -1178,10 +1178,10 @@ class TestSnowballRunnerEnrichmentStrategy:
     # enrichment_databases parameter validation
     # ------------------------------------------------------------------
 
-    def test_enrichment_databases_empty_list_raises(self, seed: Paper) -> None:
-        """An empty enrichment_databases list raises InvalidParameterError."""
-        with pytest.raises(InvalidParameterError, match="enrichment_databases"):
-            SnowballRunner(seed_papers=seed, enrichment_databases=[])
+    def test_enrichment_databases_empty_list_disables_enrichment(self, seed: Paper) -> None:
+        """An empty enrichment_databases list disables enrichment (stored as [])."""
+        runner = SnowballRunner(seed_papers=seed, enrichment_databases=[])
+        assert runner._enrichment_databases == []
 
     def test_enrichment_databases_unknown_value_raises(self, seed: Paper) -> None:
         """An unknown value in enrichment_databases raises InvalidParameterError."""

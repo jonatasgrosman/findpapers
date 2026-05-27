@@ -358,8 +358,8 @@ class TestEngineSearchEnrichmentDatabases:
         _, kwargs = mock_cls.call_args
         assert kwargs["enrichment_databases"] == ["crossref", "web_scraping"]
 
-    def test_enrichment_databases_none_disables_enrichment(self):
-        """enrichment_databases=None is forwarded to SearchRunner (disables enrichment)."""
+    def test_enrichment_databases_none_uses_default(self):
+        """enrichment_databases=None is forwarded to SearchRunner (uses default databases)."""
         engine = Engine()
         with patch("findpapers.engine.SearchRunner") as mock_cls:
             mock_runner = MagicMock()
