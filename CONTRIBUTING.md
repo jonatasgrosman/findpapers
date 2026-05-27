@@ -31,7 +31,7 @@ and help you to craft the change so that it is successfully accepted into the pr
 
 ## <a name="submit"></a> Submission Guidelines
 
-In our development process we follow the [GitHub flow](https://docs.github.com/en/get-started/quickstart/github-flow), that is very powerful and easy to understand. 
+In our development process we follow the [GitHub flow](https://docs.github.com/en/get-started/quickstart/github-flow), which is very powerful and easy to understand. 
 That process enforces continuous delivery by **making anything in the main branch deployable**.
 So everybody needs to keep the main branch as safe as possible and ready to be deployed at any time.
 
@@ -39,9 +39,9 @@ So everybody needs to keep the main branch as safe as possible and ready to be d
 
 Before you submit an issue, please search the issue tracker, maybe an issue for your problem already exists and the discussion might inform you of workarounds readily available.
 
-We want to fix all the issues as soon as possible, but before fixing a bug we need to reproduce and confirm it. In order to reproduce bugs, we will systematically ask you to provide a minimal reproduction scenario. In this scenario you need to describe how can we reproduce the bug and provide all the additional information that you think will help us to reproduce it.
+We want to fix all the issues as soon as possible, but before fixing a bug we need to reproduce and confirm it. In order to reproduce bugs, we will systematically ask you to provide a minimal reproduction scenario. In this scenario you need to describe how we can reproduce the bug and provide all the additional information that you think will help us to reproduce it.
 
-A minimal reproduce scenario allows us to quickly confirm a bug (or point out coding problem) as well as confirm that we are fixing the right problem. And when is possible, please create a standalone git repository demonstrating the problem.
+A minimal reproduction scenario allows us to quickly confirm a bug (or point out a coding problem) as well as confirm that we are fixing the right problem. And when it is possible, please create a standalone git repository demonstrating the problem.
 
 Unfortunately, we are not able to investigate/fix bugs without a minimal reproduction, so if we don't hear back from you we are going to close an issue that doesn't have enough info to be reproduced.
 
@@ -49,7 +49,7 @@ You can file new issues by filling out our [new issue form](https://github.com/j
 
 ### <a name="submit-pr"></a> Submitting a Pull Request (PR)
 
-Before you submit your Pull Request (PR) consider the following guidelines:
+Before you submit your Pull Request (PR), consider the following guidelines:
 
 1. Search [GitHub](https://github.com/jonatasgrosman/findpapers/pulls) for an open or closed PR
   that relates to your submission. You don't want to duplicate effort.
@@ -62,8 +62,8 @@ Before you submit your Pull Request (PR) consider the following guidelines:
 
 1. Create your patch, **including appropriate test cases**.
 1. Follow our [Coding Rules](#rules).
-1. Run the full test suite, as described in the section [Building and Testing](#dev),
-  and ensure that all tests pass.
+1. Run all quality checks (`make check`), as described in the section [Building and Testing](#dev),
+  and ensure that all checks pass.
 1. Commit your changes using a descriptive commit message that follows our
   [commit message conventions](#commit). Adherence to these conventions
   is necessary because release notes are automatically generated from these messages.
@@ -80,9 +80,9 @@ Before you submit your Pull Request (PR) consider the following guidelines:
     ```
 
 1. In GitHub, send a pull request to `findpapers:main`.
-* If we suggest changes then:
+1. If we suggest changes, then:
   * Make the required updates.
-  * Re-run the test suites to ensure tests are still passing.
+  * Re-run all quality checks to ensure that everything is still passing.
   * Rebase your branch and force push to your GitHub repository (this will update your Pull Request):
 
     ```shell
@@ -142,13 +142,13 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 * We use [mypy](http://mypy-lang.org/) for static type checking.
 * Follow the [ruff](https://ruff.rs/) rules for linting and code formatting.
 * When adding new dependencies, add them to the `pyproject.toml` file using Poetry.
-* PRs can only be merged if the code is formatted properly and all tests are passing.
+* PRs can only be merged if the code passes all quality checks (tests, formatting, linting, type checks, etc.).
 * No secret keys, passwords, or sensitive information should be committed to the repository.
 * Use environment variables or configuration files (e.g., `.env`) to manage sensitive data.
 
 ## <a name="commit"></a> Commit Message Guidelines
 
-Each commit message consists of a **header** and a **body**.  The header has a special
+Each commit message consists of a **header** and a **body**. The header has a special
 format that includes a **type**, an optional **scope**, and a **subject**:
 
 ```
@@ -159,7 +159,7 @@ format that includes a **type**, an optional **scope**, and a **subject**:
 
 - The **header** is mandatory. The **body** is optional.
 
-Any line of the commit message cannot be longer 100 characters! This allows the message to be easier
+Any line of the commit message cannot be longer than 100 characters! This allows the message to be easier
 to read in various git tools.
 
 Examples:
@@ -212,9 +212,9 @@ The body should include the motivation for the change and contrast this with pre
 
 ## <a name="dev"></a> Building and Testing
 
-Let's see what needs to be done in your machine before [submit a Pull Request](#submit-pr) 
+Let's see what needs to be done on your machine before [submitting a Pull Request](#submit-pr).
 
-## Prerequisite Software
+### Prerequisite Software
 
 Before you can build and test, you must install and configure the
 following products on your development machine:
@@ -225,14 +225,14 @@ following products on your development machine:
 
 * [Poetry](https://python-poetry.org/) (dependency management)
 
-## Getting the Sources
+### Getting the Sources
 
 Fork and clone the Findpapers repository:
 
-1. Login to your GitHub account or create one [here](https://github.com).
-2. [Fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the [Findpapers
+1. Log in to your GitHub account or create one [here](https://github.com).
+1. [Fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the [Findpapers
    repository](https://github.com/jonatasgrosman/findpapers).
-3. Clone your fork of the Findpapers repository and define an `upstream` remote pointing back to
+1. Clone your fork of the Findpapers repository and define an `upstream` remote pointing back to
    the Findpapers repository that you forked in the first place.
 
 ```shell
@@ -246,13 +246,13 @@ cd findpapers
 git remote add upstream https://github.com/jonatasgrosman/findpapers.git
 ```
 
-## Installing dependencies
+### Installing Dependencies
 
 ```shell
 make setup
 ```
 
-## Running Quality Checks
+### Running Quality Checks
 
 Run all quality checks at once (recommended before submitting a PR):
 
