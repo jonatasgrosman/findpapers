@@ -12,6 +12,23 @@ Findpapers uses a custom boolean query language that gets translated into the na
 [machine learning] AND [healthcare]
 ```
 
+## Shorthand Syntax
+
+Square brackets are the canonical term delimiter, but two shorthand forms are accepted and **silently converted** before any validation takes place:
+
+| Shorthand | Canonical equivalent | When used |
+|-----------|---------------------|-----------|
+| `"DL" OR "ML"` | `[DL] OR [ML]` | Double quotes wrap each term |
+| `Deep Learning` | `[Deep Learning]` | No brackets **and** no quotes — the entire string becomes one term |
+
+Filter codes before a double-quoted term are preserved:
+
+```
+ti"neural network" → ti[neural network]
+```
+
+> **Note:** Conversion is applied only when the query contains no square brackets at all. As soon as one `[` is found the query is treated as canonical.
+
 ## Boolean Connectors
 
 Three connectors are available (case-insensitive):
@@ -217,7 +234,10 @@ ti([deep learning] OR [neural network]) AND abs([medical imaging] OR [radiology]
 | `[term a] OR ([term b] AND ([term*] OR [t?rm]))` | ✅ | Wildcards inside nested groups |
 | `[term a]OR[term b]` | ❌ | Missing whitespace around connector |
 | `([term a] OR [term b]` | ❌ | Unbalanced parentheses |
-| `term a OR [term b]` | ❌ | Missing square brackets around `term a` |
+| `"DL" OR "ML"` | ✅ | Shorthand: double quotes converted to brackets |
+| `Deep Learning` | ✅ | Shorthand: bare text wrapped as a single term |
+| `ti"Neural Network"` | ✅ | Shorthand: filter prefix preserved during conversion |
+| `term a OR [term b]` | ❌ | Missing square brackets around `term a` (mixed syntax; bracket detected so no conversion) |
 | `[term a] [term b]` | ❌ | Missing connector between terms |
 | `[term a] XOR [term b]` | ❌ | Invalid connector (`XOR` is not supported) |
 | `[] AND [term b]` | ❌ | Empty term |

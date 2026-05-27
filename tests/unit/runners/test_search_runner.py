@@ -30,10 +30,17 @@ def _no_enrichment():
 class TestSearchRunnerInit:
     """Tests for SearchRunner initialisation."""
 
-    def test_invalid_query_raises(self):
+    @pytest.mark.parametrize(
+        "query",
+        [
+            "[bad query",  # unbalanced square bracket
+            "((bad query",  # unbalanced parentheses (no brackets → not normalized)
+        ],
+    )
+    def test_invalid_query_raises(self, query):
         """Malformed query raises QueryValidationError at construction time."""
         with pytest.raises(QueryValidationError):
-            SearchRunner(query="((bad query")
+            SearchRunner(query=query)
 
     def test_unknown_database_raises_on_run(self):
         """Providing an unknown database name raises InvalidParameterError."""

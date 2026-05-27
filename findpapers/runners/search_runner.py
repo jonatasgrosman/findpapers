@@ -12,6 +12,7 @@ from findpapers.connectors.search_base import SearchConnectorBase
 from findpapers.core.paper import Database, Paper
 from findpapers.core.search_result import SearchResult
 from findpapers.exceptions import InvalidParameterError, MissingApiKeyError, UnsupportedQueryError
+from findpapers.query.normalizer import QueryNormalizer
 from findpapers.query.parser import QueryParser
 from findpapers.query.propagator import FilterPropagator
 from findpapers.query.validator import QueryValidator
@@ -231,14 +232,17 @@ class SearchRunner(DiscoveryRunner):
             enrichment_databases=enrichment_databases,
         )
 
-        self._query_string = query
+        normalizer = QueryNormalizer()
+        normalized_query = normalizer.normalize(query)
+
+        self._query_string = normalized_query
         self._max_papers_per_database = max_papers_per_database
         self._num_workers = num_workers
 
         validator = QueryValidator()
-        validator.validate(query)
+        validator.validate(normalized_query)
         parser = QueryParser()
-        self._query = parser.parse(query)
+        self._query = parser.parse(normalized_query)
 
         # Propagate filter specifiers (e.g. ti, abs) through the query tree
         # so that group-level filters reach child term nodes.
