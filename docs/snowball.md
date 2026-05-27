@@ -46,7 +46,7 @@ result = engine.snowball(
 | `max_expansion_per_level` | `int \| None` | `None` | Limit how many papers per level become seeds for the next BFS round. Only the top N most-cited papers from each level are expanded. Papers already in the result are unaffected. `None` expands all |
 | `max_cited_by` | `int \| None` | `100` | Maximum number of citing-paper DOIs collected per paper in `paper.cited_by` during seed and frontier enrichment. OpenAlex is used first (results sorted by citation count so the most-impactful papers are kept when truncated); Semantic Scholar is the fallback. `None` means no limit — use with caution for forward/both directions as highly-cited papers may have thousands of citations. A warning is emitted when this value is `None` or greater than `100` |
 | `databases` | `list[str] \| None` | direction-based | Databases used for BFS discovery. Only `"crossref"`, `"openalex"`, and `"semantic_scholar"` are accepted. Defaults to `["crossref"]` for `"backward"` direction, or all three for `"forward"`/`"both"`. Pass `None` for the same direction-based default. Raises an error if direction requires forward citation data but none of the selected databases support it |
-| `enrichment_databases` | `list[str] \| None` | `["crossref", "web_scraping"]` | Databases used to enrich non-seed papers after all BFS levels complete. Databases already used during discovery are not applied again. Accepted values: any from `GET_DATABASES`. Pass `None` to use the default |
+| `enrichment_databases` | `list[str] \| None` | `["crossref", "web_scraping"]` | Databases used to enrich non-seed papers after all BFS levels complete. Databases already used during discovery are not applied again. Accepted values: any from `GET_DATABASES`. `None` uses the default. Pass `[]` to disable enrichment entirely. |
 | `since` | `datetime.date \| None` | `None` | Only include discovered papers published on or after this date. Seed papers are never filtered |
 | `until` | `datetime.date \| None` | `None` | Only include discovered papers published on or before this date. Seed papers are never filtered |
 | `num_workers` | `int` | `1` | Number of parallel workers used to fetch papers per level |
@@ -71,6 +71,8 @@ Returns a `SnowballResult` object containing:
 | `processed_at` | `datetime.datetime` | UTC timestamp when the snowball was executed |
 | `runtime_seconds` | `float \| None` | Wall-clock runtime in seconds |
 | `skipped_seeds_without_doi` | `int` | Number of seed papers skipped because they had no DOI |
+| `enrichment_databases` | `list[str] \| None` | Enrichment databases that were used |
+| `max_cited_by` | `int \| None` | `max_cited_by` limit that was applied |
 
 Citation relationships are encoded directly on each `Paper` object:
 

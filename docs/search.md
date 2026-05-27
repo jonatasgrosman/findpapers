@@ -48,7 +48,7 @@ result = engine.search(
 | `num_workers` | `int` | `1` | Number of parallel workers used to query databases concurrently |
 | `verbose` | `bool` | `False` | Enable detailed DEBUG-level log messages |
 | `show_progress` | `bool` | `True` | Display tqdm progress bars while papers are being fetched |
-| `enrichment_databases` | `list[str] \| None` | `["crossref", "web_scraping"]` | Databases used to enrich papers after search and filtering. Defaults to `"crossref"` and `"web_scraping"`. Accepted values: `"arxiv"`, `"crossref"`, `"ieee"`, `"openalex"`, `"pubmed"`, `"scopus"`, `"semantic_scholar"`, `"web_scraping"`, `"wos"`. Pass `[]` or `None` to disable enrichment. |
+| `enrichment_databases` | `list[str] \| None` | `["crossref", "web_scraping"]` | Databases used to enrich papers after search and filtering. Defaults to `"crossref"` and `"web_scraping"`. Accepted values: `"arxiv"`, `"crossref"`, `"ieee"`, `"openalex"`, `"pubmed"`, `"scopus"`, `"semantic_scholar"`, `"web_scraping"`, `"wos"`. Pass `[]` to disable enrichment. `None` uses the default. |
 | `max_cited_by` | `int \| None` | `100` | Maximum number of citing-paper DOIs collected per paper in `paper.cited_by` when `"openalex"` or `"semantic_scholar"` are in `enrichment_databases`. OpenAlex is used first (results sorted by citation count so the most-impactful papers are kept when truncated); Semantic Scholar is the fallback. `None` means no limit. A warning is emitted when this value is `None` or greater than `100` |
 
 ## Return Value
@@ -66,6 +66,8 @@ Returns a `SearchResult` object containing:
 | `max_papers_per_database` | `int \| None` | Per-database paper limit applied |
 | `runtime_seconds` | `float \| None` | Total runtime |
 | `runtime_seconds_per_database` | `dict[str, float] \| None` | Per-database runtime |
+| `enrichment_databases` | `list[str] \| None` | Enrichment databases that were used |
+| `max_cited_by` | `int \| None` | `max_cited_by` limit that was applied |
 
 ## Exceptions
 

@@ -71,7 +71,7 @@ engine.search(
 | `num_workers` | `int` | Number of parallel database workers. Defaults to `1`. |
 | `verbose` | `bool` | Enable debug logging. Defaults to `False`. |
 | `show_progress` | `bool` | Display progress bars. Defaults to `True`. |
-| `enrichment_databases` | `list[str] \| None` | Databases for post-search enrichment. Defaults to `["crossref", "web_scraping"]`. Accepted values: `"arxiv"`, `"crossref"`, `"ieee"`, `"openalex"`, `"pubmed"`, `"scopus"`, `"semantic_scholar"`, `"web_scraping"`, `"wos"`. Pass `[]` or `None` to disable enrichment. |
+| `enrichment_databases` | `list[str] \| None` | Databases for post-search enrichment. Defaults to `["crossref", "web_scraping"]`. Accepted values: `"arxiv"`, `"crossref"`, `"ieee"`, `"openalex"`, `"pubmed"`, `"scopus"`, `"semantic_scholar"`, `"web_scraping"`, `"wos"`. Pass `[]` to disable enrichment. `None` uses the default. |
 
 **Returns:** `SearchResult` with deduplicated papers.
 
@@ -417,6 +417,8 @@ SearchResult(
     runtime_seconds: float | None = None,
     runtime_seconds_per_database: dict[str, float] | None = None,
     failed_databases: list[str] | None = None,
+    enrichment_databases: list[str] | None = None,
+    max_cited_by: int | None = None,
 )
 ```
 
@@ -434,6 +436,8 @@ SearchResult(
 | `runtime_seconds` | `float \| None` | Total execution time in seconds. |
 | `runtime_seconds_per_database` | `dict[str, float]` | Execution time per database. |
 | `failed_databases` | `list[str]` | Databases that failed during search. |
+| `enrichment_databases` | `list[str] \| None` | Enrichment databases used (populated by `SearchRunner.run()`). |
+| `max_cited_by` | `int \| None` | `max_cited_by` limit that was applied during enrichment. |
 
 #### Methods
 
@@ -470,6 +474,8 @@ SnowballResult(
     processed_at: datetime.datetime | None = None,
     runtime_seconds: float | None = None,
     skipped_seeds_without_doi: int = 0,
+    enrichment_databases: list[str] | None = None,
+    max_cited_by: int | None = None,
 )
 ```
 
@@ -489,6 +495,8 @@ SnowballResult(
 | `processed_at` | `datetime.datetime` | UTC timestamp when the snowball was executed. |
 | `runtime_seconds` | `float \| None` | Wall-clock runtime in seconds. |
 | `skipped_seeds_without_doi` | `int` | Number of seed papers skipped because they had no DOI. |
+| `enrichment_databases` | `list[str] \| None` | Enrichment databases used (populated by `SnowballRunner.run()`). |
+| `max_cited_by` | `int \| None` | `max_cited_by` limit that was applied during enrichment. |
 
 #### Methods
 
