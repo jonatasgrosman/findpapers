@@ -15,7 +15,7 @@ Findpapers searches for papers through **arXiv**, **CrossRef**, **IEEE Xplore**,
 
 ## Key Features
 
-- **Massive coverage** - access hundreds of millions of papers across seven databases that together span every scientific discipline
+- **Massive coverage** - access hundreds of millions of papers across eight databases that together span every scientific discipline
 - **Multi-database search** - query all databases in parallel with one boolean search expression - no need to learn seven different query syntaxes
 - **Smart deduplication** - automatically merges duplicate papers found across different databases
 - **Paper enrichment** - automatically fetch additional metadata (abstracts, keywords, citations) during search and snowball

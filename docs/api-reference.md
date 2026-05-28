@@ -58,6 +58,8 @@ engine.search(
     num_workers: int = 1,
     verbose: bool = False,
     show_progress: bool = True,
+    enrichment_databases: list[str] | None = ["crossref", "web_scraping"],
+    max_cited_by: int | None = 100,
 ) -> SearchResult
 ```
 
@@ -72,6 +74,7 @@ engine.search(
 | `verbose` | `bool` | Enable debug logging. Defaults to `False`. |
 | `show_progress` | `bool` | Display progress bars. Defaults to `True`. |
 | `enrichment_databases` | `list[str] \| None` | Databases for post-search enrichment. Defaults to `["crossref", "web_scraping"]`. Accepted values: `"arxiv"`, `"crossref"`, `"ieee"`, `"openalex"`, `"pubmed"`, `"scopus"`, `"semantic_scholar"`, `"web_scraping"`, `"wos"`. Pass `[]` to disable enrichment. `None` uses the default. |
+| `max_cited_by` | `int \| None` | Maximum number of citing-paper DOIs collected per paper in `paper.cited_by` during enrichment. Defaults to `100`. `None` means no limit. |
 
 **Returns:** `SearchResult` with deduplicated papers.
 
@@ -113,6 +116,7 @@ engine.get(
     identifier: str,
     *,
     databases: list[str] | None = None,
+    max_cited_by: int | None = 100,
     timeout: float | None = 10.0,
     verbose: bool = False,
 ) -> Paper | None
@@ -122,6 +126,7 @@ engine.get(
 |---|---|---|
 | `identifier` | `str` | Bare DOI, DOI URL (`doi.org`/`dx.doi.org`), or paper landing-page URL. |
 | `databases` | `list[str] \| None` | Sources to consult. `None` uses all available sources. Accepted values: `"arxiv"`, `"crossref"`, `"ieee"`, `"openalex"`, `"pubmed"`, `"scopus"`, `"semantic_scholar"`, `"web_scraping"`, `"wos"`. |
+| `max_cited_by` | `int \| None` | Maximum number of citing-paper DOIs to collect in `paper.cited_by`. Defaults to `100`. `None` means no limit. |
 | `timeout` | `float \| None` | HTTP timeout in seconds. Defaults to `10.0`. |
 | `verbose` | `bool` | Enable debug logging. Defaults to `False`. |
 
@@ -146,6 +151,7 @@ engine.snowball(
     direction: Literal["both", "backward", "forward"] = "both",
     max_papers_per_level: int | None = None,
     max_expansion_per_level: int | None = None,
+    max_cited_by: int | None = 100,
     databases: list[str] | None = None,
     enrichment_databases: list[str] | None = None,
     since: datetime.date | None = None,
@@ -163,8 +169,9 @@ engine.snowball(
 | `direction` | `Literal["both", "backward", "forward"]` | Snowball direction. Defaults to `"both"`. |
 | `max_papers_per_level` | `int \| None` | Keep only the N most-cited papers per level in the result; papers outside the top N are excluded from the result but still drive the next BFS level. Seed papers are never filtered. Defaults to `None` (no limit). |
 | `max_expansion_per_level` | `int \| None` | Limit how many papers per level become seeds for the next BFS round; only the top N most-cited papers are expanded. Papers already in the result are unaffected. Defaults to `None` (expand all). |
+| `max_cited_by` | `int \| None` | Maximum number of citing-paper DOIs collected per paper in `paper.cited_by` during seed and frontier enrichment. OpenAlex is the primary source (sorted by citation count); Semantic Scholar is the fallback. Defaults to `100`. `None` means no limit. |
 | `databases` | `list[str] \| None` | Databases used for BFS discovery. Only `"crossref"`, `"openalex"`, and `"semantic_scholar"` are accepted. Defaults to `["crossref"]` for `"backward"` direction or all three for `"forward"`/`"both"`. Forward and both directions require at least one of `"openalex"` or `"semantic_scholar"`. |
-| `enrichment_databases` | `list[str] \| None` | Databases used to re-enrich non-seed papers after all BFS levels complete. Defaults to `["crossref", "web_scraping"]`. Databases already used during discovery are not re-applied. `None` uses the default. |
+| `enrichment_databases` | `list[str] \| None` | Databases used to re-enrich non-seed papers after all BFS levels complete. Defaults to `["crossref", "web_scraping"]`. Databases already used during discovery are not re-applied. Accepted values: `"arxiv"`, `"crossref"`, `"ieee"`, `"openalex"`, `"pubmed"`, `"scopus"`, `"semantic_scholar"`, `"web_scraping"`, `"wos"`. `None` uses the default. Pass `[]` to disable enrichment. |
 | `since` | `datetime.date \| None` | Only add discovered papers published on or after this date. Seed papers are never filtered. `None` disables the filter. |
 | `until` | `datetime.date \| None` | Only add discovered papers published on or before this date. Seed papers are never filtered. `None` disables the filter. |
 | `num_workers` | `int` | Number of parallel workers. Defaults to `1`. |
@@ -298,7 +305,7 @@ from findpapers import Database
 | `SEMANTIC_SCHOLAR` | `"semantic_scholar"` | Semantic Scholar AI-powered research database. |
 | `WOS` | `"wos"` | Clarivate Web of Science citation index. |
 
-`Database` is a `StrEnum`, so `Database.ARXIV == "arxiv"` is `True`. `"web_scraping"` is intentionally absent — web scraping is a retrieval mechanism, not a database, and is never stored in `Paper.databases`.
+`Database` is a `StrEnum`, so `Database.ARXIV == "arxiv"` is `True`. `"web_scraping"` is intentionally absent — web scraping is a retrieval mechanism, not a database, and is never stored in `Paper.found_in`.
 
 ---
 
@@ -572,6 +579,9 @@ SearchRunner(
     since: datetime.date | None = None,
     until: datetime.date | None = None,
     enrichment_databases: list[str] | None = ["crossref", "web_scraping"],
+    max_cited_by: int | None = 100,
+    proxy: str | None = None,
+    ssl_verify: bool = True,
 )
 ```
 
@@ -625,7 +635,7 @@ GetRunner(
 
 | Method | Returns | Description |
 |---|---|---|
-| `run(verbose=False)` | `Paper \| None` | Fetch the paper by identifier (DOI or URL), or return `None` if not found. |
+| `run(verbose=False, max_cited_by=100)` | `Paper \| None` | Fetch the paper by identifier (DOI or URL), or return `None` if not found. |
 
 **Raises:** `InvalidParameterError` if the identifier is a bare DOI that is empty or blank.
 
@@ -643,6 +653,7 @@ SnowballRunner(
     direction: Literal["both", "backward", "forward"] = "both",
     max_papers_per_level: int | None = None,
     max_expansion_per_level: int | None = None,
+    max_cited_by: int | None = 100,
     databases: list[str] | None = None,
     enrichment_databases: list[str] | None = None,
     openalex_api_key: str | None = None,

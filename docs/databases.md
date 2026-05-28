@@ -1,6 +1,6 @@
 # Databases
 
-One of the biggest advantages of Findpapers is that it connects you to **hundreds of millions of academic papers** from seven major databases through a single query. Instead of visiting each portal separately and learning its query syntax, you write one search expression and Findpapers handles the rest - translating your query, running parallel searches, and merging all results with automatic deduplication.
+One of the biggest advantages of Findpapers is that it connects you to **hundreds of millions of academic papers** from eight major databases through a single query. Instead of visiting each portal separately and learning its query syntax, you write one search expression and Findpapers handles the rest - translating your query, running parallel searches, and merging all results with automatic deduplication.
 
 Findpapers searches for papers through **arXiv**, **CrossRef**, **IEEE Xplore**, **OpenAlex**, **PubMed**, **Scopus**, **Semantic Scholar**, and **Web of Science** - together covering virtually every peer-reviewed paper, preprint, and conference proceeding published across all fields of science.
 
@@ -11,13 +11,13 @@ The table below shows a quick databases comparison.
 | Database | Size (papers) | API Key | Search | Snowballing | Rate Limit |
 |----------|------------|---------|--------|-------------|------------|
 | arXiv | 3M+ [¹](https://arxiv.org/stats/monthly_submissions) | Not required | Yes | No | ~3 s between requests |
-| CrossRef | 180M+ [⁸](https://www.crossref.org/about) | Not required | No | Backward only | ~10 req/s |
-| IEEE Xplore | 7M+ [²](https://innovate.ieee.org/about-the-ieee-xplore-digital-library) | Required | Yes | No | ~200 req/day |
-| OpenAlex | 480M+ [³](https://openalex.org) | Optional | Yes | Yes (both) | ~10 req/s with email |
-| PubMed | 40M+ [⁴](https://pubmed.ncbi.nlm.nih.gov/about/) | Optional | Yes | No | 3 req/s (10 with key) |
-| Scopus | 100M+ [⁵](https://www.elsevier.com/products/scopus) | Required | Yes | No | 20k req/week |
-| Semantic Scholar | 214M+ [⁶](https://www.semanticscholar.org/product/api) | Optional | Yes | Yes (both) | ~1 req/s with key |
-| Web of Science | 240M+ [⁷](https://clarivate.com/webofsciencegroup/solutions/web-of-science/) | Required | Yes | No | 1 req/s (Free Trial) / 5 req/s (Institutional) |
+| CrossRef | 180M+ [²](https://www.crossref.org/about) | Not required | No | Backward only | ~10 req/s |
+| IEEE Xplore | 7M+ [³](https://innovate.ieee.org/about-the-ieee-xplore-digital-library) | Required | Yes | No | ~200 req/day |
+| OpenAlex | 480M+ [⁴](https://openalex.org) | Optional | Yes | Yes (both) | ~10 req/s with email |
+| PubMed | 40M+ [⁵](https://pubmed.ncbi.nlm.nih.gov/about/) | Optional | Yes | No | 3 req/s (10 with key) |
+| Scopus | 100M+ [⁶](https://www.elsevier.com/products/scopus) | Required | Yes | No | 20k req/week |
+| Semantic Scholar | 214M+ [⁷](https://www.semanticscholar.org/product/api) | Optional | Yes | Yes (both) | ~1 req/s with key |
+| Web of Science | 240M+ [⁸](https://clarivate.com/webofsciencegroup/solutions/web-of-science/) | Required | Yes | No | 1 req/s (Free Trial) / 5 req/s (Institutional) |
 
 > **Every API key from the databases listed above can be obtained at no cost** - just create an account on each provider's website. We strongly recommend getting all of them before using Findpapers, as they unlock additional databases (IEEE, Scopus, Web of Science) and dramatically improve rate limits and reliability on the others (OpenAlex, PubMed, Semantic Scholar). See the **Supported Databases** section for more details on how to get these API keys, and [Configuration](https://github.com/jonatasgrosman/findpapers/blob/main/docs/configuration.md) for how to set them up.
 
@@ -130,8 +130,8 @@ IEEE Xplore is the digital library of the Institute of Electrical and Electronic
 - **URL:** https://openalex.org
 - **API:** OpenAlex REST API
 - **Authentication:** Optional but **highly recommended** - free, just register
-- **Estimated papers:** 243 million+ ([source](https://openalex.org/about))
-- **Coverage:** Over 243 million scholarly works across all disciplines
+- **Estimated papers:** 480 million+ ([source](https://openalex.org/about))
+- **Coverage:** Over 480 million scholarly works across all disciplines
 
 OpenAlex is the largest fully open index of scholarly works in the world. It was built as the open-source successor to Microsoft Academic Graph and is maintained by the nonprofit OurResearch. OpenAlex indexes papers, authors, institutions, and concepts across every academic discipline - from engineering and medicine to social sciences and humanities. Because it is completely open (no paywall, no subscription), it is an ideal backbone for large-scale bibliometric analysis and systematic reviews. It also provides rich citation links, making it one of the best sources for forward and backward snowballing in Findpapers.
 

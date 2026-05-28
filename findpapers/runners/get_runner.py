@@ -97,7 +97,7 @@ class GetRunner:
         sources are used.  Pass a list to enable only the specified ones.
         Accepted values: ``"arxiv"``, ``"crossref"``, ``"ieee"``,
         ``"openalex"``, ``"pubmed"``, ``"scopus"``,
-        ``"semantic_scholar"``, ``"web_scraping"``.
+        ``"semantic_scholar"``, ``"web_scraping"``, ``"wos"``.
     ieee_api_key : str | None
         IEEE Xplore API key.  When omitted IEEE is skipped.
     scopus_api_key : str | None
@@ -169,7 +169,8 @@ class GetRunner:
             all sources are used.  Pass a list to enable only the
             specified ones.  Accepted values: ``"arxiv"``,
             ``"crossref"``, ``"ieee"``, ``"openalex"``, ``"pubmed"``,
-            ``"scopus"``, ``"semantic_scholar"``, ``"web_scraping"``.
+            ``"scopus"``, ``"semantic_scholar"``, ``"web_scraping"``,
+            ``"wos"``.
         ieee_api_key : str | None
             IEEE Xplore API key.
         scopus_api_key : str | None

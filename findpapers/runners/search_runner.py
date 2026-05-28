@@ -99,9 +99,10 @@ class SearchRunner(DiscoveryRunner):
         Databases used to enrich papers after search and filtering.
         ``None`` (default) runs enrichment against ``crossref`` and
         ``web_scraping``, which covers the majority of metadata gaps without
-        consuming quota from rate-limited databases.  Pass a list to enable
-        additional sources (``"arxiv"``, ``"ieee"``, ``"openalex"``,
-        ``"pubmed"``, ``"scopus"``, ``"semantic_scholar"``).
+        consuming quota from rate-limited databases.  Accepted values:
+        ``"arxiv"``, ``"crossref"``, ``"ieee"``, ``"openalex"``,
+        ``"pubmed"``, ``"scopus"``, ``"semantic_scholar"``,
+        ``"web_scraping"``, ``"wos"``.
         Pass ``[]`` to disable enrichment entirely.
     max_cited_by : int | None
         Maximum number of citing-paper DOIs to collect per paper when
@@ -188,6 +189,9 @@ class SearchRunner(DiscoveryRunner):
             Databases for post-search enrichment.  Defaults to
             ``DEFAULT_ENRICHMENT_DATABASES`` (``["crossref", "web_scraping"]``).
             ``None`` uses the default.  Pass ``[]`` to disable enrichment entirely.
+            Accepted values: ``"arxiv"``, ``"crossref"``, ``"ieee"``,
+            ``"openalex"``, ``"pubmed"``, ``"scopus"``,
+            ``"semantic_scholar"``, ``"web_scraping"``, ``"wos"``.
         max_cited_by : int | None
             Maximum citing-paper DOIs collected per paper when ``"openalex"``
             or ``"semantic_scholar"`` are in *enrichment_databases*.

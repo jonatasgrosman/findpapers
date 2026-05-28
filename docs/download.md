@@ -24,7 +24,7 @@ metrics = engine.download(
     papers,                         # list[Paper] - papers to download
     output_directory,               # str - directory to save PDFs
     num_workers=1,                  # int - number of parallel workers
-    timeout=10.0,                   # float | None - per-download timeout in seconds
+    timeout=30.0,                   # float | None - per-download timeout in seconds
     verbose=False,                  # bool - enable detailed logging
     show_progress=True,             # bool - show progress bars
 )
@@ -35,7 +35,7 @@ metrics = engine.download(
 | `papers` | `list[Paper]` | *(required)* | Papers whose PDFs should be downloaded - typically obtained from `engine.search(...).papers` |
 | `output_directory` | `str` | *(required)* | Directory where PDF files and the download log will be written. Created automatically if it does not exist |
 | `num_workers` | `int` | `1` | Number of parallel download workers |
-| `timeout` | `float \| None` | `10.0` | Per-request HTTP timeout in seconds. `None` disables the timeout |
+| `timeout` | `float \| None` | `30.0` | Per-request HTTP timeout in seconds. `None` disables the timeout |
 | `verbose` | `bool` | `False` | Enable detailed DEBUG-level log messages |
 | `show_progress` | `bool` | `True` | Display a tqdm progress bar while papers are being downloaded |
 

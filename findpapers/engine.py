@@ -191,7 +191,7 @@ class Engine:
         ~~~~~~~~~~~~~~~~~~~
         ``"arxiv"``, ``"ieee"`` (requires API key), ``"openalex"``,
         ``"pubmed"``, ``"scopus"`` (requires API key),
-        ``"semantic_scholar"``.
+        ``"semantic_scholar"``, ``"wos"`` (requires API key).
 
         When *databases* is ``None`` every database that does **not** require
         a missing API key is queried automatically.
@@ -233,8 +233,9 @@ class Engine:
             additional (or different) sources.  Accepted values:
             ``"arxiv"``, ``"crossref"``, ``"ieee"``, ``"openalex"``,
             ``"pubmed"``, ``"scopus"``, ``"semantic_scholar"``,
-            ``"web_scraping"``.
-            Pass ``None`` or ``[]`` to disable enrichment entirely.
+            ``"web_scraping"``, ``"wos"``.
+            Pass ``[]`` to disable enrichment entirely. ``None`` uses the
+            default.
         max_cited_by : int | None
             Maximum number of citing-paper DOIs collected per paper when
             ``"openalex"`` or ``"semantic_scholar"`` are in
@@ -257,7 +258,7 @@ class Engine:
         findpapers.exceptions.QueryValidationError
             If *query* has syntax errors (unbalanced brackets, invalid filter
             codes, etc.).
-        ValueError
+        findpapers.exceptions.InvalidParameterError
             If an unknown database name is passed in *databases*.
         See Also
         --------
@@ -342,7 +343,7 @@ class Engine:
             (sequential).  Increase to speed up bulk downloads.
         timeout : float | None
             Per-request HTTP timeout in seconds.  ``None`` disables the
-            timeout.  Defaults to ``10.0``.
+            timeout.  Defaults to ``30.0``.
         verbose : bool
             When ``True``, emit detailed log messages at DEBUG level.
             Defaults to ``False``.
@@ -427,7 +428,8 @@ class Engine:
             all available sources are used.  Pass a list to enable only
             the specified ones.  Accepted values: ``"arxiv"``,
             ``"crossref"``, ``"ieee"``, ``"openalex"``, ``"pubmed"``,
-            ``"scopus"``, ``"semantic_scholar"``, ``"web_scraping"``.
+            ``"scopus"``, ``"semantic_scholar"``, ``"web_scraping"``,
+            ``"wos"``.
         max_cited_by : int | None
             Maximum number of citing-paper DOIs to collect when populating
             ``paper.cited_by``.  Defaults to ``100``.  ``None`` means no
@@ -448,7 +450,7 @@ class Engine:
 
         Raises
         ------
-        ValueError
+        InvalidParameterError
             If *identifier* is a bare DOI that is empty or blank after
             stripping whitespace and URL prefixes.
         InvalidParameterError
@@ -569,7 +571,10 @@ class Engine:
         enrichment_databases : list[str] | None
             Databases used to enrich non-seed papers after BFS completes.
             Defaults to ``["crossref", "web_scraping"]``.  Pass ``None`` to
-            use the same default.
+            use the same default.  Pass ``[]`` to disable enrichment
+            entirely.  Accepted values: ``"arxiv"``, ``"crossref"``,
+            ``"ieee"``, ``"openalex"``, ``"pubmed"``, ``"scopus"``,
+            ``"semantic_scholar"``, ``"web_scraping"``, ``"wos"``.
         since : datetime.date | None
             Only include discovered papers published on or after this
             date.  Seed papers are never filtered.  ``None`` (default)

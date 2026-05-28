@@ -56,6 +56,9 @@ class DiscoveryRunner:
         Databases for post-discovery enrichment.  Defaults to
         ``DEFAULT_ENRICHMENT_DATABASES`` (``["crossref", "web_scraping"]``).
         Pass ``[]`` to disable enrichment entirely.  ``None`` uses the default.
+        Accepted values: ``"arxiv"``, ``"crossref"``, ``"ieee"``,
+        ``"openalex"``, ``"pubmed"``, ``"scopus"``,
+        ``"semantic_scholar"``, ``"web_scraping"``, ``"wos"``.
 
     Raises
     ------

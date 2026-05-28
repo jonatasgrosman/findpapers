@@ -220,7 +220,10 @@ class SnowballRunner(DiscoveryRunner):
         filters are applied.  Databases already used in discovery are
         skipped (they were already fetched).  Defaults to
         ``["crossref", "web_scraping"]``.  ``None`` uses the default.
-        Pass ``[]`` to disable enrichment entirely.
+        Pass ``[]`` to disable enrichment entirely.  Accepted values:
+        ``"arxiv"``, ``"crossref"``, ``"ieee"``, ``"openalex"``,
+        ``"pubmed"``, ``"scopus"``, ``"semantic_scholar"``,
+        ``"web_scraping"``, ``"wos"``.
     num_workers : int
         Number of parallel :class:`~findpapers.runners.get_runner.GetRunner`
         calls to make per level.  Defaults to ``1`` (sequential).
@@ -309,7 +312,11 @@ class SnowballRunner(DiscoveryRunner):
         enrichment_databases : list[str] | None
             Databases used to enrich non-seed papers after BFS completes.
             When not provided or ``None``, defaults to
-            ``["crossref", "web_scraping"]``.
+            ``["crossref", "web_scraping"]``.  Pass ``[]`` to disable
+            enrichment entirely.  Accepted values: ``"arxiv"``,
+            ``"crossref"``, ``"ieee"``, ``"openalex"``, ``"pubmed"``,
+            ``"scopus"``, ``"semantic_scholar"``, ``"web_scraping"``,
+            ``"wos"``.
         num_workers : int
             Number of parallel GetRunner calls per level.
         since : datetime.date | None

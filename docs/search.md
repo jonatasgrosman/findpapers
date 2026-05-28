@@ -149,13 +149,13 @@ result = engine.search("[transformers]", enrichment_databases=[])
 
 Databases that already returned a given paper during the search phase are always excluded from its enrichment to avoid redundant requests.
 
-Available identifiers for `enrichment_databases`: `"arxiv"`, `"crossref"`, `"ieee"`, `"openalex"`, `"pubmed"`, `"scopus"`, `"semantic_scholar"`, `"web_scraping"`.
+Available identifiers for `enrichment_databases`: `"arxiv"`, `"crossref"`, `"ieee"`, `"openalex"`, `"pubmed"`, `"scopus"`, `"semantic_scholar"`, `"web_scraping"`, `"wos"`.
 
 ## Working with Results
 
 ```python
 import findpapers
-from findpapers.core.paper import PaperType
+from findpapers import PaperType
 
 result = engine.search("[machine learning] AND [healthcare]")
 
@@ -163,7 +163,7 @@ result = engine.search("[machine learning] AND [healthcare]")
 for paper in result.papers:
     print(f"{paper.title} ({paper.publication_date})")
     print(f"  DOI: {paper.doi}")
-    print(f"  Databases: {paper.databases}")
+    print(f"  Databases: {paper.found_in}")
 
 # Filter by paper type (only journals and conference papers)
 articles = [p for p in result.papers if p.paper_type in (PaperType.ARTICLE, PaperType.INPROCEEDINGS)]
