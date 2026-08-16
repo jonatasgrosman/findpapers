@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import datetime
+import logging
 from unittest.mock import MagicMock, patch
 
 import pytest
 import requests
 
-from findpapers.connectors.ieee import IEEEConnector
+from findpapers.connectors.ieee import _PAGE_SIZE, IEEEConnector
 from findpapers.core.paper import Database, PaperType
 from findpapers.core.source import SourceType
 from findpapers.exceptions import MissingApiKeyError, UnsupportedQueryError
@@ -322,6 +323,41 @@ class TestIEEEConnectorSearch:
             papers = searcher.search(simple_query)
 
         assert papers == []
+
+    def test_http_error_logs_progress_context(self, simple_query, caplog):
+        """A failed request logs how many papers were retrieved so far."""
+        searcher = IEEEConnector(api_key="dummy")
+
+        with (
+            patch.object(searcher, "_get", side_effect=requests.RequestException("network error")),
+            patch.object(searcher, "_rate_limit"),
+            caplog.at_level(logging.WARNING, logger="findpapers.connectors.ieee"),
+        ):
+            searcher.search(simple_query)
+
+        assert any("search stopped early" in m for m in caplog.messages)
+
+    def test_empty_articles_before_total_logs_warning(self, simple_query, mock_response, caplog):
+        """Articles running out before the reported total logs a pagination-limit warning."""
+        full_page_articles = [{"title": f"Paper {i}"} for i in range(_PAGE_SIZE)]
+        full_page = mock_response(
+            json_data={"total_records": _PAGE_SIZE + 5, "articles": full_page_articles}
+        )
+        full_page.raise_for_status = MagicMock()
+        empty_page = mock_response(json_data={"total_records": _PAGE_SIZE + 5, "articles": []})
+        empty_page.raise_for_status = MagicMock()
+
+        searcher = IEEEConnector(api_key="dummy")
+        searcher._http_session = MagicMock()
+        searcher._http_session.get.side_effect = [full_page, empty_page]
+
+        with (
+            patch.object(searcher, "_rate_limit"),
+            caplog.at_level(logging.WARNING, logger="findpapers.connectors.ieee"),
+        ):
+            searcher.search(simple_query)
+
+        assert any("pagination limit" in m for m in caplog.messages)
 
     def test_progress_callback_called(self, simple_query, ieee_sample_json, mock_response):
         """Progress callback is called during search."""

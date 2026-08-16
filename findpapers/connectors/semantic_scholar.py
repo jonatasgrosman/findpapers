@@ -20,6 +20,10 @@ from findpapers.core.query import Query
 from findpapers.core.source import Source, SourceType
 from findpapers.query.builder import QueryBuilder
 from findpapers.query.builders.semantic_scholar import SemanticScholarQueryBuilder
+from findpapers.utils.pagination_logging import (
+    log_pagination_empty_before_total,
+    log_pagination_request_failure,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -740,8 +744,15 @@ class SemanticScholarConnector(
             try:
                 response = self._get(_BULK_SEARCH_URL, params)
             except requests.RequestException as exc:
-                logger.warning("Semantic Scholar request failed (token=%s): %s", token, exc)
-                logger.debug("Semantic Scholar request exception details:", exc_info=True)
+                log_pagination_request_failure(
+                    logger,
+                    connector_label="Semantic Scholar",
+                    processed=len(papers),
+                    total=total,
+                    position_label="token",
+                    position=token,
+                    exc=exc,
+                )
                 break
 
             data = response.json()
@@ -750,6 +761,14 @@ class SemanticScholarConnector(
 
             items = data.get("data") or []
             if not items:
+                log_pagination_empty_before_total(
+                    logger,
+                    connector_label="Semantic Scholar",
+                    processed=len(papers),
+                    total=total,
+                    position_label="token",
+                    position=token,
+                )
                 break
 
             for item in items:

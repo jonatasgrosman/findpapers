@@ -339,6 +339,41 @@ class TestScopusConnectorSearch:
 
         assert papers == []
 
+    def test_http_error_logs_progress_context(self, simple_query, caplog):
+        """A failed request logs how many papers were retrieved so far."""
+        searcher = ScopusConnector(api_key="dummy")
+
+        with (
+            patch.object(searcher, "_get", side_effect=requests.RequestException("network error")),
+            patch.object(searcher, "_rate_limit"),
+            caplog.at_level(logging.WARNING, logger="findpapers.connectors.scopus"),
+        ):
+            searcher.search(simple_query)
+
+        assert any("search stopped early" in m for m in caplog.messages)
+
+    def test_empty_entries_before_total_logs_warning(
+        self, simple_query, scopus_sample_json, mock_response, caplog
+    ) -> None:
+        """Entries running out before the reported total logs a pagination-limit warning."""
+        searcher = ScopusConnector(api_key="dummy")
+        response_with_data = mock_response(json_data=scopus_sample_json)
+        response_with_data.raise_for_status = MagicMock()
+        response_empty_page = self._empty_page_response(mock_response)
+
+        with (
+            patch.object(
+                searcher,
+                "_get",
+                side_effect=[response_with_data, response_empty_page],
+            ),
+            patch.object(searcher, "_rate_limit"),
+            caplog.at_level(logging.WARNING, logger="findpapers.connectors.scopus"),
+        ):
+            searcher.search(simple_query)
+
+        assert any("pagination limit" in m for m in caplog.messages)
+
     def test_progress_callback_called(self, simple_query, scopus_sample_json, mock_response):
         """Progress callback is invoked after processing each page."""
         searcher = ScopusConnector(api_key="dummy")

@@ -511,6 +511,52 @@ class TestSearchRunnerPipeline:
                     f"Bar with 0 results should show 'done' postfix, got: {postfix_str!r}"
                 )
 
+    def test_incomplete_search_warns_via_tqdm_write(self, make_paper):
+        """A connector that returns fewer papers than the total it reported
+        (not due to the user's own max_papers cap) triggers an always-visible
+        tqdm.write warning, and the bar is closed at the actual count."""
+        runner = SearchRunner(query="[ml]", databases=["arxiv"])
+        papers = [make_paper(title=f"Paper {i}") for i in range(25)]
+
+        def _fake_search(query, max_papers=None, progress_callback=None, since=None, until=None):
+            if progress_callback is not None:
+                progress_callback(25, 50)
+            return papers
+
+        mock_searcher = MagicMock()
+        mock_searcher.name = Database.ARXIV
+        mock_searcher.search.side_effect = _fake_search
+        runner._searchers = [mock_searcher]
+
+        with patch.object(sr_mod.tqdm, "write") as mock_write:
+            runner.run(show_progress=True)
+
+        assert mock_write.called
+        message = mock_write.call_args[0][0]
+        assert "25" in message
+        assert "50" in message
+
+    def test_max_papers_cap_does_not_warn(self, make_paper):
+        """Stopping exactly at the user's requested max_papers is not treated
+        as an incomplete/failed search, so no tqdm.write warning fires."""
+        runner = SearchRunner(query="[ml]", databases=["arxiv"], max_papers_per_database=25)
+        papers = [make_paper(title=f"Paper {i}") for i in range(25)]
+
+        def _fake_search(query, max_papers=None, progress_callback=None, since=None, until=None):
+            if progress_callback is not None:
+                progress_callback(25, 50)
+            return papers
+
+        mock_searcher = MagicMock()
+        mock_searcher.name = Database.ARXIV
+        mock_searcher.search.side_effect = _fake_search
+        runner._searchers = [mock_searcher]
+
+        with patch.object(sr_mod.tqdm, "write") as mock_write:
+            runner.run(show_progress=True)
+
+        mock_write.assert_not_called()
+
 
 class TestSearchRunnerVerbose:
     """Tests for the verbose=True logging path."""

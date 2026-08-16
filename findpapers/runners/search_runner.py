@@ -7,6 +7,8 @@ import logging
 from datetime import UTC, datetime
 from time import perf_counter
 
+from tqdm import tqdm
+
 from findpapers.connectors import SEARCH_REGISTRY
 from findpapers.connectors.search_base import SearchConnectorBase
 from findpapers.core.paper import Database, Paper
@@ -545,6 +547,26 @@ class SearchRunner(DiscoveryRunner):
                 until=self._until,
             )
             elapsed = perf_counter() - db_start
+
+            # A connector may stop short of the total it originally reported
+            # (e.g. an upstream API error, or silently running out of
+            # retrievable pages) without that being the user's own
+            # max_papers cap. When that happens, pbar.total still holds the
+            # larger, stale estimate, so the bar would otherwise sit stuck
+            # partway forever with no indication anything went wrong. Detect
+            # that case and surface it via tqdm.write, which - unlike
+            # logger.warning - is always visible, not just with --verbose.
+            capped_by_user = (
+                self._max_papers_per_database is not None
+                and len(papers) >= self._max_papers_per_database
+            )
+            if pbar.total is not None and pbar.n < pbar.total and not capped_by_user:
+                tqdm.write(
+                    f"{searcher.name}: search stopped early after retrieving "
+                    f"{pbar.n} of an estimated {pbar.total} papers. "
+                    "Re-run with verbose=True for details."
+                )
+                pbar.total = pbar.n
 
             # When the connector exits early (e.g. first request returns an
             # error or zero results) total may still be None, leaving the bar

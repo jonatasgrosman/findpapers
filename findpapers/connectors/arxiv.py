@@ -28,6 +28,10 @@ from findpapers.query.builder import QueryBuilder
 from findpapers.query.builders.arxiv import ArxivQueryBuilder
 from findpapers.utils.arxiv_taxonomy import arxiv_category_to_field, arxiv_category_to_subject
 from findpapers.utils.normalization import parse_date
+from findpapers.utils.pagination_logging import (
+    log_pagination_empty_before_total,
+    log_pagination_request_failure,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -456,6 +460,7 @@ class ArxivConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConne
         papers: list[Paper] = []
         processed = 0
         offset = 0
+        total: int | None = None
 
         while True:
             remaining = (max_papers - len(papers)) if max_papers is not None else _PAGE_SIZE
@@ -471,20 +476,35 @@ class ArxivConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConne
 
             try:
                 response = self._get(_BASE_URL, params)
-            except requests.RequestException:
-                logger.debug("arXiv request failed (offset=%d).", offset, exc_info=True)
+            except requests.RequestException as exc:
+                log_pagination_request_failure(
+                    logger,
+                    connector_label="arXiv",
+                    processed=processed,
+                    total=total,
+                    position_label="offset",
+                    position=offset,
+                    exc=exc,
+                )
                 break
 
             tree = ET.fromstring(response.text)
 
             total_results_el = tree.find("{http://a9.com/-/spec/opensearch/1.1/}totalResults")
-            total: int | None = None
             if total_results_el is not None and total_results_el.text:
                 with contextlib.suppress(ValueError):
                     total = int(total_results_el.text.strip())
 
             entries = tree.findall("atom:entry", _NS)
             if not entries:
+                log_pagination_empty_before_total(
+                    logger,
+                    connector_label="arXiv",
+                    processed=processed,
+                    total=total,
+                    position_label="offset",
+                    position=offset,
+                )
                 break
 
             for entry in entries:

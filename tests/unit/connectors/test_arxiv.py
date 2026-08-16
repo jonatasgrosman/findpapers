@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime
+import logging
 from unittest.mock import MagicMock, patch
 from xml.etree import ElementTree as ET
 
@@ -14,6 +15,26 @@ from findpapers.core.paper import Database, PaperType
 from findpapers.core.source import SourceType
 from findpapers.exceptions import UnsupportedQueryError
 from findpapers.query.builders.arxiv import ArxivQueryBuilder
+
+
+def _make_arxiv_feed(n: int, total: int) -> str:
+    """Build a minimal synthetic arXiv Atom feed with *n* entries."""
+    entries = "".join(
+        f"""<entry>
+            <id>http://arxiv.org/abs/2301.0000{i}v1</id>
+            <title>Synthetic Paper {i}</title>
+            <updated>2023-01-01T00:00:00Z</updated>
+            <published>2023-01-01T00:00:00Z</published>
+            <summary>Synthetic abstract {i}.</summary>
+            <author><name>Author {i}</name></author>
+        </entry>"""
+        for i in range(n)
+    )
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+    <feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns="http://www.w3.org/2005/Atom">
+        <opensearch:totalResults>{total}</opensearch:totalResults>
+        {entries}
+    </feed>"""
 
 
 class TestArxivConnectorInit:
@@ -439,6 +460,38 @@ class TestArxivConnectorSearch:
             papers = searcher.search(simple_query)
 
         assert papers == []
+
+    def test_http_error_logs_progress_context(self, simple_query, caplog):
+        """A failed request logs how many papers were retrieved so far, at WARNING."""
+        searcher = ArxivConnector()
+        searcher._http_session = MagicMock()
+        searcher._http_session.get.side_effect = requests.HTTPError("500")
+        with (
+            patch.object(searcher, "_rate_limit"),
+            caplog.at_level(logging.WARNING, logger="findpapers.connectors.arxiv"),
+        ):
+            searcher.search(simple_query)
+
+        assert any("search stopped early" in m for m in caplog.messages)
+
+    def test_empty_entries_before_total_logs_warning(self, simple_query, mock_response, caplog):
+        """Entries running out before the reported total logs a pagination-limit warning."""
+        full_page = mock_response(text=_make_arxiv_feed(100, total=150))
+        full_page.raise_for_status = MagicMock()
+        empty_page = mock_response(text=_make_arxiv_feed(0, total=150))
+        empty_page.raise_for_status = MagicMock()
+
+        searcher = ArxivConnector()
+        searcher._http_session = MagicMock()
+        searcher._http_session.get.side_effect = [full_page, empty_page]
+
+        with (
+            patch.object(searcher, "_rate_limit"),
+            caplog.at_level(logging.WARNING, logger="findpapers.connectors.arxiv"),
+        ):
+            searcher.search(simple_query)
+
+        assert any("pagination limit" in m for m in caplog.messages)
 
     def test_since_until_appended_to_query(self, simple_query, arxiv_sample_xml, mock_response):
         """search() appends submittedDate range when since/until are given."""

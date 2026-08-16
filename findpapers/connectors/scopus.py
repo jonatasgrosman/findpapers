@@ -19,6 +19,10 @@ from findpapers.core.source import Source, SourceType
 from findpapers.exceptions import MissingApiKeyError
 from findpapers.query.builder import QueryBuilder
 from findpapers.query.builders.scopus import ScopusQueryBuilder
+from findpapers.utils.pagination_logging import (
+    log_pagination_empty_before_total,
+    log_pagination_request_failure,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -409,8 +413,15 @@ class ScopusConnector(SearchConnectorBase, DOILookupConnectorBase):
             try:
                 response = self._get(_BASE_URL, params)
             except requests.RequestException as exc:
-                logger.warning("Scopus request failed (offset=%d): %s", offset, exc)
-                logger.debug("Scopus request exception details:", exc_info=True)
+                log_pagination_request_failure(
+                    logger,
+                    connector_label="Scopus",
+                    processed=processed,
+                    total=total,
+                    position_label="offset",
+                    position=offset,
+                    exc=exc,
+                )
                 break
 
             entries, page_total, api_error = ScopusConnector._parse_scopus_page_response(response)
@@ -421,6 +432,14 @@ class ScopusConnector(SearchConnectorBase, DOILookupConnectorBase):
             if page_total is not None and total is None:
                 total = page_total
             if not entries:
+                log_pagination_empty_before_total(
+                    logger,
+                    connector_label="Scopus",
+                    processed=processed,
+                    total=total,
+                    position_label="offset",
+                    position=offset,
+                )
                 break
 
             for entry in entries:

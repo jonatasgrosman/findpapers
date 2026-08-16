@@ -27,6 +27,10 @@ from findpapers.core.source import Source, SourceType
 from findpapers.query.builder import QueryBuilder
 from findpapers.query.builders.pubmed import PubmedQueryBuilder
 from findpapers.utils.normalization import normalize_language
+from findpapers.utils.pagination_logging import (
+    log_pagination_empty_before_total,
+    log_pagination_request_failure,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -652,18 +656,40 @@ class PubmedConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConn
             try:
                 ids, total = self._search_ids(pubmed_query, offset, page_size, date_params)
             except (requests.RequestException, ValueError) as exc:
-                logger.warning("PubMed esearch failed (offset=%d): %s", offset, exc)
-                logger.debug("PubMed esearch exception details:", exc_info=True)
+                log_pagination_request_failure(
+                    logger,
+                    connector_label="PubMed",
+                    processed=processed,
+                    total=total,
+                    position_label="offset",
+                    position=offset,
+                    exc=exc,
+                )
                 break
 
             if not ids:
+                log_pagination_empty_before_total(
+                    logger,
+                    connector_label="PubMed",
+                    processed=processed,
+                    total=total,
+                    position_label="offset",
+                    position=offset,
+                )
                 break
 
             try:
                 article_elements = self._fetch_details(ids)
             except (requests.RequestException, ET.ParseError) as exc:
-                logger.warning("PubMed efetch failed (pmids=%s): %s", ids, exc)
-                logger.debug("PubMed efetch exception details:", exc_info=True)
+                log_pagination_request_failure(
+                    logger,
+                    connector_label="PubMed",
+                    processed=processed,
+                    total=total,
+                    position_label="offset",
+                    position=offset,
+                    exc=exc,
+                )
                 break
 
             for el in article_elements:

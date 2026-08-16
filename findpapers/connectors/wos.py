@@ -21,6 +21,10 @@ from findpapers.core.source import Source, SourceType
 from findpapers.exceptions import MissingApiKeyError
 from findpapers.query.builder import QueryBuilder
 from findpapers.query.builders.wos import WosQueryBuilder
+from findpapers.utils.pagination_logging import (
+    log_pagination_empty_before_total,
+    log_pagination_request_failure,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -417,8 +421,15 @@ class WosConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConnect
                 response = self._get(f"{_BASE_URL}/documents", params=params)
                 data = response.json()
             except (requests.RequestException, ValueError) as exc:
-                logger.warning("WoS request failed (page=%d): %s", page, exc)
-                logger.debug("WoS request exception details:", exc_info=True)
+                log_pagination_request_failure(
+                    logger,
+                    connector_label="WoS",
+                    processed=processed,
+                    total=total,
+                    position_label="page",
+                    position=page,
+                    exc=exc,
+                )
                 break
 
             metadata = data.get("metadata") or {}
@@ -427,6 +438,14 @@ class WosConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConnect
 
             hits = data.get("hits") or []
             if not hits:
+                log_pagination_empty_before_total(
+                    logger,
+                    connector_label="WoS",
+                    processed=processed,
+                    total=total,
+                    position_label="page",
+                    position=page,
+                )
                 break
 
             for hit in hits:

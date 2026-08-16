@@ -695,6 +695,38 @@ class TestPubmedConnectorSearch:
 
         assert papers == []
 
+    def test_esearch_error_logs_progress_context(self, simple_query, caplog):
+        """A failed esearch call logs how many papers were retrieved so far."""
+        searcher = PubmedConnector()
+
+        with (
+            patch.object(
+                searcher, "_search_ids", side_effect=requests.RequestException("network error")
+            ),
+            caplog.at_level(logging.WARNING, logger="findpapers.connectors.pubmed"),
+        ):
+            searcher.search(simple_query)
+
+        assert any("search stopped early" in m for m in caplog.messages)
+
+    def test_empty_ids_before_total_logs_warning(
+        self, simple_query, pubmed_efetch_xml, mock_response, caplog
+    ):
+        """IDs running out before the reported total logs a pagination-limit warning."""
+        searcher = PubmedConnector()
+        full_page_ids = [str(i) for i in range(100)]
+        elements = list(ET.fromstring(pubmed_efetch_xml))
+
+        with (
+            patch.object(searcher, "_search_ids", side_effect=[(full_page_ids, 500), ([], 500)]),
+            patch.object(searcher, "_fetch_details", return_value=elements),
+            patch.object(searcher, "_rate_limit"),
+            caplog.at_level(logging.WARNING, logger="findpapers.connectors.pubmed"),
+        ):
+            searcher.search(simple_query)
+
+        assert any("pagination limit" in m for m in caplog.messages)
+
     def test_efetch_error_breaks_loop(self, simple_query, pubmed_esearch_json, mock_response):
         """Exception in _fetch_details breaks the loop."""
         searcher = PubmedConnector()

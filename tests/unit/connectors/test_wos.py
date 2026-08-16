@@ -377,6 +377,94 @@ class TestWosFetchPapers:
             papers = connector._fetch_papers(simple_query, max_papers=None, progress_callback=None)
         assert papers == []
 
+    def test_request_exception_logs_informative_warning(self, simple_query, caplog) -> None:
+        """A failed page logs how many papers were retrieved vs. the estimated total."""
+        import requests
+
+        connector = WosConnector(api_key="dummy")
+        with (
+            patch.object(connector, "_get", side_effect=requests.RequestException("boom")),
+            caplog.at_level("WARNING", logger="findpapers.connectors.wos"),
+        ):
+            connector._fetch_papers(simple_query, max_papers=None, progress_callback=None)
+        assert any(
+            "search stopped early" in record.message and "page=1" in record.message
+            for record in caplog.records
+        )
+
+    def test_request_exception_reports_processed_total_via_callback(
+        self, simple_query, wos_sample_json: dict, mock_response
+    ) -> None:
+        """After a mid-pagination failure, the final callback reports a completed
+        (processed == total) state instead of the stale, larger API estimate,
+        so callers relying on the callback alone see a finished bar."""
+        import requests
+
+        connector = WosConnector(api_key="dummy")
+        first_page = mock_response(wos_sample_json)
+        calls: list[tuple] = []
+        with patch.object(
+            connector, "_get", side_effect=[first_page, requests.RequestException("boom")]
+        ):
+            connector._fetch_papers(
+                simple_query,
+                max_papers=None,
+                progress_callback=lambda fetched, total: calls.append((fetched, total)),
+            )
+        last_fetched, last_total = calls[-1]
+        assert last_fetched == len(wos_sample_json["hits"])
+        # The API's own metadata.total (learned from the first page) is still
+        # reported as-is by the connector; it's search_runner's job to correct
+        # it for display, so it stays the original, possibly larger, estimate.
+        assert last_total == wos_sample_json["metadata"]["total"]
+
+    def test_empty_hits_before_total_logs_warning(
+        self, simple_query, mock_response, caplog
+    ) -> None:
+        """Hits emptying out before the reported total logs a warning explaining
+        that this may be a WoS-side pagination limit rather than an error."""
+        connector = WosConnector(api_key="dummy")
+        # A full page (== page_size) is required so pagination continues to a
+        # second page instead of stopping via the "short last page" natural
+        # end-of-results check.
+        full_page_hits = [
+            {"title": f"Paper {i}", "names": {}, "source": {}, "identifiers": {}, "links": {}}
+            for i in range(50)
+        ]
+        first_page = mock_response(
+            {"metadata": {"total": 100, "page": 1, "limit": 50}, "hits": full_page_hits}
+        )
+        second_page = mock_response({"metadata": {"total": 100}, "hits": []})
+        with (
+            patch.object(connector, "_get", side_effect=[first_page, second_page]),
+            caplog.at_level("WARNING", logger="findpapers.connectors.wos"),
+        ):
+            papers = connector._fetch_papers(simple_query, max_papers=None, progress_callback=None)
+        assert len(papers) == 50
+        assert any("pagination limit" in record.message for record in caplog.records)
+
+    def test_empty_hits_at_expected_total_does_not_warn(
+        self, simple_query, mock_response, caplog
+    ) -> None:
+        """Hits emptying out exactly when the total is reached is a normal
+        completion and should not log a warning."""
+        connector = WosConnector(api_key="dummy")
+        full_page_hits = [
+            {"title": f"Paper {i}", "names": {}, "source": {}, "identifiers": {}, "links": {}}
+            for i in range(50)
+        ]
+        first_page = mock_response(
+            {"metadata": {"total": 50, "page": 1, "limit": 50}, "hits": full_page_hits}
+        )
+        second_page = mock_response({"metadata": {"total": 50}, "hits": []})
+        with (
+            patch.object(connector, "_get", side_effect=[first_page, second_page]),
+            caplog.at_level("WARNING", logger="findpapers.connectors.wos"),
+        ):
+            papers = connector._fetch_papers(simple_query, max_papers=None, progress_callback=None)
+        assert len(papers) == 50
+        assert not any("pagination limit" in record.message for record in caplog.records)
+
 
 class TestWosUrlPattern:
     """Tests for WosConnector.url_pattern regex."""

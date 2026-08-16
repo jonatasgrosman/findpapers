@@ -519,6 +519,37 @@ class TestSemanticScholarConnectorSearch:
 
         assert papers == []
 
+    def test_request_failure_logs_progress_context(self, simple_query, caplog):
+        """A failed page request logs how many papers were retrieved so far."""
+        searcher = SemanticScholarConnector()
+        with (
+            patch.object(searcher, "_get", side_effect=requests.RequestException("boom")),
+            patch.object(searcher, "_rate_limit"),
+            caplog.at_level(logging.WARNING, logger="findpapers.connectors.semantic_scholar"),
+        ):
+            searcher.search(simple_query)
+        assert any("search stopped early" in m for m in caplog.messages)
+
+    def test_empty_data_before_total_logs_warning(self, simple_query, mock_response, caplog):
+        """Data running out before the reported total logs a pagination-limit warning."""
+        items = [{"title": f"Paper {i}"} for i in range(_PAGE_SIZE)]
+        page1 = mock_response(json_data={"total": _PAGE_SIZE + 5, "token": "NEXT", "data": items})
+        page1.raise_for_status = MagicMock()
+        page2 = mock_response(json_data={"total": _PAGE_SIZE + 5, "token": None, "data": []})
+        page2.raise_for_status = MagicMock()
+
+        searcher = SemanticScholarConnector()
+        searcher._http_session = MagicMock()
+        searcher._http_session.get.side_effect = [page1, page2]
+
+        with (
+            patch.object(searcher, "_rate_limit"),
+            caplog.at_level(logging.WARNING, logger="findpapers.connectors.semantic_scholar"),
+        ):
+            searcher.search(simple_query)
+
+        assert any("pagination limit" in m for m in caplog.messages)
+
 
 class TestSemanticScholarAffiliationEnrichment:
     """Tests for _enrich_author_affiliations."""

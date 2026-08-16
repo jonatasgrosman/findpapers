@@ -21,6 +21,10 @@ from findpapers.core.source import Source, SourceType
 from findpapers.query.builder import QueryBuilder
 from findpapers.query.builders.openalex import OpenAlexQueryBuilder
 from findpapers.utils.normalization import normalize_doi, normalize_language
+from findpapers.utils.pagination_logging import (
+    log_pagination_empty_before_total,
+    log_pagination_request_failure,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -861,8 +865,15 @@ class OpenAlexConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupCo
             try:
                 response = self._get(_BASE_URL, params)
             except requests.RequestException as exc:
-                logger.warning("OpenAlex request failed (cursor=%s): %s", cursor, exc)
-                logger.debug("OpenAlex request exception details:", exc_info=True)
+                log_pagination_request_failure(
+                    logger,
+                    connector_label="OpenAlex",
+                    processed=processed,
+                    total=total,
+                    position_label="cursor",
+                    position=cursor,
+                    exc=exc,
+                )
                 break
 
             data = response.json()
@@ -872,6 +883,14 @@ class OpenAlexConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupCo
 
             results = data.get("results") or []
             if not results:
+                log_pagination_empty_before_total(
+                    logger,
+                    connector_label="OpenAlex",
+                    processed=processed,
+                    total=total,
+                    position_label="cursor",
+                    position=cursor,
+                )
                 break
 
             for work in results:
