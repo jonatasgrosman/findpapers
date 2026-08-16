@@ -129,8 +129,8 @@ $RECYCLE.BIN/
 # Project-specific
 # =============================================================================
 # Scratch / exploratory files
-_ignore_*
-_tmp_*
+_*
+!__*.py
 
 # Temporary files
 tmp/
