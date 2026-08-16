@@ -18,9 +18,9 @@ Saved layout
 ------------
     tests/data/pages/
         <database>/
-            <sanitised_doi>.html      – HTML landing page (or empty on error)
-            <sanitised_doi>.meta.json – URL, DOI, and HTTP status metadata
-        collection_metadata.json      – overall run summary
+            <sanitised_doi>.html      : HTML landing page (or empty on error)
+            <sanitised_doi>.meta.json : URL, DOI, and HTTP status metadata
+        collection_metadata.json      : overall run summary
 """
 
 from __future__ import annotations
@@ -77,7 +77,7 @@ def _safe_get(url: str, *, timeout: int = REQUEST_TIMEOUT) -> requests.Response 
         )
         return resp
     except Exception as exc:
-        print(f"    ✗ Request error: {exc}")
+        print(f"    [FAIL] Request error: {exc}")
         return None
 
 
@@ -117,7 +117,7 @@ def _save_page(
     if "text/html" in content_type:
         (db_dir / f"{safe_key}.html").write_text(resp.text, encoding="utf-8", errors="replace")
     elif "application/pdf" in content_type:
-        # Save only the first 4 KB of bytes – enough for tests, avoids large files
+        # Save only the first 4 KB of bytes: enough for tests, avoids large files
         (db_dir / f"{safe_key}.pdf.bin").write_bytes(resp.content[:4096])
         meta["truncated"] = True
 
@@ -159,7 +159,7 @@ def _extract_json_dois(
     if isinstance(data, list):
         items = data
     elif isinstance(data, dict):
-        # Various APIs wrap the list: OpenAlex → "results", WoS → "hits", etc.
+        # Various APIs wrap the list: OpenAlex -> "results", WoS -> "hits", etc.
         for key in ("results", "collection", "hits", "items", "papers", "data", "articles"):
             if isinstance(data.get(key), list):
                 items = data[key]
@@ -299,7 +299,7 @@ def collect_db(db_name: str, config: dict) -> dict:
 
     sample_path = DATA_DIR / config["sample"]
     if not sample_path.exists():
-        print(f"  ✗ Sample file not found: {sample_path}")
+        print(f"  [FAIL] Sample file not found: {sample_path}")
         return {"db": db_name, "collected": 0, "errors": 0, "skipped": True}
 
     db_output_dir = OUTPUT_DIR / db_name
@@ -313,17 +313,17 @@ def collect_db(db_name: str, config: dict) -> dict:
         if collected >= MAX_PAGES_PER_DB:
             break
         key = doi if doi else urllib.parse.urlsplit(url).path.strip("/").replace("/", "_")
-        print(f"  → {url}")
+        print(f"  -> {url}")
         resp = _safe_get(url)
         meta = _save_page(db_output_dir, key, url, doi, resp)
         if resp and resp.ok:
             print(
-                f"    ✓ {resp.status_code} {meta.get('content_type', '')} ({meta['size_bytes']} B)"
+                f"    [OK] {resp.status_code} {meta.get('content_type', '')} ({meta['size_bytes']} B)"
             )
             pages_meta.append(meta)
             collected += 1
         else:
-            print("    ✗ failed — trying next candidate")
+            print("    [FAIL] failed: trying next candidate")
             errors += 1
         time.sleep(REQUEST_DELAY)
 
@@ -343,7 +343,7 @@ def main() -> int:
         selected = sys.argv[1:]
         invalid = [s for s in selected if s not in DB_CONFIGS]
         if invalid:
-            print(f"\n✗ Unknown database(s): {', '.join(invalid)}")
+            print(f"\n[FAIL] Unknown database(s): {', '.join(invalid)}")
             print(f"Available: {', '.join(DB_CONFIGS.keys())}")
             return 1
     else:

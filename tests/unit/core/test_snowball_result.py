@@ -231,7 +231,7 @@ class TestFromDict:
     """Tests for SnowballResult.from_dict()."""
 
     def test_round_trip(self) -> None:
-        """to_dict → from_dict produces an equivalent SnowballResult."""
+        """to_dict -> from_dict produces an equivalent SnowballResult."""
         seed = _make_paper("Seed", doi="10.0/seed")
         paper = _make_paper("Paper", doi="10.0/p")
         original = SnowballResult(

@@ -318,7 +318,7 @@ class PubmedConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConn
         if article is None:
             return None
 
-        # Title – use itertext() to handle inline markup (e.g. <i>, <sub>)
+        # Title: use itertext() to handle inline markup (e.g. <i>, <sub>)
         title_el = article.find("ArticleTitle")
         title = "".join(title_el.itertext()).strip() if title_el is not None else ""
         if not title:
@@ -339,7 +339,7 @@ class PubmedConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConn
         source = self._parse_pubmed_source(article)
         paper_type, is_retracted = self._parse_pubmed_type_retracted(article)
 
-        # Language — first <Language> element inside the Article
+        # Language: first <Language> element inside the Article
         language: str | None = None
         lang_el = article.find(".//Language")
         if lang_el is not None and lang_el.text:

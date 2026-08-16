@@ -31,17 +31,17 @@ class WosQueryBuilder(QueryBuilder):
 
     Supported filter codes and their WoS field tags:
 
-    * ``ti`` → ``TI`` (Title)
-    * ``au`` → ``AU`` (Author)
-    * ``src`` → ``SO`` (Source)
-    * ``aff`` → ``OG`` (Organization)
-    * ``tiabskey`` → ``TS`` (Topic — title+abstract+author keywords+Keywords Plus)
+    * ``ti`` -> ``TI`` (Title)
+    * ``au`` -> ``AU`` (Author)
+    * ``src`` -> ``SO`` (Source)
+    * ``aff`` -> ``OG`` (Organization)
+    * ``tiabskey`` -> ``TS`` (Topic: title+abstract+author keywords+Keywords Plus)
 
     Unsupported filter codes (will cause the database to be skipped):
 
-    * ``abs`` — no abstract-only field tag in WoS Starter
-    * ``key`` — no keywords-only field tag in WoS Starter
-    * ``tiabs`` — no title+abstract composite (without keywords) in WoS Starter
+    * ``abs``: no abstract-only field tag in WoS Starter
+    * ``key``: no keywords-only field tag in WoS Starter
+    * ``tiabs``: no title+abstract composite (without keywords) in WoS Starter
 
     Wildcards ``*`` and ``?`` are passed through unchanged because WoS
     supports them natively (minimum 3 characters before ``*`` when using

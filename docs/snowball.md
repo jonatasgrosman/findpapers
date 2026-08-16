@@ -44,7 +44,7 @@ result = engine.snowball(
 | `direction` | `"both" \| "backward" \| "forward"` | `"both"` | Direction of citation traversal |
 | `max_papers_per_level` | `int \| None` | `None` | Keep only the N most-cited papers per level in the result. Papers outside the top N are excluded from the result but still drive the next level. Seed papers are never filtered. `None` keeps all papers |
 | `max_expansion_per_level` | `int \| None` | `None` | Limit how many papers per level become seeds for the next BFS round. Only the top N most-cited papers from each level are expanded. Papers already in the result are unaffected. `None` expands all |
-| `max_cited_by` | `int \| None` | `100` | Maximum number of citing-paper DOIs collected per paper in `paper.cited_by` during seed and frontier enrichment. OpenAlex is used first (results sorted by citation count so the most-impactful papers are kept when truncated); Semantic Scholar is the fallback. `None` means no limit — use with caution for forward/both directions as highly-cited papers may have thousands of citations. A warning is emitted when this value is `None` or greater than `100` |
+| `max_cited_by` | `int \| None` | `100` | Maximum number of citing-paper DOIs collected per paper in `paper.cited_by` during seed and frontier enrichment. OpenAlex is used first (results sorted by citation count so the most-impactful papers are kept when truncated); Semantic Scholar is the fallback. `None` means no limit: use with caution for forward/both directions as highly-cited papers may have thousands of citations. A warning is emitted when this value is `None` or greater than `100` |
 | `databases` | `list[str] \| None` | direction-based | Databases used for BFS discovery. Only `"crossref"`, `"openalex"`, and `"semantic_scholar"` are accepted. Defaults to `["crossref"]` for `"backward"` direction, or all three for `"forward"`/`"both"`. Pass `None` for the same direction-based default. Raises an error if direction requires forward citation data but none of the selected databases support it |
 | `enrichment_databases` | `list[str] \| None` | `["crossref", "web_scraping"]` | Databases used to enrich non-seed papers after all BFS levels complete. Databases already used during discovery are not applied again. Accepted values: `"arxiv"`, `"crossref"`, `"ieee"`, `"openalex"`, `"pubmed"`, `"scopus"`, `"semantic_scholar"`, `"web_scraping"`, `"wos"`. `None` uses the default. Pass `[]` to disable enrichment entirely. |
 | `since` | `datetime.date \| None` | `None` | Only include discovered papers published on or after this date. Seed papers are never filtered |
@@ -76,8 +76,8 @@ Returns a `SnowballResult` object containing:
 
 Citation relationships are encoded directly on each `Paper` object:
 
-- `paper.references` — DOIs of papers cited *by* this paper (backward links)
-- `paper.cited_by` — DOIs of papers that *cite* this paper (forward links)
+- `paper.references`: DOIs of papers cited *by* this paper (backward links)
+- `paper.cited_by`: DOIs of papers that *cite* this paper (forward links)
 
 ## Direction
 
@@ -118,7 +118,7 @@ result = engine.snowball(papers, max_depth=2)
 
 ## Controlling the Result Size with `max_papers_per_level`
 
-At each snowball level the number of discovered papers can grow quickly. The `max_papers_per_level` parameter limits how many papers from each level are kept in the final result: only the **N most-cited** papers per level are added. Papers that do not make the cut are excluded from the result but **still drive the next BFS level** — their references and citing papers are still fetched.
+At each snowball level the number of discovered papers can grow quickly. The `max_papers_per_level` parameter limits how many papers from each level are kept in the final result: only the **N most-cited** papers per level are added. Papers that do not make the cut are excluded from the result but **still drive the next BFS level**: their references and citing papers are still fetched.
 
 Seed papers are never filtered regardless of this limit.
 
@@ -184,13 +184,13 @@ Papers with an unknown publication date are excluded when either `since` or `unt
 
 Snowballing uses a two-step strategy:
 
-### Step 1 — Seed enrichment
+### Step 1: Seed enrichment
 
 Seed papers are fetched using the **union** of `databases` and `enrichment_databases`, ensuring they have full metadata (including `references` and `cited_by`) before the first BFS round. Only `"crossref"`, `"openalex"`, and `"semantic_scholar"` populate citation link fields.
 
-### Step 2 — BFS discovery
+### Step 2: BFS discovery
 
-For each BFS level, every candidate DOI found in frontier `references`/`cited_by` lists is fetched with the configured `databases`. After all levels complete and filters are applied, surviving non-seed papers are re-enriched with the `enrichment_databases` that were **not** already used during discovery — avoiding redundant API calls while still filling metadata gaps (abstracts, PDFs, keywords, etc.). Seed papers are excluded from this final pass since they were already fully enriched at the start.
+For each BFS level, every candidate DOI found in frontier `references`/`cited_by` lists is fetched with the configured `databases`. After all levels complete and filters are applied, surviving non-seed papers are re-enriched with the `enrichment_databases` that were **not** already used during discovery, avoiding redundant API calls while still filling metadata gaps (abstracts, PDFs, keywords, etc.). Seed papers are excluded from this final pass since they were already fully enriched at the start.
 
 ```python
 # Use all three snowball databases for discovery
@@ -204,9 +204,9 @@ result = engine.snowball(seed, direction="backward")
 
 Snowballing uses `GetRunner` for each discovered DOI, pulling metadata and citation lists from multiple databases:
 
-- **OpenAlex** — large open catalog with both references and forward citation data
-- **Semantic Scholar** — AI-powered academic graph with references and forward citation data
-- **CrossRef** — metadata and backward references via DOI lookup (default discovery source)
+- **OpenAlex**: large open catalog with both references and forward citation data
+- **Semantic Scholar**: AI-powered academic graph with references and forward citation data
+- **CrossRef**: metadata and backward references via DOI lookup (default discovery source)
 - Other configured databases (IEEE, Scopus, PubMed, arXiv, WoS) contribute paper metadata
 
 Papers without a DOI are silently skipped since they cannot be resolved by the upstream APIs.

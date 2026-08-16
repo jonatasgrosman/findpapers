@@ -3,9 +3,9 @@
 Provides mappings from arXiv category codes to human-readable names
 at two granularity levels:
 
-* **Field** (broad): the top-level archive prefix (e.g. ``cs`` → ``Computer Science``).
+* **Field** (broad): the top-level archive prefix (e.g. ``cs`` -> ``Computer Science``).
 * **Subject** (specific): the full category code
-  (e.g. ``cs.AI`` → ``Artificial Intelligence``).
+  (e.g. ``cs.AI`` -> ``Artificial Intelligence``).
 
 The taxonomy is maintained by arXiv and rarely changes.
 Reference: https://arxiv.org/category_taxonomy
@@ -13,7 +13,7 @@ Reference: https://arxiv.org/category_taxonomy
 
 from __future__ import annotations
 
-# -- Prefix → broad field of study ------------------------------------------
+# -- Prefix -> broad field of study ------------------------------------------
 
 ARXIV_PREFIX_TO_FIELD: dict[str, str] = {
     "astro-ph": "Astrophysics",
@@ -38,7 +38,7 @@ ARXIV_PREFIX_TO_FIELD: dict[str, str] = {
     "stat": "Statistics",
 }
 
-# -- Full category → specific subject ----------------------------------------
+# -- Full category -> specific subject ----------------------------------------
 
 ARXIV_CATEGORY_TO_SUBJECT: dict[str, str] = {
     # Astrophysics

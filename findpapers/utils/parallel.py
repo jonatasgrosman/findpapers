@@ -83,7 +83,7 @@ def _iter_parallel(
     num_workers : int
         Maximum thread-pool size.
     stop_on_timeout : bool
-        Reserved for API symmetry — parallel execution always stops on timeout.
+        Reserved for API symmetry: parallel execution always stops on timeout.
 
     Yields
     ------
@@ -125,7 +125,7 @@ def _handle_parallel_timeout(
     Parameters
     ----------
     futures : dict
-        Mapping of future → original item.
+        Mapping of future -> original item.
     yielded_futures : set
         Futures already yielded before the timeout.
 

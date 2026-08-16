@@ -1,4 +1,4 @@
-.PHONY: help clean setup test test-integration lint format types complexity security deps-audit docstrings dead-code check
+.PHONY: help clean setup test test-integration lint format types complexity security deps-audit docstrings dead-code ascii check
 .DEFAULT_GOAL := help
 
 VENV ?= .venv
@@ -45,9 +45,11 @@ help:
 	@echo "       check docstring coverage with interrogate (fails if below 95%)"
 	@echo "make dead-code"
 	@echo "       detect unused code with vulture"
+	@echo "make ascii"
+	@echo "       reject non-ASCII characters in findpapers/ and tests/ (e.g. em dash, arrows, emoji)"
 	@echo "make check"
 	@echo "       run all quality checks: lint, format, types, complexity,"
-	@echo "       security, deps-audit, docstrings, dead-code and test"
+	@echo "       security, deps-audit, docstrings, dead-code, ascii and test"
 
 setup:
 	@[ -d $(VENV) ] || python -m venv $(VENV)
@@ -99,6 +101,9 @@ docstrings:
 dead-code:
 	@$(POETRY) run vulture findpapers/
 
+ascii:
+	@$(POETRY) run python tools/check_ascii.py
+
 check:
 	@$(MAKE) --no-print-directory lint
 	@$(MAKE) --no-print-directory format
@@ -108,4 +113,5 @@ check:
 	@$(MAKE) --no-print-directory deps-audit
 	@$(MAKE) --no-print-directory docstrings
 	@$(MAKE) --no-print-directory dead-code
+	@$(MAKE) --no-print-directory ascii
 	@$(MAKE) --no-print-directory test

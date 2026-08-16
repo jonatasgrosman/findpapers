@@ -37,21 +37,21 @@ class FilterCode(StrEnum):
     Members
     -------
     TITLE
-        ``ti`` — search in the title field.
+        ``ti``: search in the title field.
     ABSTRACT
-        ``abs`` — search in the abstract field.
+        ``abs``: search in the abstract field.
     KEYWORDS
-        ``key`` — search in the keywords / subject field.
+        ``key``: search in the keywords / subject field.
     AUTHOR
-        ``au`` — search by author name.
+        ``au``: search by author name.
     SOURCE
-        ``src`` — search by source name (journal, conference, etc.).
+        ``src``: search by source name (journal, conference, etc.).
     AFFILIATION
-        ``aff`` — search by institutional affiliation.
+        ``aff``: search by institutional affiliation.
     TITLE_ABSTRACT
-        ``tiabs`` — search in title and abstract (default when unspecified).
+        ``tiabs``: search in title and abstract (default when unspecified).
     TITLE_ABSTRACT_KEYWORDS
-        ``tiabskey`` — search in title, abstract, and keywords.
+        ``tiabskey``: search in title, abstract, and keywords.
     """
 
     TITLE = "ti"

@@ -168,7 +168,7 @@ class TestMergeAuthors:
         """Back-fill matches author names case-insensitively."""
         base = [_a("alice smith"), _a("Bob")]
         incoming = [_a("Alice Smith", affiliation="MIT")]
-        # base wins (tie → base), Alice's affiliation is back-filled.
+        # base wins (tie -> base), Alice's affiliation is back-filled.
         result = merge_authors(base, incoming)
         alice = next(a for a in result if a.name.lower() == "alice smith")
         assert alice.affiliation == "MIT"

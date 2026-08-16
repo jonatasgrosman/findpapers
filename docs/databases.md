@@ -64,7 +64,7 @@ arXiv is one of the most important open-access repositories in science. Founded 
 #### Limitations
 
 - No citation count, keywords, language, retraction status, funder, or page range data
-- **Not usable for snowballing** — the arXiv API does not expose citation or reference data
+- **Not usable for snowballing**: the arXiv API does not expose citation or reference data
 - **Stemming:** arXiv uses Lucene-based stemming, so `ti[transformer]` also matches "transformers" and "transforming". Keep this in mind when looking for exact terms
 - **Hyphens:** Hyphens are treated as spaces (`ti[self-attention]` is equivalent to `ti[self attention]`). Findpapers normalizes hyphens automatically
 - **Filter support:** `ti[]`, `abs[]`, `au[]`, and `tiabs[]` are supported; `key[]`, `src[]`, and `aff[]` are not
@@ -93,7 +93,7 @@ CrossRef is a nonprofit organization that serves as the official DOI (Digital Ob
 - Not available as a search database. Used only for DOI lookups, enrichment, and backward snowballing
 - No paper type, language, open access status, retraction status, or funder data
 - Forward snowballing (cited-by) is not supported by the CrossRef API
-- Reference lists may be incomplete — only references that carry a DOI can be followed
+- Reference lists may be incomplete: only references that carry a DOI can be followed
 
 ---
 
@@ -117,7 +117,7 @@ IEEE Xplore is the digital library of the Institute of Electrical and Electronic
 
 #### Limitations
 
-- **Not usable for snowballing** — the IEEE API does not expose citation or reference lists
+- **Not usable for snowballing**: the IEEE API does not expose citation or reference lists
 - No language, retraction status, or funder data
 - Publication date has year-level granularity only
 - Only `*` wildcard supported (not `?`); requires at least 3 characters before the `*`
@@ -145,7 +145,7 @@ OpenAlex is the largest fully open index of scholarly works in the world. It was
 
 #### Limitations
 
-- **Wildcards are not supported** — queries using `*` or `?` will raise an error
+- **Wildcards are not supported**: queries using `*` or `?` will raise an error
 - `key[]` (keywords) and `src[]` (source) filter codes are not supported
 - Abstract reconstruction from inverted index may occasionally differ from the original
 
@@ -170,12 +170,12 @@ PubMed is the world's most important database for biomedical and life sciences r
 
 #### Limitations
 
-- **Not usable for snowballing** — PubMed does not expose citation or reference data through its API
+- **Not usable for snowballing**: PubMed does not expose citation or reference data through its API
 - No PDF URL, citation count, open access status, or fields of study data
-- Source type is always `JOURNAL` — conference papers and other types cannot be distinguished
+- Source type is always `JOURNAL`: conference papers and other types cannot be distinguished
 - Only `*` wildcard supported (not `?`); requires at least 4 characters before the `*`
 - **Author name format:** PubMed indexes authors as "LastName Initials" (e.g., `Doudna JA`). When using the `au` filter, provide the name in this format for reliable results: `au[Doudna JA]`. Full first names (e.g., `au[Jennifer Doudna]`) may return no results
-- **Phrase length limit:** PubMed's phrase index only supports exact-match phrases up to approximately 3 words. Queries like `ti[deep learning]` (2 words) work, but `ti[deep learning for image recognition]` (5 words) returns zero results. Keep `ti[]`, `abs[]`, and `tiabs[]` terms short (1–3 words) for best results. To search for longer concepts, combine shorter phrases with AND: `ti[deep learning] AND ti[image recognition]`
+- **Phrase length limit:** PubMed's phrase index only supports exact-match phrases up to approximately 3 words. Queries like `ti[deep learning]` (2 words) work, but `ti[deep learning for image recognition]` (5 words) returns zero results. Keep `ti[]`, `abs[]`, and `tiabs[]` terms short (1-3 words) for best results. To search for longer concepts, combine shorter phrases with AND: `ti[deep learning] AND ti[image recognition]`
 
 ---
 
@@ -199,10 +199,10 @@ Scopus is Elsevier's flagship abstract and citation database, and one of the two
 
 #### Limitations
 
-- **Not usable for snowballing** — the Scopus Search API does not expose reference or citing-paper lists
+- **Not usable for snowballing**: the Scopus Search API does not expose reference or citing-paper lists
 - Only the first author is returned per result (full author lists require a separate API call not performed by Findpapers)
 - No abstract, keywords, PDF URL, language, subjects, fields of study, retraction status, or funder data; enrichment is strongly recommended to fill in missing metadata
-- No URL-based paper lookup — only search and DOI lookup are supported
+- No URL-based paper lookup: only search and DOI lookup are supported
 - Date filtering has year-level granularity only
 
 ---
@@ -228,7 +228,7 @@ Semantic Scholar is a free, AI-powered academic search engine developed by the A
 
 - No keywords, language, retraction status, or funder data
 - When exact publication date is unavailable, falls back to year only (January 1)
-- Only `tiabs[]` (title + abstract) filter is supported — `ti[]`, `abs[]`, `au[]`, `aff[]`, `src[]`, and `key[]` are all silently resolved to title + abstract
+- Only `tiabs[]` (title + abstract) filter is supported: `ti[]`, `abs[]`, `au[]`, `aff[]`, `src[]`, and `key[]` are all silently resolved to title + abstract
 - `?` wildcard not supported; `*` is allowed
 
 ---
@@ -253,8 +253,8 @@ Web of Science is one of the two largest curated indexes of peer-reviewed litera
 
 #### Limitations
 
-- **Abstracts are not returned** by the Starter API — the `abstract` field will remain empty unless filled by enrichment (e.g. CrossRef)
-- **Citation counts require an institutional-plan key** — free trial keys always receive no citation data
-- **Not usable for snowballing** — the Starter API does not expose reference or citing-paper lists
+- **Abstracts are not returned** by the Starter API: the `abstract` field will remain empty unless filled by enrichment (e.g. CrossRef)
+- **Citation counts require an institutional-plan key**: free trial keys always receive no citation data
+- **Not usable for snowballing**: the Starter API does not expose reference or citing-paper lists
 - No author affiliations, language, open access status, retraction status, funder, or PDF URL data
 - Only `ti[]`, `au[]`, `src[]`, `aff[]`, and `tiabskey[]` filters are supported. The `abs[]`, `key[]`, and `tiabs[]` filters are **not available** in the WoS Starter API (there is no abstract-only or keyword-only field tag)

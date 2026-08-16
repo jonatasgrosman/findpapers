@@ -11,7 +11,7 @@ from findpapers.query.builder import QueryBuilder, QueryValidationResult
 
 
 class _NoKeywordsBuilder(QueryBuilder):
-    """Builder that does not support tiabskey — used in unit tests only."""
+    """Builder that does not support tiabskey: used in unit tests only."""
 
     _SUPPORTED_FILTERS = frozenset({FilterCode.TITLE_ABSTRACT})
 
@@ -23,7 +23,7 @@ class _NoKeywordsBuilder(QueryBuilder):
 
 
 class _KeywordsBuilder(QueryBuilder):
-    """Builder that supports tiabskey — used in unit tests only."""
+    """Builder that supports tiabskey: used in unit tests only."""
 
     _SUPPORTED_FILTERS = frozenset({FilterCode.TITLE_ABSTRACT, FilterCode.TITLE_ABSTRACT_KEYWORDS})
 

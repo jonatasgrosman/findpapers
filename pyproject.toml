@@ -87,8 +87,9 @@ line-length = 100
 # I = isort-compatible import sorting (replaces standalone isort).
 select = ["E", "F", "W", "I", "B", "SIM", "PT", "UP", "C4", "RUF"]
 # E501 is handled by ruff format, so we ignore it in the linter.
-# RUF002/RUF003: allow EN DASH (–) in docstrings/comments — intentional typography.
-ignore = ["E501", "RUF002", "RUF003"]
+# RUF001/RUF002/RUF003 (ambiguous unicode, e.g. em/en dash) are enforced: see
+# the "Coding Rules" section of CONTRIBUTING.md for the ASCII-only policy.
+ignore = ["E501"]
 
 [tool.ruff.format]
 # Replaces standalone black.
@@ -99,7 +100,7 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.bandit]
-# B311: random.random() used only for jitter — not for cryptographic purposes.
+# B311: random.random() used only for jitter, not for cryptographic purposes.
 skips = ["B311"]
 
 [tool.interrogate]

@@ -37,7 +37,7 @@ from findpapers.runners.snowball_runner import SnowballRunner
 class Engine:
     """Centralised facade for findpapers operations.
 
-    Holds shared configuration — API keys, proxy, and SSL settings — that
+    Holds shared configuration (API keys, proxy, and SSL settings) that
     would otherwise need to be repeated in every call.  Per-call parameters
     such as *num_workers*, *timeout*, and *verbose* are passed directly to
     each method.
@@ -54,7 +54,7 @@ class Engine:
         Elsevier / Scopus API key.  Required to query ``"scopus"``.
         Falls back to ``FINDPAPERS_SCOPUS_API_TOKEN``.
     pubmed_api_key : str | None
-        NCBI PubMed API key.  Optional — increases the rate limit.
+        NCBI PubMed API key.  Optional: increases the rate limit.
         Falls back to ``FINDPAPERS_PUBMED_API_TOKEN``.
     openalex_api_key : str | None
         OpenAlex API key.  Optional.
@@ -65,7 +65,7 @@ class Engine:
         being rate-limited.
         Falls back to ``FINDPAPERS_EMAIL``.
     semantic_scholar_api_key : str | None
-        Semantic Scholar API key.  Optional — increases the rate limit.
+        Semantic Scholar API key.  Optional: increases the rate limit.
         Falls back to ``FINDPAPERS_SEMANTIC_SCHOLAR_API_TOKEN``.
     wos_api_key : str | None
         Clarivate Web of Science API key.  Required to query ``"wos"``.
@@ -77,7 +77,7 @@ class Engine:
         Whether to verify SSL certificates.  Set to ``False`` when using
         institutional proxies that perform SSL inspection.
         Defaults to ``True``.  Falls back to ``FINDPAPERS_SSL_VERIFY``
-        (accepted values: ``"0"``, ``"false"``, ``"no"`` → ``False``).
+        (accepted values: ``"0"``, ``"false"``, ``"no"`` -> ``False``).
 
     Examples
     --------
@@ -172,14 +172,14 @@ class Engine:
         ``AND``, ``OR``, or ``AND NOT`` operators.  Optionally prefix a term or
         group with a **filter code** to restrict where it is matched:
 
-        * ``ti`` — title
-        * ``abs`` — abstract
-        * ``key`` — keywords
-        * ``au`` — author
-        * ``src`` — source (journal / conference)
-        * ``aff`` — affiliation
-        * ``tiabs`` — title + abstract (default when no filter is given)
-        * ``tiabskey`` — title + abstract + keywords
+        * ``ti``: title
+        * ``abs``: abstract
+        * ``key``: keywords
+        * ``au``: author
+        * ``src``: source (journal / conference)
+        * ``aff``: affiliation
+        * ``tiabs``: title + abstract (default when no filter is given)
+        * ``tiabskey``: title + abstract + keywords
 
         Example queries::
 
@@ -240,7 +240,7 @@ class Engine:
             Maximum number of citing-paper DOIs collected per paper when
             ``"openalex"`` or ``"semantic_scholar"`` are in
             *enrichment_databases*.  Defaults to ``100``.  ``None`` means no
-            limit — use with caution as highly-cited papers may have thousands
+            limit: use with caution as highly-cited papers may have thousands
             of citations.  A warning is emitted when this value is ``None`` or
             greater than ``100``.
 
@@ -333,7 +333,7 @@ class Engine:
         Parameters
         ----------
         papers : list[Paper]
-            Papers whose PDFs should be downloaded — typically obtained from
+            Papers whose PDFs should be downloaded, typically obtained from
             ``engine.search(...).papers``.
         output_directory : str
             Directory where PDF files and the error log will be written.
@@ -357,9 +357,9 @@ class Engine:
         dict[str, int | float]
             Metrics dictionary with at least the following keys:
 
-            * ``total_papers`` — number of papers attempted.
-            * ``downloaded_papers`` — number of successfully downloaded PDFs.
-            * ``runtime_in_seconds`` — wall-clock time of the download
+            * ``total_papers``: number of papers attempted.
+            * ``downloaded_papers``: number of successfully downloaded PDFs.
+            * ``runtime_in_seconds``: wall-clock time of the download
               process.
 
         See Also
@@ -400,14 +400,14 @@ class Engine:
 
         Accepts three forms of identifier:
 
-        * **Bare DOI** (e.g. ``"10.1038/nature12373"``) — queries each
+        * **Bare DOI** (e.g. ``"10.1038/nature12373"``): queries each
           database via its API and merges the results into a single
           :class:`~findpapers.core.paper.Paper`.
-        * **DOI URL** (e.g. ``"https://doi.org/10.1038/nature12373"``) —
+        * **DOI URL** (e.g. ``"https://doi.org/10.1038/nature12373"``):
           the ``doi.org`` prefix is stripped and the DOI is resolved
           through the same multi-database path.
         * **Landing-page URL** (e.g. ``"https://arxiv.org/abs/1706.03762"``
-          or ``"https://www.nature.com/articles/s41586-021-03819-2"``) —
+          or ``"https://www.nature.com/articles/s41586-021-03819-2"``):
           for URLs belonging to a supported database (arXiv, PubMed, IEEE,
           OpenAlex, Semantic Scholar) the paper is fetched directly via
           that database's API.  For all other URLs the page is downloaded
@@ -433,7 +433,7 @@ class Engine:
         max_cited_by : int | None
             Maximum number of citing-paper DOIs to collect when populating
             ``paper.cited_by``.  Defaults to ``100``.  ``None`` means no
-            limit — use with caution as highly-cited papers may have
+            limit: use with caution as highly-cited papers may have
             thousands of citations.
         timeout : float | None
             HTTP request timeout in seconds.  ``None`` disables the
@@ -475,7 +475,7 @@ class Engine:
 
         >>> paper = engine.get("https://doi.org/10.1038/nature12373")
 
-        Landing-page URL (delegates to the arXiv API — no scraping):
+        Landing-page URL (delegates to the arXiv API: no scraping):
 
         >>> paper = engine.get("https://arxiv.org/abs/1706.03762")
 
@@ -558,7 +558,7 @@ class Engine:
         max_cited_by : int | None
             Maximum number of citing-paper DOIs to collect per paper during
             seed and frontier enrichment.  Defaults to ``100``.  ``None``
-            means no limit — use with caution as highly-cited papers may have
+            means no limit: use with caution as highly-cited papers may have
             thousands of citations.  A warning is emitted when this value is
             ``None`` or greater than ``100``.
         databases : list[str] | None

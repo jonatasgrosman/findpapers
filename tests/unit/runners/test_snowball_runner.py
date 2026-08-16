@@ -630,7 +630,7 @@ class TestSnowballRunnerMaxPerLevel:
             result = runner.run(show_progress=False)
 
         dois = {p.doi for p in result.papers if p.doi}
-        # high and mid are top-2 by citations — they are in the result.
+        # high and mid are top-2 by citations: they are in the result.
         assert "10.1000/high" in dois
         assert "10.1000/mid" in dois
         # low is filtered out of the result (rank 3, cap is 2).
@@ -1299,7 +1299,7 @@ class TestSnowballRunnerEnrichmentStrategy:
             )
             runner.run(show_progress=False)
 
-        # p1 is at the last (and only) BFS level — no union-enrichment call expected.
+        # p1 is at the last (and only) BFS level: no union-enrichment call expected.
         p1_union_calls = [
             c
             for c in call_log

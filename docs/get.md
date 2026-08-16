@@ -37,7 +37,7 @@ paper = engine.get(
 |-----------|------|---------|-------------|
 | `identifier` | `str` | *(required)* | DOI, DOI URL, or paper landing-page URL |
 | `databases` | `list[str] \| None` | `None` | Sources to consult. Accepted values: `"arxiv"`, `"crossref"`, `"ieee"`, `"openalex"`, `"pubmed"`, `"scopus"`, `"semantic_scholar"`, `"web_scraping"`, `"wos"`. Pass `None` to use all sources |
-| `max_cited_by` | `int \| None` | `100` | Maximum number of citing-paper DOIs to collect in `paper.cited_by`. OpenAlex is the primary source (sorted by citation count so the most-impactful papers are retained when truncated); Semantic Scholar is the fallback. `None` means no limit — use with caution as highly-cited papers may have thousands of citations. A warning is emitted when this value is `None` or greater than `100` |
+| `max_cited_by` | `int \| None` | `100` | Maximum number of citing-paper DOIs to collect in `paper.cited_by`. OpenAlex is the primary source (sorted by citation count so the most-impactful papers are retained when truncated); Semantic Scholar is the fallback. `None` means no limit: use with caution as highly-cited papers may have thousands of citations. A warning is emitted when this value is `None` or greater than `100` |
 | `timeout` | `float \| None` | `10.0` | HTTP request timeout in seconds. `None` disables the timeout |
 | `verbose` | `bool` | `False` | Enable detailed DEBUG-level log messages |
 
@@ -48,13 +48,13 @@ The `databases` parameter controls which sources to include.  When `None`
 (the default), all available sources are used.
 
 ```python
-# CrossRef only — fast, authoritative structured metadata
+# CrossRef only: fast, authoritative structured metadata
 paper = engine.get("10.1038/nature12373", databases=["crossref"])
 
-# Web scraping + OpenAlex — scrape the landing page and enrich via OpenAlex
+# Web scraping + OpenAlex: scrape the landing page and enrich via OpenAlex
 paper = engine.get("10.1038/nature12373", databases=["web_scraping", "crossref", "openalex"])
 
-# Web scraping only — fetch from URL without any API-based enrichment
+# Web scraping only: fetch from URL without any API-based enrichment
 paper = engine.get("https://arxiv.org/abs/1706.03762", databases=["web_scraping"])
 ```
 
@@ -97,22 +97,22 @@ paper = engine.get("http://dx.doi.org/10.1038/nature12373")
 For URLs belonging to a supported database (arXiv, PubMed, IEEE Xplore, OpenAlex, Semantic Scholar), the paper is fetched directly via that database's API (no HTML scraping involved). For all other URLs the page is downloaded and metadata is extracted from HTML `<meta>` tags.
 
 ```python
-# arXiv — fetched via arXiv API
+# arXiv: fetched via arXiv API
 paper = engine.get("https://arxiv.org/abs/1706.03762")
 
-# PubMed — fetched via NCBI E-utilities
+# PubMed: fetched via NCBI E-utilities
 paper = engine.get("https://pubmed.ncbi.nlm.nih.gov/34265844/")
 
-# IEEE Xplore — fetched via IEEE API (requires ieee_api_key)
+# IEEE Xplore: fetched via IEEE API (requires ieee_api_key)
 paper = engine.get("https://ieeexplore.ieee.org/document/726791")
 
-# OpenAlex — fetched via OpenAlex API
+# OpenAlex: fetched via OpenAlex API
 paper = engine.get("https://openalex.org/W2626778328")
 
-# Semantic Scholar — fetched via S2 API
+# Semantic Scholar: fetched via S2 API
 paper = engine.get("https://www.semanticscholar.org/paper/204e3073870fae3d05bcbc2f6a8e263d9b72e776")
 
-# Any other publisher page — HTML scraping fallback
+# Any other publisher page: HTML scraping fallback
 paper = engine.get("https://www.nature.com/articles/s41586-021-03819-2")
 ```
 
@@ -125,7 +125,7 @@ import findpapers
 
 engine = findpapers.Engine()
 
-# Fetch the seed paper — works with DOI or URL
+# Fetch the seed paper: works with DOI or URL
 seed = engine.get("10.1038/nature12373")
 
 if seed:

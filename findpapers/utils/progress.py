@@ -18,8 +18,8 @@ def make_progress_bar(
     Centralises all tqdm configuration so every runner produces visually
     uniform progress bars.  The shared defaults are:
 
-    * ``leave=True`` — the completed bar remains visible after finishing.
-    * ``dynamic_ncols=True`` — the bar adapts to the current terminal width.
+    * ``leave=True``: the completed bar remains visible after finishing.
+    * ``dynamic_ncols=True``: the bar adapts to the current terminal width.
 
     Parameters
     ----------
@@ -32,7 +32,7 @@ def make_progress_bar(
     unit : str
         Singular label for one unit of work (e.g. ``"paper"``).
     disable : bool
-        When ``True`` the progress bar is silenced — nothing is printed to
+        When ``True`` the progress bar is silenced: nothing is printed to
         stderr.  Useful for non-interactive environments or when log
         cleanliness is preferred.  Defaults to ``False``.
     leave : bool

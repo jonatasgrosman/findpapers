@@ -95,7 +95,7 @@ def collect_wos_sample() -> None:
 
     api_key = load_api_key()
     if not api_key:
-        print("\n✗ ERROR: FINDPAPERS_WOS_API_TOKEN not found!")
+        print("\n[FAIL] ERROR: FINDPAPERS_WOS_API_TOKEN not found!")
         print(
             "Please set the FINDPAPERS_WOS_API_TOKEN environment variable "
             "or add it to the .env file in the project root."
@@ -134,7 +134,7 @@ def collect_wos_sample() -> None:
         # Save JSON response
         json_path = OUTPUT_DIR / "sample_response.json"
         json_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
-        print(f"✓ Saved JSON response to: {json_path}")
+        print(f"[OK] Saved JSON response to: {json_path}")
 
         # Save metadata
         metadata_obj = data.get("metadata") or {}
@@ -151,12 +151,12 @@ def collect_wos_sample() -> None:
         }
         metadata_path = OUTPUT_DIR / "collection_metadata.json"
         metadata_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-        print(f"✓ Saved collection metadata to: {metadata_path}")
+        print(f"[OK] Saved collection metadata to: {metadata_path}")
 
         total = metadata_obj.get("total", "N/A")
         returned = len(hits)
-        print(f"\n✓ Total matching records: {total}")
-        print(f"✓ Records returned: {returned}")
+        print(f"\n[OK] Total matching records: {total}")
+        print(f"[OK] Records returned: {returned}")
 
         if returned > 0:
             first = hits[0]
@@ -168,7 +168,7 @@ def collect_wos_sample() -> None:
         print("=" * 60)
 
     except requests.RequestException as e:
-        print(f"✗ Error fetching data: {e}")
+        print(f"[FAIL] Error fetching data: {e}")
         if hasattr(e, "response") and e.response is not None:
             print(f"Response status: {e.response.status_code}")
             print(f"Response body: {e.response.text[:500]}")

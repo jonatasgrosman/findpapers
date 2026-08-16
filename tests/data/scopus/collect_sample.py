@@ -79,7 +79,7 @@ def collect_scopus_sample() -> None:
 
     api_key = load_api_key()
     if not api_key:
-        print("\n✗ ERROR: SCOPUS_API_KEY not found!")
+        print("\n[FAIL] ERROR: SCOPUS_API_KEY not found!")
         print("Please set the SCOPUS_API_KEY environment variable or add it to .env file")
         print("You can get an API key at: https://dev.elsevier.com/")
         return
@@ -148,7 +148,7 @@ def collect_scopus_sample() -> None:
         # Save JSON response
         json_path = OUTPUT_DIR / "sample_response.json"
         json_path.write_text(json.dumps(combined_data, indent=2), encoding="utf-8")
-        print(f"\n✓ Saved JSON response to: {json_path}")
+        print(f"\n[OK] Saved JSON response to: {json_path}")
 
         # Extract result counts
         total_results = search_results.get("opensearch:totalResults", "N/A")
@@ -168,17 +168,17 @@ def collect_scopus_sample() -> None:
         }
         metadata_path = OUTPUT_DIR / "collection_metadata.json"
         metadata_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-        print(f"✓ Saved collection metadata to: {metadata_path}")
+        print(f"[OK] Saved collection metadata to: {metadata_path}")
 
-        print(f"\n✓ Total matching results: {total_results}")
-        print(f"✓ Entries returned: {len(all_entries)}")
+        print(f"\n[OK] Total matching results: {total_results}")
+        print(f"[OK] Entries returned: {len(all_entries)}")
 
         print("\n" + "=" * 60)
         print("Collection complete!")
         print("=" * 60)
 
     except requests.RequestException as e:
-        print(f"✗ Error fetching data: {e}")
+        print(f"[FAIL] Error fetching data: {e}")
         if hasattr(e, "response") and e.response is not None:
             print(f"Response status: {e.response.status_code}")
             print(f"Response body: {e.response.text[:500]}")

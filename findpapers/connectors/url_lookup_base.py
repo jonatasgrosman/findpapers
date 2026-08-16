@@ -22,9 +22,9 @@ class URLLookupConnectorBase(ConnectorBase):
 
     Connectors that implement this interface expose two abstract members:
 
-    * :attr:`url_pattern` — a compiled regex whose first capture group extracts
+    * :attr:`url_pattern`: a compiled regex whose first capture group extracts
       the native database identifier from a matching landing-page URL.
-    * :meth:`fetch_paper_by_id` — fetches a paper directly from the database
+    * :meth:`fetch_paper_by_id`: fetches a paper directly from the database
       API using the native identifier.
 
     The concrete :meth:`fetch_paper_by_url` method provided here ties the two

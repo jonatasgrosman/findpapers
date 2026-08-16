@@ -19,7 +19,7 @@ Square brackets are the canonical term delimiter, but two shorthand forms are ac
 | Shorthand | Canonical equivalent | When used |
 |-----------|---------------------|-----------|
 | `"DL" OR "ML"` | `[DL] OR [ML]` | Double quotes wrap each term |
-| `Deep Learning` | `[Deep Learning]` | No brackets **and** no quotes — the entire string becomes one term |
+| `Deep Learning` | `[Deep Learning]` | No brackets **and** no quotes: the entire string becomes one term |
 
 Filter codes before a double-quoted term are preserved:
 

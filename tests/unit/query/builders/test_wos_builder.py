@@ -89,7 +89,7 @@ def test_wos_rejects_unsupported_filters(
     parse_and_propagate: Callable[[str], Query],
     query_string: str,
 ) -> None:
-    """WoS rejects abs, key, and tiabs filters — they have no equivalent field tag."""
+    """WoS rejects abs, key, and tiabs filters: they have no equivalent field tag."""
     query = parse_and_propagate(query_string)
     result = WosQueryBuilder().validate_query(query)
     assert result.is_valid is False

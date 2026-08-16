@@ -77,9 +77,9 @@ def collect_pubmed_sample() -> None:
 
     api_key = load_api_key()
     if api_key:
-        print("✓ Using API key for higher rate limits (10 req/sec)")
+        print("[OK] Using API key for higher rate limits (10 req/sec)")
     else:
-        print("⚠ No API key found - using anonymous access (3 req/sec)")
+        print("[WARN] No API key found - using anonymous access (3 req/sec)")
 
     # Step 1: Search for article IDs using esearch
     search_params = {
@@ -113,12 +113,12 @@ def collect_pubmed_sample() -> None:
         id_list = search_data.get("esearchresult", {}).get("idlist", [])
         total_count = search_data.get("esearchresult", {}).get("count", "0")
 
-        print(f"✓ Found {total_count} total matches, retrieved {len(id_list)} IDs")
+        print(f"[OK] Found {total_count} total matches, retrieved {len(id_list)} IDs")
 
         # Save search response
         search_json_path = OUTPUT_DIR / "esearch_response.json"
         search_json_path.write_text(json.dumps(search_data, indent=2), encoding="utf-8")
-        print(f"✓ Saved esearch response to: {search_json_path}")
+        print(f"[OK] Saved esearch response to: {search_json_path}")
 
         if not id_list:
             print("No articles found matching the query")
@@ -144,13 +144,13 @@ def collect_pubmed_sample() -> None:
         # Save raw XML response
         xml_path = OUTPUT_DIR / "efetch_response.xml"
         xml_path.write_text(fetch_response.text, encoding="utf-8")
-        print(f"✓ Saved efetch XML response to: {xml_path}")
+        print(f"[OK] Saved efetch XML response to: {xml_path}")
 
         # Count articles in response
         try:
             root = ET.fromstring(fetch_response.text)
             article_count = len(root.findall(".//PubmedArticle"))
-            print(f"✓ Retrieved {article_count} full article records")
+            print(f"[OK] Retrieved {article_count} full article records")
         except ET.ParseError:
             article_count = "parse error"
             print("Warning: Could not parse XML to count articles")
@@ -172,14 +172,14 @@ def collect_pubmed_sample() -> None:
         }
         metadata_path = OUTPUT_DIR / "collection_metadata.json"
         metadata_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-        print(f"✓ Saved collection metadata to: {metadata_path}")
+        print(f"[OK] Saved collection metadata to: {metadata_path}")
 
         print("\n" + "=" * 60)
         print("Collection complete!")
         print("=" * 60)
 
     except requests.RequestException as e:
-        print(f"✗ Error fetching data: {e}")
+        print(f"[FAIL] Error fetching data: {e}")
         if hasattr(e, "response") and e.response is not None:
             print(f"Response status: {e.response.status_code}")
             print(f"Response body: {e.response.text[:500]}")

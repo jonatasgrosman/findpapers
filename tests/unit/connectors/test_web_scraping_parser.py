@@ -55,7 +55,7 @@ SEMANTICSCHOLAR_HTML = _load("semanticscholar/10.4230_DagRep.12.6.14.html")
 def _skip_if_missing(fixture: str | None) -> None:
     """Skip the current test when the HTML fixture is missing from disk."""
     if fixture is None:
-        pytest.skip("HTML fixture not found on disk — run tests/data/pages/collect_pages.py first")
+        pytest.skip("HTML fixture not found on disk: run tests/data/pages/collect_pages.py first")
 
 
 # ---------------------------------------------------------------------------
@@ -76,13 +76,13 @@ class TestExtractMetadataFromHtml:
         assert extract_metadata_from_html(html) == {}
 
     def test_single_meta_name_content(self) -> None:
-        """A single <meta name=… content=…> is captured."""
+        """A single <meta name=... content=...> is captured."""
         html = '<html><head><meta name="citation_title" content="My Paper"></head></html>'
         meta = extract_metadata_from_html(html)
         assert meta.get("citation_title") == "My Paper"
 
     def test_meta_property_captured(self) -> None:
-        """<meta property=…> (Open Graph style) is treated the same as name=…."""
+        """<meta property=...> (Open Graph style) is treated the same as name=...."""
         html = '<html><head><meta property="og:title" content="OG Title"></head></html>'
         meta = extract_metadata_from_html(html)
         assert meta.get("og:title") == "OG Title"
@@ -646,7 +646,7 @@ class TestBuildPaperFromMetadata:
         paper = build_paper_from_metadata(meta, "https://arxiv.org/abs/2301.00306v4")
         assert paper is not None
         assert paper.doi == "10.48550/arXiv.2301.00306"
-        assert paper.source is None  # preprint — no journal
+        assert paper.source is None  # preprint: no journal
 
     def test_arxiv_paper_has_pdf_url(self) -> None:
         """arXiv page should populate pdf_url on the built paper."""
@@ -748,7 +748,7 @@ class TestBuildPaperFromMetadata:
 
 
 # ---------------------------------------------------------------------------
-# End-to-end: extract_metadata_from_html → build_paper_from_metadata
+# End-to-end: extract_metadata_from_html -> build_paper_from_metadata
 # ---------------------------------------------------------------------------
 
 

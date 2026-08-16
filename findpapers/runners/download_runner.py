@@ -275,7 +275,7 @@ class DownloadRunner:
             if name in _meta_names:
                 content = meta.get("content", "").strip()
                 if content:
-                    # Resolve relative paths (e.g. /en/download/…) to absolute URLs.
+                    # Resolve relative paths (e.g. /en/download/...) to absolute URLs.
                     return urllib.parse.urljoin(base_url, content) if base_url else content
         return None
 
@@ -623,11 +623,11 @@ class DownloadRunner:
                 return False
             return True
 
-        # ─────────────────────────────────────────────────────────────────────
-        # Attempt 1 — paper.pdf_url
+        # ---------------------------------------------------------------------
+        # Attempt 1: paper.pdf_url
         # Direct PDF link supplied by the data source (e.g. from an OA
         # repository).  Tried first as it is the most likely to succeed.
-        # ─────────────────────────────────────────────────────────────────────
+        # ---------------------------------------------------------------------
         if paper.pdf_url and _try_fetch_pdf(paper.pdf_url):
             return True, attempted_urls, None
 
@@ -677,25 +677,25 @@ class DownloadRunner:
             )
             return False, attempted_urls, None
 
-        # Final URL after any redirects (e.g. doi.org → publisher landing page).
+        # Final URL after any redirects (e.g. doi.org -> publisher landing page).
         final_landing_url = landing_response.url
 
-        # ─────────────────────────────────────────────────────────────────────
-        # Attempt 2 — meta tag PDF URL
+        # ---------------------------------------------------------------------
+        # Attempt 2: meta tag PDF URL
         # Many publishers embed the PDF URL in a <meta name="citation_pdf_url">
         # tag.  This is publisher-agnostic and preferred over hardcoded patterns.
-        # ─────────────────────────────────────────────────────────────────────
+        # ---------------------------------------------------------------------
         meta_pdf_url = self._extract_meta_pdf_url(
             landing_response.content, base_url=final_landing_url
         )
         if meta_pdf_url and _try_fetch_pdf(meta_pdf_url):
             return True, attempted_urls, final_landing_url
 
-        # ─────────────────────────────────────────────────────────────────────
-        # Attempt 3 — publisher-specific PDF URL pattern
+        # ---------------------------------------------------------------------
+        # Attempt 3: publisher-specific PDF URL pattern
         # Derived from the landing page's *final* URL (after DOI redirects)
         # using known publisher URL conventions (see _resolve_pdf_url).
-        # ─────────────────────────────────────────────────────────────────────
+        # ---------------------------------------------------------------------
         pattern_pdf_url = self._resolve_pdf_url(final_landing_url, doi=paper.doi)
         if pattern_pdf_url and pattern_pdf_url != meta_pdf_url and _try_fetch_pdf(pattern_pdf_url):
             return True, attempted_urls, final_landing_url
@@ -751,7 +751,7 @@ class DownloadRunner:
         )
         if response.status_code == 418:
             logger.warning(
-                "Server returned 418 (bot-detection) for %s — "
+                "Server returned 418 (bot-detection) for %s: "
                 "the publisher is blocking automated requests.",
                 url,
             )

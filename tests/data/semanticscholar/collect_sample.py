@@ -78,9 +78,9 @@ def collect_semanticscholar_sample() -> None:
 
     api_key = load_api_key()
     if api_key:
-        print("✓ Using API key for authentication")
+        print("[OK] Using API key for authentication")
     else:
-        print("⚠ No API key found - using anonymous access (lower rate limits)")
+        print("[WARN] No API key found - using anonymous access (lower rate limits)")
 
     headers = {}
     if api_key:
@@ -112,11 +112,11 @@ def collect_semanticscholar_sample() -> None:
         # Save response
         json_path = OUTPUT_DIR / "bulk_search_response.json"
         json_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
-        print(f"✓ Saved bulk search response to: {json_path}")
+        print(f"[OK] Saved bulk search response to: {json_path}")
 
         total = data.get("total", "N/A")
         results = data.get("data", [])
-        print(f"✓ Total results: {total}, returned: {len(results)}")
+        print(f"[OK] Total results: {total}, returned: {len(results)}")
 
         # Save collection metadata
         metadata = {
@@ -136,14 +136,14 @@ def collect_semanticscholar_sample() -> None:
         }
         metadata_path = OUTPUT_DIR / "collection_metadata.json"
         metadata_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-        print(f"✓ Saved collection metadata to: {metadata_path}")
+        print(f"[OK] Saved collection metadata to: {metadata_path}")
 
         print("\n" + "=" * 60)
         print("Collection complete!")
         print("=" * 60)
 
     except requests.RequestException as e:
-        print(f"✗ Error fetching data: {e}")
+        print(f"[FAIL] Error fetching data: {e}")
         if hasattr(e, "response") and e.response is not None:
             print(f"Response status: {e.response.status_code}")
             print(f"Response body: {e.response.text[:500]}")

@@ -104,7 +104,7 @@ class TestAuthorSerialization:
         assert author.affiliation == "MIT"
 
     def test_roundtrip(self):
-        """to_dict → from_dict produces an equal Author."""
+        """to_dict -> from_dict produces an equal Author."""
         original = Author(name="Alice", affiliation="MIT")
         restored = Author.from_dict(original.to_dict())
         assert restored.name == original.name

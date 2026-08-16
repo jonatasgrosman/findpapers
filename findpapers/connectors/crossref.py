@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 _CROSSREF_API_URL = "https://api.crossref.org/works"
 
-# Minimum interval between requests — CrossRef polite pool recommends
+# Minimum interval between requests: CrossRef polite pool recommends
 # keeping traffic moderate; 0.1 s (10 req/s) is well within limits.
 _MIN_REQUEST_INTERVAL = 0.1
 
@@ -60,7 +60,7 @@ class CrossRefConnector(DOILookupConnectorBase):
     """Connector for the CrossRef REST API (DOI-based metadata lookup).
 
     Unlike search connectors this class does **not** support free-text
-    searches — it only resolves DOIs via the ``/works/{doi}`` endpoint.
+    searches: it only resolves DOIs via the ``/works/{doi}`` endpoint.
     It inherits rate limiting, request/response logging, and header
     management from :class:`~findpapers.connectors.connector_base.ConnectorBase`.
 
@@ -202,7 +202,7 @@ class CrossRefConnector(DOILookupConnectorBase):
         return self._build_paper(work)
 
     # ------------------------------------------------------------------
-    # Static helpers — pure parsing, no instance state needed
+    # Static helpers: pure parsing, no instance state needed
     # ------------------------------------------------------------------
 
     @staticmethod
@@ -213,8 +213,8 @@ class CrossRefConnector(DOILookupConnectorBase):
         ``{"date-parts": [[year, month, day]]}``.  Not all parts are always
         present, so missing month/day default to 1.
 
-        Priority order: ``published-print`` → ``published-online`` →
-        ``published`` → ``issued`` → ``created``.
+        Priority order: ``published-print`` -> ``published-online`` ->
+        ``published`` -> ``issued`` -> ``created``.
 
         Parameters
         ----------
@@ -283,7 +283,7 @@ class CrossRefConnector(DOILookupConnectorBase):
             if not name:
                 continue
 
-            # Affiliations — CrossRef stores them as [{"name": "..."}].
+            # Affiliations: CrossRef stores them as [{"name": "..."}].
             aff_parts: list[str] = []
             for aff in entry.get("affiliation", []):
                 if isinstance(aff, dict):
@@ -440,7 +440,7 @@ class CrossRefConnector(DOILookupConnectorBase):
         if not work:
             return None
 
-        # Title — CrossRef returns it as a list of strings.
+        # Title: CrossRef returns it as a list of strings.
         titles = work.get("title") or []
         title = titles[0].strip() if isinstance(titles, list) and titles else ""
         if not title:
@@ -468,14 +468,14 @@ class CrossRefConnector(DOILookupConnectorBase):
         # Page range
         pages: str | None = (work.get("page") or "").strip() or None
 
-        # Number of pages — not directly available, but can be inferred from
+        # Number of pages: not directly available, but can be inferred from
         # page range when it's in "first-last" format.
         page_count: int | None = None
 
         # PDF URL
         pdf_url = CrossRefConnector._parse_pdf_url(work)
 
-        # URL — prefer the canonical publisher landing page from
+        # URL: prefer the canonical publisher landing page from
         # ``resource.primary.URL`` (the final redirect target), falling back
         # to ``URL`` which is typically the doi.org resolver URL.
         resource = work.get("resource")

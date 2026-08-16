@@ -174,14 +174,14 @@ class SnowballRunner(DiscoveryRunner):
     fetched with the combined set of *databases* and *enrichment_databases*
     so they carry full metadata, including ``paper.cited_by``, before each
     expansion round.  Papers discovered during BFS are fetched with
-    ``crossref`` only — this is fast and sufficient to populate
+    ``crossref`` only: this is fast and sufficient to populate
     ``paper.references`` for the next round.  After all BFS levels complete
     and date filters are applied, the surviving non-seed papers are
     re-enriched with the databases in *enrichment_databases* that were not
     already used (i.e., those not in *databases*).
 
     Only ``"crossref"``, ``"openalex"``, and ``"semantic_scholar"`` are valid
-    for *databases* — these are the only sources that populate
+    for *databases*: these are the only sources that populate
     ``paper.references`` and ``paper.cited_by`` for BFS expansion.
     Forward direction (``"forward"`` or ``"both"``) requires at least one
     of ``"openalex"`` or ``"semantic_scholar"`` in *databases*.
@@ -299,7 +299,7 @@ class SnowballRunner(DiscoveryRunner):
         max_cited_by : int | None
             Maximum number of citing-paper DOIs collected per paper when
             populating ``paper.cited_by`` during seed and frontier enrichment.
-            Defaults to ``100``.  ``None`` means no limit — use with caution as
+            Defaults to ``100``.  ``None`` means no limit: use with caution as
             highly-cited classic papers may have thousands of citations.
             A warning is emitted when this value is ``None`` or greater than ``100``.
         databases : list[str] | None
@@ -453,8 +453,8 @@ class SnowballRunner(DiscoveryRunner):
         seed_dois = [p.doi for p in self._seed_papers if p.doi]
         enriched: dict[str, Paper] = {}
         if seed_dois:
-            # Seeds are enriched with all available databases — both the
-            # discovery set and the enrichment set — to ensure full metadata
+            # Seeds are enriched with all available databases: both the
+            # discovery set and the enrichment set: to ensure full metadata
             # (including references and cited_by) before the first BFS round.
             seed_databases = sorted(set(self._databases + self._enrichment_databases))
             fetched_seeds = self._fetch_dois(
@@ -575,10 +575,10 @@ class SnowballRunner(DiscoveryRunner):
 
         frontier: list[Paper] = enriched_seeds
 
-        # --- BFS levels 1 … max_depth ---
+        # --- BFS levels 1 ... max_depth ---
         for level in range(1, self._max_depth + 1):
             if not frontier:
-                logger.debug("Level %d: empty frontier — stopping.", level)
+                logger.debug("Level %d: empty frontier: stopping.", level)
                 break
 
             frontier = self._process_bfs_level(

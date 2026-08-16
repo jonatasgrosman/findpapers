@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 _BASE_URL = "https://api.openalex.org/works"
 _PAGE_SIZE = 200  # OpenAlex max per_page
-# Polite pool: ~10 req/s with email in User-Agent → use 0.1s interval
+# Polite pool: ~10 req/s with email in User-Agent -> use 0.1s interval
 _MIN_REQUEST_INTERVAL = 0.15
 
 # Regex that matches OpenAlex work landing-page URLs and captures the work ID.
@@ -837,7 +837,7 @@ class OpenAlexConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupCo
         max_papers : int | None
             Overall cap (shared with caller list).
         papers : list[Paper]
-            Accumulator — papers appended in-place.
+            Accumulator: papers appended in-place.
         progress_callback : Callable | None
             Progress callback.
         since : datetime.date | None
@@ -1029,7 +1029,7 @@ def _find_best_source(work: dict[str, Any]) -> dict[str, Any] | None:
     the actual publication venue and should be avoided when a proper venue is
     available.
 
-    The function scans all locations — starting with the primary one — and
+    The function scans all locations (starting with the primary one) and
     returns the first source whose type is **not** ``repository``.  If every
     source is a repository (or no source is present at all) it returns
     ``None``.
@@ -1116,7 +1116,7 @@ def _reconstruct_abstract(inverted_index: dict | None) -> str:
     Parameters
     ----------
     inverted_index : dict | None
-        Mapping of word → list of positions, or ``None``.
+        Mapping of word -> list of positions, or ``None``.
 
     Returns
     -------

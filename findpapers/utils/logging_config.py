@@ -88,7 +88,7 @@ class SensitiveDataFilter(logging.Filter):
         Returns
         -------
         bool
-            Always ``True`` — every record is allowed through after sanitization.
+            Always ``True``: every record is allowed through after sanitization.
         """
         # Render the full message first so we can sanitize the final string
         # without having to inspect the (potentially heterogeneous) args.
@@ -101,7 +101,7 @@ class _SanitizingHandler(logging.Handler):
     """No-output handler that sanitizes all findpapers log records in-place.
 
     Python logging filters attached to a logger are **not** invoked for records
-    that propagate up from child loggers — only handlers are.  By installing
+    that propagate up from child loggers, only handlers are.  By installing
     this handler on the top-level ``findpapers`` logger, every record emitted
     anywhere in the package (e.g. ``findpapers.connectors.ieee``) passes
     through :func:`sanitize_message` before reaching the real output handlers

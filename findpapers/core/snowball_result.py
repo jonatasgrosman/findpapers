@@ -15,7 +15,7 @@ class SnowballResult:
 
     Holds the seed paper references, traversal settings, and the flat list of
     :class:`~findpapers.core.paper.Paper` objects *discovered* during the BFS
-    traversal.  Seed papers are **not** included in :attr:`papers` — they are
+    traversal.  Seed papers are **not** included in :attr:`papers`: they are
     accessible via :attr:`seed_papers`.  Citation relationships are encoded
     directly on each paper via
     :attr:`~findpapers.core.paper.Paper.references` and

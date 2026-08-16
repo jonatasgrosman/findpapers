@@ -34,7 +34,7 @@ class TestSearchRunnerInit:
         "query",
         [
             "[bad query",  # unbalanced square bracket
-            "((bad query",  # unbalanced parentheses (no brackets → not normalized)
+            "((bad query",  # unbalanced parentheses (no brackets -> not normalized)
         ],
     )
     def test_invalid_query_raises(self, query):
@@ -340,7 +340,7 @@ class TestSearchRunnerPipeline:
         The common "preprint-to-published" case: a Zenodo deposit from 2026
         and a book chapter from 2025 share the same title.  Only the Zenodo
         record is a preprint, but that is sufficient for the year-adjacent rule
-        to fire — the old ``both_preprints`` requirement was too strict and
+        to fire: the old ``both_preprints`` requirement was too strict and
         left such pairs as false duplicates.
         """
         p1 = Paper(
@@ -368,7 +368,7 @@ class TestSearchRunnerPipeline:
     def test_deduplication_second_pass_keeps_non_preprint_adjacent_years(self):
         """Two non-preprint papers with same title and adjacent years are kept separate.
 
-        If neither DOI is a preprint, the year-adjacent rule must NOT fire —
+        If neither DOI is a preprint, the year-adjacent rule must NOT fire:
         annual reports and series papers with consecutive-year DOIs are
         intentionally distinct entries.
         """
@@ -667,7 +667,7 @@ class TestSearchRunnerParallel:
         mock_s2.name = "PubMed"
         mock_s2.search.return_value = [make_paper(title="B")]
 
-        # num_workers=10 but only 2 searchers — effective workers must be capped to 2.
+        # num_workers=10 but only 2 searchers: effective workers must be capped to 2.
         # enrichment_databases=[] disables the enrichment phase so only the
         # fetch call to execute_tasks is captured.
         runner = SearchRunner(

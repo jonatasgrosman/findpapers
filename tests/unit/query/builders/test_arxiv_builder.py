@@ -77,8 +77,8 @@ def test_arxiv_compound_query_no_percent_encoding(
     converted = ArxivQueryBuilder().convert_query(query)
     assert "(" in converted, "parentheses must be present as literal characters"
     assert ")" in converted, "parentheses must be present as literal characters"
-    assert "%28" not in converted, "must not pre-encode '(' — would cause double-encoding"
-    assert "%29" not in converted, "must not pre-encode ')' — would cause double-encoding"
+    assert "%28" not in converted, "must not pre-encode '(': would cause double-encoding"
+    assert "%29" not in converted, "must not pre-encode ')': would cause double-encoding"
     # Confirm the boolean structure is preserved
     assert 'ti:"machine learning"' in converted
     assert 'abs:"machine learning"' in converted

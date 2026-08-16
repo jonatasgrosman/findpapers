@@ -172,7 +172,7 @@ class DiscoveryRunner:
             Number of parallel workers for enrichment tasks.
         max_cited_by : int | None
             Maximum number of citing-paper DOIs to collect per paper.
-            Defaults to ``100``.  ``None`` means no limit — use with caution
+            Defaults to ``100``.  ``None`` means no limit: use with caution
             for highly-cited papers.
 
         Returns

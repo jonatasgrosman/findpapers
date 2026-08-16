@@ -836,7 +836,7 @@ class TestDownloadRunnerEdgeCases:
         log shows the PDF URL on a '  ->' line, not '(already downloaded, skipped)'.
 
         This covers the bug where the landing-page-is-PDF path returned
-        ``(True, [])`` — which the log interpreted as 'file already existed'.
+        ``(True, [])``, which the log interpreted as 'file already existed'.
         """
         pdf_url = "https://www.ijmems.in/uploads/paper.pdf"
         paper = Paper(

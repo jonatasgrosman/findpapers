@@ -85,7 +85,7 @@ def _dedup_concat(seq1: Any, seq2: Any) -> list[Any]:
                 seen.add(item)
                 result.append(item)
         except TypeError:
-            # Unhashable item — fall back to linear scan.
+            # Unhashable item: fall back to linear scan.
             if item not in result:
                 result.append(item)
     return result

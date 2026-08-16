@@ -77,7 +77,7 @@ def collect_arxiv_sample() -> None:
         # Save raw XML response
         xml_path = OUTPUT_DIR / "sample_response.xml"
         xml_path.write_text(response.text, encoding="utf-8")
-        print(f"✓ Saved raw XML response to: {xml_path}")
+        print(f"[OK] Saved raw XML response to: {xml_path}")
 
         # Save metadata
         metadata = {
@@ -91,18 +91,18 @@ def collect_arxiv_sample() -> None:
         }
         metadata_path = OUTPUT_DIR / "collection_metadata.json"
         metadata_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-        print(f"✓ Saved collection metadata to: {metadata_path}")
+        print(f"[OK] Saved collection metadata to: {metadata_path}")
 
         # Count entries (simple count without parsing)
         entry_count = response.text.count("<entry>")
-        print(f"\n✓ Found approximately {entry_count} entries in response")
+        print(f"\n[OK] Found approximately {entry_count} entries in response")
 
         print("\n" + "=" * 60)
         print("Collection complete!")
         print("=" * 60)
 
     except requests.RequestException as e:
-        print(f"✗ Error fetching data: {e}")
+        print(f"[FAIL] Error fetching data: {e}")
         raise
 
 

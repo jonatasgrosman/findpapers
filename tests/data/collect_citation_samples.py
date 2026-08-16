@@ -4,7 +4,7 @@ Standalone script to collect sample API responses for citation-related endpoints
 
 Collects real responses from:
 - Semantic Scholar: references, citations, paper counts
-- OpenAlex: DOI→ID resolution, referenced_works, cited-by, batch works
+- OpenAlex: DOI->ID resolution, referenced_works, cited-by, batch works
 
 This script does NOT use any findpapers code.
 It collects raw API responses for testing purposes.
@@ -34,11 +34,11 @@ PROJECT_ROOT = DATA_DIR.parent.parent
 SAMPLE_DOIS = [
     {
         "doi": "10.3758/s13428-022-02028-7",
-        "reason": "Springer — moderate refs (40) and low citations (3)",
+        "reason": "Springer: moderate refs (40) and low citations (3)",
     },
     {
         "doi": "10.1016/j.apenergy.2023.121323",
-        "reason": "Elsevier — moderate refs (47) and citations (20)",
+        "reason": "Elsevier: moderate refs (47) and citations (20)",
     },
 ]
 
@@ -137,7 +137,7 @@ def collect_oa_doi_resolution(doi: str, headers: dict) -> dict:
     """Resolve DOI to OpenAlex ID."""
     url = f"{OA_BASE}/doi:{doi}"
     params = {"select": "id"}
-    print(f"  OA DOI→ID: {_sanitize_url(url)}")
+    print(f"  OA DOI->ID: {_sanitize_url(url)}")
     r = requests.get(url, params=params, headers=headers, timeout=30)
     r.raise_for_status()
     return r.json()
@@ -209,17 +209,17 @@ def main() -> None:
     ss_headers = dict(HEADERS)
     if ss_key:
         ss_headers["x-api-key"] = ss_key
-        print("✓ Using Semantic Scholar API key")
+        print("[OK] Using Semantic Scholar API key")
     else:
-        print("⚠ No Semantic Scholar API key — using public rate limit")
+        print("[WARN] No Semantic Scholar API key: using public rate limit")
 
     oa_headers = dict(HEADERS)
     oa_params_extra: dict[str, str] = {}
     if oa_key:
         oa_params_extra["api_key"] = oa_key
-        print("✓ Using OpenAlex API key")
+        print("[OK] Using OpenAlex API key")
     else:
-        print("⚠ No OpenAlex API key — using public rate limit")
+        print("[WARN] No OpenAlex API key: using public rate limit")
 
     # Collect per-DOI data
     for entry in SAMPLE_DOIS:
@@ -239,7 +239,7 @@ def main() -> None:
             result["ss_citations"] = collect_ss_citations(doi, ss_headers)
             time.sleep(SS_DELAY)
         except requests.RequestException as e:
-            print(f"  ✗ Semantic Scholar error: {e}")
+            print(f"  [FAIL] Semantic Scholar error: {e}")
 
         # --- OpenAlex ---
         print("\n  [OpenAlex]")
@@ -261,14 +261,14 @@ def main() -> None:
                 result["oa_cited_by"] = collect_oa_cited_by(oa_id, oa_headers)
                 time.sleep(OA_DELAY)
         except requests.RequestException as e:
-            print(f"  ✗ OpenAlex error: {e}")
+            print(f"  [FAIL] OpenAlex error: {e}")
 
         # Write per-DOI file
         safe_doi = doi.replace("/", "_")
         outfile = DATA_DIR / "citation_samples" / f"{safe_doi}.json"
         outfile.parent.mkdir(parents=True, exist_ok=True)
         outfile.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
-        print(f"\n  ✓ Saved: {outfile.relative_to(DATA_DIR)}")
+        print(f"\n  [OK] Saved: {outfile.relative_to(DATA_DIR)}")
 
     # Write metadata
     metadata = {
@@ -286,7 +286,7 @@ def main() -> None:
                 "citations (/paper/DOI:{doi}/citations)",
             ],
             "openalex": [
-                "DOI→ID resolution (/works/doi:{doi}?select=id)",
+                "DOI->ID resolution (/works/doi:{doi}?select=id)",
                 "referenced_works (/works/doi:{doi}?select=id,referenced_works)",
                 "batch works (/works?filter=openalex:{ids})",
                 "cited-by (/works?filter=cites:{id})",
@@ -295,7 +295,7 @@ def main() -> None:
     }
     meta_file = DATA_DIR / "citation_samples" / "collection_metadata.json"
     meta_file.write_text(json.dumps(metadata, indent=2, ensure_ascii=False), encoding="utf-8")
-    print(f"\n✓ Metadata: {meta_file.relative_to(DATA_DIR)}")
+    print(f"\n[OK] Metadata: {meta_file.relative_to(DATA_DIR)}")
 
     print("\n" + "=" * 60)
     print("Done!")

@@ -123,7 +123,7 @@ _FIRSTPAGE_KEY = "citation_firstpage"
 _LASTPAGE_KEY = "citation_lastpage"
 _NUM_PAGES_KEY = "citation_num_pages"
 
-# Preprint server names — excluded from formal source detection.
+# Preprint server names: excluded from formal source detection.
 _PREPRINT_SERVERS: frozenset[str] = frozenset({"biorxiv", "medrxiv", "arxiv"})
 
 # Regex that locates the IEEE Xplore JS-embedded metadata blob.
@@ -199,8 +199,8 @@ class WebScrapingConnector(ConnectorBase):
     All HTML extraction and field-parsing logic is encapsulated here as
     private class/static methods.  The only public entry points are:
 
-    * :meth:`fetch_paper_from_url` — full HTTP + parse pipeline.
-    * :meth:`build_paper_from_metadata` — assemble a ``Paper`` from a
+    * :meth:`fetch_paper_from_url`: full HTTP + parse pipeline.
+    * :meth:`build_paper_from_metadata`: assemble a ``Paper`` from a
       pre-parsed metadata dict (useful for testing individual parsers).
 
     Parameters
@@ -310,7 +310,7 @@ class WebScrapingConnector(ConnectorBase):
         Raises
         ------
         requests.RequestException
-            On network-level failures (DNS, connection refused, timeout, …).
+            On network-level failures (DNS, connection refused, timeout, ...).
         requests.HTTPError
             On non-2xx HTTP responses that are not handled by the API fallback
             (i.e. status codes other than 403, 406, and 418).
@@ -323,7 +323,7 @@ class WebScrapingConnector(ConnectorBase):
                 paper = connector.fetch_paper_by_url(url)
                 if paper is not None:
                     logger.debug(
-                        "URL %s handled by connector '%s' — skipping HTML scraping.",
+                        "URL %s handled by connector '%s': skipping HTML scraping.",
                         url,
                         connector.name,
                     )
@@ -341,7 +341,7 @@ class WebScrapingConnector(ConnectorBase):
         )
         if response.status_code in _FALLBACK_STATUS_CODES:
             logger.debug(
-                "HTTP %s blocked — trying API fallback for %s",
+                "HTTP %s blocked: trying API fallback for %s",
                 response.status_code,
                 url,
             )
@@ -427,7 +427,7 @@ class WebScrapingConnector(ConnectorBase):
 
         abstract = cls._pick_metadata_value(metadata, _ABSTRACT_META_KEYS)
 
-        # DOI — try each candidate key in priority order; normalise URL prefixes.
+        # DOI: try each candidate key in priority order; normalise URL prefixes.
         doi: str | None = None
         for doi_key in _DOI_META_KEYS:
             raw = metadata.get(doi_key)
@@ -453,7 +453,7 @@ class WebScrapingConnector(ConnectorBase):
 
         publication_date = parse_date(cls._pick_metadata_value(metadata, _DATE_META_KEYS))
 
-        # Page range — combine first/last page with an en-dash when both present.
+        # Page range: combine first/last page with an en-dash when both present.
         first_page = (str(metadata.get(_FIRSTPAGE_KEY) or "")).strip()
         last_page = (str(metadata.get(_LASTPAGE_KEY) or "")).strip()
         if first_page and last_page:
@@ -474,7 +474,7 @@ class WebScrapingConnector(ConnectorBase):
 
         pdf_url_val = cls._pick_metadata_value(metadata, _PDF_URL_KEYS)
 
-        # is_open_access — stored as a boolean under the private key
+        # is_open_access: stored as a boolean under the private key
         # ``_is_open_access`` by source-specific parsers (e.g. IEEE, JSON-LD).
         raw_oa = metadata.get("_is_open_access")
         is_open_access: bool | None = bool(raw_oa) if raw_oa is not None else None
@@ -495,7 +495,7 @@ class WebScrapingConnector(ConnectorBase):
         )
 
     # ------------------------------------------------------------------
-    # Private helpers — HTTP
+    # Private helpers: HTTP
     # ------------------------------------------------------------------
 
     def _get_proxies(self) -> dict[str, str] | None:
@@ -519,7 +519,7 @@ class WebScrapingConnector(ConnectorBase):
         protected by Akamai (PubMed/NCBI), Cloudflare (MDPI), and similar WAFs
         that gate access on the TLS fingerprint are bypassed transparently.
         A fresh :class:`curl_cffi.requests.Session` is created for every call
-        so no cookies or TLS session state are shared between fetches —
+        so no cookies or TLS session state are shared between fetches:
         publisher CDNs track persistent sessions to bot-score sequential
         requests (e.g. IEEE Xplore sets JSESSIONID/AWSALBAPP and returns 418
         on subsequent requests carrying those cookies), so isolation is critical.
@@ -539,7 +539,7 @@ class WebScrapingConnector(ConnectorBase):
         Raises
         ------
         _CurlError
-            On network-level failures (DNS, connection refused, timeout, …).
+            On network-level failures (DNS, connection refused, timeout, ...).
         """
         with _CurlSession(impersonate="chrome") as session:
             return session.get(  # type: ignore[no-any-return]
@@ -564,9 +564,9 @@ class WebScrapingConnector(ConnectorBase):
 
         Priority order:
 
-        1. **Zenodo** — ``/api/records/{id}`` (no auth, free):
+        1. **Zenodo**: ``/api/records/{id}`` (no auth, free):
            covers zenodo.org whether accessed via doi.org or directly.
-        2. **bioRxiv** — ``api.biorxiv.org/details/biorxiv/{doi}``:
+        2. **bioRxiv**: ``api.biorxiv.org/details/biorxiv/{doi}``:
            covers biorxiv.org/content/... URLs.
 
         Parameters
@@ -585,7 +585,7 @@ class WebScrapingConnector(ConnectorBase):
             Paper assembled from API data, or ``None`` when no known API
             matches the URL.
         """
-        # 1. Zenodo — check both original and final URL in case of doi→zenodo
+        # 1. Zenodo: check both original and final URL in case of doi->zenodo
         for candidate in (final_url, original_url):
             if m := _ZENODO_RECORD_RE.search(candidate):
                 logger.debug("Falling back to Zenodo API for record %s", m.group(1))
@@ -649,7 +649,7 @@ class WebScrapingConnector(ConnectorBase):
         if not title:
             return None
 
-        # Abstract — Zenodo stores it as HTML; strip tags to plain text.
+        # Abstract: Zenodo stores it as HTML; strip tags to plain text.
         raw_description = meta.get("description") or ""
         abstract = re.sub(r"<[^>]+>", " ", raw_description).strip()
 
@@ -663,7 +663,7 @@ class WebScrapingConnector(ConnectorBase):
                 aff = (creator.get("affiliation") or "").strip()
                 authors.append(Author(name=name, affiliation=aff or None))
 
-        # Keywords — Zenodo may store them as a list or as a single
+        # Keywords: Zenodo may store them as a list or as a single
         # comma-separated string depending on the record.
         keywords: set[str] = set()
         kw_raw = meta.get("keywords")
@@ -675,7 +675,7 @@ class WebScrapingConnector(ConnectorBase):
 
         publication_date = parse_date(meta.get("publication_date"))
 
-        # Source — may be a journal article or conference/book chapter.
+        # Source: may be a journal article or conference/book chapter.
         source: Source | None = None
         journal = meta.get("journal") or {}
         if isinstance(journal, dict) and journal.get("title"):
@@ -721,7 +721,7 @@ class WebScrapingConnector(ConnectorBase):
         timeout : float | None
             Request timeout in seconds.
         server : str, optional
-            API server slug — ``'biorxiv'`` (default) or ``'medrxiv'``.
+            API server slug: ``'biorxiv'`` (default) or ``'medrxiv'``.
 
         Returns
         -------
@@ -771,7 +771,7 @@ class WebScrapingConnector(ConnectorBase):
         raw_category = (record.get("category") or "").strip()
         keywords: set[str] | None = {raw_category} if raw_category else None
 
-        # All bioRxiv/medRxiv submissions are preprints — they may later be
+        # All bioRxiv/medRxiv submissions are preprints: they may later be
         # formally published (record["published"] != "NA"), but the entry
         # itself is always an unpublished preprint.
         paper_type = PaperType.UNPUBLISHED
@@ -797,7 +797,7 @@ class WebScrapingConnector(ConnectorBase):
         )
 
     # ------------------------------------------------------------------
-    # Private helpers — HTML extraction
+    # Private helpers: HTML extraction
     # ------------------------------------------------------------------
 
     @classmethod
@@ -813,7 +813,7 @@ class WebScrapingConnector(ConnectorBase):
 
         * All keys are lower-cased.
         * Dublin Core colon-form prefixes are mapped to dot-form
-          (``dc:creator`` → ``dc.creator``).
+          (``dc:creator`` -> ``dc.creator``).
 
         Parameters
         ----------
@@ -831,17 +831,17 @@ class WebScrapingConnector(ConnectorBase):
         doc = html.fromstring(content)
         metadata: dict[str, Any] = {}
         elements = doc.xpath("//meta[@name or @property or @itemprop]")
-        if not isinstance(elements, list):  # pragma: no cover – lxml xpath always returns a list
+        if not isinstance(elements, list):  # pragma: no cover: lxml xpath always returns a list
             return metadata
         for element in elements:
-            if not isinstance(element, HtmlElement):  # pragma: no cover – defensive guard
+            if not isinstance(element, HtmlElement):  # pragma: no cover: defensive guard
                 continue
             raw_key = (
                 (element.get("name") or element.get("property") or element.get("itemprop") or "")
                 .strip()
                 .lower()
             )
-            # Normalise Dublin Core colon-form (dc:creator → dc.creator) while
+            # Normalise Dublin Core colon-form (dc:creator -> dc.creator) while
             # preserving other colon-prefixed namespaces such as og:title.
             if raw_key.startswith("dc:"):
                 raw_key = "dc." + raw_key[3:]
@@ -921,7 +921,7 @@ class WebScrapingConnector(ConnectorBase):
         _set_if_absent("citation_title", data.get("title") or data.get("displayDocTitle"))
         _set_if_absent("citation_abstract", data.get("abstract"))
 
-        # Keywords — flatten all keyword groups from the nested structure.
+        # Keywords: flatten all keyword groups from the nested structure.
         kw_list: list[str] = []
         for kw_group in data.get("keywords", []):
             kw_list.extend(kw_group.get("kwd", []))
@@ -939,7 +939,7 @@ class WebScrapingConnector(ConnectorBase):
         # so the publication year is not lost for book entries.
         _set_if_absent("citation_publication_date", data.get("publicationYear"))
 
-        # Open-access flag — IEEE embeds a boolean ``isOpenAccess`` in the JS
+        # Open-access flag: IEEE embeds a boolean ``isOpenAccess`` in the JS
         # blob; store it under a private key so ``build_paper_from_metadata``
         # can pass it to ``Paper(is_open_access=...)``.
         # Use direct assignment (not _set_if_absent) because False is a valid
@@ -948,12 +948,12 @@ class WebScrapingConnector(ConnectorBase):
         if oa_val is not None and "_is_open_access" not in metadata:
             metadata["_is_open_access"] = bool(oa_val)
 
-        # PDF URL — prepend domain for relative paths.
+        # PDF URL: prepend domain for relative paths.
         pdf_path = data.get("pdfPath") or data.get("pdfUrl")
         if pdf_path and str(pdf_path).startswith("/"):
             _set_if_absent("citation_pdf_url", f"https://ieeexplore.ieee.org{pdf_path}")
 
-        # ISSN — pick the first available value.
+        # ISSN: pick the first available value.
         for issn_entry in data.get("issn", []):
             val = issn_entry.get("value")
             if val:
@@ -1126,7 +1126,7 @@ class WebScrapingConnector(ConnectorBase):
             cls._extract_jsonld_keywords(data, metadata, _set_if_absent)
             cls._extract_jsonld_source_fields(data, metadata, _set_if_absent)
 
-            # Open-access flag — Schema.org uses ``isAccessibleForFree``.
+            # Open-access flag: Schema.org uses ``isAccessibleForFree``.
             # Use direct assignment (not _set_if_absent) because False is a
             # valid value that _set_if_absent would skip as falsy.
             oa_val = data.get("isAccessibleForFree")
@@ -1318,7 +1318,7 @@ class WebScrapingConnector(ConnectorBase):
             _set_if_absent("citation_isbn", str(isbn_raw).strip())
 
     # ------------------------------------------------------------------
-    # Private helpers — field parsers
+    # Private helpers: field parsers
     # ------------------------------------------------------------------
 
     @staticmethod
@@ -1376,7 +1376,7 @@ class WebScrapingConnector(ConnectorBase):
         None
         """
         if any(metadata.get(k) for k in _KEYWORDS_META_KEYS):
-            return  # keywords already present — nothing to do
+            return  # keywords already present: nothing to do
 
         subjects_cells = doc.xpath("//td[contains(@class, 'subjects')]")
         if not isinstance(subjects_cells, list) or not subjects_cells:
@@ -1392,10 +1392,10 @@ class WebScrapingConnector(ConnectorBase):
 
         Handles three forms:
 
-        * ``list`` — already split (e.g. multiple ``citation_author`` tags).
+        * ``list``: already split (e.g. multiple ``citation_author`` tags).
           Each list item may itself be semicolon-separated.
-        * ``str`` with semicolons — PubMed-style ``"Wang Y;Tian J;..."``.
-        * plain ``str`` — a single author name.
+        * ``str`` with semicolons: PubMed-style ``"Wang Y;Tian J;..."``.
+        * plain ``str``: a single author name.
 
         Parameters
         ----------
@@ -1491,9 +1491,9 @@ class WebScrapingConnector(ConnectorBase):
 
         Handles three forms:
 
-        * ``list`` — each item may itself be comma- or semicolon-delimited.
-        * ``str`` with commas or semicolons — a delimited keyword string.
-        * plain ``str`` — a single keyword.
+        * ``list``: each item may itself be comma- or semicolon-delimited.
+        * ``str`` with commas or semicolons: a delimited keyword string.
+        * plain ``str``: a single keyword.
 
         Parameters
         ----------

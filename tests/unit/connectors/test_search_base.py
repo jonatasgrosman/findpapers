@@ -422,7 +422,7 @@ class TestConnectorBaseRetry:
         with pytest.raises(requests.HTTPError):
             connector._get("https://api.example.com/test")
 
-        # Only 1 attempt — no retries for 404.
+        # Only 1 attempt: no retries for 404.
         assert connector._http_session.get.call_count == 1
 
     def test_connection_error_retried_then_succeeds(self) -> None:
@@ -574,7 +574,7 @@ class TestConnectorBaseRetry:
         resp_200 = self._make_response(200)
 
         # Two timeouts (consuming both general retries) then two 429s
-        # (consuming both rate-limit retries) then success — all should
+        # (consuming both rate-limit retries) then success: all should
         # succeed because the budgets are independent.
         connector._http_session = MagicMock()
         connector._http_session.get.side_effect = [

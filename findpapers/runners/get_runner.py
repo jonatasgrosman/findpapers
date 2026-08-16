@@ -25,7 +25,7 @@ from findpapers.utils.normalization import DOI_URL_PREFIXES
 # with tight daily quotas (e.g. IEEE Xplore: ~200 requests/day).
 # ---------------------------------------------------------------------------
 
-# DOI prefix → databases to skip.
+# DOI prefix -> databases to skip.
 # The prefix comparison is case-insensitive.
 _DOI_PREFIX_SKIP: tuple[tuple[str, frozenset[str]], ...] = (
     # arXiv assigns the 10.48550 prefix to all its preprints.  IEEE Xplore does
@@ -36,11 +36,11 @@ _DOI_PREFIX_SKIP: tuple[tuple[str, frozenset[str]], ...] = (
     ("10.1101/", frozenset({Database.IEEE})),
 )
 
-# URL substring (case-insensitive) → databases to skip.
+# URL substring (case-insensitive) -> databases to skip.
 _URL_SUBSTRING_SKIP: tuple[tuple[str, frozenset[str]], ...] = (
-    # arXiv landing pages — not indexed by IEEE.
+    # arXiv landing pages: not indexed by IEEE.
     ("arxiv.org", frozenset({Database.IEEE})),
-    # bioRxiv / medRxiv landing pages — not indexed by IEEE.
+    # bioRxiv / medRxiv landing pages: not indexed by IEEE.
     ("biorxiv.org", frozenset({Database.IEEE})),
     ("medrxiv.org", frozenset({Database.IEEE})),
 )
@@ -64,14 +64,14 @@ class GetRunner:
     The pipeline runs in two complementary stages that are no longer mutually
     exclusive:
 
-    **Stage 1 — web scraping** (landing-page URLs only, requires ``"web_scraping"`` in *databases*):
+    **Stage 1: web scraping** (landing-page URLs only, requires ``"web_scraping"`` in *databases*):
         :class:`~findpapers.connectors.web_scraping.WebScrapingConnector` is
         tried first.  If the URL belongs to a known database (arXiv, PubMed,
         OpenAlex, Semantic Scholar, IEEE) the call is delegated to that
         database's API connector instead of performing HTML scraping.  Any DOI
         found in the result is carried forward to Stage 2.
 
-    **Stage 2 — DOI lookup** (requires a DOI to be available):
+    **Stage 2: DOI lookup** (requires a DOI to be available):
         CrossRef is queried first as the canonical DOI registration authority
         (when ``"crossref"`` is in *databases*).
         The remaining connectors (arXiv, IEEE, PubMed, Scopus, Semantic
@@ -103,11 +103,11 @@ class GetRunner:
     scopus_api_key : str | None
         Elsevier / Scopus API key.  When omitted Scopus is skipped.
     pubmed_api_key : str | None
-        NCBI PubMed API key.  Optional — increases the PubMed rate limit.
+        NCBI PubMed API key.  Optional: increases the PubMed rate limit.
     openalex_api_key : str | None
-        OpenAlex API key.  Optional — increases the OpenAlex daily quota.
+        OpenAlex API key.  Optional: increases the OpenAlex daily quota.
     semantic_scholar_api_key : str | None
-        Semantic Scholar API key.  Optional — provides a dedicated quota.
+        Semantic Scholar API key.  Optional: provides a dedicated quota.
     wos_api_key : str | None
         Clarivate Web of Science API key.  When omitted WoS is skipped.
     timeout : float | None
@@ -385,7 +385,7 @@ class GetRunner:
         max_cited_by : int | None
             Maximum number of citing-paper DOIs to collect when populating
             ``paper.cited_by``.  Defaults to ``100``.  ``None`` means no
-            limit — use with caution as highly-cited papers may have
+            limit: use with caution as highly-cited papers may have
             thousands of citations.
 
         Returns
@@ -438,7 +438,7 @@ class GetRunner:
 
         if self._result is not None:
             dbs = ", ".join(sorted(self._result.found_in or []))
-            logger.debug("Lookup found — databases: %s (%.2f s)", dbs, runtime)
+            logger.debug("Lookup found: databases: %s (%.2f s)", dbs, runtime)
         else:
             logger.debug("Lookup not found (%.2f s)", runtime)
 
@@ -450,7 +450,7 @@ class GetRunner:
     # ------------------------------------------------------------------
 
     def _run_stage1(self, identifier: str) -> tuple[Paper | None, str | None]:
-        """Run Stage 1 — web scraping / URL resolution.
+        """Run Stage 1: web scraping / URL resolution.
 
         Parameters
         ----------
@@ -467,7 +467,7 @@ class GetRunner:
 
         if self._is_landing_page_url(identifier):
             if self._scraper is not None:
-                logger.debug("Stage 1 — web scraping: %s", identifier)
+                logger.debug("Stage 1: web scraping: %s", identifier)
                 try:
                     base_paper = self._scraper.fetch_paper_from_url(
                         identifier, timeout=self._timeout
@@ -478,14 +478,14 @@ class GetRunner:
                 if doi:
                     logger.debug("  Scraped DOI: %s", doi)
                 else:
-                    logger.debug("  No DOI found — Stage 2 will be skipped.")
+                    logger.debug("  No DOI found: Stage 2 will be skipped.")
             else:
-                logger.debug("Stage 1 — web scraping: skipped (disabled via databases filter)")
+                logger.debug("Stage 1: web scraping: skipped (disabled via databases filter)")
         else:
             doi = self._sanitize_doi(identifier)
             if self._scraper is not None and doi:
                 doi_redirect_url = f"https://doi.org/{doi}"
-                logger.debug("Stage 1 — web scraping via DOI URL: %s", doi_redirect_url)
+                logger.debug("Stage 1: web scraping via DOI URL: %s", doi_redirect_url)
                 try:
                     base_paper = self._scraper.fetch_paper_from_url(
                         doi_redirect_url, timeout=self._timeout
@@ -504,7 +504,7 @@ class GetRunner:
         return base_paper, doi
 
     def _run_stage2(self, doi: str, base_paper: Paper | None) -> Paper | None:
-        """Run Stage 2 — DOI-based API lookup and merging.
+        """Run Stage 2: DOI-based API lookup and merging.
 
         Parameters
         ----------
@@ -518,7 +518,7 @@ class GetRunner:
         Paper | None
             Merged paper with metadata from all available connectors.
         """
-        logger.debug("Stage 2 — DOI lookup: %s", doi)
+        logger.debug("Stage 2: DOI lookup: %s", doi)
 
         scraped_url: str | None = base_paper.url if base_paper is not None else None
 

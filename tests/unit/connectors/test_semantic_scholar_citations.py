@@ -160,7 +160,7 @@ class TestSemanticScholarFetchCitedBy:
 
         mock_get.side_effect = [page1]
 
-        # Request only 3 papers — only 1 page fetched, result is trimmed
+        # Request only 3 papers: only 1 page fetched, result is trimmed
         cited_by = connector.fetch_cited_by(paper, max_papers=3)
 
         assert len(cited_by) == 3

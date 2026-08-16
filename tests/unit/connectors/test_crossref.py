@@ -379,8 +379,8 @@ class TestBuildPaperFromCrossref:
             "reference": [
                 {"key": "r1", "DOI": "10.1000/ref1"},
                 {"key": "r2", "DOI": "  10.1000/ref2  "},  # whitespace stripped
-                {"key": "r3"},  # no DOI — skipped
-                {"key": "r4", "DOI": ""},  # empty DOI — skipped
+                {"key": "r3"},  # no DOI: skipped
+                {"key": "r4", "DOI": ""},  # empty DOI: skipped
             ],
         }
         paper = CrossRefConnector._build_paper(work)
@@ -506,7 +506,7 @@ class TestCrossRefConnector:
 
 
 # ---------------------------------------------------------------------------
-# Real-data fixture tests — validate parsing against collected CrossRef records
+# Real-data fixture tests: validate parsing against collected CrossRef records
 # ---------------------------------------------------------------------------
 
 

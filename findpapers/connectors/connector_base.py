@@ -1,7 +1,7 @@
 """Abstract base class for external API connectors.
 
-Provides shared HTTP infrastructure — rate limiting, credential injection,
-request/response logging — so that every module that talks to an external
+Provides shared HTTP infrastructure (rate limiting, credential injection,
+request/response logging) so that every module that talks to an external
 service inherits a consistent, production-ready networking layer.
 """
 
@@ -235,8 +235,8 @@ class ConnectorBase(ABC):
                 with contextlib.suppress(ValueError, TypeError):
                     backoff = max(backoff, float(retry_after))
 
-        # Add jitter (0–25 %) to avoid thundering-herd effects.
-        # nosec B311 — random is intentionally used here for timing jitter only, not for
+        # Add jitter (0-25 %) to avoid thundering-herd effects.
+        # nosec B311: random is intentionally used here for timing jitter only, not for
         # cryptographic or security-sensitive purposes.
         jitter: float = backoff * 0.25 * random.random()  # nosec B311
         return backoff + jitter
@@ -331,7 +331,7 @@ class ConnectorBase(ABC):
                             base_delay=self._rate_limit_base_delay,
                         )
                         logger.debug(
-                            "[%s] HTTP 429 from %s — retrying in %.1fs (attempt %d/%d).",
+                            "[%s] HTTP 429 from %s: retrying in %.1fs (attempt %d/%d).",
                             self.name,
                             url,
                             delay,
@@ -341,7 +341,7 @@ class ConnectorBase(ABC):
                         time.sleep(delay)
                         rate_limit_attempt += 1
                         continue
-                    # Rate-limit retries exhausted — fall through to raise.
+                    # Rate-limit retries exhausted: fall through to raise.
 
                 elif (
                     response.status_code in self._retryable_status_codes
@@ -349,7 +349,7 @@ class ConnectorBase(ABC):
                 ):
                     delay = self._retry_delay(general_attempt, response)
                     logger.warning(
-                        "[%s] HTTP %d from %s — retrying in %.1fs (attempt %d/%d).",
+                        "[%s] HTTP %d from %s: retrying in %.1fs (attempt %d/%d).",
                         self.name,
                         response.status_code,
                         url,
@@ -360,7 +360,7 @@ class ConnectorBase(ABC):
                     time.sleep(delay)
                     general_attempt += 1
                     continue
-                    # General retries exhausted — fall through to raise.
+                    # General retries exhausted: fall through to raise.
 
                 if not response.ok:
                     try:
@@ -381,7 +381,7 @@ class ConnectorBase(ABC):
                 if general_attempt < self._max_retries:
                     delay = self._retry_delay(general_attempt)
                     logger.warning(
-                        "[%s] %s for %s — retrying in %.1fs (attempt %d/%d).",
+                        "[%s] %s for %s: retrying in %.1fs (attempt %d/%d).",
                         self.name,
                         type(exc).__name__,
                         url,

@@ -276,7 +276,7 @@ def _mock_blocking_html_response(
 
 
 # ---------------------------------------------------------------------------
-# Tests for fetch_paper_from_url — API fallback dispatch
+# Tests for fetch_paper_from_url: API fallback dispatch
 # ---------------------------------------------------------------------------
 
 
@@ -664,7 +664,7 @@ class TestFetchFromBiorxivApi:
         assert paper.source is None
         assert paper.keywords == {"epidemiology"}
         assert paper.paper_type == PaperType.UNPUBLISHED
-        assert paper.funders == set()  # funder == "NA" → empty set
+        assert paper.funders == set()  # funder == "NA" -> empty set
 
     def test_keywords_empty_when_category_missing(self) -> None:
         """keywords is an empty set when the record has no category field."""
@@ -783,7 +783,7 @@ class TestFetchFromBiorxivApi:
 
 
 # ---------------------------------------------------------------------------
-# Tests for _merge_ieee_metadata — publicationYear fallback + isOpenAccess
+# Tests for _merge_ieee_metadata: publicationYear fallback + isOpenAccess
 # ---------------------------------------------------------------------------
 
 
@@ -853,7 +853,7 @@ class TestMergeIeeeMetadataPublicationYear:
 
 
 # ---------------------------------------------------------------------------
-# Tests for _merge_jsonld_metadata — @id DOI, editor fallback, isAccessibleForFree
+# Tests for _merge_jsonld_metadata: @id DOI, editor fallback, isAccessibleForFree
 # ---------------------------------------------------------------------------
 
 

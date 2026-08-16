@@ -199,7 +199,7 @@ def test_paper_merge_keeps_larger_author_list():
     different numbers of authors (e.g. one source lists all co-authors while
     another lists only the first few).
     """
-    # base has fewer authors than incoming → incoming wins
+    # base has fewer authors than incoming -> incoming wins
     base = Paper(
         title="Test Paper",
         abstract="Abstract",
@@ -227,7 +227,7 @@ def test_paper_merge_keeps_larger_author_list():
         Author(name="Diana Prince"),
     ]
 
-    # base has more authors than incoming → base wins
+    # base has more authors than incoming -> base wins
     base2 = Paper(
         title="Test Paper",
         abstract="Abstract",
@@ -255,7 +255,7 @@ def test_paper_merge_keeps_larger_author_list():
 
 
 def test_paper_merge_doi_first_wins():
-    """Paper.merge never overwrites an existing DOI — the first source wins."""
+    """Paper.merge never overwrites an existing DOI: the first source wins."""
     base = Paper(
         title="Attention is All You Need",
         abstract="",
@@ -432,7 +432,7 @@ class TestPaperType:
         assert actual == expected
 
     def test_paper_type_round_trip(self) -> None:
-        """to_dict → from_dict preserves paper_type."""
+        """to_dict -> from_dict preserves paper_type."""
         paper = Paper(
             title="T",
             abstract="",
@@ -498,7 +498,7 @@ class TestPaperLanguage:
         assert paper.language is None
 
     def test_language_round_trip(self) -> None:
-        """to_dict → from_dict preserves language."""
+        """to_dict -> from_dict preserves language."""
         paper = Paper(
             title="T",
             abstract="",
@@ -627,7 +627,7 @@ class TestPaperIsOpenAccess:
         assert paper.is_open_access is None
 
     def test_is_open_access_round_trip(self) -> None:
-        """to_dict → from_dict preserves is_open_access."""
+        """to_dict -> from_dict preserves is_open_access."""
         for value in (True, False, None):
             paper = Paper(
                 title="T",
@@ -785,7 +785,7 @@ class TestPaperIsRetracted:
         assert paper.is_retracted is None
 
     def test_is_retracted_round_trip(self) -> None:
-        """to_dict → from_dict preserves is_retracted."""
+        """to_dict -> from_dict preserves is_retracted."""
         for value in (True, False, None):
             paper = Paper(
                 title="T",
@@ -1142,7 +1142,7 @@ class TestPaperIdentityEdgeCases:
 
     def test_eq_identity_fallback_when_no_doi_no_title(self) -> None:
         """__eq__ falls back to `is` when _identity_key returns None for either paper."""
-        # Paper with empty title and no DOI → _identity_key returns None
+        # Paper with empty title and no DOI -> _identity_key returns None
         p1 = Paper(title="A", abstract="", authors=[], source=None, publication_date=None)
         p2 = Paper(title="A", abstract="", authors=[], source=None, publication_date=None)
         # Both have a title so they compare via key
@@ -1325,7 +1325,7 @@ class TestPaperFunders:
         assert paper.funders == set()
 
     def test_funders_round_trip(self) -> None:
-        """to_dict → from_dict preserves funders."""
+        """to_dict -> from_dict preserves funders."""
         paper = Paper(
             title="T",
             abstract="",
@@ -1521,7 +1521,7 @@ class TestPaperReferences:
         assert paper.references == []
 
     def test_references_round_trip(self) -> None:
-        """to_dict → from_dict preserves references."""
+        """to_dict -> from_dict preserves references."""
         paper = Paper(
             title="T",
             abstract="",
@@ -1552,7 +1552,7 @@ class TestPaperReferences:
             references=["10.1000/b", "10.1000/c"],
         )
         base.merge(incoming)
-        # "b" already present — should not be duplicated; "c" appended.
+        # "b" already present: should not be duplicated; "c" appended.
         assert base.references == ["10.1000/a", "10.1000/b", "10.1000/c"]
 
     def test_references_merge_empty_base_with_populated_incoming(self) -> None:
@@ -1654,7 +1654,7 @@ class TestPaperCitedBy:
         assert paper.cited_by == []
 
     def test_cited_by_round_trip(self) -> None:
-        """to_dict → from_dict preserves cited_by."""
+        """to_dict -> from_dict preserves cited_by."""
         paper = Paper(
             title="T",
             abstract="",
@@ -1685,7 +1685,7 @@ class TestPaperCitedBy:
             cited_by=["10.1000/b", "10.1000/c"],
         )
         base.merge(incoming)
-        # "b" already present — must not be duplicated; "c" appended.
+        # "b" already present: must not be duplicated; "c" appended.
         assert base.cited_by == ["10.1000/a", "10.1000/b", "10.1000/c"]
 
     def test_cited_by_merge_empty_base_with_populated_incoming(self) -> None:

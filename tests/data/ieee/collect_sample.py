@@ -74,7 +74,7 @@ def collect_ieee_sample() -> None:
 
     api_key = load_api_key()
     if not api_key:
-        print("\n✗ ERROR: IEEE_API_KEY not found!")
+        print("\n[FAIL] ERROR: IEEE_API_KEY not found!")
         print("Please set the IEEE_API_KEY environment variable or add it to .env file")
         print("You can get an API key at: https://developer.ieee.org/")
         return
@@ -108,7 +108,7 @@ def collect_ieee_sample() -> None:
         # Save JSON response
         json_path = OUTPUT_DIR / "sample_response.json"
         json_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
-        print(f"✓ Saved JSON response to: {json_path}")
+        print(f"[OK] Saved JSON response to: {json_path}")
 
         # Save metadata
         metadata = {
@@ -123,19 +123,19 @@ def collect_ieee_sample() -> None:
         }
         metadata_path = OUTPUT_DIR / "collection_metadata.json"
         metadata_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-        print(f"✓ Saved collection metadata to: {metadata_path}")
+        print(f"[OK] Saved collection metadata to: {metadata_path}")
 
         total = data.get("total_records", "N/A")
         returned = len(data.get("articles", []))
-        print(f"\n✓ Total matching records: {total}")
-        print(f"✓ Articles returned: {returned}")
+        print(f"\n[OK] Total matching records: {total}")
+        print(f"[OK] Articles returned: {returned}")
 
         print("\n" + "=" * 60)
         print("Collection complete!")
         print("=" * 60)
 
     except requests.RequestException as e:
-        print(f"✗ Error fetching data: {e}")
+        print(f"[FAIL] Error fetching data: {e}")
         if hasattr(e, "response") and e.response is not None:
             print(f"Response status: {e.response.status_code}")
             print(f"Response body: {e.response.text[:500]}")

@@ -305,7 +305,7 @@ from findpapers import Database
 | `SEMANTIC_SCHOLAR` | `"semantic_scholar"` | Semantic Scholar AI-powered research database. |
 | `WOS` | `"wos"` | Clarivate Web of Science citation index. |
 
-`Database` is a `StrEnum`, so `Database.ARXIV == "arxiv"` is `True`. `"web_scraping"` is intentionally absent — web scraping is a retrieval mechanism, not a database, and is never stored in `Paper.found_in`.
+`Database` is a `StrEnum`, so `Database.ARXIV == "arxiv"` is `True`. `"web_scraping"` is intentionally absent: web scraping is a retrieval mechanism, not a database, and is never stored in `Paper.found_in`.
 
 ---
 

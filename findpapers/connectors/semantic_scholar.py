@@ -383,7 +383,7 @@ class SemanticScholarConnector(
                 break
 
         logger.info(
-            "Semantic Scholar: DOI %s %s — %d pages, %d papers total.",
+            "Semantic Scholar: DOI %s %s: %d pages, %d papers total.",
             doi,
             endpoint,
             page_num,
@@ -486,7 +486,7 @@ class SemanticScholarConnector(
     ) -> tuple[set[str], set[str]]:
         """Extract fields of study and subjects from a Semantic Scholar item.
 
-        ``fieldsOfStudy`` → broad fields; ``s2FieldsOfStudy`` → subjects
+        ``fieldsOfStudy`` -> broad fields; ``s2FieldsOfStudy`` -> subjects
         (categories not already in fields).
 
         Parameters
@@ -586,7 +586,7 @@ class SemanticScholarConnector(
 
         abstract = (item.get("abstract") or "").strip()
 
-        # Authors — affiliations are fetched in a batch request after the search.
+        # Authors: affiliations are fetched in a batch request after the search.
         authors: list[Author] = []
         for author_entry in item.get("authors", []):
             name = (author_entry.get("name") or "").strip()
@@ -635,7 +635,7 @@ class SemanticScholarConnector(
                 subjects=subjects if subjects else None,
                 is_open_access=is_open_access,
             )
-        except ValueError:  # pragma: no cover — title already validated above
+        except ValueError:  # pragma: no cover: title already validated above
             return None
 
         return paper
@@ -827,7 +827,7 @@ class SemanticScholarConnector(
         paper: Paper,
         author_id_to_authors: dict[str, list[Author]],
     ) -> None:
-        """Accumulate the author-ID → Author mapping from a parsed paper.
+        """Accumulate the author-ID -> Author mapping from a parsed paper.
 
         Parameters
         ----------

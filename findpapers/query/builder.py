@@ -54,10 +54,10 @@ class QueryBuilder(ABC):
     ``convert_query``.  The remaining methods have sensible defaults that
     subclasses may override when they need custom behaviour:
 
-    * ``supports_filter`` – returns ``True`` iff ``filter_code`` is in
+    * ``supports_filter``: returns ``True`` iff ``filter_code`` is in
       ``_SUPPORTED_FILTERS``.
-    * ``preprocess_terms`` – returns the query unchanged.
-    * ``expand_query`` – returns a single-element list containing the original
+    * ``preprocess_terms``: returns the query unchanged.
+    * ``expand_query``: returns a single-element list containing the original
       query.
     """
 
@@ -191,7 +191,7 @@ class QueryBuilder(ABC):
         return " OR ".join(f"q{index}" for index in range(len(expanded_queries)))
 
     # ------------------------------------------------------------------
-    # Query helpers — available to all subclasses
+    # Query helpers: available to all subclasses
     # ------------------------------------------------------------------
 
     def get_effective_filter(self, node: QueryNode) -> FilterCode:

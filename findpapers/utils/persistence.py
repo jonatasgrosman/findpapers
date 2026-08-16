@@ -144,9 +144,9 @@ def load_from_json(
     The ``"type"`` key in the JSON payload is used to reconstruct the
     correct Python object:
 
-    * ``"search_result"`` → :class:`~findpapers.core.search_result.SearchResult`
-    * ``"snowball_result"`` → :class:`~findpapers.core.snowball_result.SnowballResult`
-    * ``"paper_list"`` → ``list[Paper]``
+    * ``"search_result"`` -> :class:`~findpapers.core.search_result.SearchResult`
+    * ``"snowball_result"`` -> :class:`~findpapers.core.snowball_result.SnowballResult`
+    * ``"paper_list"`` -> ``list[Paper]``
 
     Files saved **before** the ``"type"`` key was introduced are
     auto-detected as a ``SearchResult`` (when the payload contains a
@@ -603,7 +603,7 @@ def load_from_bibtex(path: str) -> list[Paper]:
 # these are prefixed with a single quote on save and stripped on import
 # so that round-trips are transparent while preventing formula injection.
 # The single quote is the OWASP-recommended prefix (CWE-1236) and is
-# natively recognised by Excel as a text-indicator — it hides the quote
+# natively recognised by Excel as a text-indicator: it hides the quote
 # from the displayed cell value.
 _CSV_FORMULA_CHARS = frozenset("=+-@")
 
@@ -755,7 +755,7 @@ def _paper_to_csv_row(paper: Paper) -> dict[str, str]:
     Returns
     -------
     dict[str, str]
-        Column name → string value mapping.
+        Column name -> string value mapping.
     """
     row = _paper_to_csv_core_fields(paper)
     row.update(_paper_to_csv_meta_fields(paper))
@@ -853,7 +853,7 @@ def _csv_row_to_paper(row: dict[str, str]) -> Paper | None:
     Parameters
     ----------
     row : dict[str, str]
-        Column name → string value mapping.
+        Column name -> string value mapping.
 
     Returns
     -------

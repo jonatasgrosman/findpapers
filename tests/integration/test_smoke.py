@@ -134,7 +134,7 @@ class TestDOILookup:
 class TestEnrichment:
     """Verify that ``Engine.search`` enriches papers correctly.
 
-    Enrichment is not a standalone method — it is applied automatically
+    Enrichment is not a standalone method: it is applied automatically
     during :meth:`~findpapers.engine.Engine.search` and
     :meth:`~findpapers.engine.Engine.snowball` via the
     ``enrichment_databases`` parameter.

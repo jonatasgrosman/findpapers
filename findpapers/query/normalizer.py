@@ -6,21 +6,21 @@ forms into the canonical bracket syntax before validation and parsing.
 Supported conversions
 ---------------------
 Double-quote terms
-    ``"DL" OR "ML"`` → ``[DL] OR [ML]``
+    ``"DL" OR "ML"`` -> ``[DL] OR [ML]``
 
     Any term wrapped in double quotes is converted to the bracket form.
     A filter-code prefix immediately before the opening quote is preserved::
 
-        ti"neural network" → ti[neural network]
+        ti"neural network" -> ti[neural network]
 
 Bare query (no brackets, no double quotes)
-    ``Deep learning`` → ``[Deep learning]``
+    ``Deep learning`` -> ``[Deep learning]``
 
     When the entire query lacks both square brackets and double quotes, the
     whole string is treated as a single term and wrapped in brackets.
 
 Already canonical
-    ``[DL] OR [ML]`` → unchanged.
+    ``[DL] OR [ML]`` -> unchanged.
 
     If the query already contains at least one ``[``, it is returned as-is so
     that the normal validation/parser path handles it.
@@ -35,7 +35,7 @@ class QueryNormalizer:
     """Normalize lenient query forms into the canonical bracket syntax.
 
     The normalizer is intentionally permissive: it only performs mechanical
-    string transformations and never raises errors — validation is the
+    string transformations and never raises errors: validation is the
     responsibility of :class:`~findpapers.query.validator.QueryValidator`.
     """
 
@@ -65,7 +65,7 @@ class QueryNormalizer:
         if not query:
             return query
 
-        # Already uses brackets — pass through untouched.
+        # Already uses brackets: pass through untouched.
         if "[" in query:
             return query
 

@@ -97,9 +97,9 @@ def collect_openalex_sample() -> None:
     # Add API key as email if available (for polite pool with higher rate limits)
     if api_key:
         params["api_key"] = api_key
-        print("✓ Using API key for higher rate limits")
+        print("[OK] Using API key for higher rate limits")
     else:
-        print("⚠ No API key found - using anonymous access (lower rate limits)")
+        print("[WARN] No API key found - using anonymous access (lower rate limits)")
 
     # Build URL for logging
     encoded_params = urllib.parse.urlencode(params)
@@ -120,7 +120,7 @@ def collect_openalex_sample() -> None:
         # Save JSON response
         json_path = OUTPUT_DIR / "sample_response.json"
         json_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
-        print(f"✓ Saved JSON response to: {json_path}")
+        print(f"[OK] Saved JSON response to: {json_path}")
 
         # Extract result counts
         meta = data.get("meta", {})
@@ -143,17 +143,17 @@ def collect_openalex_sample() -> None:
         }
         metadata_path = OUTPUT_DIR / "collection_metadata.json"
         metadata_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-        print(f"✓ Saved collection metadata to: {metadata_path}")
+        print(f"[OK] Saved collection metadata to: {metadata_path}")
 
-        print(f"\n✓ Total matching results: {total_count}")
-        print(f"✓ Results returned: {len(results)}")
+        print(f"\n[OK] Total matching results: {total_count}")
+        print(f"[OK] Results returned: {len(results)}")
 
         print("\n" + "=" * 60)
         print("Collection complete!")
         print("=" * 60)
 
     except requests.RequestException as e:
-        print(f"✗ Error fetching data: {e}")
+        print(f"[FAIL] Error fetching data: {e}")
         if hasattr(e, "response") and e.response is not None:
             print(f"Response status: {e.response.status_code}")
             print(f"Response body: {e.response.text[:500]}")

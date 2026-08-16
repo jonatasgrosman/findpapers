@@ -133,7 +133,7 @@ When duplicates are found, their metadata is merged - keeping the richest inform
 After collecting and deduplicating papers, `search()` can automatically enrich them with additional metadata (abstracts, keywords, citation counts, PDF URLs) from multiple databases. Use the `enrichment_databases` parameter to control this:
 
 ```python
-# Enrich with crossref and web_scraping (default) — covers most metadata gaps
+# Enrich with crossref and web_scraping (default), covers most metadata gaps
 # without consuming quota from rate-limited databases
 result = engine.search("[transformers]")
 

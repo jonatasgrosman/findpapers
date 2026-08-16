@@ -60,7 +60,7 @@ def normalize_doi(raw: str) -> str | None:
         low = value.lower()
         for prefix in _DOI_PROTOCOL_PREFIXES:
             if low.startswith(prefix):
-                # Keep the "10." part — remove only the "doi:" / "doi: " part.
+                # Keep the "10." part: remove only the "doi:" / "doi: " part.
                 value = value[prefix.index("1") :]
                 break
     return value if value.startswith("10.") else None
@@ -108,7 +108,7 @@ def parse_date(value: str | None) -> date | None:
             continue
     # Written month-name formats: must match the full string.
     # Includes both "Month YYYY" and "YYYY Month" variants (e.g. PubMed's
-    # citation_date uses "2023 Dec" — year first followed by abbreviated month).
+    # citation_date uses "2023 Dec", year first followed by abbreviated month).
     for fmt in (
         "%B %d, %Y",
         "%b %d, %Y",

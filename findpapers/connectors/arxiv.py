@@ -42,7 +42,7 @@ _MIN_REQUEST_INTERVAL = 3.0
 _NS = {"atom": "http://www.w3.org/2005/Atom", "arxiv": "http://arxiv.org/schemas/atom"}
 
 # Regex to extract the arXiv paper ID from the Atom <id> element.
-# Example: http://arxiv.org/abs/1706.03762v5 → 1706.03762
+# Example: http://arxiv.org/abs/1706.03762v5 -> 1706.03762
 _ARXIV_ID_RE = re.compile(r"arxiv\.org/abs/([\d.]+)", re.IGNORECASE)
 
 # Regex to extract arXiv paper ID from an arXiv-assigned DOI.
@@ -191,8 +191,8 @@ class ArxivConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConne
         """
         m = _ARXIV_DOI_RE.match(doi.strip())
         if not m:
-            # Not an arXiv-native DOI — cannot resolve via arXiv API.
-            logger.debug("arXiv: DOI %s is not an arXiv-native DOI — skipping.", doi)
+            # Not an arXiv-native DOI: cannot resolve via arXiv API.
+            logger.debug("arXiv: DOI %s is not an arXiv-native DOI: skipping.", doi)
             return None
 
         return self.fetch_paper_by_id(m.group(1))
@@ -379,7 +379,7 @@ class ArxivConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConne
         doi = self._parse_arxiv_doi(entry, url)
         source = self._parse_arxiv_source(entry)
 
-        # Comments — optional free-text note (e.g. "39 pages, 14 figures")
+        # Comments: optional free-text note (e.g. "39 pages, 14 figures")
         comment: str | None = None
         comment_el = entry.find("arxiv:comment", _NS)
         if comment_el is not None and comment_el.text and comment_el.text.strip():
@@ -446,7 +446,7 @@ class ArxivConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConne
         arxiv_query = self._query_builder.convert_query(query)
 
         # Append arXiv submittedDate range filter when date bounds are given.
-        # Use plain spaces – ``requests`` encodes them as ``+`` in the URL,
+        # Use plain spaces: ``requests`` encodes them as ``+`` in the URL,
         # which is what the arXiv API expects.  Literal ``+`` characters were
         # previously double-encoded as ``%2B``, causing the filter to be
         # silently ignored.
@@ -568,10 +568,10 @@ def _infer_source_type_from_journal_ref(text: str) -> SourceType | None:
 
     The function applies keyword heuristics in priority order:
 
-    1. **CONFERENCE** – contains words like *proceedings*, *conference*,
+    1. **CONFERENCE**: contains words like *proceedings*, *conference*,
        *workshop*, or *symposium*.
-    2. **BOOK** – contains *lecture notes*, *book*, or *chapter*.
-    3. **JOURNAL** – contains common journal indicators such as *journal*,
+    2. **BOOK**: contains *lecture notes*, *book*, or *chapter*.
+    3. **JOURNAL**: contains common journal indicators such as *journal*,
        *review*, *letters*, *transactions*, abbreviated forms like
        *J.*, *Rev.*, *Lett.*, etc.
 

@@ -167,9 +167,9 @@ class TestIEEEConnectorParsePaper:
         # articles[2] is the first entry with index_terms (ieee_terms + author_terms)
         paper = IEEEConnector(api_key="dummy")._parse_paper(articles[2])
         assert paper is not None
-        # ieee_terms → subjects
+        # ieee_terms -> subjects
         assert "Natural language processing" in paper.subjects
-        # author_terms → keywords
+        # author_terms -> keywords
         assert paper.keywords is not None
         assert len(paper.keywords) > 0
 

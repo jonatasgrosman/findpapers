@@ -62,11 +62,11 @@ class TestOpenAlexFetchCitedBy:
         connector = OpenAlexConnector()
         paper = make_paper(doi="10.1000/cited")
 
-        # First call: resolve DOI → OpenAlex ID
+        # First call: resolve DOI -> OpenAlex ID
         id_response = MagicMock()
         id_response.json.return_value = {"id": "https://openalex.org/W888"}
 
-        # Second call: cites filter → one page of results
+        # Second call: cites filter -> one page of results
         cite_response = MagicMock()
         cite_response.json.return_value = {
             "results": [
@@ -166,7 +166,7 @@ class TestOpenAlexFetchCitedBy:
 
         mock_get.side_effect = [id_response, page1]
 
-        # Request only 5 papers — pagination must stop after page 1
+        # Request only 5 papers: pagination must stop after page 1
         cited_by = connector.fetch_cited_by(paper, max_papers=5)
 
         assert len(cited_by) == 5
@@ -382,7 +382,7 @@ class TestOpenAlexRealDataParsing:
         paper = make_paper(doi=_SPRINGER_DOI)
         sample = oa_citation_samples[_SPRINGER_DOI]
 
-        # First call: resolve DOI → OpenAlex ID
+        # First call: resolve DOI -> OpenAlex ID
         id_response = MagicMock()
         id_response.json.return_value = sample["doi_resolution"]
 

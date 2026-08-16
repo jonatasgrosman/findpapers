@@ -100,7 +100,7 @@ def test_openalex_expand_query_or_without_and_not_decomposes(
     """OR-only queries are expanded into separate AND-only sub-queries by expand_query."""
     query = parse_and_propagate("[alpha] OR [beta]")
     expanded = OpenAlexQueryBuilder().expand_query(query)
-    # Two OR branches → two sub-queries
+    # Two OR branches -> two sub-queries
     assert len(expanded) >= 2
 
 
@@ -134,7 +134,7 @@ def test_openalex_boolean_search_with_group_node() -> None:
 
 def test_openalex_rejects_unsupported_filter() -> None:
     """OpenAlex rejects a term with an unsupported filter code via direct injection."""
-    unsupported = FilterCode.TITLE  # supported — confirm via double check
+    unsupported = FilterCode.TITLE  # supported: confirm via double check
     assert OpenAlexQueryBuilder().supports_filter(unsupported) is True
 
     # SOURCE is not supported by OpenAlex (no text search for source names)

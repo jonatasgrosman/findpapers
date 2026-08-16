@@ -56,10 +56,10 @@ def run_collector(name: str, script_path: Path) -> bool:
         )
         return result.returncode == 0
     except subprocess.CalledProcessError as e:
-        print(f"\n✗ {name} collector failed with exit code {e.returncode}")
+        print(f"\n[FAIL] {name} collector failed with exit code {e.returncode}")
         return False
     except FileNotFoundError:
-        print(f"\n✗ {name} collector script not found: {script_path}")
+        print(f"\n[FAIL] {name} collector script not found: {script_path}")
         return False
 
 
@@ -74,7 +74,7 @@ def run_page_collector(selected_dbs: list[str]) -> bool:
     page_dbs = [db for db in selected_dbs if db in _PAGES_SUPPORTED]
 
     if not page_dbs:
-        print("\n⚠ No databases eligible for page collection — skipping")
+        print("\n[WARN] No databases eligible for page collection: skipping")
         return True
 
     print("\n" + "=" * 70)
@@ -83,7 +83,7 @@ def run_page_collector(selected_dbs: list[str]) -> bool:
 
     pages_script = DATA_DIR / "pages" / "collect_pages.py"
     if not pages_script.exists():
-        print(f"✗ Pages collector not found: {pages_script}")
+        print(f"[FAIL] Pages collector not found: {pages_script}")
         return False
 
     try:
@@ -95,7 +95,7 @@ def run_page_collector(selected_dbs: list[str]) -> bool:
         )
         return result.returncode == 0
     except subprocess.CalledProcessError as e:
-        print(f"\n✗ Pages collector failed with exit code {e.returncode}")
+        print(f"\n[FAIL] Pages collector failed with exit code {e.returncode}")
         return False
 
 
@@ -111,7 +111,7 @@ def main() -> int:
         # Validate selection
         invalid = [s for s in selected if s not in COLLECTORS]
         if invalid:
-            print(f"\n✗ Unknown database(s): {', '.join(invalid)}")
+            print(f"\n[FAIL] Unknown database(s): {', '.join(invalid)}")
             print(f"Available: {', '.join(COLLECTORS.keys())}")
             return 1
     else:
@@ -133,7 +133,7 @@ def main() -> int:
         pages_ok = run_page_collector(successful_dbs)
         results["pages"] = pages_ok
     else:
-        print("\n⚠ Skipping page collector: no databases collected successfully")
+        print("\n[WARN] Skipping page collector: no databases collected successfully")
 
     # Summary
     print("\n" + "=" * 70)
@@ -142,7 +142,7 @@ def main() -> int:
 
     success_count = 0
     for name, success in results.items():
-        status = "✓ SUCCESS" if success else "✗ FAILED"
+        status = "[OK] SUCCESS" if success else "[FAIL] FAILED"
         print(f"  {name:12} {status}")
         if success:
             success_count += 1

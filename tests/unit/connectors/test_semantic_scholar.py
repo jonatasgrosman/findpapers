@@ -659,7 +659,7 @@ class TestSemanticScholarFieldsOfStudyAndSubjects:
         paper = SemanticScholarConnector()._parse_paper(item)
         assert paper is not None
         assert paper.fields_of_study == {"Computer Science"}
-        # Engineering is in s2FieldsOfStudy but not in fieldsOfStudy → subjects
+        # Engineering is in s2FieldsOfStudy but not in fieldsOfStudy -> subjects
         assert "Engineering" in paper.subjects
         # Computer Science is already in fields_of_study, not duplicated in subjects
         assert "Computer Science" not in paper.subjects

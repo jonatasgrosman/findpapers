@@ -256,7 +256,7 @@ class TestIsLandingPageUrl:
         assert GetRunner._is_landing_page_url("https://arxiv.org/abs/1706.03762") is True
 
     def test_doi_org_url_is_not_landing_page(self):
-        """https://doi.org/... is NOT a landing page — it is a DOI redirect."""
+        """https://doi.org/... is NOT a landing page: it is a DOI redirect."""
         assert GetRunner._is_landing_page_url("https://doi.org/10.1234/test") is False
 
     def test_dx_doi_org_url_is_not_landing_page(self):
@@ -458,7 +458,7 @@ class TestGetRunnerInit:
 
 
 # ---------------------------------------------------------------------------
-# run() — bare DOI path
+# run(): bare DOI path
 # ---------------------------------------------------------------------------
 
 
@@ -618,7 +618,7 @@ class TestGetRunnerDoiPath:
 
 
 # ---------------------------------------------------------------------------
-# run() — landing-page URL path
+# run(): landing-page URL path
 # ---------------------------------------------------------------------------
 
 
@@ -688,7 +688,7 @@ class TestGetRunnerUrlPath:
             runner = GetRunner(identifier="https://arxiv.org/abs/1706.03762")
             result = runner.run()
 
-        # The paper from the API connector is returned (no DOI → Stage 2 skipped).
+        # The paper from the API connector is returned (no DOI -> Stage 2 skipped).
         assert result is api_paper
 
     def test_scraping_failure_falls_through_to_none(self):
@@ -729,7 +729,7 @@ class TestGetRunnerUrlPath:
 
 
 # ---------------------------------------------------------------------------
-# run() — databases filter behaviour
+# run(): databases filter behaviour
 # ---------------------------------------------------------------------------
 
 

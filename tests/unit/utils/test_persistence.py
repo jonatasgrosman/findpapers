@@ -1476,7 +1476,7 @@ class TestCsvNewlineNormalization:
             assert len(lines) == 2
 
     def test_round_trip_preserves_content(self) -> None:
-        """Abstract with newlines survives save→load with content intact."""
+        """Abstract with newlines survives save->load with content intact."""
         paper = Paper(
             title="Test",
             abstract="Line one\nLine two",
@@ -1518,7 +1518,7 @@ class TestCsvFormulaInjectionRoundTrip:
     """End-to-end CSV round-trip with formula-trigger values."""
 
     def test_dangerous_title_survives_round_trip(self):
-        """A title starting with '=' survives save→load without formula injection."""
+        """A title starting with '=' survives save->load without formula injection."""
         paper = Paper(
             title="=SUM(A1:A10)",
             abstract="+abstract with plus",

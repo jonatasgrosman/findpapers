@@ -109,7 +109,7 @@ class SearchRunner(DiscoveryRunner):
     max_cited_by : int | None
         Maximum number of citing-paper DOIs to collect per paper when
         ``"openalex"`` or ``"semantic_scholar"`` are in *enrichment_databases*.
-        Defaults to ``100``.  ``None`` means no limit — use with caution as
+        Defaults to ``100``.  ``None`` means no limit: use with caution as
         highly-cited papers may have thousands of citations.  A warning is
         emitted when this value is ``None`` or greater than ``100``.
     proxy : str | None
@@ -341,8 +341,8 @@ class SearchRunner(DiscoveryRunner):
             )
 
         # Enrich the filtered papers via per-paper get() lookups.
-        # enrichment_databases=None  → enrich with all available databases.
-        # enrichment_databases=[]    → skip enrichment entirely.
+        # enrichment_databases=None  -> enrich with all available databases.
+        # enrichment_databases=[]    -> skip enrichment entirely.
         if not (
             isinstance(self._enrichment_databases, list) and len(self._enrichment_databases) == 0
         ):
@@ -444,7 +444,7 @@ class SearchRunner(DiscoveryRunner):
 
         valid_values = {db.value for db in SEARCH_REGISTRY}
 
-        # Treat an explicit empty list as an error – the caller likely
+        # Treat an explicit empty list as an error: the caller likely
         # intended to pass ``None`` (select all) instead of ``[]``.
         if databases is not None and len(databases) == 0:
             raise InvalidParameterError(
@@ -504,7 +504,7 @@ class SearchRunner(DiscoveryRunner):
         # Create a persistent progress bar for every database upfront, each
         # pinned to a fixed terminal row via ``position``.  This guarantees
         # all bars are visible simultaneously in both serial and parallel
-        # modes — workers update their own bar in-place rather than printing
+        # modes: workers update their own bar in-place rather than printing
         # new lines or clearing a shared temporary bar.
         db_bars = [
             make_progress_bar(
@@ -632,7 +632,7 @@ class SearchRunner(DiscoveryRunner):
         share the same DOI.
 
         **Pass 2** groups the results of pass 1 by normalised title and
-        merges entries whose publication years are *compatible* — i.e. they
+        merges entries whose publication years are *compatible*: i.e. they
         share the same year, at least one has no year (incomplete metadata),
         or at least one entry carries a preprint DOI and their years differ by
         at most one (to handle both the case of the same preprint deposited to

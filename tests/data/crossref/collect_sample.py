@@ -29,7 +29,7 @@ METADATA_FILE = OUTPUT_DIR / "collection_metadata.json"
 
 BASE_URL = "https://api.crossref.org/works"
 
-# Polite-pool header — provides higher rate limits.
+# Polite-pool header: provides higher rate limits.
 HEADERS = {
     "User-Agent": (
         "findpapers-test-collector/1.0 "
@@ -43,7 +43,7 @@ HEADERS = {
 SAMPLE_DOIS: list[dict[str, str]] = [
     {
         "doi": "10.1038/nature12373",
-        "reason": "Nature journal article — rich metadata, multiple authors",
+        "reason": "Nature journal article: rich metadata, multiple authors",
     },
     {
         "doi": "10.1145/3292500.3330648",
@@ -55,11 +55,11 @@ SAMPLE_DOIS: list[dict[str, str]] = [
     },
     {
         "doi": "10.1371/journal.pone.0185542",
-        "reason": "PLOS ONE open-access journal article — has abstract",
+        "reason": "PLOS ONE open-access journal article: has abstract",
     },
     {
         "doi": "10.1109/CVPR.2016.90",
-        "reason": "IEEE CVPR proceedings article (ResNet) — highly cited conference paper",
+        "reason": "IEEE CVPR proceedings article (ResNet): highly cited conference paper",
     },
     {
         "doi": "10.1109/ACCESS.2021.3119621",
@@ -67,11 +67,11 @@ SAMPLE_DOIS: list[dict[str, str]] = [
     },
     {
         "doi": "10.3758/s13428-022-02028-7",
-        "reason": "Springer Psychonomic Bulletin — has keywords/subjects",
+        "reason": "Springer Psychonomic Bulletin: has keywords/subjects",
     },
     {
         "doi": "10.1016/j.apenergy.2023.121323",
-        "reason": "Elsevier Applied Energy — publisher-DOI with ISSN and page range",
+        "reason": "Elsevier Applied Energy: publisher-DOI with ISSN and page range",
     },
 ]
 
@@ -99,12 +99,12 @@ def fetch_work(doi: str, timeout: float = 30.0) -> dict | None:
     try:
         response = requests.get(url, headers=HEADERS, timeout=timeout)
         if response.status_code == 404:
-            print(f"    ✗ Not found (404) for {doi}")
+            print(f"    [FAIL] Not found (404) for {doi}")
             return None
         response.raise_for_status()
         return response.json()
     except requests.RequestException as e:
-        print(f"    ✗ Error: {e}")
+        print(f"    [FAIL] Error: {e}")
         return None
 
 
@@ -138,9 +138,9 @@ def collect_crossref_samples() -> None:
             container = (message.get("container-title") or ["(none)"])[0]
             citations = message.get("is-referenced-by-count", 0)
 
-            print(f"    ✓ Title: {title[:80]}...")
-            print(f"    ✓ Type: {cr_type} | Authors: {n_authors} | Abstract: {has_abstract}")
-            print(f"    ✓ Source: {container} | Citations: {citations}")
+            print(f"    [OK] Title: {title[:80]}...")
+            print(f"    [OK] Type: {cr_type} | Authors: {n_authors} | Abstract: {has_abstract}")
+            print(f"    [OK] Source: {container} | Citations: {citations}")
             successes += 1
         else:
             failures += 1
@@ -151,7 +151,7 @@ def collect_crossref_samples() -> None:
 
     # Save collected responses.
     SAMPLE_RESPONSE_FILE.write_text(json.dumps(results, indent=2), encoding="utf-8")
-    print(f"\n✓ Saved {successes} work records to: {SAMPLE_RESPONSE_FILE}")
+    print(f"\n[OK] Saved {successes} work records to: {SAMPLE_RESPONSE_FILE}")
 
     # Save collection metadata.
     metadata = {
@@ -164,7 +164,7 @@ def collect_crossref_samples() -> None:
         "descriptions": {e["doi"]: e["reason"] for e in SAMPLE_DOIS},
     }
     METADATA_FILE.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-    print(f"✓ Saved collection metadata to: {METADATA_FILE}")
+    print(f"[OK] Saved collection metadata to: {METADATA_FILE}")
 
     print(f"\n{'=' * 60}")
     print(f"Collection complete! {successes}/{len(SAMPLE_DOIS)} succeeded, {failures} failed.")

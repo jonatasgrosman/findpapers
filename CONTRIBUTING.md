@@ -127,6 +127,7 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 
 * Write code in English.
 * Write comments in English.
+* Use only ASCII characters in code, comments, and docstrings (no em dash, en dash, curly quotes, arrows, or emoji); prefer parentheses, a comma, or a colon instead of a dash. Enforced by `make ascii` (part of `make check`); `ruff` (`RUF001`/`RUF002`/`RUF003`) additionally flags the subset of those characters that are visually confusable with an ASCII character, such as en dash.
 * You must write comments to explain non-trivial parts of the code.
 * All features or bug fixes must be tested by one or more specs (unit-tests).
 * All methods must have type hints.

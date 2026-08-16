@@ -89,8 +89,8 @@ class TestQueryValidator:
         The 3-character minimum was a global constraint that was removed; each
         database builder enforces its own minimum (IEEE/Scopus: 3, PubMed: 4).
         """
-        validator.validate("[m*]")  # 1 char before * — globally valid
-        validator.validate("[ma*]")  # 2 chars before * — also valid
+        validator.validate("[m*]")  # 1 char before *: globally valid
+        validator.validate("[ma*]")  # 2 chars before *: also valid
 
     def test_asterisk_only_at_end(self, validator):
         """Test that asterisk can only be at the end."""

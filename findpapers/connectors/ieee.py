@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 _BASE_URL = "https://ieeexploreapi.ieee.org/api/v1/search/articles"
 _PAGE_SIZE = 200  # IEEE max per request
-# 200 calls/day limit — use conservative interval
+# 200 calls/day limit: use conservative interval
 _MIN_REQUEST_INTERVAL = 0.5
 
 # Regex that matches IEEE Xplore landing-page URLs and captures the article number.

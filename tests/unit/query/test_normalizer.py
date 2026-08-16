@@ -16,7 +16,7 @@ class TestQueryNormalizer:
         return QueryNormalizer()
 
     # ------------------------------------------------------------------
-    # Already-canonical queries — must pass through unchanged
+    # Already-canonical queries: must pass through unchanged
 
     def test_canonical_single_term_unchanged(self, normalizer: QueryNormalizer) -> None:
         """Test that a canonical single-term query is returned unchanged."""

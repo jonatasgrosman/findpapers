@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 _BASE_URL = "https://api.elsevier.com/content/search/scopus"
 _PAGE_SIZE = 25  # Scopus max results per request (in standard view)
-# Conservative interval — actual limit varies by institution
+# Conservative interval: actual limit varies by institution
 _MIN_REQUEST_INTERVAL = 0.5
 
 # Mapping from Scopus prism:aggregationType values to SourceType.
@@ -504,7 +504,7 @@ class ScopusConnector(SearchConnectorBase, DOILookupConnectorBase):
         Returns
         -------
         tuple[list[dict], int | None, Any]
-            ``(entries, total, api_error)`` — ``api_error`` is non-falsy
+            ``(entries, total, api_error)``: ``api_error`` is non-falsy
             when the response body contains an API-level error dict.
         """
         data = response.json()
