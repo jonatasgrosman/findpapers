@@ -63,9 +63,9 @@ snowball_result = engine.snowball(paper, max_depth=1, direction="forward")
 similar_result = engine.similar(paper)
 
 # Save results
-findpapers.save_to_json(result, "search_result.json")
+findpapers.save_to_json(search_result, "search_result.json")
 findpapers.save_to_json(snowball_result, "snowball_result.json")
-findpapers.save_to_json(snowball_result, "similar_result.json")
+findpapers.save_to_json(similar_result, "similar_result.json")
 findpapers.save_to_bibtex(result.papers, "references.bib")
 ```
 
