@@ -127,6 +127,14 @@ jobs:
           set -o pipefail
           python -m poetry run vulture findpapers/ 2>&1 | tee /tmp/dead_code.txt
 
+      - name: ASCII (non-ASCII character check)
+        id: ascii
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          python -m poetry run python tools/check_ascii.py 2>&1 | tee /tmp/ascii.txt
+
       - name: Tests & Coverage — pytest
         id: coverage
         continue-on-error: true
@@ -178,6 +186,7 @@ jobs:
               pip_audit:   '${{ steps.pip_audit.outcome }}',
               docstrings:  '${{ steps.docstrings.outcome }}',
               dead_code:   '${{ steps.dead_code.outcome }}',
+              ascii:       '${{ steps.ascii.outcome }}',
               coverage:    '${{ steps.coverage.outcome }}',
             };
 
@@ -190,6 +199,7 @@ jobs:
               { id: 'pip_audit',   label: 'Deps audit',  tool: 'pip-audit',        file: '/tmp/pip_audit.txt'   },
               { id: 'docstrings',  label: 'Docstrings',  tool: 'interrogate',      file: '/tmp/docstrings.txt'  },
               { id: 'dead_code',   label: 'Dead code',   tool: 'vulture',          file: '/tmp/dead_code.txt'   },
+              { id: 'ascii',       label: 'ASCII',       tool: 'check_ascii.py',   file: '/tmp/ascii.txt'       },
               { id: 'coverage',    label: 'Tests & Cov', tool: 'pytest + cov',     file: '/tmp/coverage.txt'    },
             ];
 
