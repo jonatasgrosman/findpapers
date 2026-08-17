@@ -25,8 +25,11 @@ class SimilarResult:
     seed_paper : Paper
         The paper the similarity lookup was performed around.
     databases : list[str] | None
-        Sources that were requested, in priority order.  ``None`` means all
-        available sources were requested.
+        Sources that were requested, in priority order.  ``None`` means the
+        default two sources were used (``["semantic_scholar", "pubmed"]``);
+        OpenAlex is supported but excluded from the default because its
+        ``related_works`` signal proved noisier in testing, so it only
+        appears here when requested explicitly.
     max_papers_per_database : int | None
         Cap on the number of related papers requested/kept from each source
         before merging.  ``None`` means each source's own natural default

@@ -332,7 +332,28 @@ class PubmedConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConn
             return None
         return ids[0] if ids else None
 
-    def fetch_related(self, paper: Paper, max_papers: int | None = None) -> list[Paper]:
+    def _resolve_pmid_for_paper(self, paper: Paper) -> str | None:
+        """Resolve *paper* to a PMID via :meth:`_resolve_pmid`, or ``None`` without a DOI.
+
+        Small wrapper kept separate from :meth:`fetch_related` purely to
+        keep that method's cyclomatic complexity low.
+
+        Parameters
+        ----------
+        paper : Paper
+            Paper to resolve. May have no DOI.
+
+        Returns
+        -------
+        str | None
+            The PMID, or ``None`` when *paper* has no DOI or is not indexed
+            by PubMed.
+        """
+        return self._resolve_pmid(paper.doi) if paper.doi else None
+
+    def fetch_related(
+        self, paper: Paper, max_papers: int | None = None, pmid: str | None = None
+    ) -> list[Paper]:
         """Return related papers via NCBI ELink's ``neighbor_score`` command.
 
         Only applicable to biomedical papers indexed in PubMed: resolves
@@ -349,12 +370,19 @@ class PubmedConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConn
         Parameters
         ----------
         paper : Paper
-            Seed paper.  Must have a DOI.
+            Seed paper.  Must have a DOI, unless *pmid* is already supplied.
         max_papers : int | None
             Maximum number of related papers to return, applied to the
             score-sorted candidate list *before* fetching full article
             details, to avoid unnecessary efetch calls.  ``None`` (default)
             keeps the full (up to 100) candidate list.
+        pmid : str | None
+            Already-resolved PMID for *paper*, if the caller has one (e.g.
+            :class:`~findpapers.runners.similar_runner.SimilarRunner`, which
+            resolves the PMID once to decide skip-vs-run and passes it here
+            to avoid a second, redundant ``esearch`` call).  ``None``
+            (default) resolves it from *paper*'s DOI via
+            :meth:`_resolve_pmid`, same as before.
 
         Returns
         -------
@@ -363,10 +391,7 @@ class PubmedConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConn
             list when *paper* has no DOI, the DOI is not indexed by PubMed,
             or the request fails.
         """
-        if not paper.doi:
-            return []
-
-        pmid = self._resolve_pmid(paper.doi)
+        pmid = pmid if pmid is not None else self._resolve_pmid_for_paper(paper)
         if pmid is None:
             return []
 

@@ -391,9 +391,15 @@ class SimilarRunner(DiscoveryRunner):
         )
         try:
             for name, connector, method_name in active_specs:
+                # PubMed's PMID resolution is done here (rather than left to
+                # fetch_related) so we can distinguish skip from run, and the
+                # resolved pmid is then passed straight through below: this
+                # avoids a second, redundant esearch call against NCBI's
+                # rate-limited endpoint for the same DOI.
+                pubmed_pmid: str | None = None
                 if name == Database.PUBMED.value:
-                    pmid = self._pubmed._resolve_pmid(doi)  # type: ignore[union-attr]
-                    if pmid is None:
+                    pubmed_pmid = self._pubmed._resolve_pmid(doi)  # type: ignore[union-attr]
+                    if pubmed_pmid is None:
                         logger.debug(
                             "similar: PubMed skipped (no PMID for DOI %s).", self._paper.doi
                         )
@@ -401,9 +407,14 @@ class SimilarRunner(DiscoveryRunner):
                         progress.update(1)
                         continue
                 try:
-                    related = getattr(connector, method_name)(
-                        self._paper, self._max_papers_per_database
-                    )
+                    if name == Database.PUBMED.value:
+                        related = self._pubmed.fetch_related(  # type: ignore[union-attr]
+                            self._paper, self._max_papers_per_database, pmid=pubmed_pmid
+                        )
+                    else:
+                        related = getattr(connector, method_name)(
+                            self._paper, self._max_papers_per_database
+                        )
                 except Exception:
                     logger.debug("similar: source %s failed.", name, exc_info=True)
                     failed_databases.append(name)
