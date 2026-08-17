@@ -45,13 +45,13 @@ import datetime
 engine = findpapers.Engine()
 
 # Search for papers across all databases
-result = engine.search(
+search_result = engine.search(
     "[machine learning] AND [healthcare]",
     since=datetime.date(2022, 1, 1),
 )
 
 # Download PDFs
-engine.download(result.papers, "./pdfs")
+engine.download(search_result.papers, "./pdfs")
 
 # Look up a single paper by DOI or landing-page URL
 paper = engine.get("10.1038/nature11804")
@@ -63,10 +63,10 @@ snowball_result = engine.snowball(paper, max_depth=1, direction="forward")
 similar_result = engine.similar(paper)
 
 # Save results
+findpapers.save_to_json(result, "search_result.json")
 findpapers.save_to_json(snowball_result, "snowball_result.json")
 findpapers.save_to_json(snowball_result, "similar_result.json")
 findpapers.save_to_bibtex(result.papers, "references.bib")
-findpapers.save_to_json(result, "snowball_result.json")
 ```
 
 ## The Paper Object
