@@ -2,19 +2,6 @@
 
 The `engine.similar()` method finds papers that are **content-similar** to a single seed paper: topically or semantically related work, as opposed to papers connected by citation links.
 
-## Similar vs. Snowball
-
-Both methods discover related papers around a seed, but by very different mechanisms:
-
-| | `similar()` | `snowball()` |
-|---|---|---|
-| Relatedness signal | Content/topic similarity (embeddings, related-articles algorithms, topic-tag overlap) | Citation graph (references and citing papers) |
-| Traversal | Single-hop only | Multi-level BFS (`max_depth`) |
-| Seeds | One `Paper` per call | One or more `Paper` objects |
-| Typical use | "Find latent related work a citation search would miss" | "Map the citation network around a paper" |
-
-Use `similar()` to complement a literature review with topically related papers that neither direct citation nor keyword search would surface. Use `snowball()` to trace the citation lineage of a paper.
-
 ## Basic Usage
 
 ```python
@@ -86,12 +73,6 @@ Returns a `SimilarResult` object containing:
 
 Each paper in `result.papers` records which source(s) found it via `paper.found_in`, so you can judge confidence: a paper found by more than one source is generally a stronger match than one found by a single, noisier source.
 
-## Merge Strategy: Union, Not Ranked Score
-
-`similar()` queries every configured source and merges the results into a single deduplicated list (matched by DOI, falling back to normalised title). It does **not** compute or expose a combined similarity score: Semantic Scholar and OpenAlex do not return a numeric score at all (only an ordered list), and PubMed's score is a source-specific probabilistic model output, not comparable across sources. Mixing them into one fake unified ranking would misrepresent the data.
-
-Instead, results are returned in **source-priority order**: all papers found by Semantic Scholar first, then papers found only by PubMed, then papers found only by OpenAlex. A paper found by multiple sources keeps the position of its highest-priority source, with provenance from every source it was found in recorded in `paper.found_in`.
-
 ## Data Sources
 
 `similar()` queries up to three sources, each with a different relatedness signal:
@@ -115,6 +96,12 @@ NCBI hard-caps this endpoint at 100 candidates regardless of any parameter; `max
 Uses the `related_works` field already embedded in the OpenAlex `Work` record for the seed paper, so no dedicated "recommendation" request is needed beyond the initial lookup. This reflects shared topic/concept tags rather than a learned semantic signal, so it is the coarsest of the three: expect it to mix genuinely related papers with broadly-related-but-not-quite ones.
 
 `related_works` is already a short, fixed list (typically 10-20 entries) with no pagination: there is nothing to request more of. Because it reflects topic-tag overlap rather than a learned semantic signal, its quality varies more than the other two sources: for some seed papers every entry is genuinely related, for others the list can include entries with no discernible connection to the seed at all. Live testing turned up recurring examples of unrelated entries across unrelated seed papers, so **OpenAlex is excluded from the default `databases`** and must be requested explicitly (see [Restricting Sources](#restricting-sources)).
+
+## Merge Strategy: Union, Not Ranked Score
+
+`similar()` queries every configured source and merges the results into a single deduplicated list (matched by DOI, falling back to normalised title). It does **not** compute or expose a combined similarity score: Semantic Scholar and OpenAlex do not return a numeric score at all (only an ordered list), and PubMed's score is a source-specific probabilistic model output, not comparable across sources. Mixing them into one fake unified ranking would misrepresent the data.
+
+Instead, results are returned in **source-priority order**: all papers found by Semantic Scholar first, then papers found only by PubMed, then papers found only by OpenAlex. A paper found by multiple sources keeps the position of its highest-priority source, with provenance from every source it was found in recorded in `paper.found_in`.
 
 ## Date Filtering
 
