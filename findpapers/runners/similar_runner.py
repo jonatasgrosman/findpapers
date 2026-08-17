@@ -9,6 +9,7 @@ a single-hop lookup: there is no BFS expansion.
 
 from __future__ import annotations
 
+import datetime as dt
 import logging
 from time import perf_counter
 
@@ -18,6 +19,7 @@ from findpapers.connectors.semantic_scholar import SemanticScholarConnector
 from findpapers.core.paper import Database, Paper
 from findpapers.core.similar_result import SimilarResult
 from findpapers.exceptions import InvalidParameterError
+from findpapers.runners.discovery_runner import DEFAULT_ENRICHMENT_DATABASES, DiscoveryRunner
 from findpapers.utils.logging_config import configure_verbose_logging
 from findpapers.utils.progress import make_progress_bar
 
@@ -29,6 +31,15 @@ logger = logging.getLogger(__name__)
 # coarser topic-tag-overlap signal).
 SIMILAR_DATABASES: list[str] = ["semantic_scholar", "pubmed", "openalex"]
 
+# Databases used when the caller does not pass an explicit ``databases``
+# value.  OpenAlex is deliberately excluded from the default: its
+# ``related_works`` field is a topic-tag-overlap signal rather than a
+# learned semantic one, and live testing repeatedly turned up entries with
+# no discernible connection to the seed paper (see docs/similar.md). It
+# remains fully supported and can still be requested explicitly via
+# ``databases=[..., "openalex"]``.
+DEFAULT_SIMILAR_DATABASES: list[str] = ["semantic_scholar", "pubmed"]
+
 
 def _validate_similar_databases(value: list[str] | None) -> list[str]:
     """Validate and normalise the ``databases`` parameter for :class:`SimilarRunner`.
@@ -36,8 +47,8 @@ def _validate_similar_databases(value: list[str] | None) -> list[str]:
     Parameters
     ----------
     value : list[str] | None
-        Raw value to validate.  ``None`` selects all of
-        :data:`SIMILAR_DATABASES`.
+        Raw value to validate.  ``None`` selects
+        :data:`DEFAULT_SIMILAR_DATABASES`.
 
     Returns
     -------
@@ -52,7 +63,7 @@ def _validate_similar_databases(value: list[str] | None) -> list[str]:
         If *value* is an empty list or contains unknown database names.
     """
     if value is None:
-        return list(SIMILAR_DATABASES)
+        return list(DEFAULT_SIMILAR_DATABASES)
     if len(value) == 0:
         raise InvalidParameterError(
             "databases must not be an empty list. Pass None to select all available databases."
@@ -67,7 +78,7 @@ def _validate_similar_databases(value: list[str] | None) -> list[str]:
     return [db for db in SIMILAR_DATABASES if db in normalised]
 
 
-class SimilarRunner:
+class SimilarRunner(DiscoveryRunner):
     """Runner that finds content-similar papers around a single seed paper.
 
     Queries each configured source sequentially (in :data:`SIMILAR_DATABASES`
@@ -77,6 +88,13 @@ class SimilarRunner:
     :meth:`~findpapers.core.paper.Paper.add_database`.  A source failure is
     isolated and logged; it does not abort the other sources.
 
+    Like :class:`~findpapers.runners.search_runner.SearchRunner` and
+    :class:`~findpapers.runners.snowball_runner.SnowballRunner`, this runner
+    inherits from :class:`~findpapers.runners.discovery_runner.DiscoveryRunner`
+    for the shared post-fetch date filter and post-fetch enrichment pass.
+    Neither of the three similarity sources supports native date filtering,
+    so ``since``/``until`` are applied after the merge instead.
+
     All three sources are DOI-anchored: a seed paper without a DOI yields an
     empty result without any HTTP calls.
 
@@ -85,29 +103,61 @@ class SimilarRunner:
     paper : Paper
         The seed paper to find related papers for.
     databases : list[str] | None
-        Sources to consult, in priority order.  ``None`` (default) uses all
-        of :data:`SIMILAR_DATABASES`.
+        Sources to consult, in priority order.  ``None`` (default) uses
+        :data:`DEFAULT_SIMILAR_DATABASES` (Semantic Scholar and PubMed).
+        OpenAlex is supported but not included by default because its
+        ``related_works`` signal is coarser and noisier; pass it explicitly
+        (e.g. ``databases=["semantic_scholar", "pubmed", "openalex"]``) to
+        include it.
     max_papers_per_database : int | None
         Cap on the number of related papers requested/kept from each source
         before merging.  ``None`` (default) lets each source's own natural
         default apply (Semantic Scholar: 100; PubMed: 100, a hard NCBI cap;
         OpenAlex: whatever short, fixed ``related_works`` list is embedded in
         the seed work, typically 10-20).
+    since : dt.date | None
+        Only keep related papers published on or after this date.  Applied
+        after merging, since none of the three sources support native date
+        filtering.  ``None`` disables the lower-bound filter.
+    until : dt.date | None
+        Only keep related papers published on or before this date.  Applied
+        after merging.  ``None`` disables the upper-bound filter.
+    enrichment_databases : list[str] | None
+        Databases used to enrich related papers after merging and filtering,
+        via per-paper :class:`~findpapers.runners.get_runner.GetRunner`
+        lookups (same mechanism as :class:`SearchRunner`/:class:`SnowballRunner`).
+        Defaults to ``["crossref", "web_scraping"]``.  Pass ``[]`` to disable
+        enrichment entirely.
+    max_cited_by : int | None
+        Maximum number of citing-paper DOIs to collect per paper during
+        enrichment, when ``"openalex"`` or ``"semantic_scholar"`` are in
+        *enrichment_databases*.  Defaults to ``100``.
+    num_workers : int
+        Number of parallel workers used for the enrichment pass.  Defaults
+        to ``1`` (sequential).
     email : str | None
-        Unused by the three similarity sources today; accepted for interface
-        symmetry with the other runners and forward compatibility.
+        Contact email for CrossRef/OpenAlex polite-pool access during
+        enrichment.  Unused by the three similarity sources themselves.
     openalex_api_key : str | None
         OpenAlex API key.  Optional: increases the daily quota.
     semantic_scholar_api_key : str | None
         Semantic Scholar API key.  Optional: increases the rate limit.
     pubmed_api_key : str | None
         NCBI PubMed API key.  Optional: increases the rate limit.
+    ieee_api_key : str | None
+        IEEE Xplore API key, used only if ``"ieee"`` is included in
+        *enrichment_databases*.
+    scopus_api_key : str | None
+        Elsevier/Scopus API key, used only if ``"scopus"`` is included in
+        *enrichment_databases*.
+    wos_api_key : str | None
+        Clarivate Web of Science API key, used only if ``"wos"`` is included
+        in *enrichment_databases*.
     timeout : float | None
-        HTTP request timeout in seconds.  ``None`` uses the ``requests``
-        default.
+        HTTP request timeout in seconds for the three similarity sources.
+        ``None`` uses the ``requests`` default.
     proxy : str | None
-        Unused by the three similarity sources today (none perform HTML
-        scraping); accepted for interface symmetry.
+        Optional HTTP/HTTPS proxy URL for enrichment requests.
     ssl_verify : bool
         Whether to verify SSL certificates.  Defaults to ``True``.
 
@@ -115,6 +165,8 @@ class SimilarRunner:
     ------
     InvalidParameterError
         If *databases* is an empty list or contains unknown database names.
+    InvalidParameterError
+        If *enrichment_databases* contains unknown database names.
     """
 
     def __init__(
@@ -123,10 +175,18 @@ class SimilarRunner:
         *,
         databases: list[str] | None = None,
         max_papers_per_database: int | None = None,
+        since: dt.date | None = None,
+        until: dt.date | None = None,
+        enrichment_databases: list[str] | None = DEFAULT_ENRICHMENT_DATABASES,
+        max_cited_by: int | None = 100,
+        num_workers: int = 1,
         email: str | None = None,
         openalex_api_key: str | None = None,
         semantic_scholar_api_key: str | None = None,
         pubmed_api_key: str | None = None,
+        ieee_api_key: str | None = None,
+        scopus_api_key: str | None = None,
+        wos_api_key: str | None = None,
         timeout: float | None = 10.0,
         proxy: str | None = None,
         ssl_verify: bool = True,
@@ -140,11 +200,40 @@ class SimilarRunner:
         InvalidParameterError
             If *databases* is an empty list or contains unknown database
             names.
+        InvalidParameterError
+            If *enrichment_databases* contains unknown database names.
         """
         self._paper = paper
         self._active_databases = _validate_similar_databases(databases)
         self._requested_databases = databases
         self._max_papers_per_database = max_papers_per_database
+        self._num_workers = num_workers
+        self._max_cited_by = max_cited_by
+
+        _enrichment_dbs_set = set(enrichment_databases or [])
+        _has_citation_enrich = bool(_enrichment_dbs_set & {"openalex", "semantic_scholar"})
+        if _has_citation_enrich and (max_cited_by is None or max_cited_by > 100):
+            logger.warning(
+                "max_cited_by is %s. Fetching cited-by during enrichment may be very slow "
+                "or produce large lists for highly-cited papers. "
+                "Consider setting max_cited_by <= 100.",
+                max_cited_by if max_cited_by is not None else "None (unlimited)",
+            )
+
+        super().__init__(
+            since=since,
+            until=until,
+            ieee_api_key=ieee_api_key,
+            scopus_api_key=scopus_api_key,
+            pubmed_api_key=pubmed_api_key,
+            openalex_api_key=openalex_api_key,
+            email=email,
+            semantic_scholar_api_key=semantic_scholar_api_key,
+            wos_api_key=wos_api_key,
+            proxy=proxy,
+            ssl_verify=ssl_verify,
+            enrichment_databases=enrichment_databases,
+        )
 
         self._semantic_scholar = (
             SemanticScholarConnector(api_key=semantic_scholar_api_key)
@@ -170,6 +259,11 @@ class SimilarRunner:
     def run(self, verbose: bool = False, show_progress: bool = True) -> SimilarResult:
         """Execute the content-similarity lookup for the configured seed paper.
 
+        Runs the fetch/merge pipeline, then (like
+        :class:`~findpapers.runners.search_runner.SearchRunner`) applies the
+        ``since``/``until`` date filter and the enrichment pass inherited
+        from :class:`~findpapers.runners.discovery_runner.DiscoveryRunner`.
+
         Parameters
         ----------
         verbose : bool
@@ -183,7 +277,7 @@ class SimilarRunner:
         -------
         SimilarResult
             Container whose ``papers`` attribute holds the merged,
-            deduplicated related papers.
+            deduplicated, filtered, and enriched related papers.
         """
         _root_logger = logging.getLogger()
         _saved_log_level = _root_logger.level
@@ -207,11 +301,40 @@ class SimilarRunner:
                 if connector is not None:
                     connector.close()
 
+        papers = [merged[key] for key in order]
+
+        # Apply post-fetch date filters: none of the three sources supports
+        # native date filtering, so this always runs as a post-fetch pass.
+        if self._since is not None or self._until is not None:
+            before_filter = len(papers)
+            papers = [p for p in papers if self._matches_filters(p)]
+            logger.debug(
+                "similar: post-fetch filter: %d -> %d papers (%d removed).",
+                before_filter,
+                len(papers),
+                before_filter - len(papers),
+            )
+
+        # Enrich the filtered papers via per-paper get() lookups.
+        # enrichment_databases=[] (normalised by DiscoveryRunner.__init__) disables this.
+        if len(self._enrichment_databases) > 0:
+            self._enrich_papers(
+                papers,
+                verbose,
+                show_progress=show_progress,
+                num_workers=self._num_workers,
+                max_cited_by=self._max_cited_by,
+            )
+
         result = SimilarResult(
             seed_paper=self._paper,
             databases=self._requested_databases,
             max_papers_per_database=self._max_papers_per_database,
-            papers=[merged[key] for key in order],
+            since=self._since,
+            until=self._until,
+            enrichment_databases=self._enrichment_databases,
+            max_cited_by=self._max_cited_by,
+            papers=papers,
             runtime_seconds=perf_counter() - start,
             failed_databases=failed_databases,
             skipped_databases=skipped_databases,

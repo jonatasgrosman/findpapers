@@ -36,8 +36,13 @@ for paper in result.papers[:5]:
 ```python
 result = engine.similar(
     paper,                           # Paper - the seed paper
-    databases=None,                  # list[str] | None - sources to use (default: all three)
+    databases=None,                  # list[str] | None - sources to use (default: semantic_scholar + pubmed)
     max_papers_per_database=None,    # int | None - cap on related papers kept per source
+    since=None,                      # datetime.date | None - exclude related papers before this date
+    until=None,                      # datetime.date | None - exclude related papers after this date
+    enrichment_databases=["crossref", "web_scraping"],  # list[str] | None - post-fetch enrichment
+    max_cited_by=100,                # int | None - max citing-paper DOIs collected during enrichment
+    num_workers=1,                   # int - parallel workers for the enrichment pass
     timeout=10.0,                    # float | None - request timeout in seconds
     verbose=False,                   # bool - enable detailed logging
     show_progress=True,              # bool - show a progress bar across sources
@@ -47,8 +52,13 @@ result = engine.similar(
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `paper` | `Paper` | *(required)* | Seed paper to find related papers for. Must have a DOI: papers without one yield an empty result, since all three sources are DOI-anchored |
-| `databases` | `list[str] \| None` | `None` | Sources to consult, in priority order. Accepted values: `"semantic_scholar"`, `"pubmed"`, `"openalex"`. `None` uses all three |
+| `databases` | `list[str] \| None` | `None` | Sources to consult, in priority order. Accepted values: `"semantic_scholar"`, `"pubmed"`, `"openalex"`. `None` uses `["semantic_scholar", "pubmed"]`: `"openalex"` is supported but excluded from the default because its signal is noisier (see [Data Sources](#data-sources)); pass it explicitly to include it |
 | `max_papers_per_database` | `int \| None` | `None` | Cap on the number of related papers requested/kept from each source before merging. `None` lets each source's own natural default apply (see [Data Sources](#data-sources)) |
+| `since` | `datetime.date \| None` | `None` | Only keep related papers published on or after this date. Applied as a post-fetch filter, since none of the three sources supports native date filtering. The seed paper is never filtered (it is never part of `result.papers` anyway) |
+| `until` | `datetime.date \| None` | `None` | Only keep related papers published on or before this date. Applied as a post-fetch filter |
+| `enrichment_databases` | `list[str] \| None` | `["crossref", "web_scraping"]` | Databases used to enrich the merged, filtered related papers via per-paper `get()`-style lookups, same mechanism as `search()`/`snowball()`. Fills metadata gaps that a single similarity source's own parser may have missed. Accepted values: `"arxiv"`, `"crossref"`, `"ieee"`, `"openalex"`, `"pubmed"`, `"scopus"`, `"semantic_scholar"`, `"web_scraping"`, `"wos"`. Pass `[]` to disable enrichment entirely. `None` uses the default |
+| `max_cited_by` | `int \| None` | `100` | Maximum number of citing-paper DOIs collected per paper during enrichment, when `"openalex"` or `"semantic_scholar"` are in `enrichment_databases`. `None` means no limit: use with caution. A warning is emitted when this value is `None` or greater than `100` |
+| `num_workers` | `int` | `1` | Number of parallel workers used for the enrichment pass |
 | `timeout` | `float \| None` | `10.0` | HTTP request timeout in seconds |
 | `verbose` | `bool` | `False` | Enable detailed DEBUG-level log messages |
 | `show_progress` | `bool` | `True` | Display a tqdm progress bar while sources are queried |
@@ -59,10 +69,14 @@ Returns a `SimilarResult` object containing:
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
-| `papers` | `list[Paper]` | Related papers, deduplicated and merged across sources (the seed paper itself is excluded) |
+| `papers` | `list[Paper]` | Related papers, deduplicated, merged, filtered, and enriched (the seed paper itself is excluded) |
 | `seed_paper` | `Paper` | The paper the lookup was performed around |
 | `databases` | `list[str] \| None` | Sources that were requested |
 | `max_papers_per_database` | `int \| None` | Cap that was applied per source |
+| `since` | `datetime.date \| None` | Lower-bound date filter applied |
+| `until` | `datetime.date \| None` | Upper-bound date filter applied |
+| `enrichment_databases` | `list[str] \| None` | Enrichment databases that were used |
+| `max_cited_by` | `int \| None` | `max_cited_by` limit that was applied during enrichment |
 | `processed_at` | `datetime.datetime` | UTC timestamp when the lookup was executed |
 | `runtime_seconds` | `float \| None` | Wall-clock runtime in seconds |
 | `failed_databases` | `list[str]` | Sources that were queried but raised an error |
@@ -100,25 +114,53 @@ NCBI hard-caps this endpoint at 100 candidates regardless of any parameter; `max
 
 Uses the `related_works` field already embedded in the OpenAlex `Work` record for the seed paper, so no dedicated "recommendation" request is needed beyond the initial lookup. This reflects shared topic/concept tags rather than a learned semantic signal, so it is the coarsest of the three: expect it to mix genuinely related papers with broadly-related-but-not-quite ones.
 
-`related_works` is already a short, fixed list (typically 10-20 entries) with no pagination: there is nothing to request more of.
+`related_works` is already a short, fixed list (typically 10-20 entries) with no pagination: there is nothing to request more of. Because it reflects topic-tag overlap rather than a learned semantic signal, its quality varies more than the other two sources: for some seed papers every entry is genuinely related, for others the list can include entries with no discernible connection to the seed at all. Live testing turned up recurring examples of unrelated entries across unrelated seed papers, so **OpenAlex is excluded from the default `databases`** and must be requested explicitly (see [Restricting Sources](#restricting-sources)).
+
+## Date Filtering
+
+Use `since` and `until` to narrow which related papers are kept. None of the three sources supports native date filtering, so this always runs as a post-fetch pass over the merged result, the same way `search()` enforces exact date boundaries after fetching.
+
+```python
+import datetime
+
+result = engine.similar(
+    seed,
+    since=datetime.date(2018, 1, 1),
+    until=datetime.date(2023, 12, 31),
+)
+```
+
+Related papers with an unknown publication date are excluded whenever `since` or `until` is set.
+
+## Enrichment
+
+Like `search()` and `snowball()`, the merged (and filtered) related papers are enriched via per-paper lookups against `enrichment_databases` (default `["crossref", "web_scraping"]`), filling in metadata gaps that a single similarity source's own parser may have missed. Databases that already returned a given paper are skipped for that paper to avoid redundant requests.
+
+```python
+# Also pull in OpenAlex-based enrichment (adds paper.cited_by via max_cited_by)
+result = engine.similar(seed, enrichment_databases=["crossref", "web_scraping", "openalex"])
+
+# Disable enrichment entirely: keep each paper exactly as its similarity source returned it
+result = engine.similar(seed, enrichment_databases=[])
+```
 
 ## Restricting Sources
 
-Use `databases` to limit which sources are queried, for example to exclude OpenAlex's noisier signal and keep only the higher-precision sources:
-
-```python
-result = engine.similar(seed, databases=["semantic_scholar", "pubmed"])
-```
-
-Or to query a single source directly:
+`databases=None` (the default) already uses only the two higher-precision sources, `["semantic_scholar", "pubmed"]`. Use `databases` to narrow further, for example to query a single source directly:
 
 ```python
 result = engine.similar(seed, databases=["semantic_scholar"])
 ```
 
+Or to opt into OpenAlex as well, trading some precision for extra recall:
+
+```python
+result = engine.similar(seed, databases=["semantic_scholar", "pubmed", "openalex"])
+```
+
 ## Papers Without a DOI
 
-All three sources are DOI-anchored, so a seed paper with no DOI yields an empty result without any HTTP calls, and every source is listed under `result.skipped_databases`. There is currently no supported way to find similar papers from just a title/abstract for an unpublished paper: no reliable public API accepts arbitrary text and returns similarity-ranked results against the full academic corpus.
+All three sources are DOI-anchored, so a seed paper with no DOI yields an empty result without any HTTP calls, and every *active* source (the default two, or all three if `openalex` was requested explicitly) is listed under `result.skipped_databases`. There is currently no supported way to find similar papers from just a title/abstract for an unpublished paper: no reliable public API accepts arbitrary text and returns similarity-ranked results against the full academic corpus.
 
 ```python
 from findpapers.core.paper import Paper
@@ -132,7 +174,7 @@ unpublished = Paper(
 )
 result = engine.similar(unpublished)
 assert result.papers == []
-assert result.skipped_databases == ["semantic_scholar", "pubmed", "openalex"]
+assert result.skipped_databases == ["semantic_scholar", "pubmed"]
 ```
 
 As an approximation, you can fall back to `engine.search()` with keywords drawn from the title/abstract; this is ordinary text-relevance search, not the content-similarity mechanisms above, but the results can still be useful for casting a wider net.

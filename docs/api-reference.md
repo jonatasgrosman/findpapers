@@ -192,6 +192,11 @@ engine.similar(
     *,
     databases: list[str] | None = None,
     max_papers_per_database: int | None = None,
+    since: datetime.date | None = None,
+    until: datetime.date | None = None,
+    enrichment_databases: list[str] | None = ["crossref", "web_scraping"],
+    max_cited_by: int | None = 100,
+    num_workers: int = 1,
     timeout: float | None = 10.0,
     verbose: bool = False,
     show_progress: bool = True,
@@ -201,13 +206,18 @@ engine.similar(
 | Parameter | Type | Description |
 |---|---|---|
 | `paper` | `Paper` | Seed paper to find related papers for. Must have a DOI; papers without one yield an empty result. |
-| `databases` | `list[str] \| None` | Sources to consult, in priority order. Accepted values: `"semantic_scholar"`, `"pubmed"`, `"openalex"`. Defaults to `None` (all three). |
+| `databases` | `list[str] \| None` | Sources to consult, in priority order. Accepted values: `"semantic_scholar"`, `"pubmed"`, `"openalex"`. Defaults to `None`, which uses `["semantic_scholar", "pubmed"]`; `"openalex"` is supported but excluded by default (noisier signal) and must be requested explicitly. |
 | `max_papers_per_database` | `int \| None` | Cap on the number of related papers kept per source before merging. Defaults to `None`, letting each source's own natural default apply (Semantic Scholar: 100; PubMed: 100, an NCBI-side cap; OpenAlex: a short, fixed `related_works` list, typically 10-20). |
+| `since` | `datetime.date \| None` | Only keep related papers published on or after this date. Applied as a post-fetch filter (none of the three sources supports native date filtering). `None` disables the lower-bound filter. |
+| `until` | `datetime.date \| None` | Only keep related papers published on or before this date. Applied as a post-fetch filter. `None` disables the upper-bound filter. |
+| `enrichment_databases` | `list[str] \| None` | Databases used to enrich the merged, filtered related papers, same mechanism as `search()`/`snowball()`. Defaults to `["crossref", "web_scraping"]`. Pass `[]` to disable enrichment entirely. |
+| `max_cited_by` | `int \| None` | Maximum number of citing-paper DOIs collected per paper during enrichment, when `"openalex"` or `"semantic_scholar"` are in `enrichment_databases`. Defaults to `100`. `None` means no limit. |
+| `num_workers` | `int` | Number of parallel workers used for the enrichment pass. Defaults to `1`. |
 | `timeout` | `float \| None` | HTTP request timeout in seconds. Defaults to `10.0`. |
 | `verbose` | `bool` | Enable debug logging. Defaults to `False`. |
 | `show_progress` | `bool` | Display a progress bar across sources. Defaults to `True`. |
 
-**Returns:** `SimilarResult` containing the merged, deduplicated related papers in `papers` (seed excluded), with per-paper provenance in `paper.found_in` and no cross-source ranking score.
+**Returns:** `SimilarResult` containing the merged, deduplicated, filtered, and enriched related papers in `papers` (seed excluded), with per-paper provenance in `paper.found_in` and no cross-source ranking score.
 
 ---
 
@@ -560,6 +570,10 @@ SimilarResult(
     seed_paper: Paper,
     databases: list[str] | None = None,
     max_papers_per_database: int | None = None,
+    since: datetime.date | None = None,
+    until: datetime.date | None = None,
+    enrichment_databases: list[str] | None = None,
+    max_cited_by: int | None = None,
     papers: list[Paper] | None = None,
     processed_at: datetime.datetime | None = None,
     runtime_seconds: float | None = None,
@@ -573,9 +587,13 @@ SimilarResult(
 | Attribute | Type | Description |
 |---|---|---|
 | `seed_paper` | `Paper` | The paper the similarity lookup was performed around. |
-| `papers` | `list[Paper]` | Related papers found, deduplicated and merged across sources (seed excluded). |
+| `papers` | `list[Paper]` | Related papers found, deduplicated, merged, filtered, and enriched (seed excluded). |
 | `databases` | `list[str] \| None` | Sources that were requested, in priority order. |
 | `max_papers_per_database` | `int \| None` | Cap that was applied per source (`None` = each source's own natural default). |
+| `since` | `datetime.date \| None` | Lower-bound date filter applied to related papers. |
+| `until` | `datetime.date \| None` | Upper-bound date filter applied to related papers. |
+| `enrichment_databases` | `list[str] \| None` | Enrichment databases that were used (populated by `SimilarRunner.run()`). |
+| `max_cited_by` | `int \| None` | `max_cited_by` limit that was applied during enrichment. |
 | `processed_at` | `datetime.datetime` | UTC timestamp when the lookup was executed. |
 | `runtime_seconds` | `float \| None` | Wall-clock runtime in seconds. |
 | `failed_databases` | `list[str]` | Sources that were queried but raised an error. |
@@ -763,10 +781,18 @@ SimilarRunner(
     *,
     databases: list[str] | None = None,
     max_papers_per_database: int | None = None,
+    since: datetime.date | None = None,
+    until: datetime.date | None = None,
+    enrichment_databases: list[str] | None = ["crossref", "web_scraping"],
+    max_cited_by: int | None = 100,
+    num_workers: int = 1,
     email: str | None = None,
     openalex_api_key: str | None = None,
     semantic_scholar_api_key: str | None = None,
     pubmed_api_key: str | None = None,
+    ieee_api_key: str | None = None,
+    scopus_api_key: str | None = None,
+    wos_api_key: str | None = None,
     timeout: float | None = 10.0,
     proxy: str | None = None,
     ssl_verify: bool = True,

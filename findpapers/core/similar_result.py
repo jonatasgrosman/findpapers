@@ -31,6 +31,16 @@ class SimilarResult:
         Cap on the number of related papers requested/kept from each source
         before merging.  ``None`` means each source's own natural default
         was used.
+    since : datetime.date | None
+        Lower-bound publication date filter applied to related papers.
+    until : datetime.date | None
+        Upper-bound publication date filter applied to related papers.
+    enrichment_databases : list[str] | None
+        Databases used to enrich related papers after merging and filtering.
+    max_cited_by : int | None
+        Maximum number of citing-paper DOIs collected per paper during
+        enrichment (only relevant when ``"openalex"`` or
+        ``"semantic_scholar"`` are in *enrichment_databases*).
     papers : list[Paper] | None
         Related papers found, deduplicated and merged across sources.  The
         seed paper itself is never included.  ``None`` is treated as an
@@ -56,6 +66,10 @@ class SimilarResult:
         seed_paper: Paper,
         databases: list[str] | None = None,
         max_papers_per_database: int | None = None,
+        since: datetime.date | None = None,
+        until: datetime.date | None = None,
+        enrichment_databases: list[str] | None = None,
+        max_cited_by: int | None = None,
         papers: list[Paper] | None = None,
         processed_at: datetime.datetime | None = None,
         runtime_seconds: float | None = None,
@@ -72,6 +86,15 @@ class SimilarResult:
             Sources that were requested, in priority order.
         max_papers_per_database : int | None
             Cap on the number of related papers kept from each source.
+        since : datetime.date | None
+            Lower-bound publication date filter applied to related papers.
+        until : datetime.date | None
+            Upper-bound publication date filter applied to related papers.
+        enrichment_databases : list[str] | None
+            Databases used to enrich related papers after merging/filtering.
+        max_cited_by : int | None
+            Maximum number of citing-paper DOIs collected per paper during
+            enrichment.
         papers : list[Paper] | None
             Related papers found (seed excluded).
         processed_at : datetime.datetime | None
@@ -86,6 +109,10 @@ class SimilarResult:
         self.seed_paper = seed_paper
         self.databases = databases
         self.max_papers_per_database = max_papers_per_database
+        self.since = since
+        self.until = until
+        self.enrichment_databases = enrichment_databases
+        self.max_cited_by = max_cited_by
         self.papers: list[Paper] = list(papers) if papers is not None else []
         self.runtime_seconds = runtime_seconds
         self.failed_databases: list[str] = list(failed_databases) if failed_databases else []
@@ -140,6 +167,10 @@ class SimilarResult:
                 "seed_paper": {"doi": self.seed_paper.doi, "title": self.seed_paper.title},
                 "databases": self.databases,
                 "max_papers_per_database": self.max_papers_per_database,
+                "since": self.since.isoformat() if self.since else None,
+                "until": self.until.isoformat() if self.until else None,
+                "enrichment_databases": self.enrichment_databases,
+                "max_cited_by": self.max_cited_by,
                 "failed_databases": self.failed_databases,
                 "skipped_databases": self.skipped_databases,
                 "timestamp": self.processed_at.astimezone(datetime.UTC).isoformat(),
@@ -174,6 +205,18 @@ class SimilarResult:
             with contextlib.suppress(ValueError):
                 processed_at = datetime.datetime.fromisoformat(ts)
 
+        since: datetime.date | None = None
+        since_str = metadata.get("since")
+        if isinstance(since_str, str):
+            with contextlib.suppress(ValueError):
+                since = datetime.date.fromisoformat(since_str)
+
+        until: datetime.date | None = None
+        until_str = metadata.get("until")
+        if isinstance(until_str, str):
+            with contextlib.suppress(ValueError):
+                until = datetime.date.fromisoformat(until_str)
+
         # Reconstruct a minimal seed Paper object from the stored summary.
         seed_data = metadata.get("seed_paper") or {}
         doi = seed_data.get("doi")
@@ -191,6 +234,10 @@ class SimilarResult:
             seed_paper=seed_paper,
             databases=metadata.get("databases"),
             max_papers_per_database=metadata.get("max_papers_per_database"),
+            since=since,
+            until=until,
+            enrichment_databases=metadata.get("enrichment_databases"),
+            max_cited_by=metadata.get("max_cited_by"),
             papers=[Paper.from_dict(p) for p in raw_papers],
             processed_at=processed_at,
             runtime_seconds=metadata.get("runtime_seconds"),

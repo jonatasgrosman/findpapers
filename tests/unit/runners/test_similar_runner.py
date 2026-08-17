@@ -9,10 +9,34 @@ import pytest
 
 from findpapers.core.paper import Paper
 from findpapers.exceptions import InvalidParameterError
-from findpapers.runners.similar_runner import SIMILAR_DATABASES, SimilarRunner
+from findpapers.runners.similar_runner import (
+    DEFAULT_SIMILAR_DATABASES,
+    SIMILAR_DATABASES,
+    SimilarRunner,
+)
 
 
-def _make_paper(title: str = "Test", doi: str | None = "10.1000/seed") -> Paper:
+@pytest.fixture(autouse=True)
+def _no_enrichment():
+    """Patch out enrichment so unit tests do not make real HTTP requests.
+
+    Mirrors the equivalent fixture in ``test_search_runner.py``: SimilarRunner
+    inherits ``DiscoveryRunner._enrich_papers``, and without this patch the
+    default ``enrichment_databases=["crossref", "web_scraping"]`` would try
+    real network access for every test.
+    """
+    with patch(
+        "findpapers.runners.discovery_runner.DiscoveryRunner._enrich_papers",
+        return_value=None,
+    ):
+        yield
+
+
+def _make_paper(
+    title: str = "Test",
+    doi: str | None = "10.1000/seed",
+    publication_date: datetime.date | None = datetime.date(2024, 1, 1),
+) -> Paper:
     """Create a minimal Paper for testing.
 
     Parameters
@@ -21,6 +45,8 @@ def _make_paper(title: str = "Test", doi: str | None = "10.1000/seed") -> Paper:
         Paper title.
     doi : str | None
         Optional DOI.
+    publication_date : datetime.date | None
+        Optional publication date.
 
     Returns
     -------
@@ -32,7 +58,7 @@ def _make_paper(title: str = "Test", doi: str | None = "10.1000/seed") -> Paper:
         abstract="Abstract",
         authors=[],
         source=None,
-        publication_date=datetime.date(2024, 1, 1),
+        publication_date=publication_date,
         doi=doi,
     )
 
@@ -45,9 +71,14 @@ def _make_paper(title: str = "Test", doi: str | None = "10.1000/seed") -> Paper:
 class TestSimilarRunnerValidation:
     """Tests for the databases parameter validation."""
 
-    def test_none_uses_all_databases(self) -> None:
-        """None selects every database in priority order."""
+    def test_none_uses_default_databases(self) -> None:
+        """None selects the default databases (semantic_scholar, pubmed), not openalex."""
         runner = SimilarRunner(paper=_make_paper())
+        assert runner._active_databases == DEFAULT_SIMILAR_DATABASES
+
+    def test_explicit_all_databases_includes_openalex(self) -> None:
+        """Passing all three explicitly includes openalex, unlike the default."""
+        runner = SimilarRunner(paper=_make_paper(), databases=SIMILAR_DATABASES)
         assert runner._active_databases == SIMILAR_DATABASES
 
     def test_empty_list_raises(self) -> None:
@@ -75,8 +106,8 @@ class TestSimilarRunnerNoDoi:
     """Tests for the seed-paper-without-DOI short circuit."""
 
     def test_no_doi_skips_all_sources_without_http_calls(self) -> None:
-        """A seed paper with no DOI yields an empty result; every source is skipped."""
-        runner = SimilarRunner(paper=_make_paper(doi=None))
+        """A seed paper with no DOI yields an empty result; every active source is skipped."""
+        runner = SimilarRunner(paper=_make_paper(doi=None), databases=SIMILAR_DATABASES)
 
         with (
             patch(
@@ -137,7 +168,7 @@ class TestSimilarRunnerMerge:
         pm_paper = _make_paper("From PubMed", doi="10.1000/pm")
         oa_paper = _make_paper("From OpenAlex", doi="10.1000/oa")
 
-        runner = SimilarRunner(paper=seed)
+        runner = SimilarRunner(paper=seed, databases=SIMILAR_DATABASES)
 
         with (
             patch.object(runner._semantic_scholar, "fetch_related", return_value=[ss_paper]),
@@ -241,3 +272,163 @@ class TestSimilarRunnerMaxPapersForwarding:
 
         mock_ss.assert_called_once_with(seed, 7)
         mock_oa.assert_called_once_with(seed, 7)
+
+
+# ---------------------------------------------------------------------------
+# Date filtering (since/until), inherited from DiscoveryRunner
+# ---------------------------------------------------------------------------
+
+
+class TestSimilarRunnerDateFilter:
+    """Tests for the post-fetch since/until filter, applied after merging.
+
+    None of the three similarity sources supports native date filtering, so
+    this always runs as a post-fetch pass, mirroring SearchRunner's own
+    exact-boundary post-fetch filter.
+    """
+
+    def test_no_filter_returns_all_papers(self) -> None:
+        """With since=None and until=None all merged papers are returned."""
+        seed = _make_paper(doi="10.1000/seed")
+        a = _make_paper("A", doi="10.1000/a", publication_date=datetime.date(2020, 1, 1))
+        b = _make_paper("B", doi="10.1000/b", publication_date=datetime.date(2022, 6, 15))
+        c = _make_paper("C", doi="10.1000/c", publication_date=None)
+        runner = SimilarRunner(paper=seed, databases=["semantic_scholar"])
+
+        with patch.object(runner._semantic_scholar, "fetch_related", return_value=[a, b, c]):
+            result = runner.run(show_progress=False)
+
+        assert len(result.papers) == 3
+
+    def test_since_excludes_older_papers(self) -> None:
+        """Papers published before `since` are removed after merging."""
+        seed = _make_paper(doi="10.1000/seed")
+        old = _make_paper("Old", doi="10.1000/old", publication_date=datetime.date(2021, 12, 31))
+        new = _make_paper("New", doi="10.1000/new", publication_date=datetime.date(2022, 6, 1))
+        runner = SimilarRunner(
+            paper=seed, databases=["semantic_scholar"], since=datetime.date(2022, 1, 1)
+        )
+
+        with patch.object(runner._semantic_scholar, "fetch_related", return_value=[old, new]):
+            result = runner.run(show_progress=False)
+
+        assert len(result.papers) == 1
+        assert result.papers[0].title == "New"
+
+    def test_until_excludes_newer_papers(self) -> None:
+        """Papers published after `until` are removed after merging."""
+        seed = _make_paper(doi="10.1000/seed")
+        old = _make_paper("Old", doi="10.1000/old", publication_date=datetime.date(2019, 3, 1))
+        new = _make_paper("New", doi="10.1000/new", publication_date=datetime.date(2024, 1, 1))
+        runner = SimilarRunner(
+            paper=seed, databases=["semantic_scholar"], until=datetime.date(2020, 12, 31)
+        )
+
+        with patch.object(runner._semantic_scholar, "fetch_related", return_value=[old, new]):
+            result = runner.run(show_progress=False)
+
+        assert len(result.papers) == 1
+        assert result.papers[0].title == "Old"
+
+    def test_since_excludes_papers_with_no_date(self) -> None:
+        """Papers without a publication date are excluded when since is set."""
+        seed = _make_paper(doi="10.1000/seed")
+        undated = _make_paper("Undated", doi="10.1000/undated", publication_date=None)
+        runner = SimilarRunner(
+            paper=seed, databases=["semantic_scholar"], since=datetime.date(2020, 1, 1)
+        )
+
+        with patch.object(runner._semantic_scholar, "fetch_related", return_value=[undated]):
+            result = runner.run(show_progress=False)
+
+        assert result.papers == []
+
+    def test_result_metadata_records_since_until(self) -> None:
+        """The since/until values used are recorded on the returned SimilarResult."""
+        seed = _make_paper(doi="10.1000/seed")
+        since = datetime.date(2020, 1, 1)
+        until = datetime.date(2023, 12, 31)
+        runner = SimilarRunner(paper=seed, databases=["semantic_scholar"], since=since, until=until)
+
+        with patch.object(runner._semantic_scholar, "fetch_related", return_value=[]):
+            result = runner.run(show_progress=False)
+
+        assert result.since == since
+        assert result.until == until
+
+
+# ---------------------------------------------------------------------------
+# Enrichment, inherited from DiscoveryRunner
+# ---------------------------------------------------------------------------
+
+
+class TestSimilarRunnerEnrichment:
+    """Tests for the post-fetch, post-filter enrichment pass."""
+
+    def test_enrichment_called_with_filtered_papers(self) -> None:
+        """_enrich_papers is invoked with the merged (and filtered) paper list."""
+        seed = _make_paper(doi="10.1000/seed")
+        related = _make_paper("Related", doi="10.1000/related")
+        runner = SimilarRunner(
+            paper=seed, databases=["semantic_scholar"], max_cited_by=50, num_workers=3
+        )
+
+        with (
+            patch.object(runner._semantic_scholar, "fetch_related", return_value=[related]),
+            patch(
+                "findpapers.runners.discovery_runner.DiscoveryRunner._enrich_papers"
+            ) as mock_enrich,
+        ):
+            result = runner.run(show_progress=False)
+
+        mock_enrich.assert_called_once()
+        args, kwargs = mock_enrich.call_args
+        assert args[0] == result.papers
+        assert kwargs["num_workers"] == 3
+        assert kwargs["max_cited_by"] == 50
+
+    def test_enrichment_databases_empty_list_disables_enrichment(self) -> None:
+        """enrichment_databases=[] disables the enrichment pass entirely."""
+        seed = _make_paper(doi="10.1000/seed")
+        related = _make_paper("Related", doi="10.1000/related")
+        runner = SimilarRunner(paper=seed, databases=["semantic_scholar"], enrichment_databases=[])
+
+        with (
+            patch.object(runner._semantic_scholar, "fetch_related", return_value=[related]),
+            patch(
+                "findpapers.runners.discovery_runner.DiscoveryRunner._enrich_papers"
+            ) as mock_enrich,
+        ):
+            runner.run(show_progress=False)
+
+        mock_enrich.assert_not_called()
+
+    def test_result_metadata_records_enrichment_databases(self) -> None:
+        """The resolved enrichment_databases list is recorded on the result."""
+        seed = _make_paper(doi="10.1000/seed")
+        runner = SimilarRunner(
+            paper=seed, databases=["semantic_scholar"], enrichment_databases=["crossref"]
+        )
+
+        with patch.object(runner._semantic_scholar, "fetch_related", return_value=[]):
+            result = runner.run(show_progress=False)
+
+        assert result.enrichment_databases == ["crossref"]
+
+    def test_unknown_enrichment_database_raises(self) -> None:
+        """An unknown enrichment database name raises InvalidParameterError."""
+        seed = _make_paper(doi="10.1000/seed")
+        with pytest.raises(InvalidParameterError):
+            SimilarRunner(paper=seed, enrichment_databases=["not-a-real-database"])
+
+    def test_max_cited_by_warning_when_citation_enrichment_unbounded(self, caplog) -> None:
+        """A warning is logged when citation-capable enrichment has no cap."""
+        seed = _make_paper(doi="10.1000/seed")
+        with caplog.at_level("WARNING"):
+            SimilarRunner(
+                paper=seed,
+                enrichment_databases=["openalex"],
+                max_cited_by=None,
+            )
+
+        assert any("max_cited_by" in record.message for record in caplog.records)

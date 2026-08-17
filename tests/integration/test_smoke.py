@@ -24,6 +24,7 @@ automatically skipped by ``Engine``.
 
 from __future__ import annotations
 
+import datetime
 import json
 import os
 import tempfile
@@ -200,14 +201,22 @@ class TestSimilar:
 
         Uses the same well-known DOI as ``TestSnowball``: it is indexed by
         Semantic Scholar, PubMed, and OpenAlex, so this also exercises the
-        cross-source merge/dedup path, not just a single source.
+        cross-source merge/dedup path, not just a single source. OpenAlex is
+        requested explicitly since it is excluded from the default
+        ``databases`` (its ``related_works`` signal is noisier, see
+        docs/similar.md).
         """
         engine = _build_engine()
         seed = engine.get(_KNOWN_DOI)
 
         assert seed is not None, "Seed paper not found; cannot test similar"
 
-        result = engine.similar(seed, max_papers_per_database=5, show_progress=False)
+        result = engine.similar(
+            seed,
+            databases=["semantic_scholar", "pubmed", "openalex"],
+            max_papers_per_database=5,
+            show_progress=False,
+        )
 
         assert result is not None, "similar() returned None"
         assert result.seed_paper is seed
@@ -232,8 +241,33 @@ class TestSimilar:
         result = engine.similar(seed, show_progress=False)
 
         assert result.papers == []
-        assert set(result.skipped_databases) == {"semantic_scholar", "pubmed", "openalex"}
+        assert set(result.skipped_databases) == {"semantic_scholar", "pubmed"}
         assert result.failed_databases == []
+
+    def test_similar_with_date_filter_and_enrichment(self) -> None:
+        """similar() applies the since filter and enriches surviving papers.
+
+        Mirrors TestEnrichment's coverage for search(): similar() inherits
+        the same DiscoveryRunner post-fetch filter/enrichment pass.
+        """
+        engine = _build_engine()
+        seed = engine.get(_KNOWN_DOI)
+        assert seed is not None, "Seed paper not found; cannot test similar date filter"
+
+        since = datetime.date(2015, 1, 1)
+        result = engine.similar(
+            seed,
+            databases=["semantic_scholar"],
+            max_papers_per_database=10,
+            since=since,
+            enrichment_databases=["crossref"],
+            show_progress=False,
+        )
+
+        assert len(result.papers) > 0, "No related papers survived the date filter"
+        for paper in result.papers:
+            assert paper.publication_date is not None
+            assert paper.publication_date >= since
 
 
 class TestSave:

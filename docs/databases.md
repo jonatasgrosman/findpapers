@@ -21,6 +21,8 @@ The table below shows a quick databases comparison.
 
 > **Every API key from the databases listed above can be obtained at no cost** - just create an account on each provider's website. We strongly recommend getting all of them before using Findpapers, as they unlock additional databases (IEEE, Scopus, Web of Science) and dramatically improve rate limits and reliability on the others (OpenAlex, PubMed, Semantic Scholar). See the **Supported Databases** section for more details on how to get these API keys, and [Configuration](https://github.com/jonatasgrosman/findpapers/blob/main/docs/configuration.md) for how to set them up.
 
+> `Engine.similar()` only queries `semantic_scholar` and `pubmed` by default. OpenAlex supports it too, but its `related_works` signal proved noisier in testing, so it is opt-in only (`databases=["semantic_scholar", "pubmed", "openalex"]`). See [docs/similar.md](similar.md) for details.
+
 ---
 
 ## Selecting Databases to Search

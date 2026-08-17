@@ -45,16 +45,26 @@ class TestSimilarResultConstruction:
         assert result.papers == []
         assert result.failed_databases == []
         assert result.skipped_databases == []
+        assert result.since is None
+        assert result.until is None
+        assert result.enrichment_databases is None
+        assert result.max_cited_by is None
         assert result.processed_at.tzinfo is not None
 
     def test_explicit_values_preserved(self) -> None:
         """Explicitly passed values are stored as-is."""
         seed = _make_paper("Seed", doi="10.1000/seed")
         related = [_make_paper("Related", doi="10.1000/related")]
+        since = datetime.date(2020, 1, 1)
+        until = datetime.date(2023, 12, 31)
         result = SimilarResult(
             seed_paper=seed,
             databases=["semantic_scholar"],
             max_papers_per_database=10,
+            since=since,
+            until=until,
+            enrichment_databases=["crossref"],
+            max_cited_by=50,
             papers=related,
             runtime_seconds=1.5,
             failed_databases=["openalex"],
@@ -63,6 +73,10 @@ class TestSimilarResultConstruction:
 
         assert result.databases == ["semantic_scholar"]
         assert result.max_papers_per_database == 10
+        assert result.since == since
+        assert result.until == until
+        assert result.enrichment_databases == ["crossref"]
+        assert result.max_cited_by == 50
         assert result.papers == related
         assert result.runtime_seconds == 1.5
         assert result.failed_databases == ["openalex"]
@@ -104,10 +118,16 @@ class TestSimilarResultRoundTrip:
             _make_paper("Related One", doi="10.1000/one"),
             _make_paper("Related Two", doi="10.1000/two"),
         ]
+        since = datetime.date(2020, 1, 1)
+        until = datetime.date(2023, 12, 31)
         original = SimilarResult(
             seed_paper=seed,
             databases=["semantic_scholar", "openalex"],
             max_papers_per_database=20,
+            since=since,
+            until=until,
+            enrichment_databases=["crossref", "web_scraping"],
+            max_cited_by=75,
             papers=related,
             runtime_seconds=3.2,
             failed_databases=["pubmed"],
@@ -116,6 +136,8 @@ class TestSimilarResultRoundTrip:
 
         data = original.to_dict()
         assert data["metadata"]["seed_paper"] == {"doi": "10.1000/seed", "title": "Seed Paper"}
+        assert data["metadata"]["since"] == since.isoformat()
+        assert data["metadata"]["until"] == until.isoformat()
         assert "papers" in data
 
         restored = SimilarResult.from_dict(data)
@@ -124,6 +146,10 @@ class TestSimilarResultRoundTrip:
         assert restored.seed_paper.title == seed.title
         assert restored.databases == ["semantic_scholar", "openalex"]
         assert restored.max_papers_per_database == 20
+        assert restored.since == since
+        assert restored.until == until
+        assert restored.enrichment_databases == ["crossref", "web_scraping"]
+        assert restored.max_cited_by == 75
         assert restored.runtime_seconds == 3.2
         assert restored.failed_databases == ["pubmed"]
         assert restored.skipped_databases == []
@@ -139,3 +165,7 @@ class TestSimilarResultRoundTrip:
         assert result.papers == []
         assert result.failed_databases == []
         assert result.skipped_databases == []
+        assert result.since is None
+        assert result.until is None
+        assert result.enrichment_databases is None
+        assert result.max_cited_by is None
