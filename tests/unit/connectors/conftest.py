@@ -153,3 +153,21 @@ def oa_citation_samples():
     return json.loads(
         (DATA_DIR / "openalex" / "citation_responses.json").read_text(encoding="utf-8")
     )
+
+
+@pytest.fixture
+def similar_samples():
+    """Read raw "similar papers" API responses collected for two seed DOIs.
+
+    Returns a dict keyed by DOI, each value holding the raw responses from
+    Semantic Scholar recommendations, OpenAlex related_works (+ batch
+    resolution), and PubMed esearch/elink, as collected by
+    ``tests/data/collect_similar_samples.py``.
+    """
+    samples = {}
+    for path in sorted((DATA_DIR / "similar_samples").glob("*.json")):
+        if path.name == "collection_metadata.json":
+            continue
+        data = json.loads(path.read_text(encoding="utf-8"))
+        samples[data["doi"]] = data
+    return samples

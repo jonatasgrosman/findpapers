@@ -1,0 +1,21 @@
+{
+  "collected_at": "2026-08-17T01:28:41.414920+00:00",
+  "dois": [
+    "10.1162/neco.1997.9.8.1735",
+    "10.1126/science.1225829"
+  ],
+  "description": "Real API responses for content-similarity ('similar papers') related endpoints (Semantic Scholar recommendations, OpenAlex related_works, PubMed elink neighbor_score). Used for unit testing the similar() connector methods.",
+  "endpoints": {
+    "semantic_scholar": [
+      "recommendations, from=all-cs (/recommendations/v1/papers/forpaper/DOI:{doi}?from=all-cs)"
+    ],
+    "openalex": [
+      "related_works (/works/doi:{doi}?select=id,related_works)",
+      "batch works (/works?filter=openalex:{ids})"
+    ],
+    "pubmed": [
+      "esearch DOI->PMID (esearch.fcgi?term={doi}[doi])",
+      "elink neighbor_score (elink.fcgi?cmd=neighbor_score)"
+    ]
+  }
+}

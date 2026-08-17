@@ -494,6 +494,71 @@ class OpenAlexConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupCo
 
         return all_papers
 
+    # ------------------------------------------------------------------
+    # Content-similarity lookup (used by Engine.similar())
+    # ------------------------------------------------------------------
+
+    def fetch_related(
+        self,
+        paper: Paper,
+        max_papers: int | None = None,
+    ) -> list[Paper]:
+        """Return content-similar papers via OpenAlex's ``related_works`` field.
+
+        ``related_works`` is a list of OpenAlex work IDs already embedded in
+        the seed work's own record (topic/keyword-overlap signal), so no
+        dedicated "recommendation" request is needed: this method issues one
+        lightweight request to read the list, then resolves those IDs into
+        full :class:`Paper` objects via :meth:`_fetch_works_by_ids`, the same
+        batching helper already used to resolve referenced works elsewhere in
+        this connector.
+
+        Parameters
+        ----------
+        paper : Paper
+            Seed paper.  Must have a DOI.
+        max_papers : int | None
+            Maximum number of related-work IDs to resolve into full
+            :class:`Paper` objects, applied *before* the batch fetch to bound
+            the number of API calls.  ``None`` (default) resolves the whole
+            list, which OpenAlex caps at a small, fixed size on its own
+            (10-20 entries in live testing, never paginated).
+
+        Returns
+        -------
+        list[Paper]
+            Related papers, or an empty list when *paper* has no DOI, the
+            request fails, or no related works are listed.
+        """
+        if not paper.doi:
+            return []
+
+        url = f"{_BASE_URL}/doi:{paper.doi}"
+        params: dict[str, Any] = {"select": "id,related_works"}
+        params = self._prepare_params(params)
+        try:
+            response = self._get(url, params=params)
+            data = response.json()
+        except requests.HTTPError as exc:
+            if exc.response is not None and exc.response.status_code == 404:
+                logger.debug("OpenAlex: related_works: DOI %s not found.", paper.doi)
+                return []
+            logger.debug(
+                "OpenAlex: HTTP error fetching related_works for DOI %s: %s", paper.doi, exc
+            )
+            return []
+        except (requests.RequestException, ValueError):
+            logger.debug("OpenAlex: failed to fetch related_works for DOI %s.", paper.doi)
+            return []
+
+        related_ids = [rid for rid in (data.get("related_works") or []) if rid]
+        if max_papers is not None:
+            related_ids = related_ids[:max_papers]
+        if not related_ids:
+            return []
+
+        return self._fetch_works_by_ids(related_ids)
+
     @staticmethod
     def _parse_oa_abstract(work: dict[str, Any]) -> str:
         """Reconstruct the abstract from OpenAlex's inverted index.

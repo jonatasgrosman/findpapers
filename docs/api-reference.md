@@ -182,6 +182,35 @@ engine.snowball(
 
 ---
 
+### `similar()`
+
+Find content-similar papers around a single seed paper (single-hop, not BFS). Queries Semantic Scholar recommendations, PubMed's ELink `neighbor_score`, and OpenAlex's `related_works`, then merges results by DOI/title identity. See [Similar](similar.md) for the full explanation of each source and the merge strategy.
+
+```python
+engine.similar(
+    paper: Paper,
+    *,
+    databases: list[str] | None = None,
+    max_papers_per_database: int | None = None,
+    timeout: float | None = 10.0,
+    verbose: bool = False,
+    show_progress: bool = True,
+) -> SimilarResult
+```
+
+| Parameter | Type | Description |
+|---|---|---|
+| `paper` | `Paper` | Seed paper to find related papers for. Must have a DOI; papers without one yield an empty result. |
+| `databases` | `list[str] \| None` | Sources to consult, in priority order. Accepted values: `"semantic_scholar"`, `"pubmed"`, `"openalex"`. Defaults to `None` (all three). |
+| `max_papers_per_database` | `int \| None` | Cap on the number of related papers kept per source before merging. Defaults to `None`, letting each source's own natural default apply (Semantic Scholar: 100; PubMed: 100, an NCBI-side cap; OpenAlex: a short, fixed `related_works` list, typically 10-20). |
+| `timeout` | `float \| None` | HTTP request timeout in seconds. Defaults to `10.0`. |
+| `verbose` | `bool` | Enable debug logging. Defaults to `False`. |
+| `show_progress` | `bool` | Display a progress bar across sources. Defaults to `True`. |
+
+**Returns:** `SimilarResult` containing the merged, deduplicated related papers in `papers` (seed excluded), with per-paper provenance in `paper.found_in` and no cross-source ranking score.
+
+---
+
 ## Models
 
 ### Paper
@@ -516,6 +545,53 @@ SnowballResult(
 
 ---
 
+### SimilarResult
+
+Container for a single-hop content-similarity lookup around one seed paper.
+
+```python
+from findpapers import SimilarResult
+```
+
+#### Constructor
+
+```python
+SimilarResult(
+    seed_paper: Paper,
+    databases: list[str] | None = None,
+    max_papers_per_database: int | None = None,
+    papers: list[Paper] | None = None,
+    processed_at: datetime.datetime | None = None,
+    runtime_seconds: float | None = None,
+    failed_databases: list[str] | None = None,
+    skipped_databases: list[str] | None = None,
+)
+```
+
+#### Attributes
+
+| Attribute | Type | Description |
+|---|---|---|
+| `seed_paper` | `Paper` | The paper the similarity lookup was performed around. |
+| `papers` | `list[Paper]` | Related papers found, deduplicated and merged across sources (seed excluded). |
+| `databases` | `list[str] \| None` | Sources that were requested, in priority order. |
+| `max_papers_per_database` | `int \| None` | Cap that was applied per source (`None` = each source's own natural default). |
+| `processed_at` | `datetime.datetime` | UTC timestamp when the lookup was executed. |
+| `runtime_seconds` | `float \| None` | Wall-clock runtime in seconds. |
+| `failed_databases` | `list[str]` | Sources that were queried but raised an error. |
+| `skipped_databases` | `list[str]` | Sources not applicable to this seed paper (e.g. PubMed with no resolvable PMID). |
+
+#### Methods
+
+| Method | Returns | Description |
+|---|---|---|
+| `add_paper(paper: Paper)` | `None` | Add a related paper to the results. |
+| `remove_paper(paper: Paper)` | `None` | Remove a paper from the results. |
+| `to_dict()` | `dict[str, Any]` | Serialize to a dictionary (suitable for JSON). |
+| `from_dict(data: dict)` | `SimilarResult` | *Class method.* Create a `SimilarResult` from a dictionary. |
+
+---
+
 ## Query Enums
 
 ### FilterCode
@@ -675,11 +751,39 @@ SnowballRunner(
 |---|---|---|
 | `run(verbose=False, show_progress=True)` | `SnowballResult` | Execute snowballing and return the result. |
 
+### SimilarRunner
+
+```python
+from findpapers import SimilarRunner
+```
+
+```python
+SimilarRunner(
+    paper: Paper,
+    *,
+    databases: list[str] | None = None,
+    max_papers_per_database: int | None = None,
+    email: str | None = None,
+    openalex_api_key: str | None = None,
+    semantic_scholar_api_key: str | None = None,
+    pubmed_api_key: str | None = None,
+    timeout: float | None = 10.0,
+    proxy: str | None = None,
+    ssl_verify: bool = True,
+)
+```
+
+| Method | Returns | Description |
+|---|---|---|
+| `run(verbose=False, show_progress=True)` | `SimilarResult` | Execute the content-similarity lookup and return the result. |
+
+**Raises:** `InvalidParameterError` if `databases` is an empty list or contains unknown database names.
+
 ---
 
 ## Persistence Functions
 
-Functions for saving and loading papers, search results, and snowball results.
+Functions for saving and loading papers, search results, snowball results, and similar-papers results.
 
 ```python
 from findpapers import save_to_json, load_from_json
@@ -690,15 +794,15 @@ from findpapers import save_to_csv, load_from_csv
 ### `save_to_json()`
 
 ```python
-save_to_json(data: SearchResult | SnowballResult | list[Paper], path: str) -> None
+save_to_json(data: SearchResult | SnowballResult | SimilarResult | list[Paper], path: str) -> None
 ```
 
-Write data to a JSON file. Accepts a `SearchResult`, `SnowballResult`, or a plain `list[Paper]`.
+Write data to a JSON file. Accepts a `SearchResult`, `SnowballResult`, `SimilarResult`, or a plain `list[Paper]`.
 
 ### `load_from_json()`
 
 ```python
-load_from_json(path: str) -> SearchResult | SnowballResult | list[Paper]
+load_from_json(path: str) -> SearchResult | SnowballResult | SimilarResult | list[Paper]
 ```
 
 Load data from a JSON file created by `save_to_json()`. The type is auto-detected from the file contents.

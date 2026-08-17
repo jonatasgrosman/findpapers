@@ -4,6 +4,7 @@ from findpapers.core.author import Author
 from findpapers.core.paper import Database, Paper, PaperType
 from findpapers.core.query import ConnectorType, FilterCode
 from findpapers.core.search_result import SearchResult
+from findpapers.core.similar_result import SimilarResult
 from findpapers.core.snowball_result import SnowballResult
 from findpapers.core.source import Source, SourceType
 from findpapers.engine import Engine
@@ -20,6 +21,7 @@ from findpapers.exceptions import (
 from findpapers.runners.download_runner import DownloadRunner
 from findpapers.runners.get_runner import GetRunner
 from findpapers.runners.search_runner import SearchRunner
+from findpapers.runners.similar_runner import SimilarRunner
 from findpapers.runners.snowball_runner import SnowballRunner
 from findpapers.utils.persistence import (
     load_from_bibtex,
@@ -49,6 +51,8 @@ __all__ = [
     "QueryValidationError",
     "SearchResult",
     "SearchRunner",
+    "SimilarResult",
+    "SimilarRunner",
     "SnowballResult",
     "SnowballRunner",
     "Source",
