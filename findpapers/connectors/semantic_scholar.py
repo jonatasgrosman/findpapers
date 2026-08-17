@@ -30,6 +30,8 @@ logger = logging.getLogger(__name__)
 _BULK_SEARCH_URL = "https://api.semanticscholar.org/graph/v1/paper/search/bulk"
 _PAPER_URL = "https://api.semanticscholar.org/graph/v1/paper"
 _AUTHOR_BATCH_URL = "https://api.semanticscholar.org/graph/v1/author/batch"
+# Recommendations API lives on a separate host from the graph API used above.
+_RECOMMENDATIONS_URL = "https://api.semanticscholar.org/recommendations/v1/papers/forpaper"
 _PAGE_SIZE = 100  # Semantic Scholar max per request
 _CITATION_PAGE_SIZE = 1000  # Max per page for citations/references endpoints
 _AUTHOR_BATCH_SIZE = 1000  # Max authors per batch request
@@ -430,6 +432,80 @@ class SemanticScholarConnector(
             max_papers=max_papers,
         )
 
+    # ------------------------------------------------------------------
+    # Content-similarity lookup (used by Engine.similar())
+    # ------------------------------------------------------------------
+
+    def fetch_related(
+        self,
+        paper: Paper,
+        max_papers: int | None = None,
+    ) -> list[Paper]:
+        """Return content-similar papers via the SPECTER-based Recommendations API.
+
+        Uses ``GET /recommendations/v1/papers/forpaper/{paper_id}``, always
+        passing ``from=all-cs`` explicitly.  Despite its name, ``all-cs`` is
+        *not* restricted to Computer Science: it is the widest candidate pool
+        the API offers (the whole corpus, across every field, with no date
+        restriction).  The alternative pool, ``from=recent`` (the API's own
+        default when ``from`` is omitted), only covers papers published in
+        the last 60 days, which silently returns an empty list for anything
+        older.  This was confirmed by live testing against both a 2017 CS
+        paper and a 2012 biology paper: ``all-cs`` returned relevant results
+        for both, spanning Medicine, Biology, and Computer Science alike.
+
+        Parameters
+        ----------
+        paper : Paper
+            Seed paper.  Must have a DOI: the endpoint is DOI-anchored, like
+            every other lookup in this connector.
+        max_papers : int | None
+            Maps to the API's ``limit`` query parameter.  ``None`` (default)
+            omits the parameter, so the API's own default (100 results) is
+            used.  The API accepts values above 100 (up to roughly 500).
+
+        Returns
+        -------
+        list[Paper]
+            Related papers, or an empty list when *paper* has no DOI, the
+            request fails, or no recommendations are returned.
+        """
+        if not paper.doi:
+            return []
+
+        url = f"{_RECOMMENDATIONS_URL}/DOI:{paper.doi}"
+        params: dict[str, Any] = {"from": "all-cs", "fields": _PAPER_FIELDS}
+        if max_papers is not None:
+            params["limit"] = max_papers
+
+        try:
+            response = self._get(url, params)
+            data = response.json()
+        except requests.HTTPError as exc:
+            if exc.response is not None and exc.response.status_code == 404:
+                logger.debug("Semantic Scholar: recommendations: DOI %s not found.", paper.doi)
+                return []
+            logger.debug(
+                "Semantic Scholar: HTTP error fetching recommendations for DOI %s: %s",
+                paper.doi,
+                exc,
+            )
+            return []
+        except (requests.RequestException, ValueError):
+            logger.debug("Semantic Scholar: recommendations failed for DOI %s.", paper.doi)
+            return []
+
+        items = data.get("recommendedPapers") or []
+        papers: list[Paper] = []
+        for item in items:
+            related = self._parse_paper(item)
+            if related is not None:
+                papers.append(related)
+
+        if max_papers is not None:
+            papers = papers[:max_papers]
+        return papers
+
     @staticmethod
     def _parse_ss_pub_date(item: dict[str, Any]) -> datetime.date | None:
         """Extract publication date from a Semantic Scholar item.
@@ -532,7 +608,12 @@ class SemanticScholarConnector(
         pub_title = (journal.get("name") or venue or "").strip()
 
         source_type: SourceType | None = None
-        pub_venue = item.get("publicationVenue") or {}
+        # The Recommendations API (unlike the Graph API's search/citation
+        # endpoints) can return "publicationVenue" as a bare venue-ID string
+        # instead of the nested {"type": ..., ...} object; guard against
+        # that shape here rather than assuming a dict.
+        pub_venue = item.get("publicationVenue")
+        pub_venue = pub_venue if isinstance(pub_venue, dict) else {}
         venue_type = (pub_venue.get("type") or "").strip().lower()
         if venue_type:
             source_type = _SS_VENUE_TYPE_MAP.get(venue_type)

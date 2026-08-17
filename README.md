@@ -16,11 +16,12 @@ Findpapers searches for papers through **arXiv**, **CrossRef**, **IEEE Xplore**,
 ## Key Features
 
 - **Massive coverage** - access hundreds of millions of papers across eight databases that together span every scientific discipline
-- **Multi-database search** - query all databases in parallel with one boolean search expression - no need to learn seven different query syntaxes
+- **Multi-database search** - query all databases in parallel with one boolean search expression without needing to learn each database's query syntax
 - **Smart deduplication** - automatically merges duplicate papers found across different databases
 - **Paper enrichment** - automatically fetch additional metadata (abstracts, keywords, citations) during search and snowball
 - **PDF downloading** - download PDFs with automatic URL resolution for major publishers
 - **Citation snowballing** - build citation graphs by traversing references and citations (forward and backward)
+- **Content-similarity lookup** - find topically related papers around a single seed paper, complementing citation-based discovery
 - **Flexible export** - save results as JSON, BibTeX, or CSV
 - **Filter codes** - restrict search terms to specific fields (title, abstract, keywords, author, source, affiliation)
 - **Parallel execution** - speed up searches and downloads using multiple worker threads
@@ -136,6 +137,7 @@ The table below summarizes each supported database - for full details on authent
 | [Search](https://github.com/jonatasgrosman/findpapers/blob/main/docs/search.md) | Multi-database search with boolean queries |
 | [Download](https://github.com/jonatasgrosman/findpapers/blob/main/docs/download.md) | Download PDFs for papers |
 | [Snowball](https://github.com/jonatasgrosman/findpapers/blob/main/docs/snowball.md) | Build citation graphs via forward and backward snowballing |
+| [Similar](https://github.com/jonatasgrosman/findpapers/blob/main/docs/similar.md) | Find content-similar papers around a single seed paper |
 | [Get](https://github.com/jonatasgrosman/findpapers/blob/main/docs/get.md) | Look up a single paper |
 | [Save/Load](https://github.com/jonatasgrosman/findpapers/blob/main/docs/save-load.md) | JSON, BibTeX, and CSV persistence details |
 | [API Reference](https://github.com/jonatasgrosman/findpapers/blob/main/docs/api-reference.md) | Public classes, functions, enums, and exceptions |

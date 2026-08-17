@@ -25,11 +25,13 @@ from typing import Literal
 
 from findpapers.core.paper import Paper
 from findpapers.core.search_result import SearchResult
+from findpapers.core.similar_result import SimilarResult
 from findpapers.core.snowball_result import SnowballResult
 from findpapers.runners.discovery_runner import DEFAULT_ENRICHMENT_DATABASES
 from findpapers.runners.download_runner import DownloadRunner
 from findpapers.runners.get_runner import GetRunner
 from findpapers.runners.search_runner import SearchRunner
+from findpapers.runners.similar_runner import SimilarRunner
 from findpapers.runners.snowball_runner import _UNSET as _SNOWBALL_UNSET
 from findpapers.runners.snowball_runner import SnowballRunner
 
@@ -656,6 +658,182 @@ class Engine:
             num_workers=num_workers,
             since=since,
             until=until,
+            proxy=self._proxy,
+            ssl_verify=self._ssl_verify,
+        )
+        return runner.run(verbose=verbose, show_progress=show_progress)
+
+    def similar(
+        self,
+        paper: Paper,
+        *,
+        databases: list[str] | None = None,
+        max_papers_per_database: int | None = None,
+        since: dt.date | None = None,
+        until: dt.date | None = None,
+        enrichment_databases: list[str] | None = DEFAULT_ENRICHMENT_DATABASES,
+        max_cited_by: int | None = 100,
+        num_workers: int = 1,
+        timeout: float | None = 10.0,
+        verbose: bool = False,
+        show_progress: bool = True,
+    ) -> SimilarResult:
+        """Find content-similar papers around a single seed paper (single-hop).
+
+        Unlike :meth:`snowball`, which expands the *citation graph*
+        (references / cited-by) breadth-first over multiple levels,
+        ``similar`` returns papers that are topically or semantically
+        related to *paper*, using each source's own content-similarity
+        signal:
+
+        * ``"semantic_scholar"`` (highest priority): SPECTER-embedding-based
+          recommendations via the Recommendations API.  Despite its name,
+          the ``from=all-cs`` pool this method always requests is *not*
+          restricted to Computer Science: it is the widest candidate pool
+          the API offers (the whole corpus, every field, no date
+          restriction).  This is not user-configurable.
+        * ``"pubmed"``: NCBI ELink's ``neighbor_score`` related-articles
+          score (the PMRA algorithm).  Only applicable to biomedical
+          papers; silently contributes nothing when *paper* has no
+          resolvable PMID.
+        * ``"openalex"`` (lowest priority): the ``related_works`` field
+          already embedded in the OpenAlex work record.  A coarser
+          topic-tag-overlap signal than the other two.
+
+        This is a **single-hop** operation: there is no ``depth`` parameter
+        and no BFS.  Only one seed paper is accepted per call (pass one
+        :class:`~findpapers.core.paper.Paper` at a time; loop over multiple
+        seeds yourself if needed, mirroring :meth:`get` rather than
+        :meth:`snowball`).
+
+        All three sources are DOI-anchored (none support looking up a paper
+        by title/abstract alone): a *paper* without a DOI yields an empty
+        result without any HTTP calls.
+
+        Results from each source are merged into a single deduplicated list
+        via :meth:`~findpapers.core.paper.Paper.merge` (matched by DOI,
+        falling back to normalised title, see
+        :meth:`~findpapers.core.paper.Paper._identity_key`).  Sources do
+        **not** report a comparable similarity score, so results are
+        **not** re-ranked by any cross-source score: they are returned in
+        source-priority order (Semantic Scholar first, then PubMed-only,
+        then OpenAlex-only), with per-paper provenance recorded in
+        :attr:`~findpapers.core.paper.Paper.found_in`.
+
+        Like :meth:`search` and :meth:`snowball`, the merged papers are then
+        date-filtered (none of the three sources supports native date
+        filtering, so this always runs as a post-fetch pass) and enriched
+        via per-paper :meth:`get`-style lookups, filling metadata gaps that
+        a single source's own parser may have missed.
+
+        Parameters
+        ----------
+        paper : Paper
+            Seed paper to find related papers for.  Typically obtained from
+            ``engine.search(...).papers``, ``engine.get(...)``, or
+            ``engine.snowball(...).papers``.  Must have a DOI: papers
+            without one yield an empty result.
+        databases : list[str] | None
+            Sources to consult, in priority order.  ``None`` (default) uses
+            ``["semantic_scholar", "pubmed"]``.  ``"openalex"`` is supported
+            but excluded from the default: its ``related_works`` signal is
+            coarser and, in practice, noisier than the other two (see
+            docs/similar.md).  Pass it explicitly (e.g.
+            ``databases=["semantic_scholar", "pubmed", "openalex"]``) to
+            include it.
+        max_papers_per_database : int | None
+            Cap on the number of related papers requested/kept from each
+            source before merging.  ``None`` (default) lets each source's
+            own natural default apply: Semantic Scholar returns 100 results
+            without an explicit limit (accepts higher values, up to
+            roughly 500); PubMed's ELink is hard-capped by NCBI at 100
+            candidates regardless of any parameter; OpenAlex's
+            ``related_works`` is already a short, fixed list (typically
+            10-20 entries) with no pagination to request more from.
+        since : datetime.date | None
+            Only keep related papers published on or after this date.
+            ``None`` (default) disables the lower-bound filter.
+        until : datetime.date | None
+            Only keep related papers published on or before this date.
+            ``None`` (default) disables the upper-bound filter.
+        enrichment_databases : list[str] | None
+            Databases used to enrich related papers after merging and
+            filtering.  Defaults to ``["crossref", "web_scraping"]``, which
+            cover the majority of metadata gaps without consuming quota
+            from rate-limited databases.  Pass an explicit list to enable
+            additional (or different) sources.  Accepted values:
+            ``"arxiv"``, ``"crossref"``, ``"ieee"``, ``"openalex"``,
+            ``"pubmed"``, ``"scopus"``, ``"semantic_scholar"``,
+            ``"web_scraping"``, ``"wos"``.
+            Pass ``[]`` to disable enrichment entirely.  ``None`` uses the
+            default.
+        max_cited_by : int | None
+            Maximum number of citing-paper DOIs collected per paper when
+            ``"openalex"`` or ``"semantic_scholar"`` are in
+            *enrichment_databases*.  Defaults to ``100``.  ``None`` means no
+            limit: use with caution as highly-cited papers may have
+            thousands of citations.  A warning is emitted when this value is
+            ``None`` or greater than ``100``.
+        num_workers : int
+            Number of parallel workers used for the enrichment pass.
+            Defaults to ``1`` (sequential).
+        timeout : float | None
+            HTTP request timeout in seconds.  Defaults to ``10.0``.
+        verbose : bool
+            When ``True``, emit detailed log messages at DEBUG level.
+        show_progress : bool
+            When ``True`` (default), display a tqdm progress bar across
+            sources.
+
+        Returns
+        -------
+        SimilarResult
+            Container whose ``papers`` attribute holds the merged,
+            deduplicated, filtered, and enriched related papers (the seed
+            paper itself is excluded, even if a source happens to echo it
+            back).  Save via ``findpapers.save_to_json(result, path)``.
+
+        Raises
+        ------
+        findpapers.exceptions.InvalidParameterError
+            If *databases* is an empty list or contains unknown database
+            names.
+        findpapers.exceptions.InvalidParameterError
+            If *enrichment_databases* contains unknown database names.
+
+        See Also
+        --------
+        findpapers.snowball :
+            Multi-hop citation-graph expansion (references / cited-by), a
+            different notion of "related" from content similarity.
+        findpapers.runners.similar_runner.SimilarRunner :
+            Lower-level class for finer-grained control.
+
+        Examples
+        --------
+        >>> from findpapers import Engine
+        >>> engine = Engine()
+        >>> seed = engine.get("10.1038/nature12373")
+        >>> result = engine.similar(seed, databases=["semantic_scholar", "openalex"])
+        >>> print(f"{len(result.papers)} related papers found")
+        """
+        runner = SimilarRunner(
+            paper=paper,
+            databases=databases,
+            max_papers_per_database=max_papers_per_database,
+            since=since,
+            until=until,
+            enrichment_databases=enrichment_databases,
+            max_cited_by=max_cited_by,
+            num_workers=num_workers,
+            email=self._email,
+            openalex_api_key=self._openalex_api_key,
+            semantic_scholar_api_key=self._semantic_scholar_api_key,
+            pubmed_api_key=self._pubmed_api_key,
+            ieee_api_key=self._ieee_api_key,
+            scopus_api_key=self._scopus_api_key,
+            wos_api_key=self._wos_api_key,
+            timeout=timeout,
             proxy=self._proxy,
             ssl_verify=self._ssl_verify,
         )

@@ -8,18 +8,20 @@ Findpapers searches for papers through **arXiv**, **CrossRef**, **IEEE Xplore**,
 
 The table below shows a quick databases comparison.
 
-| Database | Size (papers) | API Key | Search | Snowballing | Rate Limit |
-|----------|------------|---------|--------|-------------|------------|
-| arXiv | 3M+ [¹](https://arxiv.org/stats/monthly_submissions) | Not required | Yes | No | ~3 s between requests |
-| CrossRef | 180M+ [²](https://www.crossref.org/about) | Not required | No | Backward only | ~10 req/s |
-| IEEE Xplore | 7M+ [³](https://innovate.ieee.org/about-the-ieee-xplore-digital-library) | Required | Yes | No | ~200 req/day |
-| OpenAlex | 480M+ [⁴](https://openalex.org) | Optional | Yes | Yes (both) | ~10 req/s with email |
-| PubMed | 40M+ [⁵](https://pubmed.ncbi.nlm.nih.gov/about/) | Optional | Yes | No | 3 req/s (10 with key) |
-| Scopus | 100M+ [⁶](https://www.elsevier.com/products/scopus) | Required | Yes | No | 20k req/week |
-| Semantic Scholar | 214M+ [⁷](https://www.semanticscholar.org/product/api) | Optional | Yes | Yes (both) | ~1 req/s with key |
-| Web of Science | 240M+ [⁸](https://clarivate.com/webofsciencegroup/solutions/web-of-science/) | Required | Yes | No | 1 req/s (Free Trial) / 5 req/s (Institutional) |
+| Database | Size (papers) | API Key | Search | Snowball | Similar | Rate Limit |
+|----------|------------|---------|--------|-------------|---------|------------|
+| arXiv | 3M+ [¹](https://arxiv.org/stats/monthly_submissions) | Not required | Yes | No | No | ~3 s between requests |
+| CrossRef | 180M+ [²](https://www.crossref.org/about) | Not required | No | Backward only | No | ~10 req/s |
+| IEEE Xplore | 7M+ [³](https://innovate.ieee.org/about-the-ieee-xplore-digital-library) | Required | Yes | No | No | ~200 req/day |
+| OpenAlex | 480M+ [⁴](https://openalex.org) | Optional | Yes | Yes (both) | Yes | ~10 req/s with email |
+| PubMed | 40M+ [⁵](https://pubmed.ncbi.nlm.nih.gov/about/) | Optional | Yes | No | Yes (biomedical only) | 3 req/s (10 with key) |
+| Scopus | 100M+ [⁶](https://www.elsevier.com/products/scopus) | Required | Yes | No | No | 20k req/week |
+| Semantic Scholar | 214M+ [⁷](https://www.semanticscholar.org/product/api) | Optional | Yes | Yes (both) | Yes | ~1 req/s with key |
+| Web of Science | 240M+ [⁸](https://clarivate.com/webofsciencegroup/solutions/web-of-science/) | Required | Yes | No | No | 1 req/s (Free Trial) / 5 req/s (Institutional) |
 
 > **Every API key from the databases listed above can be obtained at no cost** - just create an account on each provider's website. We strongly recommend getting all of them before using Findpapers, as they unlock additional databases (IEEE, Scopus, Web of Science) and dramatically improve rate limits and reliability on the others (OpenAlex, PubMed, Semantic Scholar). See the **Supported Databases** section for more details on how to get these API keys, and [Configuration](https://github.com/jonatasgrosman/findpapers/blob/main/docs/configuration.md) for how to set them up.
+
+> `Engine.similar()` only queries `semantic_scholar` and `pubmed` by default. OpenAlex supports it too, but its `related_works` signal proved noisier in testing, so it is opt-in only (`databases=["semantic_scholar", "pubmed", "openalex"]`). See [docs/similar.md](similar.md) for details.
 
 ---
 

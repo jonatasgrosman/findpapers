@@ -36,7 +36,11 @@ logger = logging.getLogger(__name__)
 
 _ESEARCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
 _EFETCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
+_ELINK_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi"
 _PAGE_SIZE = 100
+# linkname carrying the PMRA (PubMed Related Articles) algorithm score,
+# capped by NCBI at 100 candidates regardless of any parameter passed here.
+_NEIGHBOR_SCORE_LINKNAME = "pubmed_pubmed"
 # Rate limit: 3 req/s without API key, 10 req/s with API key
 _MIN_REQUEST_INTERVAL_DEFAULT = 0.34  # ~3 req/s
 _MIN_REQUEST_INTERVAL_WITH_KEY = 0.11  # ~10 req/s
@@ -296,6 +300,140 @@ class PubmedConnector(SearchConnectorBase, DOILookupConnectorBase, URLLookupConn
         response = self._get(_EFETCH_URL, params)
         tree = ET.fromstring(response.text)
         return tree.findall(".//PubmedArticle")
+
+    # ------------------------------------------------------------------
+    # Content-similarity lookup (used by Engine.similar())
+    # ------------------------------------------------------------------
+
+    def _resolve_pmid(self, doi: str) -> str | None:
+        """Resolve a DOI to a PMID via esearch.
+
+        Reuses the same ``{doi}[doi]`` term used by :meth:`fetch_paper_by_doi`.
+        Kept as a separate method (rather than folded into
+        :meth:`fetch_related`) so callers can distinguish "paper not in
+        PubMed at all" from "in PubMed but no related articles found",
+        which have different meanings for a caller aggregating multiple
+        content-similarity sources.
+
+        Parameters
+        ----------
+        doi : str
+            Bare DOI identifier.
+
+        Returns
+        -------
+        str | None
+            The PMID, or ``None`` when the DOI is not indexed by PubMed.
+        """
+        try:
+            ids, _ = self._search_ids(f"{doi}[doi]", retstart=0, retmax=1)
+        except (requests.RequestException, ValueError):
+            logger.debug("PubMed: esearch failed while resolving PMID for DOI %s.", doi)
+            return None
+        return ids[0] if ids else None
+
+    def _resolve_pmid_for_paper(self, paper: Paper) -> str | None:
+        """Resolve *paper* to a PMID via :meth:`_resolve_pmid`, or ``None`` without a DOI.
+
+        Small wrapper kept separate from :meth:`fetch_related` purely to
+        keep that method's cyclomatic complexity low.
+
+        Parameters
+        ----------
+        paper : Paper
+            Paper to resolve. May have no DOI.
+
+        Returns
+        -------
+        str | None
+            The PMID, or ``None`` when *paper* has no DOI or is not indexed
+            by PubMed.
+        """
+        return self._resolve_pmid(paper.doi) if paper.doi else None
+
+    def fetch_related(
+        self, paper: Paper, max_papers: int | None = None, pmid: str | None = None
+    ) -> list[Paper]:
+        """Return related papers via NCBI ELink's ``neighbor_score`` command.
+
+        Only applicable to biomedical papers indexed in PubMed: resolves
+        *paper*'s DOI to a PMID first (via :meth:`_resolve_pmid`) and returns
+        an empty list when no PMID can be found, which is the expected
+        outcome for most non-biomedical papers rather than an error.
+
+        Uses the ``pubmed_pubmed`` linkname, which carries the PMRA (PubMed
+        Related Articles, Lin & Wilbur 2007) algorithm score.  NCBI caps this
+        linkname at 100 candidates regardless of any parameter passed here
+        (confirmed by live testing); *max_papers* only truncates further, it
+        cannot request more than that cap.
+
+        Parameters
+        ----------
+        paper : Paper
+            Seed paper.  Must have a DOI, unless *pmid* is already supplied.
+        max_papers : int | None
+            Maximum number of related papers to return, applied to the
+            score-sorted candidate list *before* fetching full article
+            details, to avoid unnecessary efetch calls.  ``None`` (default)
+            keeps the full (up to 100) candidate list.
+        pmid : str | None
+            Already-resolved PMID for *paper*, if the caller has one (e.g.
+            :class:`~findpapers.runners.similar_runner.SimilarRunner`, which
+            resolves the PMID once to decide skip-vs-run and passes it here
+            to avoid a second, redundant ``esearch`` call).  ``None``
+            (default) resolves it from *paper*'s DOI via
+            :meth:`_resolve_pmid`, same as before.
+
+        Returns
+        -------
+        list[Paper]
+            Related papers ordered by descending PMRA score, or an empty
+            list when *paper* has no DOI, the DOI is not indexed by PubMed,
+            or the request fails.
+        """
+        pmid = pmid if pmid is not None else self._resolve_pmid_for_paper(paper)
+        if pmid is None:
+            return []
+
+        params = {
+            "dbfrom": "pubmed",
+            "db": "pubmed",
+            "id": pmid,
+            "cmd": "neighbor_score",
+            "retmode": "json",
+        }
+        try:
+            response = self._get(_ELINK_URL, params)
+            data = response.json()
+        except (requests.RequestException, ValueError):
+            logger.debug("PubMed: elink neighbor_score failed for PMID %s.", pmid)
+            return []
+
+        scored: list[tuple[str, float]] = []
+        for linkset in data.get("linksets") or []:
+            for linksetdb in linkset.get("linksetdbs") or []:
+                if linksetdb.get("linkname") != _NEIGHBOR_SCORE_LINKNAME:
+                    continue
+                for link in linksetdb.get("links") or []:
+                    link_id = link.get("id")
+                    if link_id and link_id != pmid:
+                        scored.append((link_id, float(link.get("score", 0))))
+
+        scored.sort(key=lambda entry: entry[1], reverse=True)
+        if max_papers is not None:
+            scored = scored[:max_papers]
+        if not scored:
+            return []
+
+        pmids = [entry[0] for entry in scored]
+        try:
+            articles = self._fetch_details(pmids)
+        except (requests.RequestException, ET.ParseError):
+            logger.debug("PubMed: efetch failed for related PMIDs of %s.", pmid)
+            return []
+
+        papers = [self._parse_paper(article) for article in articles]
+        return [p for p in papers if p is not None]
 
     def _parse_paper(self, article_el: Element) -> Paper | None:
         """Parse a PubmedArticle element into a :class:`Paper`.

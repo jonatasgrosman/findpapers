@@ -24,6 +24,7 @@ automatically skipped by ``Engine``.
 
 from __future__ import annotations
 
+import datetime
 import json
 import os
 import tempfile
@@ -34,6 +35,7 @@ import pytest
 from findpapers import Engine, load_from_json, save_to_bibtex, save_to_json
 from findpapers.core.paper import Paper
 from findpapers.core.search_result import SearchResult
+from findpapers.core.similar_result import SimilarResult
 
 # All tests in this module require live network access.
 pytestmark = pytest.mark.integration
@@ -191,6 +193,83 @@ class TestSnowball:
         assert len(result.seed_papers) >= 1, "Snowball result has no seed papers"
 
 
+class TestSimilar:
+    """Verify that ``Engine.similar`` returns a SimilarResult."""
+
+    def test_similar_from_doi(self) -> None:
+        """Find content-similar papers around a single seed paper.
+
+        Uses the same well-known DOI as ``TestSnowball``: it is indexed by
+        Semantic Scholar, PubMed, and OpenAlex, so this also exercises the
+        cross-source merge/dedup path, not just a single source. OpenAlex is
+        requested explicitly since it is excluded from the default
+        ``databases`` (its ``related_works`` signal is noisier, see
+        docs/similar.md).
+        """
+        engine = _build_engine()
+        seed = engine.get(_KNOWN_DOI)
+
+        assert seed is not None, "Seed paper not found; cannot test similar"
+
+        result = engine.similar(
+            seed,
+            databases=["semantic_scholar", "pubmed", "openalex"],
+            max_papers_per_database=5,
+            show_progress=False,
+        )
+
+        assert result is not None, "similar() returned None"
+        assert result.seed_paper is seed
+        assert len(result.papers) > 0, "No related papers found from any source"
+
+        for paper in result.papers:
+            assert isinstance(paper, Paper)
+            assert paper.title, "Related paper is missing a title"
+            assert paper.found_in, "Related paper has no source provenance"
+
+    def test_similar_paper_without_doi(self) -> None:
+        """A seed paper without a DOI yields an empty result, all sources skipped."""
+        engine = _build_engine()
+        seed = Paper(
+            title="An unpublished paper with no DOI",
+            abstract="",
+            authors=[],
+            source=None,
+            publication_date=None,
+        )
+
+        result = engine.similar(seed, show_progress=False)
+
+        assert result.papers == []
+        assert set(result.skipped_databases) == {"semantic_scholar", "pubmed"}
+        assert result.failed_databases == []
+
+    def test_similar_with_date_filter_and_enrichment(self) -> None:
+        """similar() applies the since filter and enriches surviving papers.
+
+        Mirrors TestEnrichment's coverage for search(): similar() inherits
+        the same DiscoveryRunner post-fetch filter/enrichment pass.
+        """
+        engine = _build_engine()
+        seed = engine.get(_KNOWN_DOI)
+        assert seed is not None, "Seed paper not found; cannot test similar date filter"
+
+        since = datetime.date(2015, 1, 1)
+        result = engine.similar(
+            seed,
+            databases=["semantic_scholar"],
+            max_papers_per_database=10,
+            since=since,
+            enrichment_databases=["crossref"],
+            show_progress=False,
+        )
+
+        assert len(result.papers) > 0, "No related papers survived the date filter"
+        for paper in result.papers:
+            assert paper.publication_date is not None
+            assert paper.publication_date >= since
+
+
 class TestSave:
     """Verify that save/load round-trips work correctly."""
 
@@ -220,6 +299,30 @@ class TestSave:
             # Round-trip: load back and compare paper count.
             loaded = load_from_json(json_path)
             assert isinstance(loaded, SearchResult)
+            assert len(loaded.papers) == len(result.papers)
+
+    def test_similar_result_json_round_trip(self) -> None:
+        """Save a SimilarResult to JSON and re-import it."""
+        engine = _build_engine()
+        seed = engine.get(_KNOWN_DOI)
+        assert seed is not None, "Seed paper not found; cannot test similar round-trip"
+
+        result = engine.similar(seed, max_papers_per_database=5, show_progress=False)
+        assert len(result.papers) > 0
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            json_path = os.path.join(tmpdir, "similar_results.json")
+
+            save_to_json(result, json_path)
+            assert os.path.isfile(json_path), "JSON file was not created"
+
+            with open(json_path, encoding="utf-8") as f:
+                data = json.load(f)
+            assert data["type"] == "similar_result"
+
+            loaded = load_from_json(json_path)
+            assert isinstance(loaded, SimilarResult)
+            assert loaded.seed_paper.doi == seed.doi
             assert len(loaded.papers) == len(result.papers)
 
     def test_bibtex_save(self) -> None:

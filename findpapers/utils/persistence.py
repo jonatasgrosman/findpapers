@@ -11,13 +11,14 @@ from typing import Any, TypeAlias
 from findpapers.core.author import Author
 from findpapers.core.paper import Paper, PaperType
 from findpapers.core.search_result import SearchResult
+from findpapers.core.similar_result import SimilarResult
 from findpapers.core.snowball_result import SnowballResult
 from findpapers.core.source import Source
 from findpapers.exceptions import PersistenceError
 from findpapers.utils.version import package_version
 
 #: Union of all persistable types.
-Persistable: TypeAlias = "SearchResult | SnowballResult | list[Paper]"
+Persistable: TypeAlias = "SearchResult | SnowballResult | SimilarResult | list[Paper]"
 
 
 def _extract_papers(data: Persistable) -> list[Paper]:
@@ -25,7 +26,7 @@ def _extract_papers(data: Persistable) -> list[Paper]:
 
     Parameters
     ----------
-    data : SearchResult | SnowballResult | list[Paper]
+    data : SearchResult | SnowballResult | SimilarResult | list[Paper]
         Source of papers.
 
     Returns
@@ -44,8 +45,11 @@ def _extract_papers(data: Persistable) -> list[Paper]:
         return data.papers
     if isinstance(data, SnowballResult):
         return data.papers
+    if isinstance(data, SimilarResult):
+        return data.papers
     raise PersistenceError(
-        f"Expected SearchResult, SnowballResult, or list[Paper], got {type(data).__name__}"
+        "Expected SearchResult, SnowballResult, SimilarResult, or list[Paper], "
+        f"got {type(data).__name__}"
     )
 
 
@@ -57,7 +61,7 @@ def _serialize_to_dict(data: Persistable) -> dict:
 
     Parameters
     ----------
-    data : SearchResult | SnowballResult | list[Paper]
+    data : SearchResult | SnowballResult | SimilarResult | list[Paper]
         Data to serialize.
 
     Returns
@@ -78,6 +82,10 @@ def _serialize_to_dict(data: Persistable) -> dict:
         payload = data.to_dict()
         payload["type"] = "snowball_result"
         return payload
+    if isinstance(data, SimilarResult):
+        payload = data.to_dict()
+        payload["type"] = "similar_result"
+        return payload
     if isinstance(data, list):
         return {
             "type": "paper_list",
@@ -88,7 +96,8 @@ def _serialize_to_dict(data: Persistable) -> dict:
             "papers": [p.to_dict() for p in data],
         }
     raise PersistenceError(
-        f"Expected SearchResult, SnowballResult, or list[Paper], got {type(data).__name__}"
+        "Expected SearchResult, SnowballResult, SimilarResult, or list[Paper], "
+        f"got {type(data).__name__}"
     )
 
 
@@ -96,12 +105,13 @@ def save_to_json(data: Persistable, path: str) -> None:
     """Write data to a JSON file.
 
     Accepts a :class:`~findpapers.core.search_result.SearchResult`,
-    a :class:`~findpapers.core.snowball_result.SnowballResult`, or a
-    plain ``list[Paper]``.
+    a :class:`~findpapers.core.snowball_result.SnowballResult`, a
+    :class:`~findpapers.core.similar_result.SimilarResult`, or a plain
+    ``list[Paper]``.
 
     Parameters
     ----------
-    data : SearchResult | SnowballResult | list[Paper]
+    data : SearchResult | SnowballResult | SimilarResult | list[Paper]
         Data to save.
     path : str
         Output file path.
@@ -138,7 +148,7 @@ def save_to_bibtex(papers: list[Paper], path: str) -> None:
 
 def load_from_json(
     path: str,
-) -> SearchResult | SnowballResult | list[Paper]:
+) -> SearchResult | SnowballResult | SimilarResult | list[Paper]:
     """Load data previously saved with :func:`save_to_json`.
 
     The ``"type"`` key in the JSON payload is used to reconstruct the
@@ -146,6 +156,7 @@ def load_from_json(
 
     * ``"search_result"`` -> :class:`~findpapers.core.search_result.SearchResult`
     * ``"snowball_result"`` -> :class:`~findpapers.core.snowball_result.SnowballResult`
+    * ``"similar_result"`` -> :class:`~findpapers.core.similar_result.SimilarResult`
     * ``"paper_list"`` -> ``list[Paper]``
 
     Files saved **before** the ``"type"`` key was introduced are
@@ -159,7 +170,7 @@ def load_from_json(
 
     Returns
     -------
-    SearchResult | SnowballResult | list[Paper]
+    SearchResult | SnowballResult | SimilarResult | list[Paper]
         The reconstructed object.
 
     Raises
@@ -177,6 +188,8 @@ def load_from_json(
         return SearchResult.from_dict(payload)
     if kind == "snowball_result":
         return SnowballResult.from_dict(payload)
+    if kind == "similar_result":
+        return SimilarResult.from_dict(payload)
     if kind == "paper_list":
         return [Paper.from_dict(p) for p in payload.get("papers", [])]
 

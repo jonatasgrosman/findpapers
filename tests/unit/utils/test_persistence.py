@@ -12,6 +12,7 @@ import pytest
 from findpapers.core.author import Author
 from findpapers.core.paper import Paper, PaperType
 from findpapers.core.search_result import SearchResult
+from findpapers.core.similar_result import SimilarResult
 from findpapers.core.source import Source, SourceType
 from findpapers.exceptions import PersistenceError
 from findpapers.utils.persistence import (
@@ -117,6 +118,23 @@ def sample_search(full_paper: Paper, minimal_paper: Paper) -> SearchResult:
     return search
 
 
+@pytest.fixture
+def sample_similar(full_paper: Paper, minimal_paper: Paper) -> SimilarResult:
+    """Return a SimilarResult with two related papers."""
+    seed = Paper(
+        title="Seed Paper",
+        abstract="",
+        authors=[],
+        source=None,
+        publication_date=None,
+        doi="10.1000/seed",
+    )
+    similar = SimilarResult(seed_paper=seed, databases=["semantic_scholar"])
+    similar.add_paper(full_paper)
+    similar.add_paper(minimal_paper)
+    return similar
+
+
 # ---------------------------------------------------------------------------
 # _extract_papers
 # ---------------------------------------------------------------------------
@@ -133,6 +151,11 @@ class TestExtractPapers:
     def test_from_search_result(self, sample_search: SearchResult) -> None:
         """Extracts papers from a SearchResult."""
         papers = _extract_papers(sample_search)
+        assert len(papers) == 2
+
+    def test_from_similar_result(self, sample_similar: SimilarResult) -> None:
+        """Extracts papers from a SimilarResult."""
+        papers = _extract_papers(sample_similar)
         assert len(papers) == 2
 
     def test_raises_for_unsupported_type(self) -> None:
@@ -160,6 +183,12 @@ class TestSerializeToDict:
         result = _serialize_to_dict([full_paper])
         assert result["type"] == "paper_list"
         assert len(result["papers"]) == 1
+
+    def test_similar_result_has_type(self, sample_similar: SimilarResult) -> None:
+        """SimilarResult serialization includes type discriminator."""
+        result = _serialize_to_dict(sample_similar)
+        assert result["type"] == "similar_result"
+        assert "papers" in result
 
     def test_raises_for_unsupported_type(self) -> None:
         """Raises PersistenceError for unsupported input."""
@@ -926,6 +955,16 @@ class TestSaveToJson:
             assert data["type"] == "paper_list"
             assert len(data["papers"]) == 2
 
+    def test_similar_result_valid_json(self, sample_similar: SimilarResult) -> None:
+        """SimilarResult save creates valid JSON with type discriminator."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = str(Path(tmpdir) / "out.json")
+            save_to_json(sample_similar, path)
+            with open(path, encoding="utf-8") as fh:
+                data = json.load(fh)
+            assert data["type"] == "similar_result"
+            assert len(data["papers"]) == 2
+
 
 # ---------------------------------------------------------------------------
 # save_to_bibtex
@@ -1157,6 +1196,17 @@ class TestLoadFromJson:
         assert isinstance(loaded, list)
         assert len(loaded) == 2
         assert loaded[0].title == full_paper.title
+
+    def test_round_trip_similar_result(self, sample_similar: SimilarResult) -> None:
+        """SimilarResult survives save -> load round-trip."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = str(Path(tmpdir) / "similar.json")
+            save_to_json(sample_similar, path)
+            loaded = load_from_json(path)
+
+        assert isinstance(loaded, SimilarResult)
+        assert len(loaded.papers) == 2
+        assert loaded.seed_paper.doi == "10.1000/seed"
 
     def test_legacy_search_result_auto_detection(self, sample_search: SearchResult) -> None:
         """Files without 'type' but with 'papers' are loaded as SearchResult."""

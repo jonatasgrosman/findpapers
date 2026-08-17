@@ -190,6 +190,18 @@ class TestSemanticScholarConnectorParsePaper:
         assert paper.source is not None
         assert paper.source.source_type is None
 
+    def test_source_type_none_when_publication_venue_is_a_bare_string(self):
+        """publicationVenue as a bare string (seen from the Recommendations API) does not crash."""
+        item = {
+            "title": "A Paper",
+            "journal": {"name": "Unknown"},
+            "publicationVenue": "5a212c3d-...",
+        }
+        paper = SemanticScholarConnector()._parse_paper(item)
+        assert paper is not None
+        assert paper.source is not None
+        assert paper.source.source_type is None
+
     def test_doi_from_external_ids(self):
         """DOI is extracted from externalIds.DOI."""
         item = {

@@ -676,6 +676,152 @@ class TestSnowballImport:
         assert findpapers.SnowballRunner is SnowballRunner
 
 
+class TestEngineSimilar:
+    """Tests for Engine.similar()."""
+
+    def test_similar_delegates_to_runner(self, make_paper):
+        """similar() creates a SimilarRunner and calls run()."""
+        engine = Engine()
+        seed = make_paper("Seed", doi="10.1000/seed")
+
+        with patch("findpapers.engine.SimilarRunner") as mock_cls:
+            mock_runner = MagicMock()
+            mock_result = MagicMock()
+            mock_runner.run.return_value = mock_result
+            mock_cls.return_value = mock_runner
+
+            result = engine.similar(seed)
+
+        mock_cls.assert_called_once()
+        mock_runner.run.assert_called_once_with(verbose=False, show_progress=True)
+        assert result is mock_result
+
+    def test_similar_passes_parameters(self, make_paper):
+        """similar() forwards configuration to SimilarRunner."""
+        engine = Engine(
+            semantic_scholar_api_key="sskey",
+            pubmed_api_key="pmkey",
+            openalex_api_key="oakey",
+            ieee_api_key="ieeekey",
+            scopus_api_key="scopuskey",
+            wos_api_key="woskey",
+        )
+        seed = make_paper("Seed", doi="10.1000/seed")
+
+        with patch("findpapers.engine.SimilarRunner") as mock_cls:
+            mock_runner = MagicMock()
+            mock_runner.run.return_value = MagicMock()
+            mock_cls.return_value = mock_runner
+
+            engine.similar(
+                seed,
+                databases=["semantic_scholar"],
+                max_papers_per_database=15,
+                timeout=5.0,
+                verbose=True,
+            )
+
+        _, kwargs = mock_cls.call_args
+        assert kwargs["paper"] is seed
+        assert kwargs["databases"] == ["semantic_scholar"]
+        assert kwargs["max_papers_per_database"] == 15
+        assert kwargs["timeout"] == 5.0
+        assert kwargs["semantic_scholar_api_key"] == "sskey"
+        assert kwargs["pubmed_api_key"] == "pmkey"
+        assert kwargs["openalex_api_key"] == "oakey"
+        assert kwargs["ieee_api_key"] == "ieeekey"
+        assert kwargs["scopus_api_key"] == "scopuskey"
+        assert kwargs["wos_api_key"] == "woskey"
+        mock_runner.run.assert_called_once_with(verbose=True, show_progress=True)
+
+    def test_similar_since_until_forwarded(self, make_paper):
+        """similar() forwards since and until to SimilarRunner."""
+        import datetime as _dt
+
+        engine = Engine()
+        seed = make_paper("Seed", doi="10.1000/seed")
+        since = _dt.date(2020, 1, 1)
+        until = _dt.date(2023, 12, 31)
+
+        with patch("findpapers.engine.SimilarRunner") as mock_cls:
+            mock_runner = MagicMock()
+            mock_runner.run.return_value = MagicMock()
+            mock_cls.return_value = mock_runner
+
+            engine.similar(seed, since=since, until=until)
+
+        _, kwargs = mock_cls.call_args
+        assert kwargs["since"] is since
+        assert kwargs["until"] is until
+
+    def test_similar_enrichment_databases_and_max_cited_by_forwarded(self, make_paper):
+        """similar() forwards enrichment_databases, max_cited_by, and num_workers."""
+        engine = Engine()
+        seed = make_paper("Seed", doi="10.1000/seed")
+
+        with patch("findpapers.engine.SimilarRunner") as mock_cls:
+            mock_runner = MagicMock()
+            mock_runner.run.return_value = MagicMock()
+            mock_cls.return_value = mock_runner
+
+            engine.similar(
+                seed,
+                enrichment_databases=["crossref"],
+                max_cited_by=50,
+                num_workers=4,
+            )
+
+        _, kwargs = mock_cls.call_args
+        assert kwargs["enrichment_databases"] == ["crossref"]
+        assert kwargs["max_cited_by"] == 50
+        assert kwargs["num_workers"] == 4
+
+    def test_similar_default_enrichment_databases(self, make_paper):
+        """When omitted, enrichment_databases defaults to crossref + web_scraping."""
+        engine = Engine()
+        seed = make_paper("Seed", doi="10.1000/seed")
+
+        with patch("findpapers.engine.SimilarRunner") as mock_cls:
+            mock_runner = MagicMock()
+            mock_runner.run.return_value = MagicMock()
+            mock_cls.return_value = mock_runner
+
+            engine.similar(seed)
+
+        _, kwargs = mock_cls.call_args
+        assert kwargs["enrichment_databases"] == ["crossref", "web_scraping"]
+
+    def test_similar_show_progress_false(self, make_paper):
+        """show_progress=False is forwarded to SimilarRunner.run()."""
+        engine = Engine()
+        seed = make_paper("Seed", doi="10.1000/seed")
+
+        with patch("findpapers.engine.SimilarRunner") as mock_cls:
+            mock_runner = MagicMock()
+            mock_runner.run.return_value = MagicMock()
+            mock_cls.return_value = mock_runner
+
+            engine.similar(seed, show_progress=False)
+
+        mock_runner.run.assert_called_once_with(verbose=False, show_progress=False)
+
+
+class TestSimilarImport:
+    """Verify similar-related classes are accessible from findpapers namespace."""
+
+    def test_similar_runner_importable(self):
+        """findpapers.SimilarRunner is accessible."""
+        from findpapers.runners.similar_runner import SimilarRunner
+
+        assert findpapers.SimilarRunner is SimilarRunner
+
+    def test_similar_result_importable(self):
+        """findpapers.SimilarResult is accessible."""
+        from findpapers.core.similar_result import SimilarResult
+
+        assert findpapers.SimilarResult is SimilarResult
+
+
 class TestSaveFunctionsImport:
     """Verify persistence functions are accessible from findpapers namespace."""
 
