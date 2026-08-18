@@ -36,6 +36,7 @@ from findpapers import Engine, load_from_json, save_to_bibtex, save_to_json
 from findpapers.core.paper import Paper
 from findpapers.core.search_result import SearchResult
 from findpapers.core.similar_result import SimilarResult
+from findpapers.exceptions import InvalidParameterError
 
 # All tests in this module require live network access.
 pytestmark = pytest.mark.integration
@@ -228,7 +229,7 @@ class TestSimilar:
             assert paper.found_in, "Related paper has no source provenance"
 
     def test_similar_paper_without_doi(self) -> None:
-        """A seed paper without a DOI yields an empty result, all sources skipped."""
+        """A seed paper without a DOI is rejected before any HTTP calls."""
         engine = _build_engine()
         seed = Paper(
             title="An unpublished paper with no DOI",
@@ -238,11 +239,8 @@ class TestSimilar:
             publication_date=None,
         )
 
-        result = engine.similar(seed, show_progress=False)
-
-        assert result.papers == []
-        assert set(result.skipped_databases) == {"semantic_scholar", "pubmed"}
-        assert result.failed_databases == []
+        with pytest.raises(InvalidParameterError):
+            engine.similar(seed, show_progress=False)
 
     def test_similar_with_date_filter_and_enrichment(self) -> None:
         """similar() applies the since filter and enriches surviving papers.
