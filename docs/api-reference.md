@@ -141,11 +141,11 @@ engine.get(
 
 ### `snowball()`
 
-Build a snowball result via forward and/or backward citation traversal. Seeds are enriched with the full combined set of `databases` and `enrichment_databases`. BFS discovery uses `databases` only. After all levels complete, non-seed papers are re-enriched with the `enrichment_databases` not already used during discovery.
+Build a snowball result via forward and/or backward citation traversal. The seed is enriched with the full combined set of `databases` and `enrichment_databases`. BFS discovery uses `databases` only. After all levels complete, non-seed papers are re-enriched with the `enrichment_databases` not already used during discovery.
 
 ```python
 engine.snowball(
-    papers: list[Paper] | Paper,
+    paper: Paper,
     *,
     max_depth: int = 1,
     direction: Literal["both", "backward", "forward"] = "both",
@@ -164,21 +164,23 @@ engine.snowball(
 
 | Parameter | Type | Description |
 |---|---|---|
-| `papers` | `list[Paper] \| Paper` | Seed paper(s) to start snowballing from. |
+| `paper` | `Paper` | Seed paper to start snowballing from. Must have a DOI. |
 | `max_depth` | `int` | Maximum traversal depth. Defaults to `1`. |
 | `direction` | `Literal["both", "backward", "forward"]` | Snowball direction. Defaults to `"both"`. |
-| `max_papers_per_level` | `int \| None` | Keep only the N most-cited papers per level in the result; papers outside the top N are excluded from the result but still drive the next BFS level. Seed papers are never filtered. Defaults to `None` (no limit). |
+| `max_papers_per_level` | `int \| None` | Keep only the N most-cited papers per level in the result; papers outside the top N are excluded from the result but still drive the next BFS level. The seed paper is never filtered. Defaults to `None` (no limit). |
 | `max_expansion_per_level` | `int \| None` | Limit how many papers per level become seeds for the next BFS round; only the top N most-cited papers are expanded. Papers already in the result are unaffected. Defaults to `None` (expand all). |
 | `max_cited_by` | `int \| None` | Maximum number of citing-paper DOIs collected per paper in `paper.cited_by` during seed and frontier enrichment. OpenAlex is the primary source (sorted by citation count); Semantic Scholar is the fallback. Defaults to `100`. `None` means no limit. |
 | `databases` | `list[str] \| None` | Databases used for BFS discovery. Only `"crossref"`, `"openalex"`, and `"semantic_scholar"` are accepted. Defaults to `["crossref"]` for `"backward"` direction or all three for `"forward"`/`"both"`. Forward and both directions require at least one of `"openalex"` or `"semantic_scholar"`. |
 | `enrichment_databases` | `list[str] \| None` | Databases used to re-enrich non-seed papers after all BFS levels complete. Defaults to `["crossref", "web_scraping"]`. Databases already used during discovery are not re-applied. Accepted values: `"arxiv"`, `"crossref"`, `"ieee"`, `"openalex"`, `"pubmed"`, `"scopus"`, `"semantic_scholar"`, `"web_scraping"`, `"wos"`. `None` uses the default. Pass `[]` to disable enrichment. |
-| `since` | `datetime.date \| None` | Only add discovered papers published on or after this date. Seed papers are never filtered. `None` disables the filter. |
-| `until` | `datetime.date \| None` | Only add discovered papers published on or before this date. Seed papers are never filtered. `None` disables the filter. |
+| `since` | `datetime.date \| None` | Only add discovered papers published on or after this date. The seed paper is never filtered. `None` disables the filter. |
+| `until` | `datetime.date \| None` | Only add discovered papers published on or before this date. The seed paper is never filtered. `None` disables the filter. |
 | `num_workers` | `int` | Number of parallel workers. Defaults to `1`. |
 | `verbose` | `bool` | Enable debug logging. Defaults to `False`. |
 | `show_progress` | `bool` | Display progress bars. Defaults to `True`. |
 
-**Returns:** `SnowballResult` containing discovered papers (seeds in `seed_papers`, BFS-discovered papers in `papers`).
+**Raises:** `InvalidParameterError` if `paper` has no DOI, or any other parameter is invalid.
+
+**Returns:** `SnowballResult` containing discovered papers (the seed in `seed_paper`, BFS-discovered papers in `papers`).
 
 ---
 
@@ -508,7 +510,7 @@ from findpapers import SnowballResult
 
 ```python
 SnowballResult(
-    seed_papers: list[Paper],
+    seed_paper: Paper,
     max_depth: int,
     direction: Literal["both", "backward", "forward"],
     since: datetime.date | None = None,
@@ -519,7 +521,6 @@ SnowballResult(
     papers: list[Paper] | None = None,
     processed_at: datetime.datetime | None = None,
     runtime_seconds: float | None = None,
-    skipped_seeds_without_doi: int = 0,
     enrichment_databases: list[str] | None = None,
     max_cited_by: int | None = None,
 )
@@ -529,8 +530,8 @@ SnowballResult(
 
 | Attribute | Type | Description |
 |---|---|---|
-| `seed_papers` | `list[Paper]` | Enriched seed papers (fetched during snowball; originals used as fallback when lookup fails). |
-| `papers` | `list[Paper]` | Papers *discovered* during BFS traversal (seeds excluded). |
+| `seed_paper` | `Paper` | Enriched seed paper (fetched during snowball; the original is used as a fallback when lookup fails). |
+| `papers` | `list[Paper]` | Papers *discovered* during BFS traversal (seed excluded). |
 | `max_depth` | `int` | Maximum traversal depth used. |
 | `direction` | `str` | Direction used (`"both"`, `"backward"`, or `"forward"`). |
 | `since` | `datetime.date \| None` | Lower-bound date filter applied. |
@@ -540,7 +541,6 @@ SnowballResult(
 | `max_expansion_per_level` | `int \| None` | Per-level frontier cap that was used (`None` = expand all). |
 | `processed_at` | `datetime.datetime` | UTC timestamp when the snowball was executed. |
 | `runtime_seconds` | `float \| None` | Wall-clock runtime in seconds. |
-| `skipped_seeds_without_doi` | `int` | Number of seed papers skipped because they had no DOI. |
 | `enrichment_databases` | `list[str] \| None` | Enrichment databases used (populated by `SnowballRunner.run()`). |
 | `max_cited_by` | `int \| None` | `max_cited_by` limit that was applied during enrichment. |
 
@@ -741,7 +741,7 @@ from findpapers import SnowballRunner
 
 ```python
 SnowballRunner(
-    seed_papers: list[Paper] | Paper,
+    seed_paper: Paper,
     *,
     max_depth: int = 1,
     direction: Literal["both", "backward", "forward"] = "both",
@@ -768,6 +768,8 @@ SnowballRunner(
 | Method | Returns | Description |
 |---|---|---|
 | `run(verbose=False, show_progress=True)` | `SnowballResult` | Execute snowballing and return the result. |
+
+**Raises:** `InvalidParameterError` if `seed_paper` is not a single `Paper`, has no DOI, or any other parameter is invalid.
 
 ### SimilarRunner
 

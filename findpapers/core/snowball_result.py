@@ -13,19 +13,19 @@ from .paper import Paper
 class SnowballResult:
     """Represents a snowball configuration and its discovered papers.
 
-    Holds the seed paper references, traversal settings, and the flat list of
+    Holds the seed paper reference, traversal settings, and the flat list of
     :class:`~findpapers.core.paper.Paper` objects *discovered* during the BFS
-    traversal.  Seed papers are **not** included in :attr:`papers`: they are
-    accessible via :attr:`seed_papers`.  Citation relationships are encoded
+    traversal.  The seed paper is **not** included in :attr:`papers`: it is
+    accessible via :attr:`seed_paper`.  Citation relationships are encoded
     directly on each paper via
     :attr:`~findpapers.core.paper.Paper.references` and
     :attr:`~findpapers.core.paper.Paper.cited_by`.
 
     Parameters
     ----------
-    seed_papers : list[Paper]
-        Enriched seed papers (fetched via GetRunner; originals used as fallback
-        when lookup fails).  These are **not** duplicated in :attr:`papers`.
+    seed_paper : Paper
+        Enriched seed paper (fetched via GetRunner; original used as fallback
+        when lookup fails).  It is **not** duplicated in :attr:`papers`.
     max_depth : int
         Maximum BFS traversal depth used.
     direction : Literal["both", "backward", "forward"]
@@ -47,21 +47,18 @@ class SnowballResult:
         level are used as seeds for the next BFS round.  All papers already
         added to the result are unaffected.  ``None`` means no cap.
     papers : list[Paper] | None
-        Papers *discovered* during BFS traversal (seeds excluded).
+        Papers *discovered* during BFS traversal (seed excluded).
         ``None`` is treated as an empty list.
     processed_at : datetime.datetime | None
         Timestamp at which the snowball was executed.  Defaults to
         :func:`datetime.datetime.now`.
     runtime_seconds : float | None
         Wall-clock runtime of the snowball pipeline.
-    skipped_seeds_without_doi : int
-        Number of seed papers that were silently skipped because they had
-        no DOI.
     """
 
     def __init__(
         self,
-        seed_papers: list[Paper],
+        seed_paper: Paper,
         max_depth: int,
         direction: Literal["both", "backward", "forward"],
         since: datetime.date | None = None,
@@ -72,7 +69,6 @@ class SnowballResult:
         papers: list[Paper] | None = None,
         processed_at: datetime.datetime | None = None,
         runtime_seconds: float | None = None,
-        skipped_seeds_without_doi: int = 0,
         enrichment_databases: list[str] | None = None,
         max_cited_by: int | None = None,
     ) -> None:
@@ -80,8 +76,8 @@ class SnowballResult:
 
         Parameters
         ----------
-        seed_papers : list[Paper]
-            Enriched seed papers used as the BFS starting point.
+        seed_paper : Paper
+            Enriched seed paper used as the BFS starting point.
         max_depth : int
             Maximum BFS traversal depth.
         direction : Literal["both", "backward", "forward"]
@@ -97,13 +93,11 @@ class SnowballResult:
         max_expansion_per_level : int | None
             Per-level frontier cap (top-N most-cited papers used as next-level seeds).
         papers : list[Paper] | None
-            Discovered papers (seeds excluded).
+            Discovered papers (seed excluded).
         processed_at : datetime.datetime | None
             Execution timestamp.  Defaults to now (UTC).
         runtime_seconds : float | None
             Wall-clock runtime.
-        skipped_seeds_without_doi : int
-            Count of seed papers skipped due to missing DOI.
         enrichment_databases : list[str] | None
             Databases used for the final post-BFS enrichment pass on discovered
             papers.
@@ -111,7 +105,7 @@ class SnowballResult:
             Maximum number of citing-paper DOIs collected per paper during
             forward snowball expansion.
         """
-        self.seed_papers: list[Paper] = list(seed_papers)
+        self.seed_paper: Paper = seed_paper
         self.max_depth = max_depth
         self.direction = direction
         self.since = since
@@ -121,7 +115,6 @@ class SnowballResult:
         self.max_expansion_per_level = max_expansion_per_level
         self.papers: list[Paper] = list(papers) if papers is not None else []
         self.runtime_seconds = runtime_seconds
-        self.skipped_seeds_without_doi = skipped_seeds_without_doi
         self.enrichment_databases = enrichment_databases
         self.max_cited_by = max_cited_by
 
@@ -171,7 +164,7 @@ class SnowballResult:
         """
         return {
             "metadata": {
-                "seed_papers": [{"doi": p.doi, "title": p.title} for p in self.seed_papers],
+                "seed_paper": {"doi": self.seed_paper.doi, "title": self.seed_paper.title},
                 "max_depth": self.max_depth,
                 "direction": self.direction,
                 "since": self.since.isoformat() if self.since else None,
@@ -181,7 +174,6 @@ class SnowballResult:
                 "max_cited_by": self.max_cited_by,
                 "max_papers_per_level": self.max_papers_per_level,
                 "max_expansion_per_level": self.max_expansion_per_level,
-                "skipped_seeds_without_doi": self.skipped_seeds_without_doi,
                 "timestamp": self.processed_at.astimezone(datetime.UTC).isoformat(),
                 "version": package_version(),
                 "runtime_seconds": self.runtime_seconds,
@@ -226,26 +218,19 @@ class SnowballResult:
             with contextlib.suppress(ValueError):
                 until = datetime.date.fromisoformat(until_str)
 
-        # Reconstruct minimal seed Paper objects from the stored summary.
-        seed_papers_raw = metadata.get("seed_papers", [])
-        seed_papers: list[Paper] = []
-        for sp in seed_papers_raw:
-            doi = sp.get("doi")
-            title = sp.get("title") or ""
-            if doi or title:
-                seed_papers.append(
-                    Paper(
-                        title=title,
-                        abstract="",
-                        authors=[],
-                        source=None,
-                        publication_date=None,
-                        doi=doi,
-                    )
-                )
+        # Reconstruct a minimal seed Paper object from the stored summary.
+        seed_data = metadata.get("seed_paper") or {}
+        seed_paper = Paper(
+            title=seed_data.get("title") or "(unknown seed paper)",
+            abstract="",
+            authors=[],
+            source=None,
+            publication_date=None,
+            doi=seed_data.get("doi"),
+        )
 
         return cls(
-            seed_papers=seed_papers,
+            seed_paper=seed_paper,
             max_depth=metadata.get("max_depth", 1),
             direction=metadata.get("direction", "both"),
             since=since,
@@ -256,7 +241,6 @@ class SnowballResult:
             papers=[Paper.from_dict(p) for p in raw_papers],
             processed_at=processed_at,
             runtime_seconds=metadata.get("runtime_seconds"),
-            skipped_seeds_without_doi=metadata.get("skipped_seeds_without_doi", 0),
             enrichment_databases=metadata.get("enrichment_databases"),
             max_cited_by=metadata.get("max_cited_by"),
         )

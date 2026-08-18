@@ -634,23 +634,20 @@ class TestEngineSnowball:
         assert kwargs["since"] is None
         assert kwargs["until"] is None
 
-    def test_snowball_accepts_list_of_papers(self, make_paper):
-        """snowball() accepts a list of papers."""
+    def test_snowball_passes_single_paper_as_seed(self, make_paper):
+        """snowball() forwards the given paper as seed_paper to SnowballRunner."""
         engine = Engine()
-        seeds = [
-            make_paper("Seed 1", doi="10.1000/s1"),
-            make_paper("Seed 2", doi="10.1000/s2"),
-        ]
+        seed = make_paper("Seed", doi="10.1000/seed")
 
         with patch("findpapers.engine.SnowballRunner") as mock_cls:
             mock_runner = MagicMock()
             mock_runner.run.return_value = MagicMock()
             mock_cls.return_value = mock_runner
 
-            engine.snowball(seeds)
+            engine.snowball(seed)
 
         call_args = mock_cls.call_args
-        assert call_args[1]["seed_papers"] is seeds
+        assert call_args[1]["seed_paper"] is seed
 
     def test_snowball_show_progress_false(self, make_paper):
         """show_progress=False is forwarded to SnowballRunner.run()."""

@@ -1,7 +1,7 @@
 """SnowballRunner: discover papers via iterative citation snowballing.
 
-Given one or more seed papers, this runner iteratively fetches their
-references (backward) and/or citing papers (forward).  The result is a
+Given a single seed paper, this runner iteratively fetches its references
+(backward) and/or citing papers (forward).  The result is a
 :class:`~findpapers.core.snowball_result.SnowballResult` containing all
 discovered papers with citation relationships encoded on each paper object.
 """
@@ -163,14 +163,14 @@ def _validate_snowball_scalar_params(
 
 
 class SnowballRunner(DiscoveryRunner):
-    """Discover papers around seed papers via iterative citation snowballing.
+    """Discover papers around a seed paper via iterative citation snowballing.
 
-    Starting from one or more seed papers, the runner iteratively collects
+    Starting from a single seed paper, the runner iteratively collects
     new DOIs from each paper's :attr:`~findpapers.core.paper.Paper.references`
     and/or :attr:`~findpapers.core.paper.Paper.cited_by` lists up to
     *max_depth* BFS levels.
 
-    Seed papers and frontier papers (those driving the next BFS level) are
+    The seed paper and frontier papers (those driving the next BFS level) are
     fetched with the combined set of *databases* and *enrichment_databases*
     so they carry full metadata, including ``paper.cited_by``, before each
     expansion round.  Papers discovered during BFS are fetched with
@@ -188,12 +188,11 @@ class SnowballRunner(DiscoveryRunner):
 
     Parameters
     ----------
-    seed_papers : list[Paper] | Paper
-        One or more papers to start the snowball from.  Papers without a
-        DOI are silently skipped.
+    seed_paper : Paper
+        The single paper to start the snowball from.  Must have a DOI.
     max_depth : int
         Maximum number of BFS levels.  ``1`` (default) fetches only the
-        immediate neighbours of seed papers.
+        immediate neighbours of the seed paper.
     direction : Literal["both", "backward", "forward"]
         ``"backward"`` follows :attr:`~findpapers.core.paper.Paper.references`
         (papers cited *by* the current frontier),
@@ -202,7 +201,7 @@ class SnowballRunner(DiscoveryRunner):
         ``"both"`` expands in both directions.
     max_papers_per_level : int | None
         When set, only the *top-N* most-cited papers discovered at each
-        level are kept in the final result.  Seed papers are never filtered.
+        level are kept in the final result.  The seed paper is never filtered.
         ``None`` (default) keeps all discovered papers.
     max_expansion_per_level : int | None
         When set, only the *top-N* most-cited papers from each level are
@@ -229,10 +228,10 @@ class SnowballRunner(DiscoveryRunner):
         calls to make per level.  Defaults to ``1`` (sequential).
     since : datetime.date | None
         Only include discovered papers published on or after this date.
-        Seed papers are never filtered.  ``None`` disables the filter.
+        The seed paper is never filtered.  ``None`` disables the filter.
     until : datetime.date | None
         Only include discovered papers published on or before this date.
-        Seed papers are never filtered.  ``None`` disables the filter.
+        The seed paper is never filtered.  ``None`` disables the filter.
     openalex_api_key : str | None
         OpenAlex API key.
     email : str | None
@@ -255,7 +254,7 @@ class SnowballRunner(DiscoveryRunner):
 
     def __init__(
         self,
-        seed_papers: list[Paper] | Paper,
+        seed_paper: Paper,
         *,
         max_depth: int = 1,
         direction: Literal["both", "backward", "forward"] = "both",
@@ -281,8 +280,8 @@ class SnowballRunner(DiscoveryRunner):
 
         Parameters
         ----------
-        seed_papers : list[Paper] | Paper
-            One or more seed papers.
+        seed_paper : Paper
+            The single paper to start the snowball from.  Must have a DOI.
         max_depth : int
             Maximum BFS depth.  Must be >= 1.
         direction : Literal["both", "backward", "forward"]
@@ -348,8 +347,10 @@ class SnowballRunner(DiscoveryRunner):
             If *max_depth* is less than 1, *max_papers_per_level* is less than 1,
             *max_expansion_per_level* is less than 1, *databases* is an
             empty list, *databases* contains unsupported database identifiers,
-            or the declared *direction* cannot be satisfied by *databases*
-            (e.g. ``"forward"`` with only ``"crossref"``).
+            the declared *direction* cannot be satisfied by *databases*
+            (e.g. ``"forward"`` with only ``"crossref"``), *seed_paper* is
+            not a single :class:`~findpapers.core.paper.Paper`, or it has
+            no DOI.
         """
         _validate_snowball_scalar_params(
             max_depth, max_papers_per_level, max_expansion_per_level, max_cited_by, direction
@@ -404,11 +405,18 @@ class SnowballRunner(DiscoveryRunner):
             enrichment_databases=[],
         )
 
-        if isinstance(seed_papers, Paper):
-            seed_papers = [seed_papers]
+        if not isinstance(seed_paper, Paper):
+            raise InvalidParameterError(
+                f"seed_paper must be a single Paper, got {type(seed_paper).__name__}. "
+                "Snowball only accepts one seed paper per call."
+            )
+        if not seed_paper.doi:
+            raise InvalidParameterError("seed_paper must have a DOI.")
 
-        self._seed_papers = [p for p in seed_papers if p.doi]
-        self._skipped_seeds = len(seed_papers) - len(self._seed_papers)
+        # Kept as a single-element list internally so the rest of the runner
+        # (BFS bookkeeping, visited set, all_papers dict) can keep iterating
+        # generically without a separate single-paper code path.
+        self._seed_papers = [seed_paper]
         self._max_depth = max_depth
         self._direction = direction
         self._max_papers_per_level = max_papers_per_level
@@ -540,11 +548,7 @@ class SnowballRunner(DiscoveryRunner):
             configure_verbose_logging()
 
         logger.debug("=== SnowballRunner Configuration ===")
-        logger.debug(
-            "Seed papers: %d (skipped %d without DOI)",
-            len(self._seed_papers),
-            self._skipped_seeds,
-        )
+        logger.debug("Seed paper DOI: %s", self._seed_papers[0].doi)
         logger.debug("Max depth: %d", self._max_depth)
         logger.debug("Direction: %s", self._direction)
         logger.debug(
@@ -608,7 +612,7 @@ class SnowballRunner(DiscoveryRunner):
         discovered_papers = [p for doi, p in all_papers.items() if doi not in seed_dois]
 
         return SnowballResult(
-            seed_papers=enriched_seeds,
+            seed_paper=enriched_seeds[0],
             max_depth=self._max_depth,
             direction=self._direction,
             since=self._since,
@@ -619,7 +623,6 @@ class SnowballRunner(DiscoveryRunner):
             papers=discovered_papers,
             processed_at=datetime.datetime.now(datetime.UTC),
             runtime_seconds=elapsed,
-            skipped_seeds_without_doi=self._skipped_seeds,
             enrichment_databases=list(self._enrichment_databases),
             max_cited_by=self._max_cited_by,
         )

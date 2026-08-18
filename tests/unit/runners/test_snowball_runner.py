@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import datetime
 from typing import cast
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -105,22 +105,26 @@ class TestSnowballRunnerInit:
     """Tests for SnowballRunner.__init__ validation."""
 
     def test_single_paper_seed_is_accepted(self, seed: Paper) -> None:
-        """A single Paper (not wrapped in a list) is accepted as seed_papers."""
-        runner = SnowballRunner(seed_papers=seed)
+        """A Paper with a DOI is accepted as seed_paper."""
+        runner = SnowballRunner(seed_paper=seed)
         assert len(runner._seed_papers) == 1
 
-    def test_papers_without_doi_are_skipped(self, make_paper) -> None:
-        """Papers without a DOI are silently skipped; counter is incremented."""
-        with_doi = make_paper("With DOI", doi="10.1000/ok")
+    def test_paper_without_doi_raises(self, make_paper) -> None:
+        """A seed_paper without a DOI raises InvalidParameterError."""
         without_doi = make_paper("No DOI")
-        runner = SnowballRunner(seed_papers=[with_doi, without_doi])
+        with pytest.raises(InvalidParameterError, match="DOI"):
+            SnowballRunner(seed_paper=without_doi)
 
-        assert len(runner._seed_papers) == 1
-        assert runner._skipped_seeds == 1
+    def test_list_of_papers_raises(self, make_paper) -> None:
+        """Passing a list of papers is rejected: only a single seed is accepted."""
+        seed1 = make_paper("First", doi="10.1000/first")
+        seed2 = make_paper("Second", doi="10.1000/second")
+        with pytest.raises(InvalidParameterError, match="single Paper"):
+            SnowballRunner(seed_paper=[seed1, seed2])  # type: ignore[arg-type]
 
     def test_default_parameters(self, seed: Paper) -> None:
         """Defaults: max_depth=1, direction='both', num_workers=1."""
-        runner = SnowballRunner(seed_papers=seed)
+        runner = SnowballRunner(seed_paper=seed)
 
         assert runner._max_depth == 1
         assert runner._direction == "both"
@@ -135,123 +139,123 @@ class TestSnowballRunnerInit:
     def test_max_depth_zero_raises(self, seed: Paper) -> None:
         """max_depth=0 raises InvalidParameterError."""
         with pytest.raises(InvalidParameterError, match="max_depth must be >= 1"):
-            SnowballRunner(seed_papers=seed, max_depth=0)
+            SnowballRunner(seed_paper=seed, max_depth=0)
 
     def test_max_depth_negative_raises(self, seed: Paper) -> None:
         """Negative max_depth raises InvalidParameterError."""
         with pytest.raises(InvalidParameterError, match="max_depth must be >= 1"):
-            SnowballRunner(seed_papers=seed, max_depth=-3)
+            SnowballRunner(seed_paper=seed, max_depth=-3)
 
     def test_top_n_zero_raises(self, seed: Paper) -> None:
         """max_papers_per_level=0 raises InvalidParameterError."""
         with pytest.raises(InvalidParameterError, match="max_papers_per_level must be >= 1"):
-            SnowballRunner(seed_papers=seed, max_papers_per_level=0)
+            SnowballRunner(seed_paper=seed, max_papers_per_level=0)
 
     def test_top_n_negative_raises(self, seed: Paper) -> None:
         """Negative max_papers_per_level raises InvalidParameterError."""
         with pytest.raises(InvalidParameterError, match="max_papers_per_level must be >= 1"):
-            SnowballRunner(seed_papers=seed, max_papers_per_level=-5)
+            SnowballRunner(seed_paper=seed, max_papers_per_level=-5)
 
     def test_top_n_positive_stored(self, seed: Paper) -> None:
         """A positive max_papers_per_level value is stored on the runner."""
-        runner = SnowballRunner(seed_papers=seed, max_papers_per_level=10)
+        runner = SnowballRunner(seed_paper=seed, max_papers_per_level=10)
         assert runner._max_papers_per_level == 10
 
     def test_max_expansion_zero_raises(self, seed: Paper) -> None:
         """max_expansion_per_level=0 raises InvalidParameterError."""
         with pytest.raises(InvalidParameterError, match="max_expansion_per_level must be >= 1"):
-            SnowballRunner(seed_papers=seed, max_expansion_per_level=0)
+            SnowballRunner(seed_paper=seed, max_expansion_per_level=0)
 
     def test_max_expansion_negative_raises(self, seed: Paper) -> None:
         """Negative max_expansion_per_level raises InvalidParameterError."""
         with pytest.raises(InvalidParameterError, match="max_expansion_per_level must be >= 1"):
-            SnowballRunner(seed_papers=seed, max_expansion_per_level=-3)
+            SnowballRunner(seed_paper=seed, max_expansion_per_level=-3)
 
     def test_max_expansion_positive_stored(self, seed: Paper) -> None:
         """A positive max_expansion_per_level value is stored on the runner."""
-        runner = SnowballRunner(seed_papers=seed, max_expansion_per_level=5)
+        runner = SnowballRunner(seed_paper=seed, max_expansion_per_level=5)
         assert runner._max_expansion_per_level == 5
 
     def test_max_cited_by_zero_raises(self, seed: Paper) -> None:
         """max_cited_by=0 raises InvalidParameterError."""
         with pytest.raises(InvalidParameterError, match="max_cited_by must be >= 1"):
-            SnowballRunner(seed_papers=seed, max_cited_by=0)
+            SnowballRunner(seed_paper=seed, max_cited_by=0)
 
     def test_max_cited_by_negative_raises(self, seed: Paper) -> None:
         """Negative max_cited_by raises InvalidParameterError."""
         with pytest.raises(InvalidParameterError, match="max_cited_by must be >= 1"):
-            SnowballRunner(seed_papers=seed, max_cited_by=-1)
+            SnowballRunner(seed_paper=seed, max_cited_by=-1)
 
     def test_max_cited_by_positive_stored(self, seed: Paper) -> None:
         """A positive max_cited_by value is stored on the runner."""
-        runner = SnowballRunner(seed_papers=seed, max_cited_by=500)
+        runner = SnowballRunner(seed_paper=seed, max_cited_by=500)
         assert runner._max_cited_by == 500
 
     def test_max_cited_by_none_stored(self, seed: Paper) -> None:
         """max_cited_by=None disables the limit when passed explicitly."""
-        runner = SnowballRunner(seed_papers=seed, max_cited_by=None)
+        runner = SnowballRunner(seed_paper=seed, max_cited_by=None)
         assert runner._max_cited_by is None
 
     def test_max_cited_by_default_is_100(self, seed: Paper) -> None:
         """max_cited_by defaults to 100 when not supplied."""
-        runner = SnowballRunner(seed_papers=seed)
+        runner = SnowballRunner(seed_paper=seed)
         assert runner._max_cited_by == 100
 
     def test_databases_empty_list_raises(self, seed: Paper) -> None:
         """An empty databases list raises InvalidParameterError."""
         with pytest.raises(InvalidParameterError, match="databases must not be an empty list"):
-            SnowballRunner(seed_papers=seed, databases=[])
+            SnowballRunner(seed_paper=seed, databases=[])
 
     def test_databases_unknown_value_raises(self, seed: Paper) -> None:
         """An unknown database name raises InvalidParameterError."""
         with pytest.raises(InvalidParameterError, match="Unknown or unsupported database"):
-            SnowballRunner(seed_papers=seed, databases=["no_such_db"])
+            SnowballRunner(seed_paper=seed, databases=["no_such_db"])
 
     def test_databases_known_values_accepted(self, seed: Paper) -> None:
         """All values from SNOWBALL_DATABASES are accepted without raising."""
         for db in SNOWBALL_DATABASES:
-            runner = SnowballRunner(seed_papers=seed, databases=[db], direction="backward")
+            runner = SnowballRunner(seed_paper=seed, databases=[db], direction="backward")
             assert runner._databases == [db]
 
     def test_databases_multiple_known_values_stored(self, seed: Paper) -> None:
         """Multiple valid database names are stored normalised."""
-        runner = SnowballRunner(seed_papers=seed, databases=["crossref", "openalex"])
+        runner = SnowballRunner(seed_paper=seed, databases=["crossref", "openalex"])
         assert runner._databases is not None
         assert set(runner._databases) == {"crossref", "openalex"}
 
     def test_databases_none_expanded_to_all_snowball_databases(self, seed: Paper) -> None:
         """databases=None expands to all SNOWBALL_DATABASES."""
-        runner = SnowballRunner(seed_papers=seed, databases=None)
+        runner = SnowballRunner(seed_paper=seed, databases=None)
         assert runner._databases == list(SNOWBALL_DATABASES)
 
     def test_databases_normalised_to_lowercase(self, seed: Paper) -> None:
         """Database names are normalised to lowercase."""
-        runner = SnowballRunner(seed_papers=seed, databases=["CrossRef"], direction="backward")
+        runner = SnowballRunner(seed_paper=seed, databases=["CrossRef"], direction="backward")
         assert runner._databases == ["crossref"]
 
     def test_num_workers_clamped_to_one(self, seed: Paper) -> None:
         """num_workers=0 is clamped to 1."""
-        runner = SnowballRunner(seed_papers=seed, num_workers=0)
+        runner = SnowballRunner(seed_paper=seed, num_workers=0)
         assert runner._num_workers == 1
 
     def test_forward_direction_incompatible_databases_raises(self, seed: Paper) -> None:
         """forward direction with crossref-only raises InvalidParameterError."""
         with pytest.raises(InvalidParameterError, match="forward"):
-            SnowballRunner(seed_papers=seed, direction="forward", databases=["crossref"])
+            SnowballRunner(seed_paper=seed, direction="forward", databases=["crossref"])
 
     def test_both_direction_incompatible_databases_raises(self, seed: Paper) -> None:
         """both direction with crossref-only raises InvalidParameterError."""
         with pytest.raises(InvalidParameterError, match="both"):
-            SnowballRunner(seed_papers=seed, direction="both", databases=["crossref"])
+            SnowballRunner(seed_paper=seed, direction="both", databases=["crossref"])
 
     def test_backward_direction_crossref_only_valid(self, seed: Paper) -> None:
         """backward direction with crossref-only is valid."""
-        runner = SnowballRunner(seed_papers=seed, direction="backward", databases=["crossref"])
+        runner = SnowballRunner(seed_paper=seed, direction="backward", databases=["crossref"])
         assert runner._databases == ["crossref"]
 
     def test_forward_direction_openalex_valid(self, seed: Paper) -> None:
         """forward direction with openalex is valid."""
-        runner = SnowballRunner(seed_papers=seed, direction="forward", databases=["openalex"])
+        runner = SnowballRunner(seed_paper=seed, direction="forward", databases=["openalex"])
         assert runner._databases == ["openalex"]
 
 
@@ -272,13 +276,13 @@ class TestSnowballRunnerRun:
         mock_cls = _mock_get_runner_class(paper_map)
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
-            runner = SnowballRunner(seed_papers=seed, max_depth=1)
+            runner = SnowballRunner(seed_paper=seed, max_depth=1)
             result = runner.run(show_progress=False)
 
         assert isinstance(result, SnowballResult)
 
     def test_result_contains_seed_paper(self, make_paper) -> None:
-        """Seed paper is always present in result.seed_papers."""
+        """Seed paper is always present in result.seed_paper."""
         seed = make_paper("Seed", doi="10.1000/seed")
         enriched_seed = make_paper("Seed", doi="10.1000/seed")
 
@@ -286,11 +290,10 @@ class TestSnowballRunnerRun:
         mock_cls = _mock_get_runner_class(paper_map)
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
-            runner = SnowballRunner(seed_papers=seed, max_depth=1)
+            runner = SnowballRunner(seed_paper=seed, max_depth=1)
             result = runner.run(show_progress=False)
 
-        seed_dois = {p.doi for p in result.seed_papers if p.doi}
-        assert "10.1000/seed" in seed_dois
+        assert result.seed_paper.doi == "10.1000/seed"
 
     def test_backward_direction_follows_references(self, make_paper) -> None:
         """Backward snowballing follows paper.references to discover new DOIs."""
@@ -305,7 +308,7 @@ class TestSnowballRunnerRun:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=1,
                 direction="backward",
             )
@@ -326,7 +329,7 @@ class TestSnowballRunnerRun:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=1,
                 direction="forward",
             )
@@ -353,7 +356,7 @@ class TestSnowballRunnerRun:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=1,
                 direction="both",
             )
@@ -381,7 +384,7 @@ class TestSnowballRunnerRun:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=1,
                 direction="backward",
             )
@@ -409,7 +412,7 @@ class TestSnowballRunnerRun:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=1,
                 direction="forward",
             )
@@ -438,7 +441,7 @@ class TestSnowballRunnerRun:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=2,
                 direction="backward",
             )
@@ -462,7 +465,7 @@ class TestSnowballRunnerRun:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=1,
                 direction="both",
             )
@@ -492,7 +495,7 @@ class TestSnowballRunnerRun:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=_CountingGetRunner):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=2,
                 direction="backward",
             )
@@ -500,13 +503,12 @@ class TestSnowballRunnerRun:
 
         # seed should be fetched exactly once at level 0 (BFS never revisits it).
         assert call_counts.get("10.1000/seed", 0) == 1
-        seed_dois = {p.doi for p in result.seed_papers if p.doi}
-        assert "10.1000/seed" in seed_dois
+        assert result.seed_paper.doi == "10.1000/seed"
         dois = {p.doi for p in result.papers if p.doi}
         assert "10.1000/l1" in dois
 
     def test_no_references_yields_only_seed(self, make_paper) -> None:
-        """When a seed has no references/cited_by, result.papers is empty and seed is in seed_papers."""
+        """When a seed has no references/cited_by, result.papers is empty and seed is result.seed_paper."""
         enriched_seed = make_paper("Seed", doi="10.1000/seed")
         # No references or cited_by populated.
 
@@ -515,13 +517,13 @@ class TestSnowballRunnerRun:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=3,
             )
             result = runner.run(show_progress=False)
 
         assert result.papers == []
-        assert len(result.seed_papers) == 1
+        assert result.seed_paper.doi == "10.1000/seed"
 
     def test_get_runner_returning_none_is_skipped(self, make_paper) -> None:
         """When GetRunner.run() returns None, that DOI is silently skipped."""
@@ -533,7 +535,7 @@ class TestSnowballRunnerRun:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=1,
                 direction="backward",
             )
@@ -541,53 +543,6 @@ class TestSnowballRunnerRun:
 
         dois = {p.doi for p in result.papers if p.doi}
         assert "10.1000/missing" not in dois
-
-    def test_multiple_seeds_all_expanded(self, make_paper) -> None:
-        """All provided seed papers are fetched and expanded."""
-        seed1 = make_paper("Seed 1", doi="10.1000/s1")
-        seed2 = make_paper("Seed 2", doi="10.1000/s2")
-
-        enriched_s1 = make_paper("Seed 1", doi="10.1000/s1")
-        enriched_s1.references = ["10.1000/r1"]
-        enriched_s2 = make_paper("Seed 2", doi="10.1000/s2")
-        enriched_s2.references = ["10.1000/r2"]
-
-        r1 = make_paper("Ref 1", doi="10.1000/r1")
-        r2 = make_paper("Ref 2", doi="10.1000/r2")
-
-        paper_map = {
-            "10.1000/s1": enriched_s1,
-            "10.1000/s2": enriched_s2,
-            "10.1000/r1": r1,
-            "10.1000/r2": r2,
-        }
-        mock_cls = _mock_get_runner_class(paper_map)
-
-        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
-            runner = SnowballRunner(
-                seed_papers=[seed1, seed2],
-                max_depth=1,
-                direction="backward",
-            )
-            result = runner.run(show_progress=False)
-
-        paper_dois = {p.doi for p in result.papers if p.doi}
-        seed_dois = {p.doi for p in result.seed_papers if p.doi}
-        assert {"10.1000/r1", "10.1000/r2"}.issubset(paper_dois)
-        assert {"10.1000/s1", "10.1000/s2"}.issubset(seed_dois)
-
-    def test_seeds_without_doi_are_skipped_and_counted(self, make_paper) -> None:
-        """Seed papers without DOI are excluded and the skip count is correct."""
-        seed_no_doi = make_paper("No DOI")
-        runner = SnowballRunner(seed_papers=[seed_no_doi], max_depth=1)
-
-        with patch("findpapers.runners.snowball_runner.GetRunner") as mock_cls:
-            mock_cls.return_value = MagicMock()
-            result = runner.run(show_progress=False)
-
-        assert result.skipped_seeds_without_doi == 1
-        # GetRunner should not have been called for the seedless paper.
-        mock_cls.assert_not_called()
 
 
 # ---------------------------------------------------------------------------
@@ -622,7 +577,7 @@ class TestSnowballRunnerMaxPerLevel:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=2,
                 direction="backward",
                 max_papers_per_level=2,
@@ -659,7 +614,7 @@ class TestSnowballRunnerMaxPerLevel:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=2,
                 direction="backward",
                 max_papers_per_level=1,
@@ -694,7 +649,7 @@ class TestSnowballRunnerMaxPerLevel:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=2,
                 direction="backward",
                 max_papers_per_level=1,
@@ -729,7 +684,7 @@ class TestSnowballRunnerMaxPerLevel:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=2,
                 direction="backward",
             )
@@ -772,7 +727,7 @@ class TestSnowballRunnerMaxExpansion:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=2,
                 direction="backward",
                 max_expansion_per_level=2,
@@ -809,7 +764,7 @@ class TestSnowballRunnerMaxExpansion:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=2,
                 direction="backward",
                 max_expansion_per_level=1,
@@ -842,7 +797,7 @@ class TestSnowballRunnerMaxExpansion:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=2,
                 direction="backward",
                 max_expansion_per_level=1,
@@ -876,7 +831,7 @@ class TestSnowballRunnerMaxExpansion:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=2,
                 direction="backward",
             )
@@ -906,7 +861,7 @@ class TestSnowballRunnerFilters:
         mock_cls = _mock_get_runner_class(paper_map)
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi=seed_doi),
+                seed_paper=make_paper("Seed", doi=seed_doi),
                 max_depth=1,
                 direction="backward",
                 **runner_kwargs,
@@ -999,8 +954,8 @@ class TestSnowballRunnerFilters:
 class TestSnowballResultMetadata:
     """Tests verifying SnowballResult metadata fields after run()."""
 
-    def test_result_seed_papers(self, make_paper) -> None:
-        """result.seed_papers matches the seeds passed to SnowballRunner."""
+    def test_result_seed_paper(self, make_paper) -> None:
+        """result.seed_paper matches the seed passed to SnowballRunner."""
         seed = make_paper("Seed", doi="10.1000/seed")
         enriched_seed = make_paper("Seed", doi="10.1000/seed")
 
@@ -1008,10 +963,10 @@ class TestSnowballResultMetadata:
         mock_cls = _mock_get_runner_class(paper_map)
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
-            runner = SnowballRunner(seed_papers=seed, max_depth=1)
+            runner = SnowballRunner(seed_paper=seed, max_depth=1)
             result = runner.run(show_progress=False)
 
-        assert len(result.seed_papers) == 1
+        assert result.seed_paper.doi == "10.1000/seed"
 
     def test_result_max_depth(self, make_paper) -> None:
         """result.max_depth matches the configured max_depth."""
@@ -1022,7 +977,7 @@ class TestSnowballResultMetadata:
         mock_cls = _mock_get_runner_class(paper_map)
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
-            runner = SnowballRunner(seed_papers=seed, max_depth=3)
+            runner = SnowballRunner(seed_paper=seed, max_depth=3)
             result = runner.run(show_progress=False)
 
         assert result.max_depth == 3
@@ -1036,25 +991,10 @@ class TestSnowballResultMetadata:
         mock_cls = _mock_get_runner_class(paper_map)
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
-            runner = SnowballRunner(seed_papers=seed, max_depth=1, direction="forward")
+            runner = SnowballRunner(seed_paper=seed, max_depth=1, direction="forward")
             result = runner.run(show_progress=False)
 
         assert result.direction == "forward"
-
-    def test_result_skipped_seeds(self, make_paper) -> None:
-        """result.skipped_seeds_without_doi reflects seeds skipped due to missing DOI."""
-        seed_with = make_paper("With DOI", doi="10.1000/ok")
-        seed_without = make_paper("No DOI")
-        enriched = make_paper("With DOI", doi="10.1000/ok")
-
-        paper_map = {"10.1000/ok": enriched}
-        mock_cls = _mock_get_runner_class(paper_map)
-
-        with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
-            runner = SnowballRunner(seed_papers=[seed_with, seed_without], max_depth=1)
-            result = runner.run(show_progress=False)
-
-        assert result.skipped_seeds_without_doi == 1
 
     def test_result_runtime_seconds_positive(self, make_paper) -> None:
         """result.runtime_seconds is a non-negative float."""
@@ -1065,7 +1005,7 @@ class TestSnowballResultMetadata:
         mock_cls = _mock_get_runner_class(paper_map)
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
-            runner = SnowballRunner(seed_papers=seed, max_depth=1)
+            runner = SnowballRunner(seed_paper=seed, max_depth=1)
             result = runner.run(show_progress=False)
 
         assert result.runtime_seconds is not None
@@ -1080,7 +1020,7 @@ class TestSnowballResultMetadata:
         mock_cls = _mock_get_runner_class(paper_map)
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
-            runner = SnowballRunner(seed_papers=seed, max_depth=1)
+            runner = SnowballRunner(seed_paper=seed, max_depth=1)
             result = runner.run(show_progress=False)
 
         assert result.processed_at.tzinfo is not None
@@ -1103,7 +1043,7 @@ class TestSnowballRunnerVerboseAndProgress:
         mock_cls = _mock_get_runner_class(paper_map)
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
-            runner = SnowballRunner(seed_papers=seed, max_depth=1)
+            runner = SnowballRunner(seed_paper=seed, max_depth=1)
             result = runner.run(verbose=True, show_progress=False)
 
         assert isinstance(result, SnowballResult)
@@ -1123,7 +1063,7 @@ class TestSnowballRunnerVerboseAndProgress:
         root.setLevel(logging.WARNING)
         try:
             with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
-                runner = SnowballRunner(seed_papers=seed, max_depth=1)
+                runner = SnowballRunner(seed_paper=seed, max_depth=1)
                 runner.run(verbose=True, show_progress=False)
 
             assert root.level == logging.WARNING
@@ -1155,7 +1095,7 @@ class TestFetchDoisError:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=_ErrorGetRunner):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=1,
                 direction="backward",
             )
@@ -1180,22 +1120,22 @@ class TestSnowballRunnerEnrichmentStrategy:
 
     def test_enrichment_databases_empty_list_disables_enrichment(self, seed: Paper) -> None:
         """An empty enrichment_databases list disables enrichment (stored as [])."""
-        runner = SnowballRunner(seed_papers=seed, enrichment_databases=[])
+        runner = SnowballRunner(seed_paper=seed, enrichment_databases=[])
         assert runner._enrichment_databases == []
 
     def test_enrichment_databases_unknown_value_raises(self, seed: Paper) -> None:
         """An unknown value in enrichment_databases raises InvalidParameterError."""
         with pytest.raises(InvalidParameterError, match="Unknown database"):
-            SnowballRunner(seed_papers=seed, enrichment_databases=["no_such_db"])
+            SnowballRunner(seed_paper=seed, enrichment_databases=["no_such_db"])
 
     def test_enrichment_databases_none_uses_default(self, seed: Paper) -> None:
         """enrichment_databases=None stores the module-level default."""
-        runner = SnowballRunner(seed_papers=seed, enrichment_databases=None)
+        runner = SnowballRunner(seed_paper=seed, enrichment_databases=None)
         assert runner._enrichment_databases == list(SNOWBALL_ENRICHMENT_DATABASES)
 
     def test_enrichment_databases_custom_stored(self, seed: Paper) -> None:
         """An explicit enrichment_databases list is stored on the runner."""
-        runner = SnowballRunner(seed_papers=seed, enrichment_databases=["crossref", "openalex"])
+        runner = SnowballRunner(seed_paper=seed, enrichment_databases=["crossref", "openalex"])
         assert set(runner._enrichment_databases) == {"crossref", "openalex"}
 
     # ------------------------------------------------------------------
@@ -1212,7 +1152,7 @@ class TestSnowballRunnerEnrichmentStrategy:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=1,
                 direction="backward",
                 databases=["crossref"],
@@ -1264,7 +1204,7 @@ class TestSnowballRunnerEnrichmentStrategy:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=_SmartMock):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=2,
                 direction="backward",
                 databases=["crossref"],
@@ -1291,7 +1231,7 @@ class TestSnowballRunnerEnrichmentStrategy:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=1,
                 direction="backward",
                 databases=["crossref"],
@@ -1325,7 +1265,7 @@ class TestSnowballRunnerEnrichmentStrategy:
         enrichment_only = ["web_scraping"]
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=1,
                 direction="backward",
                 databases=["crossref"],
@@ -1354,7 +1294,7 @@ class TestSnowballRunnerEnrichmentStrategy:
         enrichment_only = ["web_scraping"]
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=1,
                 direction="backward",
                 databases=["crossref"],
@@ -1385,7 +1325,7 @@ class TestSnowballRunnerEnrichmentStrategy:
 
         with patch("findpapers.runners.snowball_runner.GetRunner", new=mock_cls):
             runner = SnowballRunner(
-                seed_papers=make_paper("Seed", doi="10.1000/seed"),
+                seed_paper=make_paper("Seed", doi="10.1000/seed"),
                 max_depth=1,
                 direction="backward",
                 # crossref used in both discovery and enrichment; web_scraping is enrichment-only.

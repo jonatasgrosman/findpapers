@@ -90,7 +90,7 @@ result = engine.search("[machine learning]", num_workers=4)
 engine.download(result.papers, "./pdfs", num_workers=8)
 
 # Snowball in parallel
-graph = engine.snowball(result.papers[:5], num_workers=4)
+graph = engine.snowball(result.papers[0], num_workers=4)
 ```
 
 When `num_workers=1` (default), operations run sequentially. When greater than 1, a thread pool is used. The optimal number depends on your network and the API rate limits.

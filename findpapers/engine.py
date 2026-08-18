@@ -503,7 +503,7 @@ class Engine:
 
     def snowball(
         self,
-        papers: list[Paper] | Paper,
+        paper: Paper,
         *,
         max_depth: int = 1,
         direction: Literal["both", "backward", "forward"] = "both",
@@ -518,25 +518,22 @@ class Engine:
         verbose: bool = False,
         show_progress: bool = True,
     ) -> SnowballResult:
-        """Discover papers around seed papers via iterative citation snowballing.
+        """Discover papers around a seed paper via iterative citation snowballing.
 
-        Starting from one or more seed papers, iteratively fetches their
-        references (backward) and/or citing papers (forward).  Seed papers
-        are enriched with the full combined set of *databases* and
+        Starting from a single seed paper, iteratively fetches its
+        references (backward) and/or citing papers (forward).  The seed paper
+        is enriched with the full combined set of *databases* and
         *enrichment_databases*.  Papers discovered during BFS are fetched with
         *databases* only; after all BFS levels and filters are applied, the
         surviving non-seed papers are re-enriched with the *enrichment_databases*
         not already used during discovery.
 
-        Papers without a DOI are silently skipped since they cannot be
-        resolved by the upstream APIs.
-
         Parameters
         ----------
-        papers : list[Paper] | Paper
-            One or more seed papers from which the snowball starts.
-            Typically obtained from ``engine.search(...).papers`` or
-            ``engine.get(...)``.
+        paper : Paper
+            The seed paper from which the snowball starts.  Must have a DOI.
+            Typically obtained from ``engine.get(...)`` or an item from
+            ``engine.search(...).papers``.
         max_depth : int
             Maximum number of BFS levels.  ``1`` (default) retrieves
             only the immediate neighbours.  ``2`` also expands papers
@@ -549,7 +546,7 @@ class Engine:
             *cite* the current frontier), ``"both"`` expands both.
         max_papers_per_level : int | None
             When set, only the *top N* most-cited papers discovered at each
-            level are kept in the final result.  Seed papers are never
+            level are kept in the final result.  The seed paper is never
             filtered.  ``None`` (default) means all discovered papers
             are included.
         max_expansion_per_level : int | None
@@ -579,11 +576,11 @@ class Engine:
             ``"semantic_scholar"``, ``"web_scraping"``, ``"wos"``.
         since : datetime.date | None
             Only include discovered papers published on or after this
-            date.  Seed papers are never filtered.  ``None`` (default)
+            date.  The seed paper is never filtered.  ``None`` (default)
             disables the lower-bound filter.
         until : datetime.date | None
             Only include discovered papers published on or before this
-            date.  Seed papers are never filtered.  ``None`` (default)
+            date.  The seed paper is never filtered.  ``None`` (default)
             disables the upper-bound filter.
         num_workers : int
             Number of parallel
@@ -599,14 +596,20 @@ class Engine:
         Returns
         -------
         SnowballResult
-            Container with all *discovered* papers (seeds excluded from
+            Container with all *discovered* papers (the seed is excluded from
             :attr:`~findpapers.core.snowball_result.SnowballResult.papers`;
-            enriched seeds are in
-            :attr:`~findpapers.core.snowball_result.SnowballResult.seed_papers`).
+            the enriched seed is in
+            :attr:`~findpapers.core.snowball_result.SnowballResult.seed_paper`).
             Citation relationships are encoded on each paper via
             :attr:`~findpapers.core.paper.Paper.references` and
             :attr:`~findpapers.core.paper.Paper.cited_by`.  Save via
             ``findpapers.save_to_json(result, path)``.
+
+        Raises
+        ------
+        InvalidParameterError
+            If *paper* has no DOI, or any other parameter is invalid (see
+            :class:`~findpapers.runners.snowball_runner.SnowballRunner`).
 
         See Also
         --------
@@ -630,17 +633,16 @@ class Engine:
         >>> import findpapers
         >>> findpapers.save_to_json(result, "snowball_result.json")
 
-        Snowball from search results with only backward direction:
+        Snowball with only backward direction and two BFS levels:
 
-        >>> sr = engine.search("[deep learning]")
         >>> result = engine.snowball(
-        ...     sr.papers[:5],
+        ...     seed,
         ...     max_depth=2,
         ...     direction="backward",
         ... )
         """
         runner = SnowballRunner(
-            seed_papers=papers,
+            seed_paper=paper,
             max_depth=max_depth,
             direction=direction,
             max_papers_per_level=max_papers_per_level,
@@ -701,10 +703,8 @@ class Engine:
           topic-tag-overlap signal than the other two.
 
         This is a **single-hop** operation: there is no ``depth`` parameter
-        and no BFS.  Only one seed paper is accepted per call (pass one
-        :class:`~findpapers.core.paper.Paper` at a time; loop over multiple
-        seeds yourself if needed, mirroring :meth:`get` rather than
-        :meth:`snowball`).
+        and no BFS.  Only one seed paper is accepted per call, like
+        :meth:`snowball`; loop over multiple seeds yourself if needed.
 
         All three sources are DOI-anchored (none support looking up a paper
         by title/abstract alone): a *paper* without a DOI yields an empty
