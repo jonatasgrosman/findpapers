@@ -707,8 +707,8 @@ class Engine:
         :meth:`snowball`; loop over multiple seeds yourself if needed.
 
         All three sources are DOI-anchored (none support looking up a paper
-        by title/abstract alone): a *paper* without a DOI yields an empty
-        result without any HTTP calls.
+        by title/abstract alone), so *paper* must have a DOI: one without a
+        DOI is rejected immediately, before any HTTP calls.
 
         Results from each source are merged into a single deduplicated list
         via :meth:`~findpapers.core.paper.Paper.merge` (matched by DOI,
@@ -731,8 +731,7 @@ class Engine:
         paper : Paper
             Seed paper to find related papers for.  Typically obtained from
             ``engine.search(...).papers``, ``engine.get(...)``, or
-            ``engine.snowball(...).papers``.  Must have a DOI: papers
-            without one yield an empty result.
+            ``engine.snowball(...).papers``.  Must have a DOI.
         databases : list[str] | None
             Sources to consult, in priority order.  ``None`` (default) uses
             ``["semantic_scholar", "pubmed"]``.  ``"openalex"`` is supported
@@ -795,6 +794,8 @@ class Engine:
 
         Raises
         ------
+        findpapers.exceptions.InvalidParameterError
+            If *paper* has no DOI.
         findpapers.exceptions.InvalidParameterError
             If *databases* is an empty list or contains unknown database
             names.

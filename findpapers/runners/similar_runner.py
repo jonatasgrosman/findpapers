@@ -95,13 +95,13 @@ class SimilarRunner(DiscoveryRunner):
     Neither of the three similarity sources supports native date filtering,
     so ``since``/``until`` are applied after the merge instead.
 
-    All three sources are DOI-anchored: a seed paper without a DOI yields an
-    empty result without any HTTP calls.
+    All three sources are DOI-anchored, so the seed paper must have a DOI;
+    one without a DOI is rejected at construction time.
 
     Parameters
     ----------
     paper : Paper
-        The seed paper to find related papers for.
+        The seed paper to find related papers for.  Must have a DOI.
     databases : list[str] | None
         Sources to consult, in priority order.  ``None`` (default) uses
         :data:`DEFAULT_SIMILAR_DATABASES` (Semantic Scholar and PubMed).
@@ -164,6 +164,8 @@ class SimilarRunner(DiscoveryRunner):
     Raises
     ------
     InvalidParameterError
+        If *paper* has no DOI.
+    InvalidParameterError
         If *databases* is an empty list or contains unknown database names.
     InvalidParameterError
         If *enrichment_databases* contains unknown database names.
@@ -198,11 +200,16 @@ class SimilarRunner(DiscoveryRunner):
         Raises
         ------
         InvalidParameterError
+            If *paper* has no DOI.
+        InvalidParameterError
             If *databases* is an empty list or contains unknown database
             names.
         InvalidParameterError
             If *enrichment_databases* contains unknown database names.
         """
+        if not paper.doi:
+            raise InvalidParameterError("paper must have a DOI.")
+
         self._paper = paper
         self._active_databases = _validate_similar_databases(databases)
         self._requested_databases = databases
@@ -291,11 +298,7 @@ class SimilarRunner(DiscoveryRunner):
         order: list[str] = []
 
         try:
-            if not self._paper.doi:
-                logger.debug("similar: seed paper has no DOI, skipping all sources.")
-                skipped_databases = list(self._active_databases)
-            else:
-                self._run_sources(merged, order, failed_databases, skipped_databases, show_progress)
+            self._run_sources(merged, order, failed_databases, skipped_databases, show_progress)
         finally:
             for connector in (self._semantic_scholar, self._pubmed, self._openalex):
                 if connector is not None:
@@ -370,9 +373,9 @@ class SimilarRunner(DiscoveryRunner):
         -------
         None
         """
-        # run() only calls this method after confirming self._paper.doi is set.
+        # __init__ already guarantees self._paper.doi is set.
         doi = self._paper.doi
-        if doi is None:  # pragma: no cover: guarded by run() before this call
+        if doi is None:  # pragma: no cover: guarded by __init__ before this call
             return
         seed_key = self._paper._identity_key()
 

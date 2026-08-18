@@ -38,7 +38,7 @@ result = engine.similar(
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `paper` | `Paper` | *(required)* | Seed paper to find related papers for. Must have a DOI: papers without one yield an empty result, since all three sources are DOI-anchored |
+| `paper` | `Paper` | *(required)* | Seed paper to find related papers for. Must have a DOI: all three sources are DOI-anchored, so a paper without one raises `InvalidParameterError` |
 | `databases` | `list[str] \| None` | `None` | Sources to consult, in priority order. Accepted values: `"semantic_scholar"`, `"pubmed"`, `"openalex"`. `None` uses `["semantic_scholar", "pubmed"]`: `"openalex"` is supported but excluded from the default because its signal is noisier (see [Data Sources](#data-sources)); pass it explicitly to include it |
 | `max_papers_per_database` | `int \| None` | `None` | Cap on the number of related papers requested/kept from each source before merging. `None` lets each source's own natural default apply (see [Data Sources](#data-sources)) |
 | `since` | `datetime.date \| None` | `None` | Only keep related papers published on or after this date. Applied as a post-fetch filter, since none of the three sources supports native date filtering. The seed paper is never filtered (it is never part of `result.papers` anyway) |
@@ -67,7 +67,7 @@ Returns a `SimilarResult` object containing:
 | `processed_at` | `datetime.datetime` | UTC timestamp when the lookup was executed |
 | `runtime_seconds` | `float \| None` | Wall-clock runtime in seconds |
 | `failed_databases` | `list[str]` | Sources that were queried but raised an error |
-| `skipped_databases` | `list[str]` | Sources not applicable to this seed paper (e.g. PubMed with no resolvable PMID, or every source when the seed has no DOI) |
+| `skipped_databases` | `list[str]` | Sources not applicable to this seed paper (e.g. PubMed with no resolvable PMID) |
 
 `failed_databases` and `skipped_databases` are intentionally distinct: a skip is an expected outcome ("this source does not apply here"), while a failure means the source was queried but errored.
 
@@ -147,10 +147,11 @@ result = engine.similar(seed, databases=["semantic_scholar", "pubmed", "openalex
 
 ## Papers Without a DOI
 
-All three sources are DOI-anchored, so a seed paper with no DOI yields an empty result without any HTTP calls, and every *active* source (the default two, or all three if `openalex` was requested explicitly) is listed under `result.skipped_databases`. There is currently no supported way to find similar papers from just a title/abstract for an unpublished paper: no reliable public API accepts arbitrary text and returns similarity-ranked results against the full academic corpus.
+All three sources are DOI-anchored, so `engine.similar()` requires the seed paper to have a DOI and raises `InvalidParameterError` immediately (no HTTP calls) when it does not. There is currently no supported way to find similar papers from just a title/abstract for an unpublished paper: no reliable public API accepts arbitrary text and returns similarity-ranked results against the full academic corpus.
 
 ```python
 from findpapers.core.paper import Paper
+from findpapers.exceptions import InvalidParameterError
 
 unpublished = Paper(
     title="My unpublished draft",
@@ -159,9 +160,10 @@ unpublished = Paper(
     source=None,
     publication_date=None,
 )
-result = engine.similar(unpublished)
-assert result.papers == []
-assert result.skipped_databases == ["semantic_scholar", "pubmed"]
+try:
+    engine.similar(unpublished)
+except InvalidParameterError:
+    ...  # paper has no DOI
 ```
 
 As an approximation, you can fall back to `engine.search()` with keywords drawn from the title/abstract; this is ordinary text-relevance search, not the content-similarity mechanisms above, but the results can still be useful for casting a wider net.

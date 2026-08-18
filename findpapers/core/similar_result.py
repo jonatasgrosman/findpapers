@@ -58,10 +58,9 @@ class SimilarResult:
         as an empty list.
     skipped_databases : list[str] | None
         Sources that were not queried because they do not apply to this seed
-        paper (e.g. PubMed when no PMID could be resolved, or every source
-        when the seed paper has no DOI).  Distinct from *failed_databases*:
-        a skip is an expected outcome, not an error.  ``None`` is treated as
-        an empty list.
+        paper (e.g. PubMed when no PMID could be resolved).  Distinct from
+        *failed_databases*: a skip is an expected outcome, not an error.
+        ``None`` is treated as an empty list.
     """
 
     def __init__(

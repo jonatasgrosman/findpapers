@@ -98,29 +98,25 @@ class TestSimilarRunnerValidation:
 
 
 # ---------------------------------------------------------------------------
-# DOI short-circuit
+# DOI requirement
 # ---------------------------------------------------------------------------
 
 
 class TestSimilarRunnerNoDoi:
-    """Tests for the seed-paper-without-DOI short circuit."""
+    """Tests for the seed-paper-without-DOI rejection."""
 
-    def test_no_doi_skips_all_sources_without_http_calls(self) -> None:
-        """A seed paper with no DOI yields an empty result; every active source is skipped."""
-        runner = SimilarRunner(paper=_make_paper(doi=None), databases=SIMILAR_DATABASES)
-
+    def test_no_doi_raises_without_http_calls(self) -> None:
+        """A seed paper with no DOI is rejected at construction time; no source is touched."""
         with (
             patch(
                 "findpapers.connectors.semantic_scholar.SemanticScholarConnector.fetch_related"
             ) as mock_ss,
             patch("findpapers.connectors.openalex.OpenAlexConnector.fetch_related") as mock_oa,
             patch("findpapers.connectors.pubmed.PubmedConnector.fetch_related") as mock_pm,
+            pytest.raises(InvalidParameterError),
         ):
-            result = runner.run(show_progress=False)
+            SimilarRunner(paper=_make_paper(doi=None), databases=SIMILAR_DATABASES)
 
-        assert result.papers == []
-        assert set(result.skipped_databases) == set(SIMILAR_DATABASES)
-        assert result.failed_databases == []
         mock_ss.assert_not_called()
         mock_oa.assert_not_called()
         mock_pm.assert_not_called()
