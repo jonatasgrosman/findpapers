@@ -189,8 +189,8 @@ class TestSnowball:
         result = engine.snowball(seed, max_depth=1, show_progress=False, max_papers_per_level=5)
 
         assert result is not None, "Snowball returned None"
-        # The seed itself should always be in seed_papers.
-        assert len(result.seed_papers) >= 1, "Snowball result has no seed papers"
+        # The seed itself should always be present as result.seed_paper.
+        assert result.seed_paper is not None, "Snowball result has no seed paper"
 
 
 class TestSimilar:

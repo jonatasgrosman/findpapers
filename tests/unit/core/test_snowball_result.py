@@ -54,7 +54,7 @@ def _make_result(**kwargs) -> SnowballResult:
         Instance with defaults for unspecified fields.
     """
     defaults: dict = {
-        "seed_papers": [],
+        "seed_paper": _make_paper("Seed", doi="10.0/seed"),
         "max_depth": 1,
         "direction": "both",
     }
@@ -81,7 +81,6 @@ class TestSnowballResultInit:
         assert result.max_expansion_per_level is None
         assert result.papers == []
         assert result.runtime_seconds is None
-        assert result.skipped_seeds_without_doi == 0
 
     def test_processed_at_defaults_to_now_utc(self) -> None:
         """processed_at defaults to a UTC-aware datetime close to now."""
@@ -109,12 +108,11 @@ class TestSnowballResultInit:
         result = _make_result(papers=None)
         assert result.papers == []
 
-    def test_seed_papers_are_copied(self) -> None:
-        """seed_papers input list is copied (mutations do not affect result)."""
-        seeds = [_make_paper("S", doi="10.0/s")]
-        result = _make_result(seed_papers=seeds)
-        seeds.append(_make_paper("Extra"))
-        assert len(result.seed_papers) == 1
+    def test_seed_paper_is_stored(self) -> None:
+        """seed_paper input is stored as result.seed_paper."""
+        seed = _make_paper("S", doi="10.0/s")
+        result = _make_result(seed_paper=seed)
+        assert result.seed_paper is seed
 
     def test_papers_list_is_copied(self) -> None:
         """papers input list is copied (mutations do not affect result)."""
@@ -177,7 +175,7 @@ class TestToDict:
         """Metadata contains expected sub-fields."""
         seed = _make_paper("Seed", doi="10.0/seed")
         result = SnowballResult(
-            seed_papers=[seed],
+            seed_paper=seed,
             max_depth=2,
             direction="backward",
             since=datetime.date(2020, 1, 1),
@@ -185,7 +183,6 @@ class TestToDict:
             databases=["crossref"],
             max_papers_per_level=5,
             max_expansion_per_level=10,
-            skipped_seeds_without_doi=1,
             runtime_seconds=1.23,
         )
         meta = result.to_dict()["metadata"]
@@ -197,17 +194,15 @@ class TestToDict:
         assert meta["databases"] == ["crossref"]
         assert meta["max_papers_per_level"] == 5
         assert meta["max_expansion_per_level"] == 10
-        assert meta["skipped_seeds_without_doi"] == 1
         assert meta["runtime_seconds"] == pytest.approx(1.23)  # type: ignore[attr-defined]
         assert "timestamp" in meta
         assert "version" in meta
 
-    def test_seed_papers_in_metadata(self) -> None:
-        """Seed papers are serialized as doi/title dicts in metadata."""
+    def test_seed_paper_in_metadata(self) -> None:
+        """The seed paper is serialized as a doi/title dict in metadata."""
         seed = _make_paper("My Seed", doi="10.0/myseed")
-        data = _make_result(seed_papers=[seed]).to_dict()
-        seeds = data["metadata"]["seed_papers"]
-        assert any(s["doi"] == "10.0/myseed" for s in seeds)
+        data = _make_result(seed_paper=seed).to_dict()
+        assert data["metadata"]["seed_paper"] == {"doi": "10.0/myseed", "title": "My Seed"}
 
     def test_papers_serialized(self) -> None:
         """Discovered papers are included in the 'papers' key."""
@@ -235,7 +230,7 @@ class TestFromDict:
         seed = _make_paper("Seed", doi="10.0/seed")
         paper = _make_paper("Paper", doi="10.0/p")
         original = SnowballResult(
-            seed_papers=[seed],
+            seed_paper=seed,
             max_depth=2,
             direction="forward",
             since=datetime.date(2021, 1, 1),
@@ -245,7 +240,6 @@ class TestFromDict:
             max_expansion_per_level=7,
             papers=[paper],
             runtime_seconds=0.5,
-            skipped_seeds_without_doi=2,
         )
         data = original.to_dict()
         restored = SnowballResult.from_dict(data)
@@ -257,7 +251,7 @@ class TestFromDict:
         assert restored.databases == original.databases
         assert restored.max_papers_per_level == original.max_papers_per_level
         assert restored.max_expansion_per_level == original.max_expansion_per_level
-        assert restored.skipped_seeds_without_doi == original.skipped_seeds_without_doi
+        assert restored.seed_paper.doi == original.seed_paper.doi
         assert restored.runtime_seconds == pytest.approx(original.runtime_seconds)  # type: ignore[attr-defined]
         assert len(restored.papers) == 1
 
@@ -297,17 +291,17 @@ class TestFromDict:
         after = datetime.datetime.now(datetime.UTC)
         assert before <= result.processed_at <= after
 
-    def test_seed_papers_reconstructed(self) -> None:
-        """Seed papers saved as doi/title pairs are reconstructed as Papers."""
+    def test_seed_paper_reconstructed(self) -> None:
+        """The seed paper saved as a doi/title pair is reconstructed as a Paper."""
         data = {
             "metadata": {
-                "seed_papers": [{"doi": "10.0/s", "title": "Seed"}],
+                "seed_paper": {"doi": "10.0/s", "title": "Seed"},
             },
             "papers": [],
         }
         result = SnowballResult.from_dict(data)
-        assert len(result.seed_papers) == 1
-        assert result.seed_papers[0].doi == "10.0/s"
+        assert result.seed_paper.doi == "10.0/s"
+        assert result.seed_paper.title == "Seed"
 
 
 # ---------------------------------------------------------------------------

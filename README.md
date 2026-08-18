@@ -56,7 +56,7 @@ engine.download(search_result.papers, "./pdfs")
 # Look up a single paper by DOI or landing-page URL
 paper = engine.get("10.1038/nature11804")
 
-# Build a snowball result from seed papers
+# Build a snowball result from a seed paper
 snowball_result = engine.snowball(paper, max_depth=1, direction="forward")
 
 # Find content-similar papers around a single seed paper
